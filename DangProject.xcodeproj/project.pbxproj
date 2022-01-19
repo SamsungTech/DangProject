@@ -9,11 +9,17 @@
 /* Begin PBXBuildFile section */
 		0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A78277076FC0006B9CF /* AppDelegate.swift */; };
 		0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */; };
-		0B1F4A7D277076FC0006B9CF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7C277076FC0006B9CF /* ViewController.swift */; };
-		0B1F4A80277076FC0006B9CF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7E277076FC0006B9CF /* Main.storyboard */; };
+		0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */; };
 		0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A81277076FC0006B9CF /* DangProject.xcdatamodeld */; };
 		0B1F4A85277076FE0006B9CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A84277076FE0006B9CF /* Assets.xcassets */; };
 		0B1F4A88277076FE0006B9CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */; };
+		0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */; };
+		0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351827984F5E00634E51 /* Nutrient.swift */; };
+		0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351E2798503200634E51 /* MainCoordinator.swift */; };
+		0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435202798518C00634E51 /* HomeCoordinator.swift */; };
+		0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435222798519800634E51 /* HomeDIContainer.swift */; };
+		0BB43525279851A300634E51 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB43524279851A300634E51 /* HomeViewModel.swift */; };
+		0BB435272798537900634E51 /* HomeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435262798537900634E51 /* HomeUseCase.swift */; };
 		406DE831D86791792DAD62BD /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64F741B1CC607F30779F70B /* Pods_DangProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,13 +27,19 @@
 		0B1F4A75277076FC0006B9CF /* DangProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DangProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1F4A78277076FC0006B9CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		0B1F4A7C277076FC0006B9CF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		0B1F4A7F277076FC0006B9CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0B1F4A82277076FC0006B9CF /* DangProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DangProject.xcdatamodel; sourceTree = "<group>"; };
 		0B1F4A84277076FE0006B9CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0B1F4A87277076FE0006B9CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0B1F4A89277076FE0006B9CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResearchRepository.swift; sourceTree = "<group>"; };
 		0B3132E1C7D66AF3CCBF58B2 /* Pods-DangProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.debug.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.debug.xcconfig"; sourceTree = "<group>"; };
+		0BB4351827984F5E00634E51 /* Nutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutrient.swift; sourceTree = "<group>"; };
+		0BB4351E2798503200634E51 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
+		0BB435202798518C00634E51 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
+		0BB435222798519800634E51 /* HomeDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDIContainer.swift; sourceTree = "<group>"; };
+		0BB43524279851A300634E51 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		0BB435262798537900634E51 /* HomeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUseCase.swift; sourceTree = "<group>"; };
 		F64F741B1CC607F30779F70B /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.release.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,16 +77,150 @@
 		0B1F4A77277076FC0006B9CF /* DangProject */ = {
 			isa = PBXGroup;
 			children = (
-				0B1F4A78277076FC0006B9CF /* AppDelegate.swift */,
-				0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */,
-				0B1F4A7C277076FC0006B9CF /* ViewController.swift */,
-				0B1F4A7E277076FC0006B9CF /* Main.storyboard */,
+				0BB4350F27984D5600634E51 /* Application */,
+				0BB4351327984E5A00634E51 /* Presentation */,
 				0B1F4A84277076FE0006B9CF /* Assets.xcassets */,
 				0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */,
 				0B1F4A89277076FE0006B9CF /* Info.plist */,
 				0B1F4A81277076FC0006B9CF /* DangProject.xcdatamodeld */,
+				0BB4350A27984CBB00634E51 /* Domain */,
+				0BB4351027984DE300634E51 /* Data */,
 			);
 			path = DangProject;
+			sourceTree = "<group>";
+		};
+		0BB4350A27984CBB00634E51 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4351127984DF200634E51 /* Entities */,
+				0BB4350B27984CC900634E51 /* UseCases */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		0BB4350B27984CC900634E51 /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				0BB435262798537900634E51 /* HomeUseCase.swift */,
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
+		0BB4350C27984CCE00634E51 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		0BB4350F27984D5600634E51 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				0B1F4A78277076FC0006B9CF /* AppDelegate.swift */,
+				0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */,
+				0BB4351E2798503200634E51 /* MainCoordinator.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		0BB4351027984DE300634E51 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4350C27984CCE00634E51 /* Repository */,
+				0BB4351227984E2600634E51 /* CoreData */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		0BB4351127984DF200634E51 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4351827984F5E00634E51 /* Nutrient.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		0BB4351227984E2600634E51 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		0BB4351327984E5A00634E51 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4351727984E9F00634E51 /* Home */,
+				0BB4351427984E7F00634E51 /* Utils */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		0BB4351427984E7F00634E51 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4351627984E9100634E51 /* Protocols */,
+				0BB4351527984E8900634E51 /* Extensions */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		0BB4351527984E8900634E51 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0BB4351627984E9100634E51 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		0BB4351727984E9F00634E51 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4351D2798501400634E51 /* Coordinator */,
+				0BB4351C2798500900634E51 /* DIContainer */,
+				0BB4351B27984FF800634E51 /* VIewModel */,
+				0BB4351A27984FF000634E51 /* View */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		0BB4351A27984FF000634E51 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		0BB4351B27984FF800634E51 /* VIewModel */ = {
+			isa = PBXGroup;
+			children = (
+				0BB43524279851A300634E51 /* HomeViewModel.swift */,
+			);
+			path = VIewModel;
+			sourceTree = "<group>";
+		};
+		0BB4351C2798500900634E51 /* DIContainer */ = {
+			isa = PBXGroup;
+			children = (
+				0BB435222798519800634E51 /* HomeDIContainer.swift */,
+			);
+			path = DIContainer;
+			sourceTree = "<group>";
+		};
+		0BB4351D2798501400634E51 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				0BB435202798518C00634E51 /* HomeCoordinator.swift */,
+			);
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 		408AEF6A9790F5EBEF1D177B /* Pods */ = {
@@ -83,7 +229,6 @@
 				0B3132E1C7D66AF3CCBF58B2 /* Pods-DangProject.debug.xcconfig */,
 				F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -157,7 +302,6 @@
 			files = (
 				0B1F4A88277076FE0006B9CF /* LaunchScreen.storyboard in Resources */,
 				0B1F4A85277076FE0006B9CF /* Assets.xcassets in Resources */,
-				0B1F4A80277076FC0006B9CF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,9 +354,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B1F4A7D277076FC0006B9CF /* ViewController.swift in Sources */,
+				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
+				0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
+				0BB43525279851A300634E51 /* HomeViewModel.swift in Sources */,
+				0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */,
+				0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */,
+				0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */,
+				0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
+				0BB435272798537900634E51 /* HomeUseCase.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,14 +371,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		0B1F4A7E277076FC0006B9CF /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0B1F4A7F277076FC0006B9CF /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -368,7 +511,6 @@
 				INFOPLIST_FILE = DangProject/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -397,7 +539,6 @@
 				INFOPLIST_FILE = DangProject/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
