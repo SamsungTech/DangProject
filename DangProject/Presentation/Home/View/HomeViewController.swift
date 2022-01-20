@@ -8,6 +8,8 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import CoreGraphics
+import Then
 
 class HomeViewController: UIViewController {
     private var viewModel: HomeViewModel?
@@ -19,6 +21,7 @@ class HomeViewController: UIViewController {
         
         return collectionViewController
     }()
+    var graphView = GraphView()
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -32,12 +35,25 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        configure()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
     
-    
+    func configure() {
+        [ graphView ].forEach() { view.addSubview($0) }
+        
+        graphView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            $0.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+//            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+//            $0.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: 200).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        }
+    }
 }
 
