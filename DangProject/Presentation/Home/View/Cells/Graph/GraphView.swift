@@ -8,6 +8,7 @@
 import Foundation
 import CoreGraphics
 import UIKit
+import Then
 
 private struct Constants {
     static let cornerRadiusSize = CGSize(width: 8.0, height: 8.0)
@@ -19,8 +20,8 @@ private struct Constants {
 }
 
 class GraphView: UIView {
-    var startColor: UIColor = .systemYellow
-    var endColor: UIColor = .systemPink
+    var startColor: UIColor = .systemMint
+    var endColor: UIColor = .systemGreen
     var graphPoints = [4, 2, 6, 5, 6, 8, 3]
     let average = UILabel()
     let maxNum = UILabel()
@@ -60,7 +61,7 @@ class GraphView: UIView {
         let columnXPoint = { (column: Int) -> CGFloat in
           //Calculate the gap between points
             let spacing = graphWidth / CGFloat(self.graphPoints.count - 1)
-          return CGFloat(column) * spacing + margin + 2
+          return CGFloat(column) * spacing + margin + 1
         }
         let topBorder = viewXRatio(Constants.topBorder)
         let bottomBorder = viewXRatio(Constants.bottomBorder)
@@ -169,7 +170,7 @@ class GraphView: UIView {
     func configure() {
         average.do {
             $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: viewXRatio(20))
+            $0.font = UIFont.boldSystemFont(ofSize: viewXRatio(30))
             $0.text = "Average"
         }
         maxNum.do {
@@ -208,7 +209,7 @@ class GraphView: UIView {
         for i in 1..<8 {
             let label = UILabel()
             label.textColor = .white
-            label.font = UIFont.boldSystemFont(ofSize: viewXRatio(21))
+            label.font = UIFont.boldSystemFont(ofSize: viewXRatio(25))
             label.text = "\(i)"
             labelArray.append(label)
         }

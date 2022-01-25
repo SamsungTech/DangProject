@@ -21,6 +21,9 @@ class HomeDIContainer {
         return HomeViewModel(useCase: makeHomeUseCase())
     }
     func makeHomeUseCase() -> HomeUseCase {
-        return HomeUseCase()
+        return HomeUseCase(repository: makeTampRepository())
+    }
+    func makeTampRepository() -> TempRepository {
+        return TempRepository()
     }
 }
