@@ -12,12 +12,13 @@ import Then
 class CustomNavigationBar: UIView {
     var profileImageView = UIImageView()
     var notification = UIImageView()
+    fileprivate var barheightAnchor: NSLayoutConstraint?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
         layout()
-        self.backgroundColor = .systemGreen
+        self.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.7)
     }
     
     required init?(coder: NSCoder) {
@@ -56,10 +57,6 @@ class CustomNavigationBar: UIView {
 }
 
 extension CustomNavigationBar {
-    func setNavigationBarAnimation() {
-        self.isHidden = true
-    }
-    func setNavigationBarReturnAnimation() {
-        self.isHidden = false
-    }
+    func setNavigationBarAnimation(completion: @escaping () -> Void) {}
+    func setNavigationBarReturnAnimation() {}
 }

@@ -9,6 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Then
+import CloudKit
 
 class HomeViewController: UIViewController {
     private var viewModel: HomeViewModel?
@@ -25,6 +26,7 @@ class HomeViewController: UIViewController {
         
         return collectionView
     }()
+    fileprivate var heightAnchor: NSLayoutConstraint?
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -34,6 +36,7 @@ class HomeViewController: UIViewController {
         
         return viewController
     }
+    var barHeight: CGFloat = 90
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +63,7 @@ class HomeViewController: UIViewController {
                         forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                         withReuseIdentifier: AteFoodHeader.identifier)
             $0.register(AteFoodCell.self, forCellWithReuseIdentifier: AteFoodCell.identifier)
+            $0.register(HomeCollectionFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: HomeCollectionFooter.identfier)
             $0.dataSource = self
             $0.delegate = self
         }
@@ -73,7 +77,8 @@ class HomeViewController: UIViewController {
             $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: viewXRatio(90)).isActive = true
+            heightAnchor = $0.heightAnchor.constraint(equalToConstant: viewXRatio(90))
+            heightAnchor?.isActive = true
         }
         homeCollectionView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +103,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case 1:
             return 1
         case 2:
-            return 1
+            return viewModel?.tempData.value.count ?? 0
         default:
             return 0
         }
@@ -132,15 +137,20 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case 1:
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                             withReuseIdentifier: GraphCellHeader.identifier,
-                                                                             for: indexPath)
+                                                                       withReuseIdentifier: GraphCellHeader.identifier,
+                                                                       for: indexPath)
             }
             return UICollectionReusableView()
         case 2:
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                             withReuseIdentifier: AteFoodHeader.identifier,
-                                                                             for: indexPath)
+                                                                       withReuseIdentifier: AteFoodHeader.identifier,
+                                                                       for: indexPath)
+            }
+            if kind == UICollectionView.elementKindSectionFooter {
+                return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                       withReuseIdentifier: HomeCollectionFooter.identfier,
+                                                                       for: indexPath)
             }
             return UICollectionReusableView()
         default:
@@ -164,6 +174,20 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return CGSize()
         }
     }
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        referenceSizeForFooterInSection section: Int) -> CGSize {
+        switch section {
+        case 0:
+            return CGSize()
+        case 1:
+            return CGSize()
+        case 2:
+            return CGSize(width: UIScreen.main.bounds.maxX, height: 200)
+        default:
+            return CGSize()
+        }
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
@@ -179,7 +203,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
                           height: 200)
         case 2:
             return CGSize(width: self.homeCollectionView.frame.maxX-20,
-                          height: 200)
+                          height: 90)
         default:
             return CGSize()
         }
@@ -187,12 +211,30 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 30
+        switch section {
+        case 0:
+            return 30
+        case 1:
+            return 30
+        case 2:
+            return 0
+        default:
+            return 0
+        }
     }
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 30
+        switch section {
+        case 0:
+            return 30
+        case 1:
+            return 30
+        case 2:
+            return 0
+        default:
+            return 0
+        }
     }
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -203,10 +245,31 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 
 extension HomeViewController {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
-            customNavigationBar.setNavigationBarAnimation()
-        } else {
-            customNavigationBar.setNavigationBarReturnAnimation()
+        if scrollView.panGestureRecognizer.state == .changed {
+            if scrollView.panGestureRecognizer.velocity(in: scrollView).y < 0 {
+                heightAnchor?.constant = 40
+                UIView.animate(withDuration: 0.5) { [weak self] in
+                    self?.customNavigationBar.notification.alpha = 0.0
+                    self?.customNavigationBar.profileImageView.alpha = 0.0
+                    self?.customNavigationBar.layoutIfNeeded()
+                }
+                customNavigationBar.setNavigationBarAnimation() {
+                    self.customNavigationBar.profileImageView.isHidden = true
+                    self.customNavigationBar.notification.isHidden = true
+                }
+            } else {
+                customNavigationBar.setNavigationBarReturnAnimation()
+                heightAnchor?.constant = 90
+                UIView.animate(withDuration: 0.5) { [weak self] in
+                    self?.customNavigationBar.notification.alpha = 1.0
+                    self?.customNavigationBar.profileImageView.alpha = 1.0
+                    self?.customNavigationBar.layoutIfNeeded()
+                }
+                self.customNavigationBar.profileImageView.isHidden = false
+                self.customNavigationBar.notification.isHidden = false
+            }
+        } else if scrollView.panGestureRecognizer.state == .ended {
+            print("멈췄네?")
         }
     }
 }
