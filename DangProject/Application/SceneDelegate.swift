@@ -22,11 +22,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         coordinator = MainCoordinator(navigationController: navigationController)
         
-        guard let homeViewController = coordinator?.startHomeCoordinator() else { return }
-        guard let preferenceViewController = coordinator?.startPreferenceCoordinator() else { return }
+        coordinator?.start()
+        guard let homeViewController = coordinator?.homeViewController,
+              let preferenceViewController = coordinator?.preferenceViewController,
+              let searchViewController = coordinator?.searchViewController
+        else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let initialViewController = TabBarController(homeTab: homeViewController, prefrenceTab: preferenceViewController)
+        let initialViewController = TabBarController(homeTab: homeViewController,
+                                                     prefrenceTab: preferenceViewController,
+                                                     searchViewController: searchViewController)
         window?.rootViewController = initialViewController
         
         window?.makeKeyAndVisible()

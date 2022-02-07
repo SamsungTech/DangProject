@@ -8,9 +8,7 @@
 import Foundation
 
 class PreferenceDIContainer {
-    func makePreferenceViewController(coordinator: PreferenceCoordinator) -> PreferenceViewController {
-        let viewController = PreferenceViewController()
-        viewController.coordinator = coordinator
-        return viewController
+    func makePreferenceViewController() -> PreferenceViewController {
+        return PreferenceViewController()
     }
 }

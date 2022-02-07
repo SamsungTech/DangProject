@@ -23,24 +23,24 @@ class MainCoordinator: Coordinator {
         self.navigationController = navigationController
     }
     
+    // MARK: - First Start
+    var homeViewController: UINavigationController!
+    var preferenceViewController: UINavigationController!
+    var searchViewController: UINavigationController!
+    
     func start() {
-        
-    }
-    
-    func startHomeCoordinator() -> HomeViewController {
         let homeCoordinator = HomeCoordinator(navigationController: navigationController)
-        
         childCoordinators.append(homeCoordinator)
+        homeViewController = self.navigationController
+        homeCoordinator.start()
         
-        return homeCoordinator.firstStart()
-    }
-    
-    func startPreferenceCoordinator() -> PreferenceViewController {
-        let preferenceCoordinator = PreferenceCoordinator(navigationController: navigationController)
+        let preferenceCoordinator = PreferenceCoordinator(navigationController: UINavigationController())
+        preferenceViewController = preferenceCoordinator.navigationController
+        preferenceCoordinator.start()
         
-        childCoordinators.append(preferenceCoordinator)
-        
-        return preferenceCoordinator.firstStart()
+        let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
+        searchViewController = searchCoordinator.navigationController
+        searchCoordinator.start()
     }
     
 }

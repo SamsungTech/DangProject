@@ -10,12 +10,16 @@ import UIKit
 
 class TabBarController: UITabBarController, UITabBarControllerDelegate {
     
-    let homeTab: UIViewController
-    let preferenceTab: UIViewController
+    let homeTab: UINavigationController
+    let preferenceTab: UINavigationController
+    let searchViewController: UINavigationController
     
-    init(homeTab: UIViewController, prefrenceTab: UIViewController) {
+    init(homeTab: UINavigationController,
+         prefrenceTab: UINavigationController,
+         searchViewController: UINavigationController) {
         self.homeTab = homeTab
         self.preferenceTab = prefrenceTab
+        self.searchViewController = searchViewController
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,13 +38,12 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     func setupTabbarButton() {
         homeTab.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         preferenceTab.tabBarItem = UITabBarItem(title: "Preferences", image: UIImage(systemName: "gearshape"), selectedImage: UIImage(systemName: "gearshape.fill"))
-        self.viewControllers = [homeTab, UIViewController(), preferenceTab].map{UINavigationController(rootViewController: $0)}
-
+        self.viewControllers = [homeTab, UIViewController(), preferenceTab]
+        
         self.delegate = self
     }
     
     func setupMiddleButton() {
-        
         let addButton = UIButton(frame: CGRect(x: 0, y: 0, width: 75, height: 75))
         var addButtonFrame = addButton.frame
         addButtonFrame.origin.y = self.view.bounds.height - addButtonFrame.height - 20
@@ -57,7 +60,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     @objc func addButtonTapped() {
-        print("tapped")
+        present(searchViewController, animated: true, completion: nil)
     }
 }
 
