@@ -27,6 +27,7 @@ class HomeViewController: UIViewController {
         return collectionView
     }()
     fileprivate var heightAnchor: NSLayoutConstraint?
+    var firstContentY: CGFloat = 0
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -37,6 +38,12 @@ class HomeViewController: UIViewController {
         return viewController
     }
     var barHeight: CGFloat = 90
+    let gradient = CAGradientLayer()
+    let newColors = [
+        UIColor.systemRed.cgColor,
+        UIColor.orange.cgColor,
+        UIColor.systemYellow.cgColor
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,11 +55,21 @@ class HomeViewController: UIViewController {
         view.bringSubviewToFront(customNavigationBar)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        gradient.frame = homeCollectionView.frame
+        gradient.colors = newColors
+        homeCollectionView.layer.insertSublayer(gradient, at: 0)
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
     
     func configure() {
+        gradient.do {
+            $0.frame = homeCollectionView.frame
+            $0.colors = newColors
+        }
         homeCollectionView.do {
             $0.register(BatteryCell.self, forCellWithReuseIdentifier: BatteryCell.identifier)
             $0.register(GraphCellHeader.self,
@@ -77,7 +94,7 @@ class HomeViewController: UIViewController {
             $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-            heightAnchor = $0.heightAnchor.constraint(equalToConstant: viewXRatio(90))
+            heightAnchor = $0.heightAnchor.constraint(equalToConstant: 90)
             heightAnchor?.isActive = true
         }
         homeCollectionView.do {
@@ -196,8 +213,8 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0:
-            return CGSize(width: self.homeCollectionView.frame.maxX-20,
-                          height: self.homeCollectionView.frame.maxY-20)
+            return CGSize(width: self.homeCollectionView.frame.maxX-2,
+                          height: UIScreen.main.bounds.maxY)
         case 1:
             return CGSize(width: self.homeCollectionView.frame.maxX-20,
                           height: 200)
@@ -213,7 +230,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         switch section {
         case 0:
-            return 30
+            return 0
         case 1:
             return 30
         case 2:
@@ -227,7 +244,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         switch section {
         case 0:
-            return 30
+            return 0
         case 1:
             return 30
         case 2:
@@ -244,32 +261,86 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension HomeViewController {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        firstContentY = scrollView.contentOffset.y+44
+    }
+    // MARK: 초반에 부드럽지 못함
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.panGestureRecognizer.state == .changed {
-            if scrollView.panGestureRecognizer.velocity(in: scrollView).y < 0 {
-                heightAnchor?.constant = 40
-                UIView.animate(withDuration: 0.5) { [weak self] in
-                    self?.customNavigationBar.notification.alpha = 0.0
-                    self?.customNavigationBar.profileImageView.alpha = 0.0
-                    self?.customNavigationBar.layoutIfNeeded()
-                }
-                customNavigationBar.setNavigationBarAnimation() {
-                    self.customNavigationBar.profileImageView.isHidden = true
-                    self.customNavigationBar.notification.isHidden = true
-                }
+        let secondContentY = scrollView.contentOffset.y+44
+        let finalContentY = secondContentY - firstContentY
+        if finalContentY >= 0 {
+            if finalContentY < 90 && isAnimateNavigationBar(view: customNavigationBar) == false {
+                customNavigationBar.frame = CGRect(x: 0,
+                                                   y: -finalContentY,
+                                                   width: UIScreen.main.bounds.maxX,
+                                                   height: 90)
+                customNavigationBar.profileImageView.alpha = (90-finalContentY)/90
+                customNavigationBar.calendarButton.alpha = (90-finalContentY)/90
             } else {
-                customNavigationBar.setNavigationBarReturnAnimation()
-                heightAnchor?.constant = 90
-                UIView.animate(withDuration: 0.5) { [weak self] in
-                    self?.customNavigationBar.notification.alpha = 1.0
-                    self?.customNavigationBar.profileImageView.alpha = 1.0
-                    self?.customNavigationBar.layoutIfNeeded()
-                }
-                self.customNavigationBar.profileImageView.isHidden = false
-                self.customNavigationBar.notification.isHidden = false
+                customNavigationBar.frame = CGRect(x: 0,
+                                                   y: -90,
+                                                   width: UIScreen.main.bounds.maxX,
+                                                   height: 90)
+                customNavigationBar.profileImageView.isHidden = true
+                customNavigationBar.calendarButton.isHidden = true
             }
-        } else if scrollView.panGestureRecognizer.state == .ended {
-            print("멈췄네?")
+        } else {
+            self.customNavigationBar.profileImageView.isHidden = false
+            self.customNavigationBar.calendarButton.isHidden = false
+            customNavigationBar.setNavigationBarReturnAnimation()
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.customNavigationBar.calendarButton.alpha = 1.0
+                self?.customNavigationBar.profileImageView.alpha = 1.0
+                self?.customNavigationBar.layoutIfNeeded()
+                self?.customNavigationBar.frame = CGRect(x: 0,
+                                                         y: 0,
+                                                         width: UIScreen.main.bounds.maxX,
+                                                         height: 90)
+            }
         }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView,
+                                  willDecelerate decelerate: Bool) {
+        let secondContentY = scrollView.contentOffset.y+44
+        let finalContentY = secondContentY - firstContentY
+        if finalContentY > 45 {
+            UIView.animate(withDuration: 0.2) { [weak self] in
+                self?.customNavigationBar.frame = CGRect(x: 0,
+                                                   y: -90,
+                                                   width: UIScreen.main.bounds.maxX,
+                                                   height: 90)
+                self?.customNavigationBar.profileImageView.alpha = (90-finalContentY)/90
+                self?.customNavigationBar.calendarButton.alpha = (90-finalContentY)/90
+            }
+            self.customNavigationBar.profileImageView.isHidden = true
+            self.customNavigationBar.calendarButton.isHidden = true
+        } else {
+            self.customNavigationBar.profileImageView.isHidden = false
+            self.customNavigationBar.calendarButton.isHidden = false
+            customNavigationBar.setNavigationBarReturnAnimation()
+            UIView.animate(withDuration: 0.2) { [weak self] in
+                self?.customNavigationBar.calendarButton.alpha = 1.0
+                self?.customNavigationBar.profileImageView.alpha = 1.0
+                self?.customNavigationBar.layoutIfNeeded()
+                self?.customNavigationBar.frame = CGRect(x: 0,
+                                                         y: 0,
+                                                         width: UIScreen.main.bounds.maxX,
+                                                         height: 90)
+            }
+        }
+    }
+}
+
+extension HomeViewController {
+    func isAnimateNavigationBar(view: UIView) -> Bool {
+        let rect = CGRect(x: 0,
+                          y: -90,
+                          width: UIScreen.main.bounds.maxX,
+                          height: 90)
+        if view.frame == rect {
+            return true
+        }
+        return false
     }
 }

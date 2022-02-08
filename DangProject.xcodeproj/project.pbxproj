@@ -175,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				0BB4351727984E9F00634E51 /* Home */,
+				0BB4354E27B2272E00634E51 /* Calendar */,
 				0BB4351427984E7F00634E51 /* Utils */,
 			);
 			path = Presentation;
@@ -286,6 +287,45 @@
 				0BB43534279985A300634E51 /* BatteryCell.swift */,
 			);
 			path = Battery;
+			sourceTree = "<group>";
+		};
+		0BB4354E27B2272E00634E51 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4355227B2275D00634E51 /* Coordinator */,
+				0BB4355127B2275300634E51 /* DIContainer */,
+				0BB4355027B2274E00634E51 /* ViewModel */,
+				0BB4354F27B2274700634E51 /* View */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		0BB4354F27B2274700634E51 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		0BB4355027B2274E00634E51 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		0BB4355127B2275300634E51 /* DIContainer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DIContainer;
+			sourceTree = "<group>";
+		};
+		0BB4355227B2275D00634E51 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 		408AEF6A9790F5EBEF1D177B /* Pods */ = {
