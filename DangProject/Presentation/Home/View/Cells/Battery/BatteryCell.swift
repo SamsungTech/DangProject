@@ -7,16 +7,34 @@
 
 import Foundation
 import UIKit
+import Then
 
 class BatteryCell: UICollectionViewCell {
     static let identifier = "BatteryCell"
+    var mainView = UIView()
     var backgroundImage = UIImageView()
     var battery = UIImageView()
+    var gradient = CAGradientLayer()
+    
+    let shapeLayer = CAShapeLayer()
+    let trackLayer = CAShapeLayer()
+    var circleProgressBar = UIView()
+    var targetNumber = UILabel()
+    var targetSugar = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configure()
         layout()
+        circleConfigure()
+        configure()
+    }
+    
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        mainView.do {
+            $0.viewRadius(cornerRadius: 30)
+            $0.setGradient(color1: .systemYellow, color2: .yellow)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -24,20 +42,83 @@ class BatteryCell: UICollectionViewCell {
     }
     
     func configure() {
-        battery.do {
-            $0.image = UIImage(named: "battery.png")
+        targetNumber.do {
+            $0.textColor = .white
+            $0.font = UIFont.boldSystemFont(ofSize: 50)
+            $0.text = "50%"
+        }
+        targetSugar.do {
+            $0.textColor = .white
+            $0.font = UIFont.systemFont(ofSize: 20)
+            $0.text = "22/100g"
         }
     }
     
     func layout() {
-        [ battery ].forEach() { self.addSubview($0) }
+        [ mainView ].forEach() { self.addSubview($0) }
+        [ circleProgressBar ].forEach() { mainView.addSubview($0) }
+        [ targetNumber, targetSugar ].forEach() { circleProgressBar.addSubview($0) }
         
-        battery.do {
+        mainView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: -5).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: viewXRatio(200)).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: viewXRatio(160)).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 400).isActive = true
         }
+        circleProgressBar.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
+            $0.centerYAnchor.constraint(equalTo: mainView.centerYAnchor).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: 200).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        }
+        targetNumber.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 180).isActive = true
+            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
+        }
+        targetSugar.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: 5).isActive = true
+            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
+        }
+    }
+    
+    func circleConfigure() {
+        let circularPath = UIBezierPath(arcCenter: CGPoint(x: 100, y: 130),
+                                        radius: 110,
+                                        startAngle: -CGFloat.pi / 2,
+                                        endAngle: 2 * CGFloat.pi,
+                                        clockwise: true)
+        trackLayer.do {
+            $0.path = circularPath.cgPath
+            $0.strokeColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.5).cgColor
+            $0.fillColor = UIColor.clear.cgColor
+            $0.lineWidth = 14
+            $0.lineCap = .round
+        }
+        shapeLayer.do {
+            $0.path = circularPath.cgPath
+            $0.strokeColor = UIColor.white.cgColor
+            $0.fillColor = UIColor.clear.cgColor
+            $0.lineWidth = 14
+            $0.lineCap = .round
+            $0.strokeEnd = 0
+        }
+        [ trackLayer, shapeLayer ].forEach() { circleProgressBar.layer.addSublayer($0) }
+        circleProgressBar.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                                      action: #selector(handleTap)))
+    }
+    
+    @objc func handleTap() {
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        
+        basicAnimation.toValue = 0.4
+        basicAnimation.duration = 2
+        basicAnimation.fillMode = .forwards
+        basicAnimation.isRemovedOnCompletion = false
+        
+        shapeLayer.add(basicAnimation, forKey: "urSoBasic")
     }
 }

@@ -18,19 +18,14 @@ class CustomNavigationBar: UIView {
     let dateLabel = UILabel()
     let rightArrowButton = UIButton()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .init(red: 0,
+                                     green: 0,
+                                     blue: 0,
+                                     alpha: 0.0)
         configure()
         layout()
-    }
-    
-    override func draw(_ rect: CGRect) {
-        let colors = [ UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.8).cgColor,
-                       UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.0).cgColor]
-        gradient.frame = CGRect(x: .zero, y: .zero, width: UIScreen.main.bounds.maxX, height: 120)
-        gradient.colors = colors
-        self.layer.insertSublayer(gradient, at: 0)
     }
     
     required init?(coder: NSCoder) {

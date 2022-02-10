@@ -26,8 +26,8 @@ extension UIView {
         gradient.do {
             $0.colors = [color1.cgColor, color2.cgColor]
             $0.locations = [0.0, 1.0]
-            $0.startPoint = CGPoint(x: 0.0, y: 1.0)
-            $0.endPoint = CGPoint(x: 1.0, y: 1.0)
+            $0.startPoint = CGPoint(x: 0.0, y: 0.0)
+            $0.endPoint = CGPoint(x: 0.0, y: 1.0)
             $0.frame = self.bounds
         }
         self.layer.insertSublayer(gradient, at: 0)

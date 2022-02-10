@@ -55,12 +55,6 @@ class HomeViewController: UIViewController {
         view.bringSubviewToFront(customNavigationBar)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        gradient.frame = homeCollectionView.frame
-        gradient.colors = newColors
-        homeCollectionView.layer.insertSublayer(gradient, at: 0)
-    }
-    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
@@ -83,6 +77,7 @@ class HomeViewController: UIViewController {
             $0.register(HomeCollectionFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: HomeCollectionFooter.identfier)
             $0.dataSource = self
             $0.delegate = self
+            $0.contentInsetAdjustmentBehavior = .never
         }
     }
     
@@ -191,6 +186,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return CGSize()
         }
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
@@ -214,7 +210,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
         switch indexPath.section {
         case 0:
             return CGSize(width: self.homeCollectionView.frame.maxX-2,
-                          height: UIScreen.main.bounds.maxY)
+                          height: UIScreen.main.bounds.maxY/2)
         case 1:
             return CGSize(width: self.homeCollectionView.frame.maxX-20,
                           height: 200)
@@ -225,6 +221,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
             return CGSize()
         }
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -239,6 +236,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
             return 0
         }
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -262,12 +260,17 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 
 extension HomeViewController {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        firstContentY = scrollView.contentOffset.y+44
+        firstContentY = scrollView.contentOffset.y
     }
     // MARK: 초반에 부드럽지 못함
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let secondContentY = scrollView.contentOffset.y+44
+        let secondContentY = scrollView.contentOffset.y
         let finalContentY = secondContentY - firstContentY
+        if secondContentY < 0 {
+            homeCollectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+        } else {
+            homeCollectionView.isScrollEnabled = true
+        }
         if finalContentY >= 0 {
             if finalContentY < 90 && isAnimateNavigationBar(view: customNavigationBar) == false {
                 customNavigationBar.frame = CGRect(x: 0,
@@ -302,7 +305,7 @@ extension HomeViewController {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView,
                                   willDecelerate decelerate: Bool) {
-        let secondContentY = scrollView.contentOffset.y+44
+        let secondContentY = scrollView.contentOffset.y
         let finalContentY = secondContentY - firstContentY
         if finalContentY > 45 {
             UIView.animate(withDuration: 0.2) { [weak self] in
