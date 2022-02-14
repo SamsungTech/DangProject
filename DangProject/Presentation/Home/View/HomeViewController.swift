@@ -15,8 +15,8 @@ class HomeViewController: UIViewController {
     private var viewModel: HomeViewModel?
     weak var coordinator: Coordinator?
     var disposeBag = DisposeBag()
-    var customNavigationBar = CustomNavigationBar()
-    var homeCollectionView: UICollectionView = {
+    private var customNavigationBar = CustomNavigationBar()
+    private var homeCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.do {
             $0.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
@@ -27,7 +27,7 @@ class HomeViewController: UIViewController {
         return collectionView
     }()
     fileprivate var heightAnchor: NSLayoutConstraint?
-    var firstContentY: CGFloat = 0
+    private var firstContentY: CGFloat = 0
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -37,9 +37,9 @@ class HomeViewController: UIViewController {
         
         return viewController
     }
-    var barHeight: CGFloat = 90
-    let gradient = CAGradientLayer()
-    let newColors = [
+    private var barHeight: CGFloat = 90
+    private let gradient = CAGradientLayer()
+    private let newColors = [
         UIColor.systemRed.cgColor,
         UIColor.orange.cgColor,
         UIColor.systemYellow.cgColor
@@ -59,7 +59,7 @@ class HomeViewController: UIViewController {
         coordinator?.childDidFinish(coordinator)
     }
     
-    func configure() {
+    private func configure() {
         gradient.do {
             $0.frame = homeCollectionView.frame
             $0.colors = newColors
@@ -81,7 +81,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    func layout() {
+    private func layout() {
         [ customNavigationBar, homeCollectionView ].forEach() { view.addSubview($0) }
         
         customNavigationBar.do {
@@ -115,7 +115,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case 1:
             return 1
         case 2:
-            return viewModel?.tempData.value.count ?? 0
+            return 1
         default:
             return 0
         }
@@ -128,13 +128,13 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             guard let batteryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BatteryCell.identifier, for: indexPath) as? BatteryCell else { return UICollectionViewCell() }
             return batteryCell
         case 1:
-            guard let graphCell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeGraphCell.identifier,
-                                                                     for: indexPath) as? HomeGraphCell else { return UICollectionViewCell() }
-            return graphCell
-        case 2:
             guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCell.identifier, for: indexPath) as? AteFoodCell else { return UICollectionViewCell() }
             
             return ateFoodCell
+        case 2:
+            guard let graphCell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeGraphCell.identifier,
+                                                                     for: indexPath) as? HomeGraphCell else { return UICollectionViewCell() }
+            return graphCell
         default:
             return UICollectionViewCell()
         }
@@ -149,14 +149,14 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case 1:
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                       withReuseIdentifier: GraphCellHeader.identifier,
+                                                                       withReuseIdentifier: AteFoodHeader.identifier,
                                                                        for: indexPath)
             }
             return UICollectionReusableView()
         case 2:
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                       withReuseIdentifier: AteFoodHeader.identifier,
+                                                                       withReuseIdentifier: GraphCellHeader.identifier,
                                                                        for: indexPath)
             }
             if kind == UICollectionView.elementKindSectionFooter {
@@ -213,10 +213,10 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
                           height: UIScreen.main.bounds.maxY/2)
         case 1:
             return CGSize(width: self.homeCollectionView.frame.maxX-20,
-                          height: 200)
+                          height: 90)
         case 2:
             return CGSize(width: self.homeCollectionView.frame.maxX-20,
-                          height: 90)
+                          height: 340)
         default:
             return CGSize()
         }
@@ -262,45 +262,12 @@ extension HomeViewController {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         firstContentY = scrollView.contentOffset.y
     }
-    // MARK: 초반에 부드럽지 못함
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let secondContentY = scrollView.contentOffset.y
         let finalContentY = secondContentY - firstContentY
-        if secondContentY < 0 {
-            homeCollectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-        } else {
-            homeCollectionView.isScrollEnabled = true
-        }
-        if finalContentY >= 0 {
-            if finalContentY < 90 && isAnimateNavigationBar(view: customNavigationBar) == false {
-                customNavigationBar.frame = CGRect(x: 0,
-                                                   y: -finalContentY,
-                                                   width: UIScreen.main.bounds.maxX,
-                                                   height: 90)
-                customNavigationBar.profileImageView.alpha = (90-finalContentY)/90
-                customNavigationBar.calendarButton.alpha = (90-finalContentY)/90
-            } else {
-                customNavigationBar.frame = CGRect(x: 0,
-                                                   y: -90,
-                                                   width: UIScreen.main.bounds.maxX,
-                                                   height: 90)
-                customNavigationBar.profileImageView.isHidden = true
-                customNavigationBar.calendarButton.isHidden = true
-            }
-        } else {
-            self.customNavigationBar.profileImageView.isHidden = false
-            self.customNavigationBar.calendarButton.isHidden = false
-            customNavigationBar.setNavigationBarReturnAnimation()
-            UIView.animate(withDuration: 0.3) { [weak self] in
-                self?.customNavigationBar.calendarButton.alpha = 1.0
-                self?.customNavigationBar.profileImageView.alpha = 1.0
-                self?.customNavigationBar.layoutIfNeeded()
-                self?.customNavigationBar.frame = CGRect(x: 0,
-                                                         y: 0,
-                                                         width: UIScreen.main.bounds.maxX,
-                                                         height: 90)
-            }
-        }
+        fixHomeCollectionView(contentY: secondContentY)
+        hideCustomNavigationBar(contentY: finalContentY)
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView,
@@ -308,29 +275,9 @@ extension HomeViewController {
         let secondContentY = scrollView.contentOffset.y
         let finalContentY = secondContentY - firstContentY
         if finalContentY > 45 {
-            UIView.animate(withDuration: 0.2) { [weak self] in
-                self?.customNavigationBar.frame = CGRect(x: 0,
-                                                   y: -90,
-                                                   width: UIScreen.main.bounds.maxX,
-                                                   height: 90)
-                self?.customNavigationBar.profileImageView.alpha = (90-finalContentY)/90
-                self?.customNavigationBar.calendarButton.alpha = (90-finalContentY)/90
-            }
-            self.customNavigationBar.profileImageView.isHidden = true
-            self.customNavigationBar.calendarButton.isHidden = true
+            animationCustomNavigationViewUp(contentY: finalContentY)
         } else {
-            self.customNavigationBar.profileImageView.isHidden = false
-            self.customNavigationBar.calendarButton.isHidden = false
-            customNavigationBar.setNavigationBarReturnAnimation()
-            UIView.animate(withDuration: 0.2) { [weak self] in
-                self?.customNavigationBar.calendarButton.alpha = 1.0
-                self?.customNavigationBar.profileImageView.alpha = 1.0
-                self?.customNavigationBar.layoutIfNeeded()
-                self?.customNavigationBar.frame = CGRect(x: 0,
-                                                         y: 0,
-                                                         width: UIScreen.main.bounds.maxX,
-                                                         height: 90)
-            }
+            animationCustomNavigationViewDown()
         }
     }
 }
@@ -345,5 +292,83 @@ extension HomeViewController {
             return true
         }
         return false
+    }
+    
+    private func fixHomeCollectionView(contentY: CGFloat) {
+        if contentY < 0 {
+            homeCollectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+        } else {
+            homeCollectionView.isScrollEnabled = true
+        }
+    }
+    
+    private func hideCustomNavigationBar(contentY: CGFloat) {
+        if contentY >= 0 {
+            hideNavigationBarScrollDown(contentY: contentY)
+        } else {
+            showNavigationBarScrollUp()
+        }
+    }
+    
+    private func hideNavigationBarScrollDown(contentY: CGFloat) {
+        if contentY < 90 && isAnimateNavigationBar(view: customNavigationBar) == false {
+            customNavigationBar.frame = CGRect(x: 0,
+                                               y: -contentY,
+                                               width: UIScreen.main.bounds.maxX,
+                                               height: 90)
+            customNavigationBar.profileImageView.alpha = (90-contentY)/90
+            customNavigationBar.calendarButton.alpha = (90-contentY)/90
+        } else {
+            customNavigationBar.frame = CGRect(x: 0,
+                                               y: -90,
+                                               width: UIScreen.main.bounds.maxX,
+                                               height: 90)
+            customNavigationBar.profileImageView.isHidden = true
+            customNavigationBar.calendarButton.isHidden = true
+        }
+    }
+    
+    private func showNavigationBarScrollUp() {
+        self.customNavigationBar.profileImageView.isHidden = false
+        self.customNavigationBar.calendarButton.isHidden = false
+        customNavigationBar.setNavigationBarReturnAnimation()
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            
+            self?.customNavigationBar.calendarButton.alpha = 1.0
+            self?.customNavigationBar.profileImageView.alpha = 1.0
+            self?.customNavigationBar.layoutIfNeeded()
+            self?.customNavigationBar.frame = CGRect(x: 0,
+                                                     y: 0,
+                                                     width: UIScreen.main.bounds.maxX,
+                                                     height: 90)
+        }
+    }
+    
+    private func animationCustomNavigationViewUp(contentY: CGFloat) {
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.customNavigationBar.frame = CGRect(x: 0,
+                                               y: -90,
+                                               width: UIScreen.main.bounds.maxX,
+                                               height: 90)
+            self?.customNavigationBar.profileImageView.alpha = (90-contentY)/90
+            self?.customNavigationBar.calendarButton.alpha = (90-contentY)/90
+        }
+        self.customNavigationBar.profileImageView.isHidden = true
+        self.customNavigationBar.calendarButton.isHidden = true
+    }
+    
+    private func animationCustomNavigationViewDown() {
+        self.customNavigationBar.profileImageView.isHidden = false
+        self.customNavigationBar.calendarButton.isHidden = false
+        customNavigationBar.setNavigationBarReturnAnimation()
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.customNavigationBar.calendarButton.alpha = 1.0
+            self?.customNavigationBar.profileImageView.alpha = 1.0
+            self?.customNavigationBar.layoutIfNeeded()
+            self?.customNavigationBar.frame = CGRect(x: 0,
+                                                     y: 0,
+                                                     width: UIScreen.main.bounds.maxX,
+                                                     height: 90)
+        }
     }
 }

@@ -21,6 +21,7 @@ class BatteryCell: UICollectionViewCell {
     var circleProgressBar = UIView()
     var targetNumber = UILabel()
     var targetSugar = UILabel()
+    var pulsatingLayer = CAShapeLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,6 +32,8 @@ class BatteryCell: UICollectionViewCell {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+        setCollectionViewRadius(cell: self, radius: 30)
+        setCollectionCellShadow(cell: self)
         mainView.do {
             $0.viewRadius(cornerRadius: 30)
             $0.setGradient(color1: .systemYellow, color2: .yellow)
@@ -50,12 +53,12 @@ class BatteryCell: UICollectionViewCell {
         targetSugar.do {
             $0.textColor = .white
             $0.font = UIFont.systemFont(ofSize: 20)
-            $0.text = "22/100g"
+            $0.text = "목표 22/100g"
         }
     }
     
     func layout() {
-        [ mainView ].forEach() { self.addSubview($0) }
+        [ mainView ].forEach() { contentView.addSubview($0) }
         [ circleProgressBar ].forEach() { mainView.addSubview($0) }
         [ targetNumber, targetSugar ].forEach() { circleProgressBar.addSubview($0) }
         
@@ -86,17 +89,33 @@ class BatteryCell: UICollectionViewCell {
     }
     
     func circleConfigure() {
-        let circularPath = UIBezierPath(arcCenter: CGPoint(x: 100, y: 130),
+        let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
                                         startAngle: -CGFloat.pi / 2,
                                         endAngle: 2 * CGFloat.pi,
                                         clockwise: true)
+        let view = UIView()
+        view.do {
+            $0.viewRadius(cornerRadius: 50)
+        }
         trackLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.5).cgColor
+            $0.strokeColor = UIColor.init(red: 255/255,
+                                          green: 244/255,
+                                          blue: 109/255,
+                                          alpha: 1).cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
+            $0.position = CGPoint(x: 100, y: 130)
+        }
+        pulsatingLayer.do {
+            $0.path = circularPath.cgPath
+            $0.strokeColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.3).cgColor
+            $0.fillColor = UIColor.clear.cgColor
+            $0.lineWidth = 14
+            $0.lineCap = .round
+            $0.position = CGPoint(x: 100, y: 130)
         }
         shapeLayer.do {
             $0.path = circularPath.cgPath
@@ -105,13 +124,16 @@ class BatteryCell: UICollectionViewCell {
             $0.lineWidth = 14
             $0.lineCap = .round
             $0.strokeEnd = 0
+            $0.position = CGPoint(x: 100, y: 130)
         }
-        [ trackLayer, shapeLayer ].forEach() { circleProgressBar.layer.addSublayer($0) }
-        circleProgressBar.addGestureRecognizer(UITapGestureRecognizer(target: self,
-                                                                      action: #selector(handleTap)))
+        [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBar.layer.addSublayer($0) }
+        animatePulsatingLayer()
+        animateShapeLayer()
     }
-    
-    @objc func handleTap() {
+}
+
+extension BatteryCell {
+    private func animateShapeLayer() {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         
         basicAnimation.toValue = 0.4
@@ -120,5 +142,16 @@ class BatteryCell: UICollectionViewCell {
         basicAnimation.isRemovedOnCompletion = false
         
         shapeLayer.add(basicAnimation, forKey: "urSoBasic")
+    }
+    private func animatePulsatingLayer() {
+        let animation = CABasicAnimation(keyPath: "transform.scale")
+        
+        animation.toValue = 1.115
+        animation.duration = 1
+        animation.autoreverses = true
+        animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        animation.repeatCount = Float.infinity
+        pulsatingLayer.add(animation, forKey: "plusing")
+        
     }
 }

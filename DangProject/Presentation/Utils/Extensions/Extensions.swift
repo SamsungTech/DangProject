@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Then
 
 extension UIView {
     func viewXRatio(_ value: CGFloat) -> CGFloat {
@@ -31,6 +32,20 @@ extension UIView {
             $0.frame = self.bounds
         }
         self.layer.insertSublayer(gradient, at: 0)
+    }
+    func setCollectionViewRadius(cell: UICollectionViewCell, radius: CGFloat) {
+        cell.do {
+            $0.contentView.layer.masksToBounds = true
+            $0.contentView.layer.cornerRadius = radius
+        }
+    }
+    func setCollectionCellShadow(cell: UICollectionViewCell) {
+        cell.do {
+            $0.layer.shadowPath = nil
+            $0.layer.shadowOffset = CGSize(width: 2, height: 2)
+            $0.layer.shadowOpacity = 0.2
+            $0.layer.shadowRadius = 5
+        }
     }
 }
 
