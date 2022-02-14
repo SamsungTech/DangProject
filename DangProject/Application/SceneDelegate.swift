@@ -32,6 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let initialViewController = TabBarController(homeTab: homeViewController,
                                                      prefrenceTab: preferenceViewController,
                                                      searchViewController: searchViewController)
+        initialViewController.coordinator = coordinator
         window?.rootViewController = initialViewController
         
         window?.makeKeyAndVisible()

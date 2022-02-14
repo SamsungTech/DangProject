@@ -8,19 +8,29 @@
 import Foundation
 
 class SearchDIContainer {
+    
     func makeSearchViewController() -> SearchViewController {
         return SearchViewController(viewModel: makeSearchViewModel())
     }
-    
+
     func makeSearchViewModel() -> SearchViewModel {
-        return SearchViewModel(searchFoodUseCase: makeSearchUseCase())
+        return SearchViewModel(searchFoodUseCase: makeSearchUseCase(),
+                               changeFavoriteUseCase: makeChangeFavoriteUseCase())
     }
     
     func makeSearchUseCase() -> SearchUseCase {
         return SearchUseCase(fetchFoodRepository: makeFetchRepository())
     }
     
+    func makeChangeFavoriteUseCase() -> ChangeFavoriteUseCase {
+        return ChangeFavoriteUseCase()
+    }
+    
     func makeFetchRepository() -> FetchRepository {
-        return FetchFoodRepository()
+        return FetchFoodRepository(fetchDataService: makeRemoteDataService())
+    }
+            
+    func makeRemoteDataService() -> FetchDataService {
+        return FetchDataService()
     }
 }

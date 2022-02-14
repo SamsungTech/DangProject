@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class TabBarController: UITabBarController, UITabBarControllerDelegate {
-    
+    var coordinator: Coordinator?
     let homeTab: UINavigationController
     let preferenceTab: UINavigationController
     let searchViewController: UINavigationController
@@ -60,7 +60,10 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     @objc func addButtonTapped() {
-        present(searchViewController, animated: true, completion: nil)
+        guard let currentViewController = viewControllers?[selectedIndex] else {
+            return
+        }
+        (coordinator as? MainCoordinator)?.presentSearchViewController(viewController: currentViewController)
     }
 }
 

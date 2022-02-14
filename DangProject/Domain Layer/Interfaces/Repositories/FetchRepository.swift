@@ -6,8 +6,13 @@
 //
 
 import Foundation
+
 import RxSwift
 
 protocol FetchRepository {
-    func fetchFoodRx(text: String) -> Observable<Data>
+    
+    var foodDomainModelObservable: PublishSubject<[FoodDomainModel]> { get }
+    
+    func fetchToDomainModel(text: String)
+    
 }

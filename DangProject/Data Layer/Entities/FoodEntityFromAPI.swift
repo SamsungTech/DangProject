@@ -15,7 +15,7 @@ struct FoodFromAPI: Codable {
     }
 }
 struct serviceType: Codable {
-    let totalCount: String
+    var totalCount: String
     let foodInfo: [foodInfo]?
     
     enum CodingKeys: String, CodingKey {
@@ -26,18 +26,21 @@ struct serviceType: Codable {
 
 
 struct foodInfo: Codable {
-    let sugarContent: String
-    let nameContent: String
+    let sugarContent: String?
+    let nameContent: String?
+    let foodCode: String?
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         sugarContent = try values.decode(String.self, forKey: .sugarContent)
         nameContent = try values.decode(String.self, forKey: .nameContent)
+        foodCode = try values.decode(String.self, forKey: .foodCode)
     }
 
     enum CodingKeys: String, CodingKey {
         case sugarContent = "NUTR_CONT5"
         case nameContent = "DESC_KOR"
+        case foodCode = "FOOD_CD"
     }
     
 }

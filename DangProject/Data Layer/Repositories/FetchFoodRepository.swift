@@ -10,40 +10,28 @@ import Foundation
 import RxSwift
 
 class FetchFoodRepository: FetchRepository {
-    var dataStructure: FoodFromAPI?
+  
+    let fetchDataService: FetchDataService
+    var foodDomainModelObservable = PublishSubject<[FoodDomainModel]>() 
     
-    func fetchFood(text: String, onComplete: @escaping (Result<Data, Error>) -> Void) {
-        let baseURL = "http://openapi.foodsafetykorea.go.kr/api/402a53aa1ef448f3bc9b/I2790/json/1/100/DESC_KOR=\(text)"
-        let encodedStr = baseURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-        
-        URLSession.shared.dataTask(with: URL(string: encodedStr)!) { data, response, error in
-            if let error = error {
-                onComplete(.failure(error))
-                return
-            }
-            guard let data = data else {
-                let httpResponse = response as! HTTPURLResponse
-                onComplete(.failure(NSError(domain: "no data",
-                                            code: httpResponse.statusCode,
-                                            userInfo: nil)))
-                return
-            }
-            onComplete(.success(data))
-        }.resume()
+    let disposeBag = DisposeBag()
+    
+    init(fetchDataService: FetchDataService) {
+        self.fetchDataService = fetchDataService
+        bindToFoodInfoObservable()
     }
     
-    func fetchFoodRx(text: String) -> Observable<Data> {
-        return Observable.create() { emitter in
-            self.fetchFood(text: text){ result in
-                switch result {
-                case let .success(data):
-                    emitter.onNext(data)
-                    emitter.onCompleted()
-                case let .failure(error):
-                    emitter.onError(error)
-                }
-            }
-            return Disposables.create()
-        }
+    func fetchToDomainModel(text: String) {
+        fetchDataService.fetchFoodEntity(text: text)
+    }
+    
+    func bindToFoodInfoObservable() {
+        fetchDataService.foodInfoObservable
+            .subscribe(onNext: { [self] foods in
+                //여기서 entity -> domainModel
+                let foodDomainModel = foods.map({ FoodDomainModel.init($0)})
+                foodDomainModelObservable.onNext(foodDomainModel)
+            })
+            .disposed(by: disposeBag)
     }
 }
