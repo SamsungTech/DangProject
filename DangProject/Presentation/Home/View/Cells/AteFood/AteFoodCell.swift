@@ -8,20 +8,12 @@
 import Foundation
 import UIKit
 import Then
-
-struct TempData {
-    var foodName: String?
-    var dang: String?
-    
-    init(foodName: String, dang: String) {
-        self.foodName = foodName
-        self.dang = dang
-    }
-}
+import RxSwift
 
 class AteFoodCell: UICollectionViewCell {
     static let identifier = "AteFoodCell"
-    var cardView = UIView()
+    var viewModel: AteFoodItemViewModel?
+    private var cardView = UIView()
     lazy var foodCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -29,21 +21,11 @@ class AteFoodCell: UICollectionViewCell {
         
         return collectionView
     }()
-    let tempData: [TempData] = [
-        TempData.init(foodName: "닭볶음탕", dang: "20.9"),
-        TempData.init(foodName: "김치말이국수", dang: "10.0"),
-        TempData.init(foodName: "냉면", dang: "25.9"),
-        TempData.init(foodName: "김치볶음밥", dang: "10.0"),
-        TempData.init(foodName: "카페라떼", dang: "5.2")
-    ]
+    private var disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         layout()
-    }
-    
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
         configure()
     }
     
@@ -51,7 +33,7 @@ class AteFoodCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         foodCollectionView.do {
             $0.register(AteFoodCollectionCell.self, forCellWithReuseIdentifier: AteFoodCollectionCell.identifier)
             $0.delegate = self
@@ -59,7 +41,7 @@ class AteFoodCell: UICollectionViewCell {
         }
     }
     
-    func layout() {
+    private func layout() {
         [ foodCollectionView ].forEach() { self.addSubview($0) }
         
         foodCollectionView.do {
@@ -70,18 +52,38 @@ class AteFoodCell: UICollectionViewCell {
             $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         }
     }
+    
+    func bind(viewModel: AteFoodItemViewModel) {
+        self.viewModel = viewModel
+        subscribe()
+    }
+    
+    private func subscribe() {
+        // MARK: 여기서 막힘
+        viewModel?.items
+            .subscribe(onNext: { foodData in
+                self.foodCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
 }
 
 extension AteFoodCell: UICollectionViewDelegate, UICollectionViewDataSource {
+    // MARK: 여기서 막힘
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return tempData.count
+        guard let tempDataCount = viewModel?.items.value.count else { return 0 }
+        return tempDataCount
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCollectionCell.identifier, for: indexPath) as? AteFoodCollectionCell else { return UICollectionViewCell() }
         
+//        if let data = viewModel?.items.value[indexPath.item] {
+//            let viewModel = AteFoodItemViewModel(item: data)
+//            ateFoodCell.bind(viewModel: viewModel)
+//        }
         return ateFoodCell
     }
     

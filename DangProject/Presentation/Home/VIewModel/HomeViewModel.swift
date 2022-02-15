@@ -15,6 +15,9 @@ protocol HomeViewModelInputProtocol {
 
 protocol HomeViewModelOutputProtocol {
     var tempData: BehaviorRelay<[tempNutrient]> { get }
+    var weekData: BehaviorRelay<[weekTemp]> { get }
+    var mouthData: BehaviorRelay<[tempNutrient]> { get }
+    var yearData: BehaviorRelay<[tempNutrient]> { get }
 }
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
@@ -23,6 +26,9 @@ class HomeViewModel: HomeViewModelProtocol {
     private var useCase: HomeUseCase
     var disposeBag = DisposeBag()
     var tempData = BehaviorRelay<[tempNutrient]>(value: [])
+    var weekData = BehaviorRelay<[weekTemp]>(value: [])
+    var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
+    var yearData = BehaviorRelay<[tempNutrient]>(value: [])
     
     init(useCase: HomeUseCase) {
         self.useCase = useCase
@@ -34,6 +40,25 @@ extension HomeViewModel {
         useCase.execute()
             .subscribe(onNext: { data in
                 self.tempData.accept(data)
+            })
+            .disposed(by: disposeBag)
+        
+        useCase.retriveWeekData()
+            .map { $0.map { weekTemp(tempNutrient: $0) } }
+            .subscribe(onNext: { data in
+                self.weekData.accept(data)
+            })
+            .disposed(by: disposeBag)
+        
+        useCase.retriveMouthData()
+            .subscribe(onNext: { data in
+                self.mouthData.accept(data)
+            })
+            .disposed(by: disposeBag)
+        
+        useCase.retriveYearData()
+            .subscribe(onNext: { data in
+                self.yearData.accept(data)
             })
             .disposed(by: disposeBag)
     }

@@ -14,6 +14,9 @@
 		0B1F4A85277076FE0006B9CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A84277076FE0006B9CF /* Assets.xcassets */; };
 		0B1F4A88277076FE0006B9CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */; };
 		0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */; };
+		0B97986E27BB84700021162A /* TempEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97986D27BB84700021162A /* TempEntities.swift */; };
+		0B97987127BB9D370021162A /* AteFoodItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */; };
+		0B97987327BBAA100021162A /* GraphItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987227BBAA100021162A /* GraphItemViewModel.swift */; };
 		0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351827984F5E00634E51 /* Nutrient.swift */; };
 		0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351E2798503200634E51 /* MainCoordinator.swift */; };
 		0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435202798518C00634E51 /* HomeCoordinator.swift */; };
@@ -30,6 +33,7 @@
 		0BB43546279FD45F00634E51 /* AteFoodHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB43545279FD45F00634E51 /* AteFoodHeader.swift */; };
 		0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4354C27A03A1A00634E51 /* HomeCollectionFooter.swift */; };
 		0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4355327B8BC4700634E51 /* AteFoodCollectionCell.swift */; };
+		0BE0DA3127BB5C3100AFD089 /* RepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */; };
 		406DE831D86791792DAD62BD /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64F741B1CC607F30779F70B /* Pods_DangProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +48,9 @@
 		0B1F4A89277076FE0006B9CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResearchRepository.swift; sourceTree = "<group>"; };
 		0B3132E1C7D66AF3CCBF58B2 /* Pods-DangProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.debug.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.debug.xcconfig"; sourceTree = "<group>"; };
+		0B97986D27BB84700021162A /* TempEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempEntities.swift; sourceTree = "<group>"; };
+		0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodItemViewModel.swift; sourceTree = "<group>"; };
+		0B97987227BBAA100021162A /* GraphItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphItemViewModel.swift; sourceTree = "<group>"; };
 		0BB4351827984F5E00634E51 /* Nutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutrient.swift; sourceTree = "<group>"; };
 		0BB4351E2798503200634E51 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		0BB435202798518C00634E51 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
@@ -60,6 +67,7 @@
 		0BB43545279FD45F00634E51 /* AteFoodHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodHeader.swift; sourceTree = "<group>"; };
 		0BB4354C27A03A1A00634E51 /* HomeCollectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionFooter.swift; sourceTree = "<group>"; };
 		0BB4355327B8BC4700634E51 /* AteFoodCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodCollectionCell.swift; sourceTree = "<group>"; };
+		0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocol.swift; sourceTree = "<group>"; };
 		F64F741B1CC607F30779F70B /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.release.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -99,14 +107,22 @@
 			children = (
 				0BB4350F27984D5600634E51 /* Application */,
 				0BB4351327984E5A00634E51 /* Presentation */,
+				0BB4350A27984CBB00634E51 /* Domain */,
+				0BB4351027984DE300634E51 /* Data */,
 				0B1F4A84277076FE0006B9CF /* Assets.xcassets */,
 				0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */,
 				0B1F4A89277076FE0006B9CF /* Info.plist */,
 				0B1F4A81277076FC0006B9CF /* DangProject.xcdatamodeld */,
-				0BB4350A27984CBB00634E51 /* Domain */,
-				0BB4351027984DE300634E51 /* Data */,
 			);
 			path = DangProject;
+			sourceTree = "<group>";
+		};
+		0B97986F27BB84970021162A /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				0BB4351827984F5E00634E51 /* Nutrient.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		0BB4350A27984CBB00634E51 /* Domain */ = {
@@ -114,6 +130,7 @@
 			children = (
 				0BB4351127984DF200634E51 /* Entities */,
 				0BB4350B27984CC900634E51 /* UseCases */,
+				0BE0DA2D27BB5BDB00AFD089 /* Interfaces */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -148,6 +165,7 @@
 		0BB4351027984DE300634E51 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				0B97986F27BB84970021162A /* Entities */,
 				0BB4350C27984CCE00634E51 /* Repository */,
 				0BB4351227984E2600634E51 /* CoreData */,
 			);
@@ -157,7 +175,7 @@
 		0BB4351127984DF200634E51 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				0BB4351827984F5E00634E51 /* Nutrient.swift */,
+				0B97986D27BB84700021162A /* TempEntities.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -217,8 +235,8 @@
 		0BB4351A27984FF000634E51 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
 				0BB43539279A660E00634E51 /* CustomNavigationBar.swift */,
+				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
 				0BB435332799705200634E51 /* Cells */,
 			);
 			path = View;
@@ -228,6 +246,8 @@
 			isa = PBXGroup;
 			children = (
 				0BB43524279851A300634E51 /* HomeViewModel.swift */,
+				0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */,
+				0B97987227BBAA100021162A /* GraphItemViewModel.swift */,
 			);
 			path = VIewModel;
 			sourceTree = "<group>";
@@ -323,6 +343,22 @@
 			children = (
 			);
 			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		0BE0DA2D27BB5BDB00AFD089 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				0BE0DA2E27BB5BEA00AFD089 /* RepositoryProtocol */,
+			);
+			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		0BE0DA2E27BB5BEA00AFD089 /* RepositoryProtocol */ = {
+			isa = PBXGroup;
+			children = (
+				0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */,
+			);
+			path = RepositoryProtocol;
 			sourceTree = "<group>";
 		};
 		408AEF6A9790F5EBEF1D177B /* Pods */ = {
@@ -464,14 +500,18 @@
 				0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */,
 				0BB43535279985A300634E51 /* BatteryCell.swift in Sources */,
 				0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */,
+				0B97987327BBAA100021162A /* GraphItemViewModel.swift in Sources */,
 				0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */,
 				0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */,
 				0BB4352F27996E5900634E51 /* HomeGraphCell.swift in Sources */,
 				0BB43546279FD45F00634E51 /* AteFoodHeader.swift in Sources */,
 				0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */,
+				0B97986E27BB84700021162A /* TempEntities.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
 				0BB4353A279A660E00634E51 /* CustomNavigationBar.swift in Sources */,
+				0BE0DA3127BB5C3100AFD089 /* RepositoryProtocol.swift in Sources */,
 				0BB43540279FBEDE00634E51 /* TempRepository.swift in Sources */,
+				0B97987127BB9D370021162A /* AteFoodItemViewModel.swift in Sources */,
 				0BB43544279FD16100634E51 /* AteFoodCell.swift in Sources */,
 				0BB435272798537900634E51 /* HomeUseCase.swift in Sources */,
 				0BB43542279FC9C000634E51 /* GraphCellHeader.swift in Sources */,
@@ -545,7 +585,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -600,7 +640,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -630,7 +670,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.DangProject;
+				PRODUCT_BUNDLE_IDENTIFIER = com.DangProject.96;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -658,7 +698,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.DangProject;
+				PRODUCT_BUNDLE_IDENTIFIER = com.DangProject.96;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

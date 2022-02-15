@@ -8,15 +8,20 @@
 import Foundation
 import UIKit
 import Then
+import RxSwift
 
 class HomeGraphCell: UICollectionViewCell {
     static let identifier = "HomeGraphCell"
-    var graphMainView = UIView()
-    var graphSegmentedControl = UISegmentedControl(items: ["Week", "Mouth", "Year"])
-    var graphBackgroundStackView = UIStackView()
-    var graphStackView = UIStackView()
-    var graphNameStackView = UIStackView()
-    let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
+    var viewModel: GraphItemViewModel?
+    var disposeBag = DisposeBag()
+    private var graphMainView = UIView()
+    private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Mouth", "Year"])
+    private var graphBackgroundStackView = UIStackView()
+    private var graphStackView = UIStackView()
+    private var graphNameStackView = UIStackView()
+    private let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
+    // MARK: 홀더 없애기
+    var weekNumbers: [weekTemp] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,7 +41,7 @@ class HomeGraphCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         graphMainView.do {
             $0.backgroundColor = .systemOrange
         }
@@ -64,12 +69,10 @@ class HomeGraphCell: UICollectionViewCell {
             $0.distribution = .fillEqually
         }
         createGraphBackgroundViews()
-        let weekNumbers: [CGFloat] = [ 120, 100, 50, 90, 50, 180, 30]
-        createGraphViews(items: weekNumbers)
         createGraphName()
     }
     
-    func layout() {
+    private func layout() {
         [ graphMainView ].forEach() { self.addSubview($0) }
         [ graphSegmentedControl, graphBackgroundStackView, graphNameStackView ].forEach() { graphMainView.addSubview($0) }
         graphBackgroundStackView.addSubview(graphStackView)
@@ -111,10 +114,25 @@ class HomeGraphCell: UICollectionViewCell {
             $0.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: -10).isActive = true
         }
     }
+    
+    func bind(viewModel: GraphItemViewModel) {
+        self.viewModel = viewModel
+        subscribe()
+    }
+    
+    private func subscribe() {
+        viewModel?.items
+            .subscribe(onNext: { data in
+                self.weekNumbers = data
+            })
+            .disposed(by: disposeBag)
+        
+        createGraphViews(items: weekNumbers)
+    }
 }
 
 extension HomeGraphCell {
-    func createGraphBackgroundViews() {
+    private func createGraphBackgroundViews() {
         for _ in 0..<7 {
             let view = UIView()
             view.do {
@@ -126,21 +144,22 @@ extension HomeGraphCell {
             }
             graphBackgroundStackView.addArrangedSubview(view)
         }
-        
     }
-    func createGraphViews(items: [CGFloat]) {
+    private func createGraphViews(items: [weekTemp]) {
         for item in items {
+            let item = CGFloat(item.dangdang)
             let view = UIView()
             view.do {
                 $0.backgroundColor = .white
                 $0.viewRadius(cornerRadius: 13)
                 $0.translatesAutoresizingMaskIntoConstraints = false
-                $0.heightAnchor.constraint(equalToConstant: item).isActive = true
+                $0.heightAnchor.constraint(equalToConstant: item*10).isActive = true
             }
             graphStackView.addArrangedSubview(view)
         }
     }
-    func createGraphName() {
+    
+    private func createGraphName() {
         for item in week {
             let label = UILabel()
             label.do {

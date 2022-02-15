@@ -11,7 +11,7 @@ import Then
 
 class AteFoodHeader: UICollectionReusableView {
     static let identifier = "AteFoodHeader"
-    let ateFoodTitle = UILabel()
+    private let ateFoodTitle = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,7 +23,7 @@ class AteFoodHeader: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         ateFoodTitle.do {
             $0.font = UIFont.boldSystemFont(ofSize: 25)
             $0.textColor = .black
@@ -31,7 +31,7 @@ class AteFoodHeader: UICollectionReusableView {
         }
     }
     
-    func layout() {
+    private func layout() {
         [ ateFoodTitle ].forEach() { self.addSubview($0) }
         
         ateFoodTitle.do {

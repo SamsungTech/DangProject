@@ -7,10 +7,13 @@
 
 import UIKit
 import Then
+import RxSwift
 
 class AteFoodCollectionCell: UICollectionViewCell {
     static let identifier = "AteFoodCollectionCell"
-    var backView = UIView()
+    var viewModel: AteFoodItemViewModel?
+    private var disposeBag = DisposeBag()
+    private var backView = UIView()
     var foodNameLabel = UILabel()
     var dangLabel = UILabel()
     
@@ -31,22 +34,20 @@ class AteFoodCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         foodNameLabel.do {
             $0.textColor = .white
             $0.font = UIFont.boldSystemFont(ofSize: 17)
             $0.textAlignment = .center
-            $0.text = "뽀로로"
         }
         dangLabel.do {
             $0.textColor = .white
             $0.font = UIFont.systemFont(ofSize: 13)
             $0.textAlignment = .center
-            $0.text = "당 : 20.0g"
         }
     }
     
-    func layout() {
+    private func layout() {
         [ foodNameLabel, dangLabel ].forEach() { contentView.addSubview($0) }
         
         foodNameLabel.do {
@@ -59,5 +60,19 @@ class AteFoodCollectionCell: UICollectionViewCell {
             $0.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: 5).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
+    }
+    
+    func bind(viewModel: AteFoodItemViewModel) {
+        self.viewModel = viewModel
+        subscribe()
+    }
+    
+    private func subscribe() {
+        viewModel?.items
+            .subscribe(onNext: { [weak self] data in
+//                self?.foodNameLabel.text = data
+//                self?.dangLabel.text = data.dang
+            })
+            .disposed(by: disposeBag)
     }
 }

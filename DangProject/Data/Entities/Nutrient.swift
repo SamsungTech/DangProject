@@ -69,8 +69,3 @@ struct Nutrient: Codable {
     var nutrCont8: String? // 포화지방산
     var nutrCont9: String? // 트랜스지방
 }
-
-struct tempNutrient {
-    var dang: String?
-    var foodName: String?
-}

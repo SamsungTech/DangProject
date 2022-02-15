@@ -8,20 +8,19 @@
 import Foundation
 import UIKit
 import Then
+import RxSwift
 
 class BatteryCell: UICollectionViewCell {
     static let identifier = "BatteryCell"
-    var mainView = UIView()
-    var backgroundImage = UIImageView()
-    var battery = UIImageView()
-    var gradient = CAGradientLayer()
+    private var mainView = UIView()
+    private var gradient = CAGradientLayer()
     
     let shapeLayer = CAShapeLayer()
     let trackLayer = CAShapeLayer()
-    var circleProgressBar = UIView()
+    private var circleProgressBar = UIView()
     var targetNumber = UILabel()
     var targetSugar = UILabel()
-    var pulsatingLayer = CAShapeLayer()
+    private var pulsatingLayer = CAShapeLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,7 +43,7 @@ class BatteryCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         targetNumber.do {
             $0.textColor = .white
             $0.font = UIFont.boldSystemFont(ofSize: 50)
@@ -57,7 +56,7 @@ class BatteryCell: UICollectionViewCell {
         }
     }
     
-    func layout() {
+    private func layout() {
         [ mainView ].forEach() { contentView.addSubview($0) }
         [ circleProgressBar ].forEach() { mainView.addSubview($0) }
         [ targetNumber, targetSugar ].forEach() { circleProgressBar.addSubview($0) }
@@ -88,7 +87,7 @@ class BatteryCell: UICollectionViewCell {
         }
     }
     
-    func circleConfigure() {
+    private func circleConfigure() {
         let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
                                         startAngle: -CGFloat.pi / 2,

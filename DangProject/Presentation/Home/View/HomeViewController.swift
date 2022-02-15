@@ -12,9 +12,9 @@ import Then
 import CloudKit
 
 class HomeViewController: UIViewController {
-    private var viewModel: HomeViewModel?
+    var viewModel: HomeViewModel?
     weak var coordinator: Coordinator?
-    var disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
     private var homeCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -129,11 +129,19 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return batteryCell
         case 1:
             guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCell.identifier, for: indexPath) as? AteFoodCell else { return UICollectionViewCell() }
-            
+            if let viewModel = viewModel?.tempData.value {
+                let ateViewModel = AteFoodItemViewModel(item: viewModel)
+                ateFoodCell.bind(viewModel: ateViewModel)
+            }
             return ateFoodCell
         case 2:
             guard let graphCell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeGraphCell.identifier,
                                                                      for: indexPath) as? HomeGraphCell else { return UICollectionViewCell() }
+            if let viewModelItem = viewModel?.weekData.value {
+                let viewModel = GraphItemViewModel(item: viewModelItem)
+                graphCell.bind(viewModel: viewModel)
+                
+            }
             return graphCell
         default:
             return UICollectionViewCell()
@@ -283,7 +291,7 @@ extension HomeViewController {
 }
 
 extension HomeViewController {
-    func isAnimateNavigationBar(view: UIView) -> Bool {
+    private func isAnimateNavigationBar(view: UIView) -> Bool {
         let rect = CGRect(x: 0,
                           y: -90,
                           width: UIScreen.main.bounds.maxX,

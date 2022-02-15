@@ -11,8 +11,8 @@ import Then
 
 class HomeCollectionFooter: UICollectionReusableView {
     static let identfier = "HomeCollectionFooter"
-    let footerTitle = UILabel()
-    let context = UILabel()
+    var footerTitle = UILabel()
+    var context = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,7 +28,7 @@ class HomeCollectionFooter: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         footerTitle.do {
             $0.font = UIFont.boldSystemFont(ofSize: 25)
             $0.textColor = .lightGray
@@ -41,7 +41,7 @@ class HomeCollectionFooter: UICollectionReusableView {
         }
     }
     
-    func layout() {
+    private func layout() {
         [ footerTitle, context ].forEach() { self.addSubview($0) }
         
         footerTitle.do {

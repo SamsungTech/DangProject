@@ -13,17 +13,14 @@ class CustomNavigationBar: UIView {
     var profileImageView = UIImageView()
     var calendarButton = UIImageView()
     fileprivate var barheightAnchor: NSLayoutConstraint?
-    let gradient = CAGradientLayer()
-    let leftArrowButton = UIButton()
-    let dateLabel = UILabel()
-    let rightArrowButton = UIButton()
+    private let gradient = CAGradientLayer()
+    var leftArrowButton = UIButton()
+    var dateLabel = UILabel()
+    var rightArrowButton = UIButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .init(red: 0,
-                                     green: 0,
-                                     blue: 0,
-                                     alpha: 0.0)
+        self.backgroundColor = .clear
         configure()
         layout()
     }
@@ -32,7 +29,7 @@ class CustomNavigationBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    private func configure() {
         profileImageView.do {
             $0.image = UIImage(named: "231.png")
             $0.tintColor = .white
@@ -57,7 +54,7 @@ class CustomNavigationBar: UIView {
             $0.tintColor = .white
         }
     }
-    func layout() {
+    private func layout() {
         [ profileImageView, leftArrowButton, rightArrowButton,
           dateLabel, calendarButton ].forEach() { self.addSubview($0) }
         
