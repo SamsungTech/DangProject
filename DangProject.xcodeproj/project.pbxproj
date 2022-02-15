@@ -17,6 +17,7 @@
 		0B97986E27BB84700021162A /* TempEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97986D27BB84700021162A /* TempEntities.swift */; };
 		0B97987127BB9D370021162A /* AteFoodItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */; };
 		0B97987327BBAA100021162A /* GraphItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987227BBAA100021162A /* GraphItemViewModel.swift */; };
+		0B97987527BBE07C0021162A /* AteFoodCellInItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */; };
 		0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351827984F5E00634E51 /* Nutrient.swift */; };
 		0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351E2798503200634E51 /* MainCoordinator.swift */; };
 		0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435202798518C00634E51 /* HomeCoordinator.swift */; };
@@ -51,6 +52,7 @@
 		0B97986D27BB84700021162A /* TempEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempEntities.swift; sourceTree = "<group>"; };
 		0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodItemViewModel.swift; sourceTree = "<group>"; };
 		0B97987227BBAA100021162A /* GraphItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphItemViewModel.swift; sourceTree = "<group>"; };
+		0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodCellInItemViewModel.swift; sourceTree = "<group>"; };
 		0BB4351827984F5E00634E51 /* Nutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutrient.swift; sourceTree = "<group>"; };
 		0BB4351E2798503200634E51 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		0BB435202798518C00634E51 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 				0BB43524279851A300634E51 /* HomeViewModel.swift */,
 				0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */,
 				0B97987227BBAA100021162A /* GraphItemViewModel.swift */,
+				0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */,
 			);
 			path = VIewModel;
 			sourceTree = "<group>";
@@ -516,6 +519,7 @@
 				0BB435272798537900634E51 /* HomeUseCase.swift in Sources */,
 				0BB43542279FC9C000634E51 /* GraphCellHeader.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
+				0B97987527BBE07C0021162A /* AteFoodCellInItemViewModel.swift in Sources */,
 				0BB4352D279919AD00634E51 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

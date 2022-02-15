@@ -59,7 +59,6 @@ class AteFoodCell: UICollectionViewCell {
     }
     
     private func subscribe() {
-        // MARK: 여기서 막힘
         viewModel?.items
             .subscribe(onNext: { foodData in
                 self.foodCollectionView.reloadData()
@@ -69,7 +68,6 @@ class AteFoodCell: UICollectionViewCell {
 }
 
 extension AteFoodCell: UICollectionViewDelegate, UICollectionViewDataSource {
-    // MARK: 여기서 막힘
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         guard let tempDataCount = viewModel?.items.value.count else { return 0 }
@@ -80,10 +78,10 @@ extension AteFoodCell: UICollectionViewDelegate, UICollectionViewDataSource {
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCollectionCell.identifier, for: indexPath) as? AteFoodCollectionCell else { return UICollectionViewCell() }
         
-//        if let data = viewModel?.items.value[indexPath.item] {
-//            let viewModel = AteFoodItemViewModel(item: data)
-//            ateFoodCell.bind(viewModel: viewModel)
-//        }
+        if let data = viewModel?.items.value[indexPath.item] {
+            let viewModel = AteFoodCellInItemViewModel(item: data)
+            ateFoodCell.bind(viewModel: viewModel)
+        }
         return ateFoodCell
     }
     

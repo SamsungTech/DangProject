@@ -11,7 +11,7 @@ import RxSwift
 
 class AteFoodCollectionCell: UICollectionViewCell {
     static let identifier = "AteFoodCollectionCell"
-    var viewModel: AteFoodItemViewModel?
+    var viewModel: AteFoodCellInItemViewModel?
     private var disposeBag = DisposeBag()
     private var backView = UIView()
     var foodNameLabel = UILabel()
@@ -62,7 +62,7 @@ class AteFoodCollectionCell: UICollectionViewCell {
         }
     }
     
-    func bind(viewModel: AteFoodItemViewModel) {
+    func bind(viewModel: AteFoodCellInItemViewModel) {
         self.viewModel = viewModel
         subscribe()
     }
@@ -70,8 +70,8 @@ class AteFoodCollectionCell: UICollectionViewCell {
     private func subscribe() {
         viewModel?.items
             .subscribe(onNext: { [weak self] data in
-//                self?.foodNameLabel.text = data
-//                self?.dangLabel.text = data.dang
+                self?.foodNameLabel.text = data.foodName
+                self?.dangLabel.text = data.dang
             })
             .disposed(by: disposeBag)
     }
