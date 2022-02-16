@@ -13,3 +13,10 @@ struct tempNutrient {
     var dang: String?
     var foodName: String?
 }
+
+struct sugarSum {
+    static let empty: Self = .init(sum: 0.0)
+    
+    var sum: Double = 0.0
+    
+}

@@ -18,6 +18,7 @@
 		0B97987127BB9D370021162A /* AteFoodItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */; };
 		0B97987327BBAA100021162A /* GraphItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987227BBAA100021162A /* GraphItemViewModel.swift */; };
 		0B97987527BBE07C0021162A /* AteFoodCellInItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */; };
+		0B97987727BD218E0021162A /* BatteryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987627BD218E0021162A /* BatteryCellViewModel.swift */; };
 		0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351827984F5E00634E51 /* Nutrient.swift */; };
 		0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351E2798503200634E51 /* MainCoordinator.swift */; };
 		0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435202798518C00634E51 /* HomeCoordinator.swift */; };
@@ -53,6 +54,7 @@
 		0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodItemViewModel.swift; sourceTree = "<group>"; };
 		0B97987227BBAA100021162A /* GraphItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphItemViewModel.swift; sourceTree = "<group>"; };
 		0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodCellInItemViewModel.swift; sourceTree = "<group>"; };
+		0B97987627BD218E0021162A /* BatteryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryCellViewModel.swift; sourceTree = "<group>"; };
 		0BB4351827984F5E00634E51 /* Nutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutrient.swift; sourceTree = "<group>"; };
 		0BB4351E2798503200634E51 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		0BB435202798518C00634E51 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
@@ -248,9 +250,10 @@
 			isa = PBXGroup;
 			children = (
 				0BB43524279851A300634E51 /* HomeViewModel.swift */,
+				0B97987627BD218E0021162A /* BatteryCellViewModel.swift */,
 				0B97987027BB9D370021162A /* AteFoodItemViewModel.swift */,
-				0B97987227BBAA100021162A /* GraphItemViewModel.swift */,
 				0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */,
+				0B97987227BBAA100021162A /* GraphItemViewModel.swift */,
 			);
 			path = VIewModel;
 			sourceTree = "<group>";
@@ -495,6 +498,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B97987727BD218E0021162A /* BatteryCellViewModel.swift in Sources */,
 				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,

@@ -9,7 +9,7 @@ import Foundation
 import RxRelay
 
 class AteFoodItemViewModel {
-    var items = BehaviorRelay<[tempNutrient]>(value: .init())
+    var items = BehaviorRelay<[tempNutrient]>(value: [])
     
     init(item: [tempNutrient]) {
         self.items.accept(item)

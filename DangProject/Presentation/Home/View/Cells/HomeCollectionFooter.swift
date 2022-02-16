@@ -11,8 +11,8 @@ import Then
 
 class HomeCollectionFooter: UICollectionReusableView {
     static let identfier = "HomeCollectionFooter"
-    var footerTitle = UILabel()
-    var context = UILabel()
+    private var footerTitle = UILabel()
+    private var context = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -18,6 +18,7 @@ protocol HomeViewModelOutputProtocol {
     var weekData: BehaviorRelay<[weekTemp]> { get }
     var mouthData: BehaviorRelay<[tempNutrient]> { get }
     var yearData: BehaviorRelay<[tempNutrient]> { get }
+    var sumData: BehaviorRelay<sugarSum> { get }
 }
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
@@ -29,6 +30,7 @@ class HomeViewModel: HomeViewModelProtocol {
     var weekData = BehaviorRelay<[weekTemp]>(value: [])
     var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
     var yearData = BehaviorRelay<[tempNutrient]>(value: [])
+    var sumData = BehaviorRelay<sugarSum>(value: .empty)
     
     init(useCase: HomeUseCase) {
         self.useCase = useCase
@@ -59,6 +61,11 @@ extension HomeViewModel {
         useCase.retriveYearData()
             .subscribe(onNext: { data in
                 self.yearData.accept(data)
+            })
+            .disposed(by: disposeBag)
+        useCase.calculateSugarSum()
+            .subscribe(onNext: { data in
+                self.sumData.accept(data)
             })
             .disposed(by: disposeBag)
     }

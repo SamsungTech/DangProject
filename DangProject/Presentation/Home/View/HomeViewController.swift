@@ -126,6 +126,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch indexPath.section {
         case 0:
             guard let batteryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BatteryCell.identifier, for: indexPath) as? BatteryCell else { return UICollectionViewCell() }
+            if let viewModel = viewModel?.sumData.value {
+                let batteryViewModel = BatteryCellViewModel(item: viewModel)
+                batteryCell.bind(viewModel: batteryViewModel)
+            }
             return batteryCell
         case 1:
             guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCell.identifier, for: indexPath) as? AteFoodCell else { return UICollectionViewCell() }
@@ -262,7 +266,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }
 
