@@ -39,6 +39,7 @@
 		7CF02AC327BA4A110090B594 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC227BA4A110090B594 /* CoreDataManager.swift */; };
 		7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */; };
 		7CF02AC727BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */; };
+		7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		7CF02AC227BA4A110090B594 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataClass.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataProperties.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFavoriteFoodsUseCase.swift; sourceTree = "<group>"; };
 		F64F741B1CC607F30779F70B /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.release.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -201,6 +203,7 @@
 			children = (
 				7C1BF76527B1172600BDAE70 /* SearchUseCase.swift */,
 				7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */,
+				7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -478,6 +481,7 @@
 				7C9B9D8527A0F3AE0046F22C /* HomeDIContainer.swift in Sources */,
 				7C1BF77427B2440200BDAE70 /* SearchFoodViewModel.swift in Sources */,
 				7C1BF77027B147A500BDAE70 /* FetchDataService.swift in Sources */,
+				7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */,
 				7CF02AC327BA4A110090B594 /* CoreDataManager.swift in Sources */,
 				7C9B9D7F27A0EB600046F22C /* HomeCoordinator.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
@@ -634,12 +638,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DAG6F8V8UR;
+				DEVELOPMENT_TEAM = BAC795627G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DangProject/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -663,12 +666,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DAG6F8V8UR;
+				DEVELOPMENT_TEAM = BAC795627G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DangProject/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

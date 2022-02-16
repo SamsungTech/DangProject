@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import RxSwift
+
 protocol TableViewCellDelegate {
     func favoriteButtonTapped(cell: UITableViewCell)
 }
@@ -17,6 +19,7 @@ class SearchResultTableViewCell: UITableViewCell {
     var cellDelegation: TableViewCellDelegate?
     let titleLabel = UILabel()
     let favoriteButton = UIButton()
+    var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -26,7 +29,7 @@ class SearchResultTableViewCell: UITableViewCell {
         setUpTitleLabel()
         setUpFavoriteButton()
     }
-    
+     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -44,7 +47,7 @@ class SearchResultTableViewCell: UITableViewCell {
         contentView.addSubview(favoriteButton)
         favoriteButton.translatesAutoresizingMaskIntoConstraints = false
         favoriteButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        favoriteButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
+        favoriteButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
         favoriteButton.setImage(UIImage(systemName: "star"), for: .normal)
 
         favoriteButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
@@ -52,5 +55,10 @@ class SearchResultTableViewCell: UITableViewCell {
     
     @objc func buttonTapped() {
         cellDelegation?.favoriteButtonTapped(cell: self)
+    }
+    
+    func bindTableViewCell(index: Int, item: FoodViewModel) {
+        titleLabel.text = item.name
+        favoriteButton.imageView?.image = item.image
     }
 }

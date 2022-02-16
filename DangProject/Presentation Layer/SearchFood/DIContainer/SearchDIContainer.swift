@@ -15,13 +15,17 @@ class SearchDIContainer {
 
     func makeSearchViewModel() -> SearchViewModel {
         return SearchViewModel(searchFoodUseCase: makeSearchUseCase(),
-                               changeFavoriteUseCase: makeChangeFavoriteUseCase())
+                               changeFavoriteUseCase: makeChangeFavoriteUseCase(),
+                               fetchFavoriteFoodsUseCase: makeFetchFoodsUseCase())
     }
     
     func makeSearchUseCase() -> SearchUseCase {
         return SearchUseCase(fetchFoodRepository: makeFetchRepository())
     }
     
+    func makeFetchFoodsUseCase() -> FetchFavoriteFoodsUseCase {
+        return FetchFavoriteFoodsUseCase()
+    }
     func makeChangeFavoriteUseCase() -> ChangeFavoriteUseCase {
         return ChangeFavoriteUseCase()
     }

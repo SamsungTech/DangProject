@@ -18,12 +18,14 @@ class CoreDataManager {
     private let appDelegate = UIApplication.shared.delegate as? AppDelegate
     private lazy var context = appDelegate?.persistentContainer.viewContext
     
-    func saveFavoriteFoods(_ code: String) {
+    func saveFavoriteFoods(_ food: FoodDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.favoriteFoods.rawValue, in: context)        else { return }
         guard let favoriteFoods = NSManagedObject(entity: entity, insertInto: context) as? FavoriteFoods else { return }
         
-        favoriteFoods.foodCode = code
+        favoriteFoods.name = food.name
+        favoriteFoods.sugar = food.sugar
+        favoriteFoods.foodCode = food.foodCode
         
         do {
             try context.save()

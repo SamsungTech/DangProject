@@ -20,7 +20,7 @@ class SearchViewController: UIViewController {
     let searchController = UISearchController(searchResultsController: nil)
     let searchResultTableView = UITableView()
     
-    let disposeBag = DisposeBag()
+    var disposeBag = DisposeBag()
     // MARK: - Init
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
@@ -35,9 +35,6 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setUpViews()
         setUpBindings()
-        
-        
-
     }
     // MARK: - Set Views
     func setUpViews() {
@@ -68,6 +65,8 @@ class SearchViewController: UIViewController {
         searchResultTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         searchResultTableView.backgroundColor = .white
         searchResultTableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "Cell")
+        searchResultTableView.delegate = self
+        searchResultTableView.dataSource = self
         searchResultTableView.isHidden = true
     }
     
@@ -80,26 +79,33 @@ class SearchViewController: UIViewController {
     
     func bindTableView() {
         viewModel.searchFoodViewModelObservable
-            .map({ $0.foodModels!})
-            .bind(to: searchResultTableView.rx.items(cellIdentifier: "Cell", cellType: SearchResultTableViewCell.self)) {index, item, cell in
-                cell.cellDelegation = self
-                cell.titleLabel.text = item.name
-            }
-            .disposed(by: disposeBag)
-        
-        searchResultTableView
-            .rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        
-        searchResultTableView.rx.itemSelected
-            .subscribe(onNext: { [weak self] indexPath in
-                self?.searchResultTableView.deselectRow(at: indexPath, animated: false)
-                
-                //                guard let selectedFood = self?.viewModel.findFood(indexPath: indexPath) else { return }
-                //
-                //                self?.coordinator?.pushDetailFoodView(food: selectedFood)
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { _ in
+                self.searchResultTableView.reloadData()
             })
             .disposed(by: disposeBag)
+//                viewModel.searchFoodViewModelObservable
+        //            .observe(on: MainScheduler.instance)
+        //            .map({ $0.foodModels! })
+        //            .bind(to: searchResultTableView.rx.items(cellIdentifier: "Cell", cellType: SearchResultTableViewCell.self)) {index, item, cell in
+        //                cell.cellDelegation = self
+        //                cell.bindTableViewCell(index: index, item: item)
+        //            }
+        //            .disposed(by: disposeBag)
+        
+        
+        //        searchResultTableView
+        //            .disposed(by: disposeBag)
+        
+        //        searchResultTableView.rx.itemSelected
+        //            .subscribe(onNext: { [weak self] indexPath in
+        //                self?.searchResultTableView.deselectRow(at: indexPath, animated: false)
+        //
+        //                //                guard let selectedFood = self?.viewModel.findFood(indexPath: indexPath) else { return }
+        //                //
+        //                //                self?.coordinator?.pushDetailFoodView(food: selectedFood)
+        //            })
+        //            .disposed(by: disposeBag)
         
     }
     
@@ -113,6 +119,7 @@ class SearchViewController: UIViewController {
                 viewModel.startSearching(food: text)
             })
             .disposed(by: disposeBag)
+        searchResultTableView.reloadData()
     }
     
     func bindLoading() {
@@ -130,25 +137,52 @@ class SearchViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
-
+    
 }
 // MARK: - Extension
-extension SearchViewController: UITableViewDelegate {}
-
-extension SearchViewController: UISearchBarDelegate {
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchResultTableView.isHidden = false
+extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if viewModel.scopeState == .searchResult {
+            return viewModel.currentFoodViewModels.foodModels!.count
+        } else {
+            return viewModel.favoriteFoodViewModels.foodModels!.count
+        }
     }
     
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchResultTableView.isHidden = true
-        viewModel.cancelButtonTapped()
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = SearchResultTableViewCell()
+        if viewModel.scopeState == .searchResult {
+            cell.bindTableViewCell(index: indexPath.row, item: viewModel.currentFoodViewModels.foodModels![indexPath.row])
+        } else {
+            cell.bindTableViewCell(index: indexPath.row, item: viewModel.favoriteFoodViewModels.foodModels![indexPath.row])
+        }
+        cell.cellDelegation = self
+        return cell
     }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+}
+    extension SearchViewController: UISearchBarDelegate {
+        func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+            searchResultTableView.isHidden = false
+        }
         
-//        viewModel.searchFoodViewModelObservable.dispose()
-        LoadingView.hideLoading()
+        func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+            searchResultTableView.isHidden = true
+            viewModel.cancelButtonTapped()
+        }
+        
+        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            LoadingView.hideLoading()
+        }
+
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+        //selectedScope를 보내줘서 상태 확인 하고 tableView갱신
+        if selectedScope == 0 {
+            viewModel.updateSearchFoodViewModelObservable()
+        } else if selectedScope == 1 {
+            searchResultTableView.isHidden = false
+            viewModel.favoriteSearchBarScopeTapped()
+        }
     }
 }
 extension SearchViewController: TableViewCellDelegate {
@@ -157,3 +191,4 @@ extension SearchViewController: TableViewCellDelegate {
         viewModel.changeFavorite(indexPath: cellIndexpath)
     }
 }
+

@@ -17,5 +17,7 @@ extension FavoriteFoods {
     }
 
     @NSManaged public var foodCode: String?
+    @NSManaged public var name: String?
+    @NSManaged public var sugar: String?
 
 }

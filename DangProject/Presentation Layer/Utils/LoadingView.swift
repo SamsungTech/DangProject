@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 public class LoadingView {
-    // 사용 시 매번 객체생성이 필요 없으므로 static으로 사용할 수 있게끔 선언
+    
     let customFrame: CGRect
     
     init(customFrame: CGRect) {
