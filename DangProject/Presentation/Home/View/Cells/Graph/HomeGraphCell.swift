@@ -115,23 +115,6 @@ class HomeGraphCell: UICollectionViewCell {
         }
     }
     
-    func bind(viewModel: GraphItemViewModel) {
-        self.viewModel = viewModel
-        subscribe()
-    }
-    
-    private func subscribe() {
-        viewModel?.items
-            .subscribe(onNext: { data in
-                self.weekNumbers = data
-            })
-            .disposed(by: disposeBag)
-        
-        createGraphViews(items: weekNumbers)
-    }
-}
-
-extension HomeGraphCell {
     private func createGraphBackgroundViews() {
         for _ in 0..<7 {
             let view = UIView()
@@ -146,14 +129,20 @@ extension HomeGraphCell {
         }
     }
     private func createGraphViews(items: [weekTemp]) {
+        var height: CGFloat?
+        
         for item in items {
-            let item = CGFloat(item.dangdang)
+            if item.dangdang > 30 {
+                height = CGFloat(30)
+            } else {
+                height = CGFloat(item.dangdang)
+            }
             let view = UIView()
             view.do {
                 $0.backgroundColor = .white
                 $0.viewRadius(cornerRadius: 13)
                 $0.translatesAutoresizingMaskIntoConstraints = false
-                $0.heightAnchor.constraint(equalToConstant: item*10).isActive = true
+                $0.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
             }
             graphStackView.addArrangedSubview(view)
         }
@@ -170,5 +159,22 @@ extension HomeGraphCell {
             }
             graphNameStackView.addArrangedSubview(label)
         }
+    }
+}
+
+extension HomeGraphCell {
+    func bind(viewModel: GraphItemViewModel) {
+        self.viewModel = viewModel
+        subscribe()
+    }
+    
+    private func subscribe() {
+        viewModel?.items
+            .subscribe(onNext: { data in
+                self.weekNumbers = data
+            })
+            .disposed(by: disposeBag)
+        
+        createGraphViews(items: weekNumbers)
     }
 }

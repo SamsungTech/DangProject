@@ -52,7 +52,9 @@ class AteFoodCell: UICollectionViewCell {
             $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         }
     }
-    
+}
+
+extension AteFoodCell {
     func bind(viewModel: AteFoodItemViewModel) {
         self.viewModel = viewModel
         subscribe()

@@ -63,6 +63,7 @@ extension HomeViewModel {
                 self.yearData.accept(data)
             })
             .disposed(by: disposeBag)
+        
         useCase.calculateSugarSum()
             .subscribe(onNext: { data in
                 self.sumData.accept(data)

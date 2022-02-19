@@ -8,19 +8,23 @@
 import Foundation
 import UIKit
 import Then
+import RxSwift
+import RxCocoa
 
 class CustomNavigationBar: UIView {
     var profileImageView = UIImageView()
-    var calendarButton = UIImageView()
     fileprivate var barheightAnchor: NSLayoutConstraint?
     private let gradient = CAGradientLayer()
-    var leftArrowButton = UIButton()
     var dateLabel = UILabel()
-    var rightArrowButton = UIButton()
+    private let week = ["일", "월", "화", "수", "목", "금", "토"]
+    private var weekStackView = UIStackView()
+    private var weekLabels: [UILabel] = []
+    let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clear
+        createWeekLabel()
         configure()
         layout()
     }
@@ -35,61 +39,53 @@ class CustomNavigationBar: UIView {
             $0.tintColor = .white
             $0.viewRadius(cornerRadius: 20)
         }
-        calendarButton.do {
-            $0.image = UIImage(systemName: "calendar")
-            $0.tintColor = .white
-        }
-        leftArrowButton.do {
-            $0.setImage(UIImage(systemName: "arrowtriangle.backward.fill"), for: .normal)
-            $0.tintColor = .white
-        }
         dateLabel.do {
             $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: 17)
-            $0.text = "2020년 2월 8일"
+            $0.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+            $0.text = "2020년 2월"
             $0.textAlignment = .center
         }
-        rightArrowButton.do {
-            $0.setImage(UIImage(systemName: "arrowtriangle.right.fill"), for: .normal)
-            $0.tintColor = .white
+        weekStackView.do {
+            $0.distribution = .fillEqually
+            $0.alignment = .fill
+            $0.axis = .horizontal
         }
     }
+    
     private func layout() {
-        [ profileImageView, leftArrowButton, rightArrowButton,
-          dateLabel, calendarButton ].forEach() { self.addSubview($0) }
+        [ profileImageView, dateLabel, weekStackView ].forEach() { self.addSubview($0) }
         
         profileImageView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: 40).isActive = true
             $0.heightAnchor.constraint(equalToConstant: 40).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
-            $0.centerYAnchor.constraint(equalTo: calendarButton.centerYAnchor).isActive = true
-        }
-        leftArrowButton.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20).isActive = true
-            $0.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
+            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -30).isActive = true
         }
         dateLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
             $0.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         }
-        rightArrowButton.do {
+        weekStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.trailingAnchor.constraint(equalTo: calendarButton.leadingAnchor, constant: -20).isActive = true
-            $0.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
+            $0.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 10).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 20).isActive = true
         }
-        calendarButton.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true
+    }
+    
+    private func createWeekLabel() {
+        for item in week {
+            let label = UILabel()
+            label.do {
+                $0.textAlignment = .center
+                $0.textColor = .white
+                $0.font = UIFont.boldSystemFont(ofSize: 13)
+                $0.text = "\(item)"
+            }
+            weekStackView.addArrangedSubview(label)
         }
     }
 }
@@ -97,7 +93,4 @@ class CustomNavigationBar: UIView {
 extension CustomNavigationBar {
     func setNavigationBarAnimation(completion: @escaping () -> Void) {}
     func setNavigationBarReturnAnimation() {}
-}
-
-extension UIView {
 }

@@ -26,8 +26,9 @@ class HomeViewController: UIViewController {
         
         return collectionView
     }()
-    fileprivate var heightAnchor: NSLayoutConstraint?
+    private var heightAnchor: NSLayoutConstraint?
     private var firstContentY: CGFloat = 0
+    private var batteryCellHeight: CGFloat?
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -44,7 +45,7 @@ class HomeViewController: UIViewController {
         UIColor.orange.cgColor,
         UIColor.systemYellow.cgColor
     ]
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel?.viewDidLoad()
@@ -55,9 +56,15 @@ class HomeViewController: UIViewController {
         view.bringSubviewToFront(customNavigationBar)
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
+
+    
     
     private func configure() {
         gradient.do {
@@ -89,7 +96,7 @@ class HomeViewController: UIViewController {
             $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-            heightAnchor = $0.heightAnchor.constraint(equalToConstant: 90)
+            heightAnchor = $0.heightAnchor.constraint(equalToConstant: 110)
             heightAnchor?.isActive = true
         }
         homeCollectionView.do {
@@ -126,10 +133,12 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch indexPath.section {
         case 0:
             guard let batteryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BatteryCell.identifier, for: indexPath) as? BatteryCell else { return UICollectionViewCell() }
+            
             if let viewModel = viewModel?.sumData.value {
                 let batteryViewModel = BatteryCellViewModel(item: viewModel)
                 batteryCell.bind(viewModel: batteryViewModel)
             }
+            
             return batteryCell
         case 1:
             guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCell.identifier, for: indexPath) as? AteFoodCell else { return UICollectionViewCell() }
@@ -329,24 +338,19 @@ extension HomeViewController {
                                                width: UIScreen.main.bounds.maxX,
                                                height: 90)
             customNavigationBar.profileImageView.alpha = (90-contentY)/90
-            customNavigationBar.calendarButton.alpha = (90-contentY)/90
         } else {
             customNavigationBar.frame = CGRect(x: 0,
                                                y: -90,
                                                width: UIScreen.main.bounds.maxX,
                                                height: 90)
             customNavigationBar.profileImageView.isHidden = true
-            customNavigationBar.calendarButton.isHidden = true
         }
     }
     
     private func showNavigationBarScrollUp() {
         self.customNavigationBar.profileImageView.isHidden = false
-        self.customNavigationBar.calendarButton.isHidden = false
         customNavigationBar.setNavigationBarReturnAnimation()
         UIView.animate(withDuration: 0.3) { [weak self] in
-            
-            self?.customNavigationBar.calendarButton.alpha = 1.0
             self?.customNavigationBar.profileImageView.alpha = 1.0
             self?.customNavigationBar.layoutIfNeeded()
             self?.customNavigationBar.frame = CGRect(x: 0,
@@ -363,18 +367,14 @@ extension HomeViewController {
                                                width: UIScreen.main.bounds.maxX,
                                                height: 90)
             self?.customNavigationBar.profileImageView.alpha = (90-contentY)/90
-            self?.customNavigationBar.calendarButton.alpha = (90-contentY)/90
         }
         self.customNavigationBar.profileImageView.isHidden = true
-        self.customNavigationBar.calendarButton.isHidden = true
     }
     
     private func animationCustomNavigationViewDown() {
         self.customNavigationBar.profileImageView.isHidden = false
-        self.customNavigationBar.calendarButton.isHidden = false
         customNavigationBar.setNavigationBarReturnAnimation()
         UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.customNavigationBar.calendarButton.alpha = 1.0
             self?.customNavigationBar.profileImageView.alpha = 1.0
             self?.customNavigationBar.layoutIfNeeded()
             self?.customNavigationBar.frame = CGRect(x: 0,

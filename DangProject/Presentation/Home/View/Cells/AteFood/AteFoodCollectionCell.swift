@@ -61,7 +61,9 @@ class AteFoodCollectionCell: UICollectionViewCell {
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
     }
-    
+}
+
+extension AteFoodCollectionCell {
     func bind(viewModel: AteFoodCellInItemViewModel) {
         self.viewModel = viewModel
         subscribe()

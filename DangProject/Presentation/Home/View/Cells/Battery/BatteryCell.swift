@@ -104,19 +104,6 @@ class BatteryCell: UICollectionViewCell {
         }
     }
     
-    func bind(viewModel: BatteryCellViewModel) {
-        self.viewModel = viewModel
-        subscribe()
-    }
-    
-    private func subscribe() {
-        viewModel?.items
-            .subscribe(onNext: { foodData in
-                self.targetSugar.text = "목표: " + String(format: "%.1f", foodData.sum) + "/25.6g"
-            })
-            .disposed(by: disposeBag)
-    }
-    
     private func circleConfigure() {
         let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
@@ -161,6 +148,21 @@ class BatteryCell: UICollectionViewCell {
         animatePulsatingLayer()
         animateShapeLayer()
         countAnimation()
+    }
+}
+
+extension BatteryCell {
+    func bind(viewModel: BatteryCellViewModel) {
+        self.viewModel = viewModel
+        subscribe()
+    }
+    
+    private func subscribe() {
+        viewModel?.items
+            .subscribe(onNext: { foodData in
+                self.targetSugar.text = "목표: " + String(format: "%.1f", foodData.sum) + "/25.6g"
+            })
+            .disposed(by: disposeBag)
     }
 }
 
