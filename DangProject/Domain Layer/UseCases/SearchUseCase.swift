@@ -66,6 +66,5 @@ class SearchUseCase {
         let checkedDomainFoodModels = checkFavorites()
         // updateViewModel
         foodResultModelObservable.onNext(SearchFoodViewModel.init(keyWord: currentKeyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))
-        
     }
 }

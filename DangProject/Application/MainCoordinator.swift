@@ -44,9 +44,7 @@ class MainCoordinator: Coordinator {
     }
     
     func presentSearchViewController(viewController: UIViewController) {
-        let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
-        searchCoordinator.start()
-        viewController.present(searchCoordinator.navigationController, animated: true)
+        viewController.present(searchViewController, animated: true)
     }
     
 }

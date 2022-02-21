@@ -14,6 +14,7 @@ struct FoodDomainModel: Equatable {
     var sugar: String
     var foodCode: String
     var favorite: Bool = false
+    var amount: Int = 1
     
     init(name: String,
          sugar: String,
@@ -36,6 +37,13 @@ struct FoodDomainModel: Equatable {
         if foodViewModel.image == UIImage(systemName: "star.fill") {
             self.favorite = true
         }
+    }
+    
+    init(_ addFoodsViewModel: AddFoodsViewModel) {
+        self.name = addFoodsViewModel.foodModel?.name ?? ""
+        self.sugar = addFoodsViewModel.foodModel?.sugar ?? "0"
+        self.foodCode = addFoodsViewModel.foodModel?.code ?? ""
+        self.amount = addFoodsViewModel.amount
     }
     
     init(_ coreDataFood: FavoriteFoods) {

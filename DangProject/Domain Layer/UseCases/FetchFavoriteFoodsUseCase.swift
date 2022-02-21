@@ -23,4 +23,8 @@ class FetchFavoriteFoodsUseCase {
         }
         return SearchFoodViewModel.init(keyWord: "", foodModels: tempFoodViewModel)
     }
+    
+    func delete() {
+        CoreDataManager.shared.deleteAll(request: FavoriteFoods.fetchRequest())
+    }
 }

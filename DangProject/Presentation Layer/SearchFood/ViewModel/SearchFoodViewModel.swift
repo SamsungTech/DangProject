@@ -18,12 +18,30 @@ struct SearchFoodViewModel {
         self.foodModels = foodModels
     }
 }
+struct AddFoodsViewModel {
+    var amount = 1
+    let foodModel: FoodViewModel?
+    
+    init(amount: Int, foodModel: FoodViewModel) {
+        self.amount = amount
+        self.foodModel = foodModel
+    }
+}
 
 struct FoodViewModel {
+    static let empty: Self = .init(name: "", sugar: "", code: "", image: UIImage())
     let name: String?
     let sugar: String?
     let code: String?
-    let image: UIImage?
+    var image: UIImage?
+//    var amount = 1
+    
+    init (name: String, sugar: String, code: String, image: UIImage) {
+        self.name = name
+        self.sugar = sugar
+        self.code = code
+        self.image = image
+    }
     
     init(_ foodDomainModel: FoodDomainModel) {
         self.name = foodDomainModel.name

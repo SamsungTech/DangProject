@@ -2,6 +2,18 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:RecentQuery+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "group:RecentQuery+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
+      location = "absolute:/Users/a1234/Desktop/My Project/DangProject/DangProject/CoreData/EatenFoods+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "absolute:/Users/a1234/Desktop/My Project/DangProject/DangProject/CoreData/EatenFoods+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
       location = "group:/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataClass.swift">
    </FileRef>
    <FileRef

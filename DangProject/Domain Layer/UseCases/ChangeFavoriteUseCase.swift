@@ -12,7 +12,7 @@ class ChangeFavoriteUseCase {
         var tempFood = food
         tempFood.favorite = !food.favorite
         if food.favorite == false {
-            CoreDataManager.shared.saveFavoriteFoods(food)
+            CoreDataManager.shared.addFoods(food, at: CoreDataName.favoriteFoods)
         }
         else {
             CoreDataManager.shared.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())

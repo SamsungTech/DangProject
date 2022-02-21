@@ -8,8 +8,6 @@
 import Foundation
 import UIKit
 
-import RxSwift
-
 protocol TableViewCellDelegate {
     func favoriteButtonTapped(cell: UITableViewCell)
 }
@@ -19,15 +17,14 @@ class SearchResultTableViewCell: UITableViewCell {
     var cellDelegation: TableViewCellDelegate?
     let titleLabel = UILabel()
     let favoriteButton = UIButton()
-    var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        self.backgroundColor = .white
+//        self.backgroundColor = .white
         
-        setUpTitleLabel()
         setUpFavoriteButton()
+        setUpTitleLabel()
     }
      
     required init?(coder: NSCoder) {
@@ -39,7 +36,8 @@ class SearchResultTableViewCell: UITableViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10).isActive = true
-        
+        titleLabel.trailingAnchor.constraint(equalTo: favoriteButton.leadingAnchor).isActive = true
+        titleLabel.numberOfLines = 0
         titleLabel.textColor = .black
     }
     
@@ -48,8 +46,6 @@ class SearchResultTableViewCell: UITableViewCell {
         favoriteButton.translatesAutoresizingMaskIntoConstraints = false
         favoriteButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         favoriteButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
-        favoriteButton.setImage(UIImage(systemName: "star"), for: .normal)
-
         favoriteButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
@@ -57,8 +53,8 @@ class SearchResultTableViewCell: UITableViewCell {
         cellDelegation?.favoriteButtonTapped(cell: self)
     }
     
-    func bindTableViewCell(index: Int, item: FoodViewModel) {
+    func bindTableViewCell(item: FoodViewModel) {
         titleLabel.text = item.name
-        favoriteButton.imageView?.image = item.image
+        favoriteButton.setImage(item.image, for: .normal)
     }
 }
