@@ -14,6 +14,7 @@ protocol SearchViewModelInput {
     func changeFavorite(indexPath: IndexPath?, foodModel: FoodViewModel?)
     func startSearching(searchBarText: String)
     func favoriteSearchBarScopeTapped()
+    func eraseAllQuery()
 }
 
 protocol SearchViewModelOutput {
@@ -38,17 +39,17 @@ class SearchViewModel: SearchViewModelProtocol {
     private let searchFoodUseCase: SearchUseCase
     private let changeFavoriteUseCase: ChangeFavoriteUseCase
     private let fetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase
-    private let addQueryUseCase: AddQueryUseCase
+    private let manageQueryUseCase: ManageQueryUseCase
     init(searchFoodUseCase: SearchUseCase,
          changeFavoriteUseCase: ChangeFavoriteUseCase,
          fetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase,
-         addQueryUseCase: AddQueryUseCase) {
+         manageQueryUseCase: ManageQueryUseCase) {
         self.searchFoodUseCase = searchFoodUseCase
         self.changeFavoriteUseCase = changeFavoriteUseCase
         self.fetchFavoriteFoodsUseCase = fetchFavoriteFoodsUseCase
-        self.addQueryUseCase = addQueryUseCase
+        self.manageQueryUseCase = manageQueryUseCase
         bindFoodResultModelObservable()
-        self.searchQueryObservable.onNext(self.addQueryUseCase.loadQuery().reversed())
+        self.searchQueryObservable.onNext(self.manageQueryUseCase.loadQuery().reversed())
     }
     
     let disposeBag = DisposeBag()
@@ -92,32 +93,34 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     
     func startSearching(searchBarText: String) {
-        if scopeState == .searchResult {
+//        if scopeState == .favorites {
+//
+//            return
+//        } else {
             currentKeyword = searchBarText
-            addQueryUseCase.addQueryOnCoreData(keyword: searchBarText) {
+            manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText) {
                 self.updateRecentQuery()
             }
             searchFoodUseCase.fetchFood(text: searchBarText)
             loading.onNext(.startLoading)
-        } else {
-            currentKeyword = searchBarText
-            addQueryUseCase.addQueryOnCoreData(keyword: searchBarText) {
-                self.updateRecentQuery()
-            }
-            searchFoodUseCase.fetchFood(text: searchBarText)
-            loading.onNext(.startLoading)
-        }
-        // queryView, searchBar, favoriteView 분기
+//        }
+        // 즐겨찾기 조건갔다오면 먹통
+        // 추가후 밑에서 추가됨 알림 뷰
     }
     
     func updateRecentQuery() {
-        self.searchQueryObservable.onNext(self.addQueryUseCase.loadQuery().reversed())
+        self.searchQueryObservable.onNext(self.manageQueryUseCase.loadQuery().reversed())
     }
     
     func favoriteSearchBarScopeTapped() {
         scopeState = .favorites
         favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
         searchFoodViewModelObservable.onNext(favoriteFoodViewModels)
+    }
+    
+    func eraseAllQuery() {
+        manageQueryUseCase.deleteAllQuery()
+        updateRecentQuery()
     }
     
     // MARK: - Output
@@ -136,6 +139,7 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     var scopeState: SearchBarScopeState = .searchResult
     enum SearchBarScopeState {
+        case query
         case searchResult
         case favorites
     }

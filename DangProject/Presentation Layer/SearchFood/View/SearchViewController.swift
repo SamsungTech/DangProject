@@ -20,6 +20,7 @@ class SearchViewController: UIViewController {
     let queryResultTableView = UITableView()
     let searchResultTableView = UITableView()
     let recentSearchLabel = UILabel()
+    let eraseAllQueryButton = UIButton()
     var disposeBag = DisposeBag()
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -42,6 +43,7 @@ class SearchViewController: UIViewController {
         setUpBackGround()
         setUpRecentLabel()
         setUpQueryResultTableView()
+        setUpEraseAllQueryButton()
     }
     
     private func setUpBackGround() {
@@ -68,6 +70,21 @@ class SearchViewController: UIViewController {
         queryResultTableView.register(QueryTableViewCell.self, forCellReuseIdentifier: "QueryCell")
         queryResultTableView.backgroundColor = .systemGray6
         queryResultTableView.roundCorners(cornerRadius: 15, maskedCorners: [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner])
+    }
+    
+    private func setUpEraseAllQueryButton() {
+        view.addSubview(eraseAllQueryButton)
+        eraseAllQueryButton.translatesAutoresizingMaskIntoConstraints = false
+        eraseAllQueryButton.bottomAnchor.constraint(equalTo: queryResultTableView.topAnchor, constant: 1).isActive = true
+        eraseAllQueryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
+        eraseAllQueryButton.setTitle("모두지우기", for: .normal)
+        eraseAllQueryButton.setTitleColor(.systemBlue, for: .normal)
+        eraseAllQueryButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .light)
+        eraseAllQueryButton.addTarget(self, action: #selector(eraseAllQueryButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func eraseAllQueryButtonTapped() {
+        viewModel.eraseAllQuery()
     }
     
     private func setUpSearchingPreferenceViews() {
@@ -113,11 +130,7 @@ class SearchViewController: UIViewController {
                 cell.bindTableViewCell(item: item)
             }
             .disposed(by: disposeBag)
-        
-//        searchResultTableView.rx
-//            .setDelegate(self)
-//            .disposed(by: disposeBag)
-        
+
         searchResultTableView.rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
@@ -190,21 +203,20 @@ class SearchViewController: UIViewController {
     
 }
 // MARK: - Extension
-extension SearchViewController: UITableViewDelegate {
-    
-}
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchResultTableView.isHidden = false
         recentSearchLabel.isHidden = true
         queryResultTableView.isHidden = true
+        eraseAllQueryButton.isHidden = true
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultTableView.isHidden = true
         viewModel.cancelButtonTapped()
         recentSearchLabel.isHidden = false
         queryResultTableView.isHidden = false
+        eraseAllQueryButton.isHidden = false
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -215,7 +227,6 @@ extension SearchViewController: UISearchBarDelegate {
         if selectedScope == 0 {
             viewModel.updateSearchResult()
         } else if selectedScope == 1 {
-            searchResultTableView.isHidden = false
             viewModel.favoriteSearchBarScopeTapped()
         }
     }
@@ -226,6 +237,7 @@ extension SearchViewController: TableViewCellDelegate {
         viewModel.changeFavorite(indexPath: cellIndexpath, foodModel: nil)
     }
 }
+
 extension SearchViewController: DetailFoodParentable {
     func addFoodsAfter(food: AddFoodsViewModel) {
         let eatenFoods = CoreDataManager.shared.loadFromCoreData(request: EatenFoods.fetchRequest())

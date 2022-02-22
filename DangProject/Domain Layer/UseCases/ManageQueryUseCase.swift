@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AddQueryUseCase {
+class ManageQueryUseCase {
     func addQueryOnCoreData(keyword: String, completion: @escaping ()-> Void) {
         checkQueryWithCoreData(keyword: keyword)
         CoreDataManager.shared.addRecentQuery(keyword)
@@ -31,5 +31,9 @@ class AddQueryUseCase {
             resultQuery.append(query.keyWord!)
         }
         return resultQuery
+    }
+    
+    func deleteAllQuery() {
+        CoreDataManager.shared.deleteAll(request: RecentQuery.fetchRequest())
     }
 }

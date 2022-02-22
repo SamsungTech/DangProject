@@ -29,7 +29,7 @@
 		7C1BF77427B2440200BDAE70 /* SearchFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77327B2440200BDAE70 /* SearchFoodViewModel.swift */; };
 		7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77627B2A5B200BDAE70 /* LoadingView.swift */; };
 		7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */; };
-		7C4C78FF27C3E6F5000E0A09 /* AddQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C78FE27C3E6F5000E0A09 /* AddQueryUseCase.swift */; };
+		7C4C78FF27C3E6F5000E0A09 /* ManageQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */; };
 		7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C790027C3ED8D000E0A09 /* QueryTableViewCell.swift */; };
 		7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */; };
 		7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */; };
@@ -75,7 +75,7 @@
 		7C1BF77327B2440200BDAE70 /* SearchFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodViewModel.swift; sourceTree = "<group>"; };
 		7C1BF77627B2A5B200BDAE70 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFavoriteUseCase.swift; sourceTree = "<group>"; };
-		7C4C78FE27C3E6F5000E0A09 /* AddQueryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddQueryUseCase.swift; sourceTree = "<group>"; };
+		7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQueryUseCase.swift; sourceTree = "<group>"; };
 		7C4C790027C3ED8D000E0A09 /* QueryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTableViewCell.swift; sourceTree = "<group>"; };
 		7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodsUseCase.swift; sourceTree = "<group>"; };
 		7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -223,7 +223,7 @@
 				7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */,
 				7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */,
 				7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */,
-				7C4C78FE27C3E6F5000E0A09 /* AddQueryUseCase.swift */,
+				7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -536,7 +536,7 @@
 				7C1BF75527AB75D700BDAE70 /* SearchViewModel.swift in Sources */,
 				7C1BF76427B1149F00BDAE70 /* FetchRepository.swift in Sources */,
 				7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */,
-				7C4C78FF27C3E6F5000E0A09 /* AddQueryUseCase.swift in Sources */,
+				7C4C78FF27C3E6F5000E0A09 /* ManageQueryUseCase.swift in Sources */,
 				7CF02AC727BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift in Sources */,
 				7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */,
 				7C1BF76D27B133A000BDAE70 /* SearchDIContainer.swift in Sources */,
