@@ -10,6 +10,11 @@ import UIKit
 import Then
 import RxSwift
 
+enum BatteryViewShape {
+    case expand
+    case nomal
+}
+
 class BatteryView: UIView {
     static let identifier = "BatteryCell"
     var viewModel: BatteryCellViewModel?
@@ -19,7 +24,7 @@ class BatteryView: UIView {
     
     let shapeLayer = CAShapeLayer()
     let trackLayer = CAShapeLayer()
-    private var circleProgressBar = UIView()
+    private var circleProgressBarView = UIView()
     var targetNumber = UILabel()
     var percentLabel = UILabel()
     var targetSugar = UILabel()
@@ -28,6 +33,9 @@ class BatteryView: UIView {
     private var endCount: Int = 0
     private var currentCount: Int = 0
     private var timer = Timer()
+    var targetNumberTopAnchor: NSLayoutConstraint?
+    var cirlceProgressBarTopAnchor: NSLayoutConstraint?
+    var customCalendarView = CustomCalendarView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,20 +74,21 @@ class BatteryView: UIView {
     }
     
     private func layout() {
-        [ circleProgressBar ].forEach() { self.addSubview($0) }
-        [ targetNumber, percentLabel, targetSugar ].forEach() { circleProgressBar.addSubview($0) }
+        [ circleProgressBarView, customCalendarView ].forEach() { self.addSubview($0) }
+        [ targetNumber, percentLabel, targetSugar ].forEach() { circleProgressBarView.addSubview($0) }
         
-        circleProgressBar.do {
+        circleProgressBarView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: 200).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 200).isActive = true
+            cirlceProgressBarTopAnchor = circleProgressBarView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            cirlceProgressBarTopAnchor?.isActive = true
+            $0.widthAnchor.constraint(equalToConstant: 300).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
         }
         targetNumber.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: 250).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -10).isActive = true
+            $0.centerXAnchor.constraint(equalTo: circleProgressBarView.centerXAnchor, constant: -10).isActive = true
+            $0.centerYAnchor.constraint(equalTo: circleProgressBarView.centerYAnchor).isActive = true
         }
         percentLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -91,18 +100,21 @@ class BatteryView: UIView {
             $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: 5).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
+        customCalendarView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: 100).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        }
     }
     
-    private func circleConfigure() {
+    func circleConfigure() {
         let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
                                         startAngle: -CGFloat.pi / 2,
                                         endAngle: 2 * CGFloat.pi,
                                         clockwise: true)
-        let view = UIView()
-        view.do {
-            $0.viewRadius(cornerRadius: 50)
-        }
         trackLayer.do {
             $0.path = circularPath.cgPath
             $0.strokeColor = UIColor.init(red: 255/255,
@@ -112,7 +124,7 @@ class BatteryView: UIView {
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
-            $0.position = CGPoint(x: 100, y: 170)
+            $0.position = CGPoint(x: 150, y: 180)
         }
         pulsatingLayer.do {
             $0.path = circularPath.cgPath
@@ -120,7 +132,7 @@ class BatteryView: UIView {
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
-            $0.position = CGPoint(x: 100, y: 170)
+            $0.position = CGPoint(x: 150, y: 180)
         }
         shapeLayer.do {
             $0.path = circularPath.cgPath
@@ -129,10 +141,10 @@ class BatteryView: UIView {
             $0.lineWidth = 14
             $0.lineCap = .round
             $0.strokeEnd = 0
-            $0.position = CGPoint(x: 100, y: 170)
+            $0.position = CGPoint(x: 150, y: 180)
         }
         
-        [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBar.layer.addSublayer($0) }
+        [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBarView.layer.addSublayer($0) }
         
         animatePulsatingLayer()
         animateShapeLayer()

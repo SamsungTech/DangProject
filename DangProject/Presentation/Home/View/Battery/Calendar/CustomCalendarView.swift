@@ -1,8 +1,8 @@
 //
-//  CalenderVIewController.swift
+//  CustomCalendarView.swift
 //  DangProject
 //
-//  Created by 김동우 on 2022/02/17.
+//  Created by 김동우 on 2022/02/23.
 //
 
 import UIKit
@@ -10,7 +10,7 @@ import RxCocoa
 import RxSwift
 
 // MARK: CalendarView customNavigationBar랑 합치기
-class CalendarViewController: UIViewController {
+class CustomCalendarView: UIView {
     private lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -30,12 +30,16 @@ class CalendarViewController: UIViewController {
     var testAnimationButton = UIButton()
     var disposeBag = DisposeBag()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         configure()
         autoLayout()
-        view.bringSubviewToFront(testAnimationButton)
-        view.backgroundColor = .white
+        self.bringSubviewToFront(testAnimationButton)
+        self.backgroundColor = .white
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func configure() {
@@ -50,27 +54,14 @@ class CalendarViewController: UIViewController {
         dateComponents.month = calendar.component(.month, from: currentDate)
         dateComponents.day = 1
         self.calculation()
-        testAnimationButton.do {
-            $0.rx.tap
-                .bind {
-                    self.collectionViewAnimation()
-                }
-                .disposed(by: disposeBag)
-            $0.backgroundColor = .blue
-        }
     }
     
     private func calculation() { // 월 별 일 수 계산
         let firstDay = calendar.date(from: dateComponents)
         let firstWeekDay = calendar.component(.weekday, from: firstDay!)
         
-        print("firstDay: " + "\(firstDay)" + "firstWeekday : " + "\(firstWeekDay)")
-        
         daysCount = calendar.range(of: .day, in: .month, for: firstDay!)!.count
         startDay = 2 - firstWeekDay
-        
-        print(daysCount)
-        print(startDay)
         
         self.yearMonthLabel.text = dateFormatter.string(from: firstDay!)
         self.days.removeAll()
@@ -84,44 +75,26 @@ class CalendarViewController: UIViewController {
     }
     
     private func autoLayout() {
-        [ calendarCollectionView, testAnimationButton ].forEach() { view.addSubview($0) }
+        [ calendarCollectionView ].forEach() { self.addSubview($0) }
         
         calendarCollectionView.do {
-            $0.frame = CGRect(x: .zero, y: .zero, width: UIScreen.main.bounds.maxX, height: UIScreen.main.bounds.maxY)
-        }
-        testAnimationButton.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: 60).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         }
-    }
-    
-    private func collectionViewAnimation() {
-        self.calendarCollectionView.layoutIfNeeded()
-        UIView.animate(withDuration: 0.5) {
-            self.calendarCollectionView.do {
-                $0.frame = CGRect(x: .zero, y: .zero, width: UIScreen.main.bounds.maxX, height: 0)
-            }
-        }
-        
     }
 }
 
-extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension CustomCalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 7
-        default:
-            return self.days.count
-        }
+        return self.days.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -133,17 +106,11 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier, for: indexPath) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
-        switch indexPath.section {
-        case 0:
-            cell.dayLabel.text = weeks[indexPath.item]
-        default:
-            cell.dayLabel.text = days[indexPath.item]
-        }
-        
+        cell.dayLabel.text = days[indexPath.item]
         return cell
     }
 }
 
-extension CalendarViewController: UICollectionViewDelegateFlowLayout {
+extension CustomCalendarView: UICollectionViewDelegateFlowLayout {
     
 }

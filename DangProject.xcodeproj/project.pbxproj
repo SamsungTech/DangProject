@@ -19,10 +19,10 @@
 		0B97987327BBAA100021162A /* GraphItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987227BBAA100021162A /* GraphItemViewModel.swift */; };
 		0B97987527BBE07C0021162A /* AteFoodCellInItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */; };
 		0B97987727BD218E0021162A /* BatteryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987627BD218E0021162A /* BatteryCellViewModel.swift */; };
-		0B97987927BD4C040021162A /* CalenderVIewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987827BD4C040021162A /* CalenderVIewController.swift */; };
 		0B97987C27BDEBB40021162A /* CalendarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987B27BDEBB40021162A /* CalendarCollectionViewCell.swift */; };
 		0B97988027C159100021162A /* CalendarUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987F27C159100021162A /* CalendarUseCase.swift */; };
 		0B97988227C16C260021162A /* CalendarEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988127C16C260021162A /* CalendarEntity.swift */; };
+		0B97988427C629E30021162A /* CustomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988327C629E30021162A /* CustomCalendarView.swift */; };
 		0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351827984F5E00634E51 /* Nutrient.swift */; };
 		0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351E2798503200634E51 /* MainCoordinator.swift */; };
 		0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435202798518C00634E51 /* HomeCoordinator.swift */; };
@@ -59,10 +59,10 @@
 		0B97987227BBAA100021162A /* GraphItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphItemViewModel.swift; sourceTree = "<group>"; };
 		0B97987427BBE07C0021162A /* AteFoodCellInItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodCellInItemViewModel.swift; sourceTree = "<group>"; };
 		0B97987627BD218E0021162A /* BatteryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryCellViewModel.swift; sourceTree = "<group>"; };
-		0B97987827BD4C040021162A /* CalenderVIewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalenderVIewController.swift; sourceTree = "<group>"; };
 		0B97987B27BDEBB40021162A /* CalendarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCollectionViewCell.swift; sourceTree = "<group>"; };
 		0B97987F27C159100021162A /* CalendarUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarUseCase.swift; sourceTree = "<group>"; };
 		0B97988127C16C260021162A /* CalendarEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntity.swift; sourceTree = "<group>"; };
+		0B97988327C629E30021162A /* CustomCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendarView.swift; sourceTree = "<group>"; };
 		0BB4351827984F5E00634E51 /* Nutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutrient.swift; sourceTree = "<group>"; };
 		0BB4351E2798503200634E51 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		0BB435202798518C00634E51 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
@@ -140,6 +140,8 @@
 		0B97987A27BDEBA10021162A /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
+				0B97988327C629E30021162A /* CustomCalendarView.swift */,
+				0B97987B27BDEBB40021162A /* CalendarCollectionViewCell.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -258,7 +260,9 @@
 			children = (
 				0BB43539279A660E00634E51 /* CustomNavigationBar.swift */,
 				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
-				0BB435332799705200634E51 /* Cells */,
+				0BB43548279FD47700634E51 /* Battery */,
+				0BB43547279FD46400634E51 /* AteFood */,
+				0BB43536279A5F4700634E51 /* Graph */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -291,17 +295,6 @@
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
-		0BB435332799705200634E51 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				0B97987A27BDEBA10021162A /* Calendar */,
-				0BB43548279FD47700634E51 /* Battery */,
-				0BB43547279FD46400634E51 /* AteFood */,
-				0BB43536279A5F4700634E51 /* Graph */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
 		0BB43536279A5F4700634E51 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
@@ -326,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				0BB43534279985A300634E51 /* BatteryView.swift */,
+				0B97987A27BDEBA10021162A /* Calendar */,
 			);
 			path = Battery;
 			sourceTree = "<group>";
@@ -344,8 +338,6 @@
 		0BB4354F27B2274700634E51 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0B97987827BD4C040021162A /* CalenderVIewController.swift */,
-				0B97987B27BDEBB40021162A /* CalendarCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -521,6 +513,7 @@
 				0B97987C27BDEBB40021162A /* CalendarCollectionViewCell.swift in Sources */,
 				0B97988227C16C260021162A /* CalendarEntity.swift in Sources */,
 				0B97987727BD218E0021162A /* BatteryCellViewModel.swift in Sources */,
+				0B97988427C629E30021162A /* CustomCalendarView.swift in Sources */,
 				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
@@ -529,7 +522,6 @@
 				0B97988027C159100021162A /* CalendarUseCase.swift in Sources */,
 				0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */,
 				0BB43535279985A300634E51 /* BatteryView.swift in Sources */,
-				0B97987927BD4C040021162A /* CalenderVIewController.swift in Sources */,
 				0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */,
 				0B97987327BBAA100021162A /* GraphItemViewModel.swift in Sources */,
 				0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */,

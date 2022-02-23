@@ -84,8 +84,6 @@ class HomeUseCase {
             return Disposables.create()
         }
     }
-    // MARK: viewModel에서 useCase를 하나가 아닌 두개? 가지고 있기 가능한가?
-    // MARK: 여기서 tempNutrient에 합한 결과값을 계산해두 되나? 아님 다른 useCase를 생성해서 거기서 결과값을 계산해야되나?
     
     func calculateSugarSum() -> Observable<sugarSum> {
         // MARK: 오퍼레이터로 만들수 있을 것 같은데?

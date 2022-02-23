@@ -61,7 +61,7 @@ class HomeViewController: UIViewController {
         homeScrollView.do {
             $0.backgroundColor = .systemGreen
             $0.showsVerticalScrollIndicator = true
-            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 2000)
+            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
             $0.contentInsetAdjustmentBehavior = .never
             $0.bounces = false
         }
@@ -71,6 +71,10 @@ class HomeViewController: UIViewController {
             $0.backgroundColor = .blue
             $0.distribution = .fill
             $0.alignment = .center
+        }
+        batteryView.do {
+            $0.layer.masksToBounds = true
+            $0.layer.cornerRadius = 30
         }
     }
     
@@ -109,7 +113,7 @@ class HomeViewController: UIViewController {
         }
         ateFoodView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-40).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             $0.heightAnchor.constraint(equalToConstant: 100).isActive = true
         }
         homeGraphView.do {
@@ -144,6 +148,7 @@ class HomeViewController: UIViewController {
     
     
     private func animation() {
+        batteryView.cirlceProgressBarTopAnchor?.constant = 200
         heightAnchor1?.constant = UIScreen.main.bounds.maxY
         UIView.animate(withDuration: 3, animations: {
             self.view.layoutIfNeeded()

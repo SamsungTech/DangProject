@@ -33,6 +33,11 @@ class AteFoodCollectionCell: UICollectionViewCell {
     }
     
     private func configure() {
+        contentView.do {
+            $0.layer.masksToBounds = true
+            $0.layer.cornerRadius = 20
+            
+        }
         foodNameLabel.do {
             $0.textColor = .white
             $0.font = UIFont.boldSystemFont(ofSize: 17)
@@ -46,7 +51,7 @@ class AteFoodCollectionCell: UICollectionViewCell {
     }
     
     private func layout() {
-        [ foodNameLabel, dangLabel ].forEach() { self.addSubview($0) }
+        [ foodNameLabel, dangLabel ].forEach() { contentView.addSubview($0) }
         
         foodNameLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false

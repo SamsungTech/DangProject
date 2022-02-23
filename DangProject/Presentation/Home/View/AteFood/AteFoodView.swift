@@ -85,6 +85,8 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
             let viewModel = AteFoodCellInItemViewModel(item: data)
             ateFoodCell.bind(viewModel: viewModel)
         }
+        ateFoodCell.contentView.layer.masksToBounds = true
+        ateFoodCell.contentView.layer.cornerRadius = 20
         return ateFoodCell
     }
     
