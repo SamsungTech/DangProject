@@ -21,6 +21,8 @@ class SearchViewController: UIViewController {
     let searchResultTableView = UITableView()
     let recentSearchLabel = UILabel()
     let eraseAllQueryButton = UIButton()
+    let addCompleteLabel = UILabel()
+    var addCompleteLabelTop = NSLayoutConstraint()
     var disposeBag = DisposeBag()
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -50,7 +52,7 @@ class SearchViewController: UIViewController {
         view.backgroundColor = .white
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
     }
-        
+    
     private func setUpRecentLabel() {
         view.addSubview(recentSearchLabel)
         recentSearchLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -84,7 +86,7 @@ class SearchViewController: UIViewController {
     }
     
     @objc private func eraseAllQueryButtonTapped() {
-        viewModel.eraseAllQuery()
+        viewModel.eraseQueryResult()
     }
     
     private func setUpSearchingPreferenceViews() {
@@ -113,12 +115,45 @@ class SearchViewController: UIViewController {
         searchResultTableView.keyboardDismissMode = .onDrag
     }
     
+    private func setUpAddCompleteLabel() {
+        view.addSubview(addCompleteLabel)
+        self.view.bringSubviewToFront(addCompleteLabel)
+        addCompleteLabel.translatesAutoresizingMaskIntoConstraints = false
+        addCompleteLabelTop = addCompleteLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
+        addCompleteLabelTop.isActive = true
+        addCompleteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        addCompleteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        addCompleteLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        addCompleteLabel.backgroundColor = .systemBlue
+        addCompleteLabel.textAlignment = .center
+        addCompleteLabel.textColor = .white
+        addCompleteLabel.roundCorners(cornerRadius: 15, maskedCorners: [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner])
+        addCompleteLabel.alpha = 0.7
+    }
+    
+    private func addCompleteLabelAnimation(name: String, amount: String) {
+        addCompleteLabel.text = "\(name) \(amount)개가 추가됐습니다."
+        UIView.animate(withDuration: 0.5, delay: 0.5, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: { [self] in
+            self.addCompleteLabelTop.isActive = false
+            self.addCompleteLabelTop = self.addCompleteLabel.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
+            self.addCompleteLabelTop.isActive = true
+            self.view.layoutIfNeeded()
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.5, delay: 2, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: { [self] in
+                self.addCompleteLabelTop.isActive = false
+                self.addCompleteLabelTop = addCompleteLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
+                self.addCompleteLabelTop.isActive = true
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+        })
+    }
+    
     // MARK: - Set Binding (RxSwift)
     private func setUpBindings() {
         bindSearchResultTableView()
-        bindSearchBar()
         bindLoading()
         bindQueryTableView()
+        setUpAddCompleteLabel()
     }
     
     private func bindSearchResultTableView() {
@@ -130,7 +165,7 @@ class SearchViewController: UIViewController {
                 cell.bindTableViewCell(item: item)
             }
             .disposed(by: disposeBag)
-
+        
         searchResultTableView.rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
@@ -141,7 +176,6 @@ class SearchViewController: UIViewController {
         searchResultTableView.rx
             .modelSelected(FoodViewModel.self)
             .subscribe(onNext: { [weak self] food in
-                
                 self?.coordinator?.pushDetailFoodView(food: food, from: self!)
             })
             .disposed(by: disposeBag)
@@ -151,7 +185,7 @@ class SearchViewController: UIViewController {
         viewModel.searchQueryObservable
             .observe(on: MainScheduler.instance)
             .bind(to: queryResultTableView.rx.items(cellIdentifier: "QueryCell", cellType: QueryTableViewCell.self)) {index, item, cell in
-                cell.queryLabel.text = item
+                cell.bindTextLabel(name: item)
             }
             .disposed(by: disposeBag)
         
@@ -180,7 +214,9 @@ class SearchViewController: UIViewController {
             .distinctUntilChanged()
             .filter({ !$0.isEmpty })
             .subscribe(onNext: { [unowned self] text in
-                viewModel.startSearching(searchBarText: text)
+                if searchController.searchBar.selectedScopeButtonIndex == 0 {
+                    viewModel.startSearching(searchBarText: text)
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -210,6 +246,7 @@ extension SearchViewController: UISearchBarDelegate {
         recentSearchLabel.isHidden = true
         queryResultTableView.isHidden = true
         eraseAllQueryButton.isHidden = true
+        bindSearchBar()
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultTableView.isHidden = true
@@ -221,13 +258,18 @@ extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         LoadingView.hideLoading()
+        if searchController.searchBar.selectedScopeButtonIndex == 1 {
+            viewModel.compareFavoriteResult(text: searchText)
+        }
     }
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         if selectedScope == 0 {
             viewModel.updateSearchResult()
+            viewModel.startSearching(searchBarText: searchBar.text!)
         } else if selectedScope == 1 {
             viewModel.favoriteSearchBarScopeTapped()
+            viewModel.compareFavoriteResult(text: searchBar.text!)
         }
     }
 }
@@ -240,11 +282,13 @@ extension SearchViewController: TableViewCellDelegate {
 
 extension SearchViewController: DetailFoodParentable {
     func addFoodsAfter(food: AddFoodsViewModel) {
+        addCompleteLabelAnimation(name: (food.foodModel?.name)!, amount: String(food.amount))
+        
+        // next action
         let eatenFoods = CoreDataManager.shared.loadFromCoreData(request: EatenFoods.fetchRequest())
         eatenFoods.forEach {
             print($0.name, $0.amount)
         }
-        // 음식 추가된 후 할것들 ( 장바구니 숫자 추가 등)
     }
     
     func favoriteTapped(foodModel: FoodViewModel) {

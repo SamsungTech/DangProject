@@ -29,4 +29,8 @@ class QueryTableViewCell: UITableViewCell {
         queryLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10).isActive = true
         queryLabel.textColor = .black
     }
+    
+    func bindTextLabel(name: String) {
+        queryLabel.text = name
+    }
 }
