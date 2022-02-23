@@ -10,7 +10,7 @@ import UIKit
 import Then
 import RxSwift
 
-class HomeGraphCell: UICollectionViewCell {
+class HomeGraphView: UIView {
     static let identifier = "HomeGraphCell"
     var viewModel: GraphItemViewModel?
     var disposeBag = DisposeBag()
@@ -34,7 +34,6 @@ class HomeGraphCell: UICollectionViewCell {
         graphMainView.do {
             $0.viewRadius(cornerRadius: 20)
         }
-        setCollectionCellShadow(cell: self)
     }
     
     required init?(coder: NSCoder) {
@@ -162,7 +161,7 @@ class HomeGraphCell: UICollectionViewCell {
     }
 }
 
-extension HomeGraphCell {
+extension HomeGraphView {
     func bind(viewModel: GraphItemViewModel) {
         self.viewModel = viewModel
         subscribe()

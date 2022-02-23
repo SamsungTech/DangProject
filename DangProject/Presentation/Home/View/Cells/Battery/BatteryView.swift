@@ -10,7 +10,7 @@ import UIKit
 import Then
 import RxSwift
 
-class BatteryCell: UICollectionViewCell {
+class BatteryView: UIView {
     static let identifier = "BatteryCell"
     var viewModel: BatteryCellViewModel?
     private var disposeBag = DisposeBag()
@@ -34,17 +34,13 @@ class BatteryCell: UICollectionViewCell {
         layout()
         circleConfigure()
         configure()
+        backgroundColor = .systemYellow
     }
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        setCollectionViewRadius(cell: self, radius: 30)
-        setCollectionCellShadow(cell: self)
-        mainView.do {
-            $0.viewRadius(cornerRadius: 30)
-            $0.setGradient(color1: .systemYellow, color2: .yellow)
-        }
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -65,42 +61,35 @@ class BatteryCell: UICollectionViewCell {
         targetSugar.do {
             $0.textColor = .white
             $0.font = UIFont.systemFont(ofSize: 20)
+            $0.text = "암것도없네"
         }
     }
     
     private func layout() {
-        [ mainView ].forEach() { contentView.addSubview($0) }
-        [ circleProgressBar ].forEach() { mainView.addSubview($0) }
+        [ circleProgressBar ].forEach() { self.addSubview($0) }
         [ targetNumber, percentLabel, targetSugar ].forEach() { circleProgressBar.addSubview($0) }
         
-        mainView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: -5).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 400).isActive = true
-        }
         circleProgressBar.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: mainView.centerYAnchor).isActive = true
+            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
             $0.widthAnchor.constraint(equalToConstant: 200).isActive = true
             $0.heightAnchor.constraint(equalToConstant: 200).isActive = true
         }
         targetNumber.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 180).isActive = true
-            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor, constant: -10).isActive = true
+            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: 250).isActive = true
+            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -10).isActive = true
         }
         percentLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor, constant: 35).isActive = true
+            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 35).isActive = true
             $0.bottomAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: -5).isActive = true
         }
         targetSugar.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: 5).isActive = true
-            $0.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
+            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
     }
     
@@ -123,7 +112,7 @@ class BatteryCell: UICollectionViewCell {
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
-            $0.position = CGPoint(x: 100, y: 130)
+            $0.position = CGPoint(x: 100, y: 170)
         }
         pulsatingLayer.do {
             $0.path = circularPath.cgPath
@@ -131,7 +120,7 @@ class BatteryCell: UICollectionViewCell {
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
-            $0.position = CGPoint(x: 100, y: 130)
+            $0.position = CGPoint(x: 100, y: 170)
         }
         shapeLayer.do {
             $0.path = circularPath.cgPath
@@ -140,7 +129,7 @@ class BatteryCell: UICollectionViewCell {
             $0.lineWidth = 14
             $0.lineCap = .round
             $0.strokeEnd = 0
-            $0.position = CGPoint(x: 100, y: 130)
+            $0.position = CGPoint(x: 100, y: 170)
         }
         
         [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBar.layer.addSublayer($0) }
@@ -151,7 +140,7 @@ class BatteryCell: UICollectionViewCell {
     }
 }
 
-extension BatteryCell {
+extension BatteryView {
     func bind(viewModel: BatteryCellViewModel) {
         self.viewModel = viewModel
         subscribe()
@@ -163,10 +152,16 @@ extension BatteryCell {
                 self.targetSugar.text = "목표: " + String(format: "%.1f", foodData.sum) + "/25.6g"
             })
             .disposed(by: disposeBag)
+        
+        viewModel?.batteryData
+            .subscribe(onNext: { batteryData in
+                print(batteryData)
+            })
+            .disposed(by: disposeBag)
     }
 }
 
-extension BatteryCell {
+extension BatteryView {
     private func animateShapeLayer() {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         
@@ -192,7 +187,7 @@ extension BatteryCell {
             self.currentCount = 0
             self.timer = Timer.scheduledTimer(timeInterval: 2/50,
                                               target: self,
-                                              selector: #selector(BatteryCell.updateNumber),
+                                              selector: #selector(BatteryView.updateNumber),
                                               userInfo: nil,
                                               repeats: true)
         }

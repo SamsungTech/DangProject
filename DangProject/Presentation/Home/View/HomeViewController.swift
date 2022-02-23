@@ -16,19 +16,23 @@ class HomeViewController: UIViewController {
     weak var coordinator: Coordinator?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
-    private var homeCollectionView: UICollectionView = {
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.do {
-            $0.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
-        }
-        let collectionView = UICollectionView(frame: .zero,
-                                              collectionViewLayout: flowLayout)
-        
-        return collectionView
-    }()
     private var heightAnchor: NSLayoutConstraint?
     private var firstContentY: CGFloat = 0
     private var batteryCellHeight: CGFloat?
+    private var barHeight: CGFloat = 90
+    private let gradient = CAGradientLayer()
+    private let newColors = [
+        UIColor.systemRed.cgColor,
+        UIColor.orange.cgColor,
+        UIColor.systemYellow.cgColor
+    ]
+    private var homeScrollView = UIScrollView()
+    private var homeStackView = UIStackView()
+    private var viewsInStackView: [UIView] = []
+    var batteryView = BatteryView()
+    var ateFoodView = AteFoodView()
+    var homeGraphView = HomeGraphView()
+    var heightAnchor1: NSLayoutConstraint?
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -38,13 +42,6 @@ class HomeViewController: UIViewController {
         
         return viewController
     }
-    private var barHeight: CGFloat = 90
-    private let gradient = CAGradientLayer()
-    private let newColors = [
-        UIColor.systemRed.cgColor,
-        UIColor.orange.cgColor,
-        UIColor.systemYellow.cgColor
-    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,40 +53,32 @@ class HomeViewController: UIViewController {
         view.bringSubviewToFront(customNavigationBar)
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .darkContent
-    }
-    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
-
-    
     
     private func configure() {
-        gradient.do {
-            $0.frame = homeCollectionView.frame
-            $0.colors = newColors
-        }
-        homeCollectionView.do {
-            $0.register(BatteryCell.self, forCellWithReuseIdentifier: BatteryCell.identifier)
-            $0.register(GraphCellHeader.self,
-                        forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                        withReuseIdentifier: GraphCellHeader.identifier)
-            $0.register(HomeGraphCell.self, forCellWithReuseIdentifier: HomeGraphCell.identifier)
-            $0.register(AteFoodHeader.self,
-                        forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                        withReuseIdentifier: AteFoodHeader.identifier)
-            $0.register(AteFoodCell.self, forCellWithReuseIdentifier: AteFoodCell.identifier)
-            $0.register(HomeCollectionFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: HomeCollectionFooter.identfier)
-            $0.dataSource = self
-            $0.delegate = self
+        homeScrollView.do {
+            $0.backgroundColor = .systemGreen
+            $0.showsVerticalScrollIndicator = true
+            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 2000)
             $0.contentInsetAdjustmentBehavior = .never
+            $0.bounces = false
+        }
+        homeStackView.do {
+            $0.axis = .vertical
+            $0.spacing = 50
+            $0.backgroundColor = .blue
+            $0.distribution = .fill
+            $0.alignment = .center
         }
     }
     
     private func layout() {
-        [ customNavigationBar, homeCollectionView ].forEach() { view.addSubview($0) }
+        [ customNavigationBar, homeScrollView ].forEach() { view.addSubview($0) }
+        [ homeStackView ].forEach() { homeScrollView.addSubview($0) }
+        [ batteryView, ateFoodView, homeGraphView ].forEach() { viewsInStackView.append($0) }
+        viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         
         customNavigationBar.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -99,183 +88,66 @@ class HomeViewController: UIViewController {
             heightAnchor = $0.heightAnchor.constraint(equalToConstant: 110)
             heightAnchor?.isActive = true
         }
-        homeCollectionView.do {
+        homeScrollView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
             $0.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         }
-    }
-}
-
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 1
-        case 1:
-            return 1
-        case 2:
-            return 1
-        default:
-            return 0
+        homeStackView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor).isActive = true
+            $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+            $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
-            guard let batteryCell = collectionView.dequeueReusableCell(withReuseIdentifier: BatteryCell.identifier, for: indexPath) as? BatteryCell else { return UICollectionViewCell() }
-            
-            if let viewModel = viewModel?.sumData.value {
-                let batteryViewModel = BatteryCellViewModel(item: viewModel)
-                batteryCell.bind(viewModel: batteryViewModel)
+        batteryView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+            heightAnchor1 = batteryView.heightAnchor.constraint(equalToConstant: 500)
+            heightAnchor1?.isActive = true
+        }
+        ateFoodView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-40).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        }
+        homeGraphView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-40).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        }
+        customNavigationBar.yearMouthButton.rx.tap
+            .bind {
+                self.animation()
             }
-            
-            return batteryCell
-        case 1:
-            guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCell.identifier, for: indexPath) as? AteFoodCell else { return UICollectionViewCell() }
-            if let viewModel = viewModel?.tempData.value {
-                let ateViewModel = AteFoodItemViewModel(item: viewModel)
-                ateFoodCell.bind(viewModel: ateViewModel)
-            }
-            return ateFoodCell
-        case 2:
-            guard let graphCell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeGraphCell.identifier,
-                                                                     for: indexPath) as? HomeGraphCell else { return UICollectionViewCell() }
-            if let viewModelItem = viewModel?.weekData.value {
-                let viewModel = GraphItemViewModel(item: viewModelItem)
-                graphCell.bind(viewModel: viewModel)
-                
-            }
-            return graphCell
-        default:
-            return UICollectionViewCell()
+            .disposed(by: disposeBag)
+        bind()
+    }
+    
+    private func bind() {
+        if let viewModel = viewModel?.sumData.value {
+            let batteryViewModel = BatteryCellViewModel(item: viewModel)
+            batteryView.bind(viewModel: batteryViewModel)
+        }
+        
+        if let viewModel = viewModel?.tempData.value {
+            let ateFoodViewModel = AteFoodItemViewModel(item: viewModel)
+            ateFoodView.bind(viewModel: ateFoodViewModel)
+        }
+        
+        if let viewModel = viewModel?.weekData.value {
+            let homeGraphViewModel = GraphItemViewModel(item: viewModel)
+            homeGraphView.bind(viewModel: homeGraphViewModel)
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        switch indexPath.section {
-        case 0:
-            return UICollectionReusableView()
-        case 1:
-            if kind == UICollectionView.elementKindSectionHeader {
-                return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                       withReuseIdentifier: AteFoodHeader.identifier,
-                                                                       for: indexPath)
-            }
-            return UICollectionReusableView()
-        case 2:
-            if kind == UICollectionView.elementKindSectionHeader {
-                return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                       withReuseIdentifier: GraphCellHeader.identifier,
-                                                                       for: indexPath)
-            }
-            if kind == UICollectionView.elementKindSectionFooter {
-                return collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                       withReuseIdentifier: HomeCollectionFooter.identfier,
-                                                                       for: indexPath)
-            }
-            return UICollectionReusableView()
-        default:
-            return UICollectionReusableView()
-        }
-    }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        referenceSizeForHeaderInSection section: Int) -> CGSize {
-        switch section {
-        case 0:
-            return CGSize()
-        case 1:
-            return CGSize(width: view.frame.size.width,
-                          height: 30)
-        case 2:
-            return CGSize(width: view.frame.size.width,
-                          height: 30)
-        default:
-            return CGSize()
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        referenceSizeForFooterInSection section: Int) -> CGSize {
-        switch section {
-        case 0:
-            return CGSize()
-        case 1:
-            return CGSize()
-        case 2:
-            return CGSize(width: UIScreen.main.bounds.maxX, height: 200)
-        default:
-            return CGSize()
-        }
-    }
-}
-
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch indexPath.section {
-        case 0:
-            return CGSize(width: self.homeCollectionView.frame.maxX-2,
-                          height: UIScreen.main.bounds.maxY/2)
-        case 1:
-            return CGSize(width: self.homeCollectionView.frame.maxX-20,
-                          height: 90)
-        case 2:
-            return CGSize(width: self.homeCollectionView.frame.maxX-20,
-                          height: 340)
-        default:
-            return CGSize()
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        switch section {
-        case 0:
-            return 0
-        case 1:
-            return 30
-        case 2:
-            return 0
-        default:
-            return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        switch section {
-        case 0:
-            return 0
-        case 1:
-            return 30
-        case 2:
-            return 0
-        default:
-            return 0
-        }
-    }
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    private func animation() {
+        heightAnchor1?.constant = UIScreen.main.bounds.maxY
+        UIView.animate(withDuration: 3, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
 }
 
@@ -283,14 +155,13 @@ extension HomeViewController {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         firstContentY = scrollView.contentOffset.y
     }
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let secondContentY = scrollView.contentOffset.y
         let finalContentY = secondContentY - firstContentY
-        fixHomeCollectionView(contentY: secondContentY)
         hideCustomNavigationBar(contentY: finalContentY)
     }
-    
+
     func scrollViewDidEndDragging(_ scrollView: UIScrollView,
                                   willDecelerate decelerate: Bool) {
         let secondContentY = scrollView.contentOffset.y
@@ -314,15 +185,7 @@ extension HomeViewController {
         }
         return false
     }
-    
-    private func fixHomeCollectionView(contentY: CGFloat) {
-        if contentY < 0 {
-            homeCollectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-        } else {
-            homeCollectionView.isScrollEnabled = true
-        }
-    }
-    
+
     private func hideCustomNavigationBar(contentY: CGFloat) {
         if contentY >= 0 {
             hideNavigationBarScrollDown(contentY: contentY)
@@ -330,7 +193,7 @@ extension HomeViewController {
             showNavigationBarScrollUp()
         }
     }
-    
+
     private func hideNavigationBarScrollDown(contentY: CGFloat) {
         if contentY < 90 && isAnimateNavigationBar(view: customNavigationBar) == false {
             customNavigationBar.frame = CGRect(x: 0,
@@ -346,7 +209,7 @@ extension HomeViewController {
             customNavigationBar.profileImageView.isHidden = true
         }
     }
-    
+
     private func showNavigationBarScrollUp() {
         self.customNavigationBar.profileImageView.isHidden = false
         customNavigationBar.setNavigationBarReturnAnimation()
@@ -359,7 +222,7 @@ extension HomeViewController {
                                                      height: 90)
         }
     }
-    
+
     private func animationCustomNavigationViewUp(contentY: CGFloat) {
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.customNavigationBar.frame = CGRect(x: 0,
@@ -370,7 +233,7 @@ extension HomeViewController {
         }
         self.customNavigationBar.profileImageView.isHidden = true
     }
-    
+
     private func animationCustomNavigationViewDown() {
         self.customNavigationBar.profileImageView.isHidden = false
         customNavigationBar.setNavigationBarReturnAnimation()

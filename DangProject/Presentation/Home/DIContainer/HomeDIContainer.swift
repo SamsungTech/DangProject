@@ -18,10 +18,13 @@ class HomeDIContainer {
                                          coordinator: coordinator)
     }
     func makeHomeViewModel() -> HomeViewModelProtocol {
-        return HomeViewModel(useCase: makeHomeUseCase())
+        return HomeViewModel(useCase: makeHomeUseCase(), calendarUseCase: makeCalendarUseCase())
     }
     func makeHomeUseCase() -> HomeUseCase {
         return HomeUseCase(repository: makeTampRepository())
+    }
+    func makeCalendarUseCase() -> CalendarUseCase {
+        return CalendarUseCase()
     }
     func makeTampRepository() -> TempRepository {
         return TempRepository()

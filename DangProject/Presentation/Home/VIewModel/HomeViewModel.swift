@@ -19,21 +19,25 @@ protocol HomeViewModelOutputProtocol {
     var mouthData: BehaviorRelay<[tempNutrient]> { get }
     var yearData: BehaviorRelay<[tempNutrient]> { get }
     var sumData: BehaviorRelay<sugarSum> { get }
+    var batteryData: BehaviorRelay<BatteryEntity> { get }
 }
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
 
 class HomeViewModel: HomeViewModelProtocol {
     private var useCase: HomeUseCase
+    private var calendarUseCase: CalendarUseCase
     var disposeBag = DisposeBag()
     var tempData = BehaviorRelay<[tempNutrient]>(value: [])
     var weekData = BehaviorRelay<[weekTemp]>(value: [])
     var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
     var yearData = BehaviorRelay<[tempNutrient]>(value: [])
     var sumData = BehaviorRelay<sugarSum>(value: .empty)
+    var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
     
-    init(useCase: HomeUseCase) {
+    init(useCase: HomeUseCase, calendarUseCase: CalendarUseCase) {
         self.useCase = useCase
+        self.calendarUseCase = calendarUseCase
     }
 }
 
@@ -67,6 +71,13 @@ extension HomeViewModel {
         useCase.calculateSugarSum()
             .subscribe(onNext: { data in
                 self.sumData.accept(data)
+            })
+            .disposed(by: disposeBag)
+        
+        calendarUseCase.calculationDaysInMouth()
+            .map { BatteryEntity(calendar: $0) }
+            .subscribe(onNext: { data in
+                self.batteryData.accept(data)
             })
             .disposed(by: disposeBag)
     }

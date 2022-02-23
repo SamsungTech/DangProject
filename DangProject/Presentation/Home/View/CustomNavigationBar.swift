@@ -19,6 +19,7 @@ class CustomNavigationBar: UIView {
     private let week = ["일", "월", "화", "수", "목", "금", "토"]
     private var weekStackView = UIStackView()
     private var weekLabels: [UILabel] = []
+    var yearMouthButton = UIButton()
     let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
@@ -45,6 +46,10 @@ class CustomNavigationBar: UIView {
             $0.text = "2020년 2월"
             $0.textAlignment = .center
         }
+        yearMouthButton.do {
+            $0.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+            $0.tintColor = .white
+        }
         weekStackView.do {
             $0.distribution = .fillEqually
             $0.alignment = .fill
@@ -53,7 +58,7 @@ class CustomNavigationBar: UIView {
     }
     
     private func layout() {
-        [ profileImageView, dateLabel, weekStackView ].forEach() { self.addSubview($0) }
+        [ profileImageView, dateLabel, yearMouthButton, weekStackView ].forEach() { self.addSubview($0) }
         
         profileImageView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -66,6 +71,13 @@ class CustomNavigationBar: UIView {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
             $0.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        }
+        yearMouthButton.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: 5).isActive = true
+            $0.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 40).isActive = true
         }
         weekStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false

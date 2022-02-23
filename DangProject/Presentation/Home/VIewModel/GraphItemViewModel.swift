@@ -15,6 +15,7 @@ struct weekTemp {
     
     init(tempNutrient: tempNutrient) {
         guard let dangdang = tempNutrient.dang else { return }
+        // MARK: 여기서 형변환 ㄴㄴ
         guard let dangdang = Double(dangdang) else { return }
         self.dangdang = dangdang
     }

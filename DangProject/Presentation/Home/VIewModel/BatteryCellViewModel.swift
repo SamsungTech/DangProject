@@ -7,12 +7,41 @@
 
 import Foundation
 import RxRelay
+import RxSwift
+
+struct BatteryEntity {
+    static let empty: Self = .init(calendar: .empty)
+    
+    var days: [String]?
+    var daysCount: Int?
+    var week: [String]?
+    var yearMouth: String?
+    
+    init(calendar: CalendarEntity) {
+        guard let days = calendar.days,
+              let daysCount = calendar.daysCount,
+              let week = calendar.weeks,
+              let yearMouth = calendar.yearMouth else { return }
+        self.days = days
+        self.daysCount = daysCount
+        self.week = week
+        self.yearMouth = yearMouth
+    }
+}
 
 class BatteryCellViewModel {
-    // MARK: sugarSum은 Domain 레이어에 entity인데 viewModel에서 사용가능?
+    private var useCase: CalendarUseCase?
     var items = BehaviorRelay<sugarSum>(value: .empty)
+    var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
     
     init(item: sugarSum) {
         self.items.accept(item)
     }
+    init(batteryData: BatteryEntity) {
+        self.batteryData.accept(batteryData)
+    }
+}
+
+extension BatteryCellViewModel {
+    
 }

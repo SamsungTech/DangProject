@@ -10,7 +10,7 @@ import UIKit
 import Then
 import RxSwift
 
-class AteFoodCell: UICollectionViewCell {
+class AteFoodView: UIView {
     static let identifier = "AteFoodCell"
     var viewModel: AteFoodItemViewModel?
     private var cardView = UIView()
@@ -27,6 +27,7 @@ class AteFoodCell: UICollectionViewCell {
         super.init(frame: frame)
         layout()
         configure()
+        self.backgroundColor = .clear
     }
     
     required init?(coder: NSCoder) {
@@ -54,7 +55,7 @@ class AteFoodCell: UICollectionViewCell {
     }
 }
 
-extension AteFoodCell {
+extension AteFoodView {
     func bind(viewModel: AteFoodItemViewModel) {
         self.viewModel = viewModel
         subscribe()
@@ -69,7 +70,7 @@ extension AteFoodCell {
     }
 }
 
-extension AteFoodCell: UICollectionViewDelegate, UICollectionViewDataSource {
+extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         guard let tempDataCount = viewModel?.items.value.count else { return 0 }
@@ -94,6 +95,6 @@ extension AteFoodCell: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 }
 
-extension AteFoodCell: UICollectionViewDelegateFlowLayout {
+extension AteFoodView: UICollectionViewDelegateFlowLayout {
     
 }

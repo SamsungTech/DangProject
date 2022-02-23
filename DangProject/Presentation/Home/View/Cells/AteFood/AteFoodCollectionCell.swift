@@ -21,13 +21,11 @@ class AteFoodCollectionCell: UICollectionViewCell {
         super.init(frame: frame)
         layout()
         configure()
+        self.backgroundColor = .systemGreen
     }
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        self.contentView.layer.backgroundColor = UIColor.blue.cgColor
-        setCollectionViewRadius(cell: self, radius: 15)
-        setCollectionCellShadow(cell: self)
     }
     
     required init?(coder: NSCoder) {
@@ -48,7 +46,7 @@ class AteFoodCollectionCell: UICollectionViewCell {
     }
     
     private func layout() {
-        [ foodNameLabel, dangLabel ].forEach() { contentView.addSubview($0) }
+        [ foodNameLabel, dangLabel ].forEach() { self.addSubview($0) }
         
         foodNameLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false

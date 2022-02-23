@@ -12,6 +12,12 @@ struct tempNutrient {
     
     var dang: String?
     var foodName: String?
+    
+    init(dang: String?,
+         foodName: String?) {
+        self.dang = dang
+        self.foodName = foodName
+    }
 }
 
 struct sugarSum {

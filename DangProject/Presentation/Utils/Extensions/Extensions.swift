@@ -39,8 +39,8 @@ extension UIView {
             $0.contentView.layer.cornerRadius = radius
         }
     }
-    func setCollectionCellShadow(cell: UICollectionViewCell) {
-        cell.do {
+    func setCollectionCellShadow(view: UIView) {
+        view.do {
             $0.layer.shadowPath = nil
             $0.layer.shadowOffset = CGSize(width: 2, height: 2)
             $0.layer.shadowOpacity = 0.2
