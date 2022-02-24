@@ -16,6 +16,7 @@ class SearchViewController: UIViewController {
     var coordinator: SearchCoordinator?
     
     let viewModel: SearchViewModel
+    
     let searchController = UISearchController(searchResultsController: nil)
     let queryResultTableView = UITableView()
     let searchResultTableView = UITableView()
@@ -23,6 +24,7 @@ class SearchViewController: UIViewController {
     let eraseAllQueryButton = UIButton()
     let addCompleteLabel = UILabel()
     var addCompleteLabelTop = NSLayoutConstraint()
+    
     var disposeBag = DisposeBag()
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -212,7 +214,6 @@ class SearchViewController: UIViewController {
             .orEmpty
             .debounce(.seconds(1), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
-            .filter({ !$0.isEmpty })
             .subscribe(onNext: { [unowned self] text in
                 if searchController.searchBar.selectedScopeButtonIndex == 0 {
                     viewModel.startSearching(searchBarText: text)
@@ -246,6 +247,7 @@ extension SearchViewController: UISearchBarDelegate {
         recentSearchLabel.isHidden = true
         queryResultTableView.isHidden = true
         eraseAllQueryButton.isHidden = true
+        searchController.searchBar.selectedScopeButtonIndex = 0
         bindSearchBar()
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
