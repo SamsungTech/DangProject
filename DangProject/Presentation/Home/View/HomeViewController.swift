@@ -33,6 +33,7 @@ class HomeViewController: UIViewController {
     var ateFoodView = AteFoodView()
     var homeGraphView = HomeGraphView()
     var heightAnchor1: NSLayoutConstraint?
+    private var isExpandBatteryView = false
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -53,6 +54,12 @@ class HomeViewController: UIViewController {
         view.bringSubviewToFront(customNavigationBar)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
+        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
@@ -62,7 +69,7 @@ class HomeViewController: UIViewController {
             $0.backgroundColor = .systemGreen
             $0.showsVerticalScrollIndicator = true
             $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
-            $0.contentInsetAdjustmentBehavior = .never
+            $0.contentInsetAdjustmentBehavior = .automatic //MARK: 얘가 문제네 ㅋ;;
             $0.bounces = false
         }
         homeStackView.do {
@@ -101,7 +108,7 @@ class HomeViewController: UIViewController {
         }
         homeStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor).isActive = true
+            $0.topAnchor.constraint(equalTo: homeScrollView.frameLayoutGuide.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
@@ -123,16 +130,16 @@ class HomeViewController: UIViewController {
         }
         customNavigationBar.yearMouthButton.rx.tap
             .bind {
-                self.animation()
+                self.batteryAnimation()
             }
             .disposed(by: disposeBag)
         bind()
     }
     
     private func bind() {
-        if let viewModel = viewModel?.sumData.value {
-            let batteryViewModel = BatteryCellViewModel(item: viewModel)
-            batteryView.bind(viewModel: batteryViewModel)
+        if let calendarViewModel = viewModel?.batteryData.value {
+            let calendarViewModel = BatteryCellViewModel(batteryData: calendarViewModel)
+            batteryView.bind(viewModel: calendarViewModel)
         }
         
         if let viewModel = viewModel?.tempData.value {
@@ -146,109 +153,39 @@ class HomeViewController: UIViewController {
         }
     }
     
+    private func batteryAnimation() {
+        if isExpandBatteryView == false {
+            expandAnimation()
+        } else {
+            revertAnimation()
+        }
+    }
     
-    private func animation() {
-        batteryView.cirlceProgressBarTopAnchor?.constant = 200
+    private func expandAnimation() {
+        batteryView.scrollViewTopAnchor?.constant = 110
+        batteryView.cirlceProgressBarTopAnchor?.constant = 400
         heightAnchor1?.constant = UIScreen.main.bounds.maxY
-        UIView.animate(withDuration: 3, animations: {
+        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1544)
+        UIView.animate(withDuration: 0.5, animations: {
             self.view.layoutIfNeeded()
         })
+        isExpandBatteryView = true
+    }
+    
+    private func revertAnimation() {
+        batteryView.scrollViewTopAnchor?.constant = -70
+        batteryView.cirlceProgressBarTopAnchor?.constant = 170
+        heightAnchor1?.constant = 500
+        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        isExpandBatteryView = false
     }
 }
 
 extension HomeViewController {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        firstContentY = scrollView.contentOffset.y
-    }
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let secondContentY = scrollView.contentOffset.y
-        let finalContentY = secondContentY - firstContentY
-        hideCustomNavigationBar(contentY: finalContentY)
-    }
-
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView,
-                                  willDecelerate decelerate: Bool) {
-        let secondContentY = scrollView.contentOffset.y
-        let finalContentY = secondContentY - firstContentY
-        if finalContentY > 45 {
-            animationCustomNavigationViewUp(contentY: finalContentY)
-        } else {
-            animationCustomNavigationViewDown()
-        }
-    }
-}
-
-extension HomeViewController {
-    private func isAnimateNavigationBar(view: UIView) -> Bool {
-        let rect = CGRect(x: 0,
-                          y: -90,
-                          width: UIScreen.main.bounds.maxX,
-                          height: 90)
-        if view.frame == rect {
-            return true
-        }
-        return false
-    }
-
-    private func hideCustomNavigationBar(contentY: CGFloat) {
-        if contentY >= 0 {
-            hideNavigationBarScrollDown(contentY: contentY)
-        } else {
-            showNavigationBarScrollUp()
-        }
-    }
-
-    private func hideNavigationBarScrollDown(contentY: CGFloat) {
-        if contentY < 90 && isAnimateNavigationBar(view: customNavigationBar) == false {
-            customNavigationBar.frame = CGRect(x: 0,
-                                               y: -contentY,
-                                               width: UIScreen.main.bounds.maxX,
-                                               height: 90)
-            customNavigationBar.profileImageView.alpha = (90-contentY)/90
-        } else {
-            customNavigationBar.frame = CGRect(x: 0,
-                                               y: -90,
-                                               width: UIScreen.main.bounds.maxX,
-                                               height: 90)
-            customNavigationBar.profileImageView.isHidden = true
-        }
-    }
-
-    private func showNavigationBarScrollUp() {
-        self.customNavigationBar.profileImageView.isHidden = false
-        customNavigationBar.setNavigationBarReturnAnimation()
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.customNavigationBar.profileImageView.alpha = 1.0
-            self?.customNavigationBar.layoutIfNeeded()
-            self?.customNavigationBar.frame = CGRect(x: 0,
-                                                     y: 0,
-                                                     width: UIScreen.main.bounds.maxX,
-                                                     height: 90)
-        }
-    }
-
-    private func animationCustomNavigationViewUp(contentY: CGFloat) {
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.customNavigationBar.frame = CGRect(x: 0,
-                                               y: -90,
-                                               width: UIScreen.main.bounds.maxX,
-                                               height: 90)
-            self?.customNavigationBar.profileImageView.alpha = (90-contentY)/90
-        }
-        self.customNavigationBar.profileImageView.isHidden = true
-    }
-
-    private func animationCustomNavigationViewDown() {
-        self.customNavigationBar.profileImageView.isHidden = false
-        customNavigationBar.setNavigationBarReturnAnimation()
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.customNavigationBar.profileImageView.alpha = 1.0
-            self?.customNavigationBar.layoutIfNeeded()
-            self?.customNavigationBar.frame = CGRect(x: 0,
-                                                     y: 0,
-                                                     width: UIScreen.main.bounds.maxX,
-                                                     height: 90)
-        }
-    }
+    
+    
+    
 }

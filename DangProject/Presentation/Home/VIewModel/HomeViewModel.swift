@@ -80,5 +80,7 @@ extension HomeViewModel {
                 self.batteryData.accept(data)
             })
             .disposed(by: disposeBag)
+        
+        
     }
 }

@@ -35,6 +35,7 @@ class CustomNavigationBar: UIView {
     }
     
     private func configure() {
+        self.backgroundColor = .systemYellow
         profileImageView.do {
             $0.image = UIImage(named: "231.png")
             $0.tintColor = .white
@@ -100,9 +101,4 @@ class CustomNavigationBar: UIView {
             weekStackView.addArrangedSubview(label)
         }
     }
-}
-
-extension CustomNavigationBar {
-    func setNavigationBarAnimation(completion: @escaping () -> Void) {}
-    func setNavigationBarReturnAnimation() {}
 }

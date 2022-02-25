@@ -16,6 +16,7 @@ struct BatteryEntity {
     var daysCount: Int?
     var week: [String]?
     var yearMouth: String?
+    var lineNumber: Int?
     
     init(calendar: CalendarEntity) {
         guard let days = calendar.days,

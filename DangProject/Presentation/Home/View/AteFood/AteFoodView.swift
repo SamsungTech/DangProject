@@ -87,6 +87,7 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         ateFoodCell.contentView.layer.masksToBounds = true
         ateFoodCell.contentView.layer.cornerRadius = 20
+        ateFoodCell.backgroundColor = .systemYellow
         return ateFoodCell
     }
     

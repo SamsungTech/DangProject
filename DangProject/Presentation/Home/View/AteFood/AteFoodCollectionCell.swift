@@ -21,7 +21,7 @@ class AteFoodCollectionCell: UICollectionViewCell {
         super.init(frame: frame)
         layout()
         configure()
-        self.backgroundColor = .systemGreen
+        self.backgroundColor = .clear
     }
     
     override func draw(_ rect: CGRect) {

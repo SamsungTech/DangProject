@@ -29,6 +29,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
             $0.textAlignment = .center
             $0.font = UIFont.boldSystemFont(ofSize: 15)
         }
+        self.contentView.backgroundColor = .clear
     }
     
     private func layout() {
@@ -36,8 +37,8 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         
         dayLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         }
     }
 }

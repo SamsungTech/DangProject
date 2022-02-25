@@ -21,8 +21,25 @@ class CalendarUseCase {
     var daysCount = 0
     var startDay = 0
     var yearMonth = ""
+    var lineNumber = 0
     
     func calculationDaysInMouth() -> Observable<CalendarEntity> {
+        calculateCalendar()
+        
+        return Observable.create { [weak self] (observer) -> Disposable in
+            observer.onNext(
+                CalendarEntity(days: self?.days,
+                               daysCount: self?.daysCount,
+                               weeks: self?.weeks,
+                               yearMouth: self?.yearMonth,
+                               lineNumber: self?.lineNumber)
+            )
+            observer.onCompleted()
+            return Disposables.create()
+        }
+    }
+    
+    func calculateCalendar() {
         dateFormatter.dateFormat = "yyyy년 M월"
         dateComponents.year = calendar.component(.year, from: currentDate)
         dateComponents.month = calendar.component(.month, from: currentDate)
@@ -30,7 +47,6 @@ class CalendarUseCase {
         
         if let firstDay = calendar.date(from: dateComponents) {
             let firstWeekDay = calendar.component(.weekday, from: firstDay)
-            
             daysCount = calendar.range(of: .day, in: .month, for: firstDay)?.count ?? 0
             startDay = 2 - firstWeekDay
             yearMonth = dateFormatter.string(from: firstDay)
@@ -44,16 +60,46 @@ class CalendarUseCase {
                 self.days.append(String(day))
             }
         }
-        
-        return Observable.create { [weak self] (observer) -> Disposable in
-            observer.onNext(
-                CalendarEntity(days: self?.days,
-                               daysCount: self?.daysCount,
-                               weeks: self?.weeks,
-                               yearMouth: self?.yearMonth)
-            )
-            observer.onCompleted()
-            return Disposables.create()
+        calculateCurrentCellYPoint()
+    }
+    
+    func previousCalculation() {
+        dateComponents.month = dateComponents.month! - 1
+        calculateCalendar()
+    }
+    
+    func nextCalculation() {
+        dateComponents.month = dateComponents.month! + 1
+        calculateCalendar()
+    }
+    
+    func calculateCurrentCellYPoint() {
+        if days.first == "" {
+            let startEmpty = abs(startDay - 1)
+            let currentDay = calendar.component(.day, from: currentDate) + startEmpty
+            lineNumber = calculateLine(currentDay: currentDay)
+        } else {
+            
+        }
+    }
+    
+    private func calculateLine(currentDay: Int) -> Int {
+        switch abs(currentDay/7) {
+        case 0:
+            print("첫번째 줄")
+            return 1
+        case 1:
+            print("두번째 줄")
+            return 2
+        case 2:
+            print("세번째 줄")
+            return 3
+        case 3:
+            print("네번째 줄")
+            return 4
+        default:
+            print("다섯번째 줄")
+            return 5
         }
     }
 }
