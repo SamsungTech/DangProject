@@ -40,7 +40,6 @@ class BatteryView: UIView {
     var calendarScrollView = UIScrollView()
     var scrollViewTopAnchor: NSLayoutConstraint?
     var calendarViews: [CalendarView] = []
-    private var scrollDiection: ScrollDiection?
     
     let colors: [UIColor] = [ .systemGreen, .systemYellow, .systemBlue ]
     
@@ -81,7 +80,6 @@ class BatteryView: UIView {
             $0.showsVerticalScrollIndicator = true
             $0.isPagingEnabled = true
             $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX * 3, height: 300)
-            $0.delegate = self
         }
     }
     
@@ -181,7 +179,6 @@ extension BatteryView {
     func bind(viewModel: BatteryCellViewModel) {
         self.viewModel = viewModel
         subscribe()
-        createStackView()
     }
     
     private func subscribe() {
@@ -193,13 +190,19 @@ extension BatteryView {
         
         viewModel?.batteryData
             .subscribe(onNext: { batteryData in
+                print("init CalendarDataArray","\n",
+                      batteryData.calendar?[0].yearMouth ?? "","\n",
+                      batteryData.calendar?[1].yearMouth ?? "","\n",
+                      batteryData.calendar?[2].yearMouth ?? "")
+                self.createStackView(data: batteryData.calendar ?? [])
             })
             .disposed(by: disposeBag)
     }
     
-    func createStackView() {
+    // MARK: 데이터를 받지말고 viewModel을 주입 (3번)
+    func createStackView(data: [CalendarEntity]) {
         for i in 0..<3 {
-            guard let viewModel = self.viewModel else { return }
+            let viewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: data[i]))
             let calendarView = CalendarView()
             calendarView.bind(viewModel: viewModel)
             calendarView.do {
@@ -214,52 +217,8 @@ extension BatteryView {
     }
 }
 
-extension BatteryView: UIScrollViewDelegate {
-    
-    // MARK: 무한 스크롤 캘린더 만들기
-    // MARK: calendarUsecase에서 3개의 달력 데이터를 미리 끌고오고 담아놓고
-    // MARK: 스크롤 할때마다 그 해당 앞 달이든 뒷 달이든 데이터를 불러와야됨
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
-                                   withVelocity velocity: CGPoint,
-                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        switch targetContentOffset.pointee.x {
-        case 0:
-            scrollDiection = .left
-            let centerView = calendarViews[1]
-//            centerView.viewModel?.batteryData.accept(<#T##event: BatteryEntity##BatteryEntity#>)
-            print("왼쪽")
-        case self.frame.width * CGFloat(1):
-            break
-        case self.frame.width * CGFloat(2):
-            scrollDiection = .right
-            print("오른쪽")
-        default:
-            break
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        switch scrollDiection {
-        case .left:
-            print("왼쪽")
-            updateCalendar()
-        case .none:
-            break
-        case .right:
-            print("오른쪽")
-            updateCalendar()
-        default:
-            break
-        }
-    }
-}
 
 extension BatteryView {
-    private func updateCalendar() {
-        let centerPoint = CGPoint(x: self.frame.width, y: .zero)
-        calendarScrollView.setContentOffset(centerPoint, animated: false)
-    }
-    
     private func animateShapeLayer() {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         

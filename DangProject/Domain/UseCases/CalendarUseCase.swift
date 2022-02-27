@@ -9,42 +9,41 @@ import Foundation
 import UIKit
 import RxSwift
 
-// MARK: 그럼 각기 다른 repository를 가질수 있나? useCase마다 다른 repository
-// MARK: 사용되는 객체 = days(몇개의 cell이 필요한지), weeks
 class CalendarUseCase {
-    let currentDate = Date()
-    var calendar = Calendar.current
-    let dateFormatter = DateFormatter()
-    var dateComponents = DateComponents()
-    var weeks: [String] = ["일", "월", "화", "수", "목", "금", "토"]
-    var days: [String] = []
-    var daysCount = 0
-    var startDay = 0
-    var yearMonth = ""
-    var lineNumber = 0
+    private let currentDate = Date()
+    private var calendar = Calendar.current
+    private let dateFormatter = DateFormatter()
+    private var dateComponents = DateComponents()
+    private var weeks: [String] = ["일", "월", "화", "수", "목", "금", "토"]
+    private var days: [String] = []
+    private var daysCount = 0
+    private var startDay = 0
+    private var yearMonth = ""
     
-    func calculationDaysInMouth() -> Observable<CalendarEntity> {
-        calculateCalendar()
-        
-        return Observable.create { [weak self] (observer) -> Disposable in
-            observer.onNext(
-                CalendarEntity(days: self?.days,
-                               daysCount: self?.daysCount,
-                               weeks: self?.weeks,
-                               yearMouth: self?.yearMonth,
-                               lineNumber: self?.lineNumber)
-            )
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
+    private var animationLineNumber = 0
     
-    func calculateCalendar() {
+    private var calendarDataArray: [CalendarEntity] = []
+    
+    private var yearNumber = 0
+    
+    private var plusNumber = 1
+    private var plusMonthSumData = 0
+    private var plusMonthNumber = 0
+    
+    private var minusNumber = -1
+    private var minusMonthSumData = 0
+    private var minusMonthNumber = 0
+    
+    private var isYearNumberChange = false
+    
+    private func initDateFormatter() {
         dateFormatter.dateFormat = "yyyy년 M월"
         dateComponents.year = calendar.component(.year, from: currentDate)
         dateComponents.month = calendar.component(.month, from: currentDate)
         dateComponents.day = 1
-        
+    }
+    
+    private func calculateMouthCalendar() {
         if let firstDay = calendar.date(from: dateComponents) {
             let firstWeekDay = calendar.component(.weekday, from: firstDay)
             daysCount = calendar.range(of: .day, in: .month, for: firstDay)?.count ?? 0
@@ -60,30 +59,178 @@ class CalendarUseCase {
                 self.days.append(String(day))
             }
         }
-        calculateCurrentCellYPoint()
     }
     
-    func previousCalculation() {
-        dateComponents.month = dateComponents.month! - 1
-        calculateCalendar()
-    }
-    
-    func nextCalculation() {
-        dateComponents.month = dateComponents.month! + 1
-        calculateCalendar()
-    }
-    
-    func calculateCurrentCellYPoint() {
-        if days.first == "" {
-            let startEmpty = abs(startDay - 1)
-            let currentDay = calendar.component(.day, from: currentDate) + startEmpty
-            lineNumber = calculateLine(currentDay: currentDay)
-        } else {
-            
+    func calculationDaysInMouth() -> Observable<[CalendarEntity]> {
+        calendarDataArray.removeAll()
+        calculatePreviousMouth()
+        appendCalendarDataArray()
+        calculateCurrentMouth()
+        calculateNextMouth()
+        appendCalendarDataArray()
+        return Observable.create { [weak self] (observer) -> Disposable in
+            observer.onNext(self?.calendarDataArray ?? [])
+            observer.onCompleted()
+            return Disposables.create()
         }
     }
     
-    private func calculateLine(currentDay: Int) -> Int {
+    private func calculateCurrentMouth() {
+        initDateFormatter()
+        calculateMouthCalendar()
+        appendCalendarDataArray()
+        calculateCurrentCellYPoint()
+    }
+    
+    private func calculatePreviousMouth() {
+        initDateFormatter()
+        minusMonthSumData = dateComponents.month! + minusNumber
+        dateComponents.month = minusMonthSumData
+        
+        if minusMonthSumData == 0 {
+            setupPreviousCalculationsSameValue()
+        } else if minusMonthSumData < 0 {
+            setupPreviousYearCalculationLargeValue()
+        } else {
+            setupPreviousMouthNormally()
+        }
+    }
+    
+    private func setupPreviousCalculationsSameValue() {
+        yearNumber -= 1
+        dateComponents.year = dateComponents.year! + yearNumber
+        dateComponents.month = 12
+        calculateMouthCalendar()
+        isYearNumberChange = true
+        print("Previous month", minusMonthSumData)
+    }
+    
+    private func setupPreviousYearCalculationLargeValue() {
+        minusMonthNumber -= 1
+        dateComponents.year = dateComponents.year! + yearNumber
+        dateComponents.month = 12
+        dateComponents.month = dateComponents.month! + minusMonthNumber
+        calculateMouthCalendar()
+        print("Previous month", minusMonthSumData)
+    }
+    
+    private func setupPreviousMouthNormally() {
+        if isYearNumberChange == true { yearNumber -= 1 }
+        dateComponents.month = minusMonthSumData
+        print("Previous month", minusMonthSumData)
+        calculateMouthCalendar()
+        isYearNumberChange = false
+    }
+    
+    private func calculateNextMouth() {
+        initDateFormatter()
+        plusMonthSumData = dateComponents.month! + plusNumber
+        dateComponents.month = plusMonthSumData
+        
+        if plusMonthSumData == 13 {
+            setupNextYearCalculationsSameValue()
+        } else if plusMonthSumData > 13 {
+            setupNextYearCalculationLargeValue()
+        } else {
+            setupNextMouthNormally()
+        }
+    }
+    
+    private func setupNextYearCalculationsSameValue() {
+        yearNumber += 1
+        dateComponents.year = dateComponents.year! + yearNumber
+        dateComponents.month = 1
+        calculateMouthCalendar()
+        isYearNumberChange = true
+        print("next month", plusMonthSumData)
+    }
+    
+    private func setupNextYearCalculationLargeValue() {
+        plusMonthNumber += 1
+        dateComponents.year = dateComponents.year! + yearNumber
+        dateComponents.month = 1
+        dateComponents.month = dateComponents.month! + plusMonthNumber // MARK: 이게 0으로 되는 순간
+        calculateMouthCalendar()
+        print("next month", plusMonthSumData)
+    }
+    
+    private func setupNextMouthNormally() {
+        if isYearNumberChange == true { yearNumber += 1 }
+        dateComponents.month = plusMonthSumData
+        print("next month", plusMonthSumData)
+        calculateMouthCalendar()
+        isYearNumberChange = false
+    }
+    
+    private func appendCalendarDataArray() {
+        calendarDataArray.append(
+            CalendarEntity(days: self.days,
+                           daysCount: self.daysCount,
+                           weeks: self.weeks,
+                           yearMouth: self.yearMonth,
+                           lineNumber: self.animationLineNumber)
+        )
+    }
+    
+    // MARK: Rename
+    func leftSwipe() -> Observable<[CalendarEntity]> {
+        minusNumber -= 1
+        plusNumber -= 1
+        calendarDataArray.removeLast()
+        calculatePreviousMouth()
+        calendarDataArray.insert(CalendarEntity(days: self.days,
+                                                daysCount: self.daysCount,
+                                                weeks: self.weeks,
+                                                yearMouth: self.yearMonth,
+                                                lineNumber: self.animationLineNumber), at: 0)
+        print("left CalendarDataArray","\n",
+              calendarDataArray[0].yearMouth ?? "","\n",
+              calendarDataArray[1].yearMouth ?? "","\n",
+              calendarDataArray[2].yearMouth ?? "")
+        return Observable.create { [weak self] (observer) -> Disposable in
+            observer.onNext(self?.calendarDataArray ?? [])
+            observer.onCompleted()
+            return Disposables.create()
+        }
+
+    }
+    
+    // MARK: Rename
+    func rightSwipe() -> Observable<[CalendarEntity]> {
+        plusNumber += 1
+        minusNumber += 1
+        calendarDataArray.removeFirst()
+        calculateNextMouth()
+        calendarDataArray.insert(CalendarEntity(days: self.days,
+                                                daysCount: self.daysCount,
+                                                weeks: self.weeks,
+                                                yearMouth: self.yearMonth,
+                                                lineNumber: self.animationLineNumber), at: 2)
+        print("right CalendarDataArray","\n",
+              calendarDataArray[0].yearMouth ?? "","\n",
+              calendarDataArray[1].yearMouth ?? "","\n",
+              calendarDataArray[2].yearMouth ?? "")
+        return Observable.create { [weak self] (observer) -> Disposable in
+            observer.onNext(self?.calendarDataArray ?? [])
+            observer.onCompleted()
+            return Disposables.create()
+        }
+    }
+}
+
+extension CalendarUseCase {
+    private func calculateCurrentCellYPoint() {
+        if days.first == "" {
+            let startEmpty = abs(startDay - 1)
+            let currentDay = calendar.component(.day, from: currentDate) + startEmpty
+            animationLineNumber = calculateCurrentLine(currentDay: currentDay)
+        } else {
+            let currentDay = calendar.component(.day, from: currentDate)
+            animationLineNumber = calculateCurrentLine(currentDay: currentDay)
+        }
+    }
+    
+    private func calculateCurrentLine(currentDay: Int) -> Int {
         switch abs(currentDay/7) {
         case 0:
             print("첫번째 줄")

@@ -10,23 +10,13 @@ import RxRelay
 import RxSwift
 
 struct BatteryEntity {
-    static let empty: Self = .init(calendar: .empty)
+    static let empty: Self = .init(calendar: [])
     
-    var days: [String]?
-    var daysCount: Int?
-    var week: [String]?
-    var yearMouth: String?
-    var lineNumber: Int?
+    var calendar: [CalendarEntity]?
     
-    init(calendar: CalendarEntity) {
-        guard let days = calendar.days,
-              let daysCount = calendar.daysCount,
-              let week = calendar.weeks,
-              let yearMouth = calendar.yearMouth else { return }
-        self.days = days
-        self.daysCount = daysCount
-        self.week = week
-        self.yearMouth = yearMouth
+    init(calendar: [CalendarEntity]?) {
+        guard let calendar = calendar else { return }
+        self.calendar = calendar
     }
 }
 

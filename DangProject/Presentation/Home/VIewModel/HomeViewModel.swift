@@ -80,7 +80,23 @@ extension HomeViewModel {
                 self.batteryData.accept(data)
             })
             .disposed(by: disposeBag)
-        
-        
+    }
+    
+    func retrivePreviousMouthData() {
+        calendarUseCase.leftSwipe()
+            .map { BatteryEntity(calendar: $0) }
+            .subscribe(onNext: { data in
+                self.batteryData.accept(data)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func retriveNextMouthData() {
+        calendarUseCase.rightSwipe()
+            .map { BatteryEntity(calendar: $0) }
+            .subscribe(onNext: { data in
+                self.batteryData.accept(data)
+            })
+            .disposed(by: disposeBag)
     }
 }

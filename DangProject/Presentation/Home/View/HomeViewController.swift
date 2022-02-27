@@ -34,6 +34,7 @@ class HomeViewController: UIViewController {
     var homeGraphView = HomeGraphView()
     var heightAnchor1: NSLayoutConstraint?
     private var isExpandBatteryView = false
+    private var scrollDiection: ScrollDiection?
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -69,7 +70,7 @@ class HomeViewController: UIViewController {
             $0.backgroundColor = .systemGreen
             $0.showsVerticalScrollIndicator = true
             $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
-            $0.contentInsetAdjustmentBehavior = .automatic //MARK: 얘가 문제네 ㅋ;;
+            $0.contentInsetAdjustmentBehavior = .automatic
             $0.bounces = false
         }
         homeStackView.do {
@@ -82,6 +83,7 @@ class HomeViewController: UIViewController {
         batteryView.do {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = 30
+            $0.calendarScrollView.delegate = self
         }
     }
     
@@ -108,7 +110,7 @@ class HomeViewController: UIViewController {
         }
         homeStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: homeScrollView.frameLayoutGuide.topAnchor).isActive = true
+            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor, constant: -47).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
@@ -182,10 +184,57 @@ class HomeViewController: UIViewController {
         })
         isExpandBatteryView = false
     }
+    
+    func scrollLeftDiection() {
+        viewModel?.retrivePreviousMouthData()
+        viewModel?.batteryData
+            .subscribe({ data in
+//                print(data)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func scrollRightDirection() {
+        viewModel?.retriveNextMouthData()
+    }
 }
 
-extension HomeViewController {
+extension HomeViewController: UIScrollViewDelegate {
+    private func updateCalendarPoint() {
+        let centerPoint = CGPoint(x: batteryView.frame.width, y: .zero)
+        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
+    }
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        switch targetContentOffset.pointee.x {
+        case 0:
+            scrollDiection = .left
+            print("왼쪽")
+        case batteryView.frame.width * CGFloat(1):
+            break
+        case batteryView.frame.width * CGFloat(2):
+            scrollDiection = .right
+            print("오른쪽")
+        default:
+            break
+        }
+    }
     
-    
-    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        switch scrollDiection {
+        case .left:
+            print("왼쪽")
+            updateCalendarPoint()
+            scrollLeftDiection()
+        case .none?:
+            break
+        case .right:
+            print("오른쪽")
+            updateCalendarPoint()
+            scrollRightDirection()
+        default:
+            break
+        }
+    }
 }

@@ -10,14 +10,14 @@ import RxSwift
 
 class CalendarView: UIView {
     static let identifier = "CalendarCollectionView"
-    var viewModel: BatteryCellViewModel?
+    var viewModel: CalendarViewModel?
     private lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
         return collectionView
     }()
-    
     var testAnimationButton = UIButton()
     var disposeBag = DisposeBag()
     
@@ -53,7 +53,7 @@ class CalendarView: UIView {
         }
     }
     
-    func bind(viewModel: BatteryCellViewModel) {
+    func bind(viewModel: CalendarViewModel) {
         self.viewModel = viewModel
         subscribe()
     }
@@ -68,25 +68,29 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.batteryData.value.days?.count ?? 0
+        return viewModel?.calendarData.value.calendar?.days?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 46, height: 50)
+        return CGSize(width: 55, height: 50)
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier, for: indexPath) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
-        guard let day = viewModel?.batteryData.value.days?[indexPath.item] else { return UICollectionViewCell() }
-        cell.dayLabel.text = day
+        guard let day = viewModel?.calendarData.value.calendar?.days else { return UICollectionViewCell() }
+        cell.dayLabel.text = day[indexPath.item]
         return cell
     }
 }
 
 extension CalendarView: UICollectionViewDelegateFlowLayout {
-    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
 }
 

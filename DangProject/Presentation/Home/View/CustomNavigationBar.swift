@@ -24,7 +24,7 @@ class CustomNavigationBar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .clear
+        self.backgroundColor = .systemYellow
         createWeekLabel()
         configure()
         layout()
@@ -35,7 +35,6 @@ class CustomNavigationBar: UIView {
     }
     
     private func configure() {
-        self.backgroundColor = .systemYellow
         profileImageView.do {
             $0.image = UIImage(named: "231.png")
             $0.tintColor = .white
