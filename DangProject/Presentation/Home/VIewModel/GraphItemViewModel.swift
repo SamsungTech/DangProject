@@ -21,7 +21,7 @@ struct weekTemp {
     }
 }
 
-class GraphItemViewModel {
+class GraphItemViewModel: ViewModelFactoryProtocol {
     var items = BehaviorRelay<[weekTemp]>(value: [])
     
     init(item: [weekTemp]) {

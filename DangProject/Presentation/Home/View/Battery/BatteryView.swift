@@ -16,7 +16,7 @@ enum ScrollDiection {
     case left
 }
 
-class BatteryView: UIView {
+class BatteryView: UIView, ViewFactoryProtocol {
     static let identifier = "BatteryCell"
     var viewModel: BatteryCellViewModel?
     private var disposeBag = DisposeBag()
@@ -39,7 +39,7 @@ class BatteryView: UIView {
     var calendarStackView = UIStackView()
     var calendarScrollView = UIScrollView()
     var scrollViewTopAnchor: NSLayoutConstraint?
-    var calendarViews: [CalendarView] = []
+    var calendarViews: [CalendarView] = [CalendarView(), CalendarView(), CalendarView()]
     
     let colors: [UIColor] = [ .systemGreen, .systemYellow, .systemBlue ]
     
@@ -194,26 +194,35 @@ extension BatteryView {
                       batteryData.calendar?[0].yearMouth ?? "","\n",
                       batteryData.calendar?[1].yearMouth ?? "","\n",
                       batteryData.calendar?[2].yearMouth ?? "")
-                self.createStackView(data: batteryData.calendar ?? [])
+                self.calendarViews[0].calendarCollectionView.reloadData()
+                self.calendarViews[1].calendarCollectionView.reloadData()
+                self.calendarViews[2].calendarCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
+        viewModel?.publishBatteryData
+            .subscribe {
+                print("계속올끼?")
+            }
+            .disposed(by: disposeBag)
+        createStackView()
     }
     
     // MARK: 데이터를 받지말고 viewModel을 주입 (3번)
-    func createStackView(data: [CalendarEntity]) {
+    func createStackView() {
         for i in 0..<3 {
-            let viewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: data[i]))
-            let calendarView = CalendarView()
-            calendarView.bind(viewModel: viewModel)
-            calendarView.do {
-                $0.translatesAutoresizingMaskIntoConstraints = false
-                $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-                $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
-                $0.backgroundColor = colors[i]
+            if let viewModelItem = viewModel?.batteryData.value.calendar?[i] {
+                let calendarViewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: viewModelItem))
+                calendarViews[i].bind(viewModel: calendarViewModel)
+                calendarViews[i].do {
+                    $0.translatesAutoresizingMaskIntoConstraints = false
+                    $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+                    $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
+                    $0.backgroundColor = colors[i]
+                }
+                calendarStackView.addArrangedSubview(calendarViews[i])
             }
-            calendarViews.append(calendarView)
-            calendarStackView.addArrangedSubview(calendarView)
         }
+        
     }
 }
 

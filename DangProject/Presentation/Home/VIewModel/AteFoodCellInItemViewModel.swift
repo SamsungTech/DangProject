@@ -8,7 +8,7 @@
 import Foundation
 import RxRelay
 
-class AteFoodCellInItemViewModel {
+class AteFoodCellInItemViewModel: ViewModelFactoryProtocol {
     var items = BehaviorRelay<tempNutrient>(value: .empty)
     
     init(item: tempNutrient) {

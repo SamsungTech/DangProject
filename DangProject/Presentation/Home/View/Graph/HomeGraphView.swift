@@ -10,7 +10,7 @@ import UIKit
 import Then
 import RxSwift
 
-class HomeGraphView: UIView {
+class HomeGraphView: UIView, ViewFactoryProtocol {
     static let identifier = "HomeGraphCell"
     var viewModel: GraphItemViewModel?
     var disposeBag = DisposeBag()

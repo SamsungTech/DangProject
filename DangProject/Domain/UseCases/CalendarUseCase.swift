@@ -19,22 +19,10 @@ class CalendarUseCase {
     private var daysCount = 0
     private var startDay = 0
     private var yearMonth = ""
-    
     private var animationLineNumber = 0
-    
     private var calendarDataArray: [CalendarEntity] = []
-    
-    private var yearNumber = 0
-    
-    private var plusNumber = 1
-    private var plusMonthSumData = 0
-    private var plusMonthNumber = 0
-    
-    private var minusNumber = -1
-    private var minusMonthSumData = 0
-    private var minusMonthNumber = 0
-    
-    private var isYearNumberChange = false
+    private var plusNumber: Int = 1
+    private var minusNumber: Int = -1
     
     private func initDateFormatter() {
         dateFormatter.dateFormat = "yyyy년 M월"
@@ -61,7 +49,7 @@ class CalendarUseCase {
         }
     }
     
-    func calculationDaysInMouth() -> Observable<[CalendarEntity]> {
+    func initCalculationDaysInMouth() -> Observable<[CalendarEntity]> {
         calendarDataArray.removeAll()
         calculatePreviousMouth()
         appendCalendarDataArray()
@@ -84,82 +72,16 @@ class CalendarUseCase {
     
     private func calculatePreviousMouth() {
         initDateFormatter()
-        minusMonthSumData = dateComponents.month! + minusNumber
+        let minusMonthSumData = dateComponents.month! + minusNumber
         dateComponents.month = minusMonthSumData
-        
-        if minusMonthSumData == 0 {
-            setupPreviousCalculationsSameValue()
-        } else if minusMonthSumData < 0 {
-            setupPreviousYearCalculationLargeValue()
-        } else {
-            setupPreviousMouthNormally()
-        }
-    }
-    
-    private func setupPreviousCalculationsSameValue() {
-        yearNumber -= 1
-        dateComponents.year = dateComponents.year! + yearNumber
-        dateComponents.month = 12
         calculateMouthCalendar()
-        isYearNumberChange = true
-        print("Previous month", minusMonthSumData)
-    }
-    
-    private func setupPreviousYearCalculationLargeValue() {
-        minusMonthNumber -= 1
-        dateComponents.year = dateComponents.year! + yearNumber
-        dateComponents.month = 12
-        dateComponents.month = dateComponents.month! + minusMonthNumber
-        calculateMouthCalendar()
-        print("Previous month", minusMonthSumData)
-    }
-    
-    private func setupPreviousMouthNormally() {
-        if isYearNumberChange == true { yearNumber -= 1 }
-        dateComponents.month = minusMonthSumData
-        print("Previous month", minusMonthSumData)
-        calculateMouthCalendar()
-        isYearNumberChange = false
     }
     
     private func calculateNextMouth() {
         initDateFormatter()
-        plusMonthSumData = dateComponents.month! + plusNumber
+        let plusMonthSumData = dateComponents.month! + plusNumber
         dateComponents.month = plusMonthSumData
-        
-        if plusMonthSumData == 13 {
-            setupNextYearCalculationsSameValue()
-        } else if plusMonthSumData > 13 {
-            setupNextYearCalculationLargeValue()
-        } else {
-            setupNextMouthNormally()
-        }
-    }
-    
-    private func setupNextYearCalculationsSameValue() {
-        yearNumber += 1
-        dateComponents.year = dateComponents.year! + yearNumber
-        dateComponents.month = 1
         calculateMouthCalendar()
-        isYearNumberChange = true
-        print("next month", plusMonthSumData)
-    }
-    
-    private func setupNextYearCalculationLargeValue() {
-        plusMonthNumber += 1
-        dateComponents.year = dateComponents.year! + yearNumber
-        dateComponents.month = 1
-        dateComponents.month = dateComponents.month! + plusMonthNumber // MARK: 이게 0으로 되는 순간
-        calculateMouthCalendar()
-        print("next month", plusMonthSumData)
-    }
-    
-    private func setupNextMouthNormally() {
-        if isYearNumberChange == true { yearNumber += 1 }
-        dateComponents.month = plusMonthSumData
-        print("next month", plusMonthSumData)
-        calculateMouthCalendar()
-        isYearNumberChange = false
     }
     
     private func appendCalendarDataArray() {
@@ -172,8 +94,7 @@ class CalendarUseCase {
         )
     }
     
-    // MARK: Rename
-    func leftSwipe() -> Observable<[CalendarEntity]> {
+    func createPreviousCalendarData() -> Observable<[CalendarEntity]> {
         minusNumber -= 1
         plusNumber -= 1
         calendarDataArray.removeLast()
@@ -183,20 +104,14 @@ class CalendarUseCase {
                                                 weeks: self.weeks,
                                                 yearMouth: self.yearMonth,
                                                 lineNumber: self.animationLineNumber), at: 0)
-        print("left CalendarDataArray","\n",
-              calendarDataArray[0].yearMouth ?? "","\n",
-              calendarDataArray[1].yearMouth ?? "","\n",
-              calendarDataArray[2].yearMouth ?? "")
         return Observable.create { [weak self] (observer) -> Disposable in
             observer.onNext(self?.calendarDataArray ?? [])
             observer.onCompleted()
             return Disposables.create()
         }
-
     }
     
-    // MARK: Rename
-    func rightSwipe() -> Observable<[CalendarEntity]> {
+    func createNextCalendarData() -> Observable<[CalendarEntity]> {
         plusNumber += 1
         minusNumber += 1
         calendarDataArray.removeFirst()
@@ -206,10 +121,6 @@ class CalendarUseCase {
                                                 weeks: self.weeks,
                                                 yearMouth: self.yearMonth,
                                                 lineNumber: self.animationLineNumber), at: 2)
-        print("right CalendarDataArray","\n",
-              calendarDataArray[0].yearMouth ?? "","\n",
-              calendarDataArray[1].yearMouth ?? "","\n",
-              calendarDataArray[2].yearMouth ?? "")
         return Observable.create { [weak self] (observer) -> Disposable in
             observer.onNext(self?.calendarDataArray ?? [])
             observer.onCompleted()

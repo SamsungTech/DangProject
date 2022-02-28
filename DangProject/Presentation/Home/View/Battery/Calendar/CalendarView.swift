@@ -8,10 +8,10 @@
 import UIKit
 import RxSwift
 
-class CalendarView: UIView {
+class CalendarView: UIView, ViewFactoryProtocol {
     static let identifier = "CalendarCollectionView"
     var viewModel: CalendarViewModel?
-    private lazy var calendarCollectionView: UICollectionView = {
+    lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -58,7 +58,13 @@ class CalendarView: UIView {
         subscribe()
     }
     
-    private func subscribe() {}
+    private func subscribe() {
+        viewModel?.calendarData
+            .subscribe { data in
+                print("값이 변했구나~")
+            }
+            .disposed(by: disposeBag)
+    }
 }
 
 extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {

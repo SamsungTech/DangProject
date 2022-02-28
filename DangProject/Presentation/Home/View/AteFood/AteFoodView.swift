@@ -10,9 +10,10 @@ import UIKit
 import Then
 import RxSwift
 
-class AteFoodView: UIView {
+class AteFoodView: UIView, ViewFactoryProtocol {
     static let identifier = "AteFoodCell"
     var viewModel: AteFoodItemViewModel?
+    var homeFactory = HomeFactory()
     private var cardView = UIView()
     lazy var foodCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -61,13 +62,7 @@ extension AteFoodView {
         subscribe()
     }
     
-    private func subscribe() {
-        viewModel?.items
-            .subscribe(onNext: { foodData in
-                self.foodCollectionView.reloadData()
-            })
-            .disposed(by: disposeBag)
-    }
+    private func subscribe() {}
 }
 
 extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {

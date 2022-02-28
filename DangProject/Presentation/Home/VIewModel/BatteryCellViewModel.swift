@@ -25,6 +25,8 @@ class BatteryCellViewModel {
     var items = BehaviorRelay<sugarSum>(value: .empty)
     var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
     
+    var publishBatteryData = PublishRelay<BatteryEntity>()
+    
     init(item: sugarSum) {
         self.items.accept(item)
     }

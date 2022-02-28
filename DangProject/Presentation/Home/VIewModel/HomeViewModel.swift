@@ -11,6 +11,8 @@ import RxRelay
 
 protocol HomeViewModelInputProtocol {
     func viewDidLoad()
+    func retrivePreviousMouthData()
+    func retriveNextMouthData()
 }
 
 protocol HomeViewModelOutputProtocol {
@@ -24,7 +26,7 @@ protocol HomeViewModelOutputProtocol {
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
 
-class HomeViewModel: HomeViewModelProtocol {
+class HomeViewModel: HomeViewModelProtocol, ViewModelFactoryProtocol {
     private var useCase: HomeUseCase
     private var calendarUseCase: CalendarUseCase
     var disposeBag = DisposeBag()
@@ -74,7 +76,7 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.calculationDaysInMouth()
+        calendarUseCase.initCalculationDaysInMouth()
             .map { BatteryEntity(calendar: $0) }
             .subscribe(onNext: { data in
                 self.batteryData.accept(data)
@@ -83,7 +85,7 @@ extension HomeViewModel {
     }
     
     func retrivePreviousMouthData() {
-        calendarUseCase.leftSwipe()
+        calendarUseCase.createPreviousCalendarData()
             .map { BatteryEntity(calendar: $0) }
             .subscribe(onNext: { data in
                 self.batteryData.accept(data)
@@ -92,7 +94,7 @@ extension HomeViewModel {
     }
     
     func retriveNextMouthData() {
-        calendarUseCase.rightSwipe()
+        calendarUseCase.createNextCalendarData()
             .map { BatteryEntity(calendar: $0) }
             .subscribe(onNext: { data in
                 self.batteryData.accept(data)

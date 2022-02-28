@@ -139,11 +139,6 @@ class HomeViewController: UIViewController {
     }
     
     private func bind() {
-        if let calendarViewModel = viewModel?.batteryData.value {
-            let calendarViewModel = BatteryCellViewModel(batteryData: calendarViewModel)
-            batteryView.bind(viewModel: calendarViewModel)
-        }
-        
         if let viewModel = viewModel?.tempData.value {
             let ateFoodViewModel = AteFoodItemViewModel(item: viewModel)
             ateFoodView.bind(viewModel: ateFoodViewModel)
@@ -153,8 +148,20 @@ class HomeViewController: UIViewController {
             let homeGraphViewModel = GraphItemViewModel(item: viewModel)
             homeGraphView.bind(viewModel: homeGraphViewModel)
         }
+        viewModel?.batteryData
+            .subscribe({ data in
+                if let homeViewModel = self.viewModel?.batteryData.value {
+                    let calendarViewModel = BatteryCellViewModel(batteryData: homeViewModel)
+                    calendarViewModel.publishBatteryData.accept(data.element!)
+                    self.batteryView.bind(viewModel: calendarViewModel)
+                }
+                self.customNavigationBar.dateLabel.text = data.element!.calendar?[1].yearMouth
+            })
+            .disposed(by: disposeBag)
     }
-    
+}
+
+extension HomeViewController {
     private func batteryAnimation() {
         if isExpandBatteryView == false {
             expandAnimation()
@@ -187,11 +194,7 @@ class HomeViewController: UIViewController {
     
     func scrollLeftDiection() {
         viewModel?.retrivePreviousMouthData()
-        viewModel?.batteryData
-            .subscribe({ data in
-//                print(data)
-            })
-            .disposed(by: disposeBag)
+        
     }
     
     func scrollRightDirection() {
