@@ -20,12 +20,10 @@ struct BatteryEntity {
     }
 }
 
-class BatteryCellViewModel {
+class BatteryViewModel {
     private var useCase: CalendarUseCase?
     var items = BehaviorRelay<sugarSum>(value: .empty)
     var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
-    
-    var publishBatteryData = PublishRelay<BatteryEntity>()
     
     init(item: sugarSum) {
         self.items.accept(item)
@@ -33,8 +31,4 @@ class BatteryCellViewModel {
     init(batteryData: BatteryEntity) {
         self.batteryData.accept(batteryData)
     }
-}
-
-extension BatteryCellViewModel {
-    
 }
