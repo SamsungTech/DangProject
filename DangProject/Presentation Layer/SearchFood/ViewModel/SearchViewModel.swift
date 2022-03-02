@@ -97,15 +97,11 @@ class SearchViewModel: SearchViewModelProtocol {
         scopeState = .searchResult
         guard currentKeyword != searchBarText else { return }
         currentKeyword = searchBarText
-        if searchBarText == "" {
-            searchFoodViewModelObservable.onNext(SearchFoodViewModel.empty)
-        } else {
-            manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText) {
-                self.updateRecentQuery()
-            }
-            searchFoodUseCase.fetchFood(text: searchBarText)
-            loading.onNext(.startLoading)
+        manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText) {
+            self.updateRecentQuery()
         }
+        searchFoodUseCase.fetchFood(text: searchBarText)
+        loading.onNext(.startLoading)
     }
     
     func favoriteSearchBarScopeTapped() {
