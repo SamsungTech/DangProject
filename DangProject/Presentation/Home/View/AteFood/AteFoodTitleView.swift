@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import Then
 
-class AteFoodHeader: UICollectionReusableView {
+class AteFoodTitleView: UIView {
     static let identifier = "AteFoodHeader"
     private let ateFoodTitle = UILabel()
     

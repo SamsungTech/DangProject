@@ -20,7 +20,9 @@ class CalendarUseCase {
     private var startDay = 0
     private var yearMonth = ""
     private var animationLineNumber = 0
+    
     private var calendarDataArray: [CalendarEntity] = []
+    
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
     
@@ -33,13 +35,20 @@ class CalendarUseCase {
     
     private func calculateMouthCalendar() {
         if let firstDay = calendar.date(from: dateComponents) {
+            
             let firstWeekDay = calendar.component(.weekday, from: firstDay)
+            
             daysCount = calendar.range(of: .day, in: .month, for: firstDay)?.count ?? 0
+            
             startDay = 2 - firstWeekDay
+            
             yearMonth = dateFormatter.string(from: firstDay)
+            
         }
         
         self.days.removeAll()
+        
+        
         for day in startDay...daysCount {
             if day < 1 {
                 self.days.append("")
@@ -126,6 +135,16 @@ class CalendarUseCase {
             observer.onCompleted()
             return Disposables.create()
         }
+    }
+}
+
+extension CalendarUseCase {
+    func leftDrag() {
+        
+    }
+    
+    func rightDrag() {
+        
     }
 }
 

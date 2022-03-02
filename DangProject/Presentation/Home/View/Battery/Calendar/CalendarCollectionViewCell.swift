@@ -34,7 +34,8 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     
     private func configure() {
         calendarCollectionView.do {
-            $0.register(CalendarCollectionViewCell.self, forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
+            $0.register(DaysCollectionViewCell.self,
+                        forCellWithReuseIdentifier: DaysCollectionViewCell.identifier)
             $0.dataSource = self
             $0.delegate = self
             $0.backgroundColor = .clear
@@ -58,10 +59,12 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         subscribe()
     }
     
-    private func subscribe() {}
+    private func subscribe() {
+        
+    }
 }
 
-extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -79,7 +82,7 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier, for: indexPath) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DaysCollectionViewCell.identifier, for: indexPath) as? DaysCollectionViewCell else { return UICollectionViewCell() }
         
         if let data = viewModel?.calendarData.value.calendar?.days?[indexPath.item] {
             let calendarCellViewModel = CalendarCellViewModel(calendarData: CalendarCellEntity(days: data))
@@ -89,7 +92,7 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 }
 
-extension CalendarView: UICollectionViewDelegateFlowLayout {
+extension CalendarCollectionViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {

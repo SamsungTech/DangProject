@@ -9,8 +9,7 @@ import Foundation
 import UIKit
 import Then
 
-class GraphCellHeader: UICollectionReusableView {
-    static let identifier = "GraphCellHeader"
+class GraphTitleView: UIView {
     private let GraphCellTitle = UILabel()
     
     override init(frame: CGRect) {

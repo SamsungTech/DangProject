@@ -10,10 +10,9 @@ import UIKit
 import Then
 import RxSwift
 
-class AteFoodView: UIView, ViewFactoryProtocol {
+class AteFoodView: UIView {
     static let identifier = "AteFoodCell"
-    var viewModel: AteFoodItemViewModel?
-    var homeFactory = HomeFactory()
+    private var viewModel: AteFoodViewModel?
     private var cardView = UIView()
     lazy var foodCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -40,6 +39,8 @@ class AteFoodView: UIView, ViewFactoryProtocol {
             $0.register(AteFoodCollectionCell.self, forCellWithReuseIdentifier: AteFoodCollectionCell.identifier)
             $0.delegate = self
             $0.dataSource = self
+            $0.backgroundColor = .clear
+            $0.showsHorizontalScrollIndicator = false
         }
     }
     
@@ -57,11 +58,10 @@ class AteFoodView: UIView, ViewFactoryProtocol {
 }
 
 extension AteFoodView {
-    func bind(viewModel: AteFoodItemViewModel) {
+    func bind(viewModel: AteFoodViewModel) {
         self.viewModel = viewModel
         subscribe()
     }
-    
     private func subscribe() {}
 }
 
@@ -80,9 +80,11 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
             let viewModel = AteFoodCellInItemViewModel(item: data)
             ateFoodCell.bind(viewModel: viewModel)
         }
+        
         ateFoodCell.contentView.layer.masksToBounds = true
         ateFoodCell.contentView.layer.cornerRadius = 20
-        ateFoodCell.backgroundColor = .systemYellow
+        ateFoodCell.contentView.backgroundColor = .systemYellow
+        
         return ateFoodCell
     }
     

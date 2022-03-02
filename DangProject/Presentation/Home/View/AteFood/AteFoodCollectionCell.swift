@@ -11,11 +11,11 @@ import RxSwift
 
 class AteFoodCollectionCell: UICollectionViewCell {
     static let identifier = "AteFoodCollectionCell"
-    var viewModel: AteFoodCellInItemViewModel?
+    private var viewModel: AteFoodCellInItemViewModel?
     private var disposeBag = DisposeBag()
     private var backView = UIView()
-    var foodNameLabel = UILabel()
-    var dangLabel = UILabel()
+    private var foodNameLabel = UILabel()
+    private var dangLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,6 +74,7 @@ extension AteFoodCollectionCell {
     
     private func subscribe() {
         viewModel?.items
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] data in
                 self?.foodNameLabel.text = data.foodName
                 self?.dangLabel.text = data.dang

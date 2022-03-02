@@ -11,6 +11,12 @@ import RxCocoa
 import Then
 import CloudKit
 
+enum ScrollDiection {
+    case right
+    case center
+    case left
+}
+
 class HomeViewController: UIViewController {
     var viewModel: HomeViewModel?
     weak var coordinator: Coordinator?
@@ -30,15 +36,20 @@ class HomeViewController: UIViewController {
     private var homeStackView = UIStackView()
     private var viewsInStackView: [UIView] = []
     var batteryView = BatteryView()
+    let ateFoodTitleView = AteFoodTitleView()
     var ateFoodView = AteFoodView()
+    let graphTitleView = GraphTitleView()
     var homeGraphView = HomeGraphView()
     var heightAnchor1: NSLayoutConstraint?
     private var isExpandBatteryView = false
     private var scrollDiection: ScrollDiection?
     
+    
+    
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
         let viewController = HomeViewController()
+        
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
         
@@ -57,8 +68,8 @@ class HomeViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
-        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
+//        let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
+//        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -67,7 +78,7 @@ class HomeViewController: UIViewController {
     
     private func configure() {
         homeScrollView.do {
-            $0.backgroundColor = .systemGreen
+            $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = true
             $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
             $0.contentInsetAdjustmentBehavior = .automatic
@@ -75,22 +86,23 @@ class HomeViewController: UIViewController {
         }
         homeStackView.do {
             $0.axis = .vertical
-            $0.spacing = 50
-            $0.backgroundColor = .blue
+            $0.spacing = 10
+            $0.backgroundColor = .clear
             $0.distribution = .fill
             $0.alignment = .center
         }
         batteryView.do {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = 30
-            $0.calendarScrollView.delegate = self
+//            $0.calendarScrollView.delegate = self
         }
     }
     
     private func layout() {
         [ customNavigationBar, homeScrollView ].forEach() { view.addSubview($0) }
         [ homeStackView ].forEach() { homeScrollView.addSubview($0) }
-        [ batteryView, ateFoodView, homeGraphView ].forEach() { viewsInStackView.append($0) }
+        [ batteryView, ateFoodTitleView, ateFoodView,
+          graphTitleView, homeGraphView ].forEach() { viewsInStackView.append($0) }
         viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         
         customNavigationBar.do {
@@ -120,10 +132,20 @@ class HomeViewController: UIViewController {
             heightAnchor1 = batteryView.heightAnchor.constraint(equalToConstant: 500)
             heightAnchor1?.isActive = true
         }
+        ateFoodTitleView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        }
         ateFoodView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             $0.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        }
+        graphTitleView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 50).isActive = true
         }
         homeGraphView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -131,31 +153,35 @@ class HomeViewController: UIViewController {
             $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
         }
         customNavigationBar.yearMouthButton.rx.tap
-            .bind {
-                self.batteryAnimation()
+            .bind { [weak self] _ in
+                self?.batteryAnimation()
             }
             .disposed(by: disposeBag)
         bind()
     }
     
     private func bind() {
-        if let viewModel = viewModel?.tempData.value {
-            let ateFoodViewModel = AteFoodItemViewModel(item: viewModel)
-            ateFoodView.bind(viewModel: ateFoodViewModel)
-        }
-        
-        if let viewModel = viewModel?.weekData.value {
-            let homeGraphViewModel = GraphItemViewModel(item: viewModel)
-            homeGraphView.bind(viewModel: homeGraphViewModel)
-        }
         viewModel?.batteryData
-            .subscribe({ data in
-                if let homeViewModel = self.viewModel?.batteryData.value {
-                    let calendarViewModel = BatteryCellViewModel(batteryData: homeViewModel)
-                    calendarViewModel.publishBatteryData.accept(data.element!)
-                    self.batteryView.bind(viewModel: calendarViewModel)
-                }
-                self.customNavigationBar.dateLabel.text = data.element!.calendar?[1].yearMouth
+            .observe(on: MainScheduler.instance) // MARK: 메인 쓰레드
+            .subscribe(onNext: { [weak self] data in
+                let calendarViewModel = BatteryViewModel(batteryData: data)
+                let factoryCalendarViewModel =
+                self?.batteryView.bind(viewModel: calendarViewModel)
+                self?.customNavigationBar.dateLabel.text = data.calendar?[1].yearMouth
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.tempData
+            .subscribe(onNext: { [weak self] data in
+                let ateFoodViewModel = AteFoodViewModel(item: data)
+                self?.ateFoodView.bind(viewModel: ateFoodViewModel)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.weekData
+            .subscribe(onNext: { [weak self] data in
+                let homeGraphViewModel = GraphViewModel(item: data)
+                self?.homeGraphView.bind(viewModel: homeGraphViewModel)
             })
             .disposed(by: disposeBag)
     }
@@ -171,30 +197,29 @@ extension HomeViewController {
     }
     
     private func expandAnimation() {
-        batteryView.scrollViewTopAnchor?.constant = 110
+        batteryView.calendarViewTopAnchor?.constant = 110
         batteryView.cirlceProgressBarTopAnchor?.constant = 400
         heightAnchor1?.constant = UIScreen.main.bounds.maxY
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1544)
-        UIView.animate(withDuration: 0.5, animations: {
-            self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
         })
         isExpandBatteryView = true
     }
     
     private func revertAnimation() {
-        batteryView.scrollViewTopAnchor?.constant = -70
+        batteryView.calendarViewTopAnchor?.constant = -70
         batteryView.cirlceProgressBarTopAnchor?.constant = 170
         heightAnchor1?.constant = 500
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
-        UIView.animate(withDuration: 0.5, animations: {
-            self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
         })
         isExpandBatteryView = false
     }
     
     func scrollLeftDiection() {
         viewModel?.retrivePreviousMouthData()
-        
     }
     
     func scrollRightDirection() {
@@ -205,7 +230,7 @@ extension HomeViewController {
 extension HomeViewController: UIScrollViewDelegate {
     private func updateCalendarPoint() {
         let centerPoint = CGPoint(x: batteryView.frame.width, y: .zero)
-        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
+//        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
     }
     func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                    withVelocity velocity: CGPoint,
@@ -213,12 +238,11 @@ extension HomeViewController: UIScrollViewDelegate {
         switch targetContentOffset.pointee.x {
         case 0:
             scrollDiection = .left
-            print("왼쪽")
         case batteryView.frame.width * CGFloat(1):
+            scrollDiection = .center
             break
         case batteryView.frame.width * CGFloat(2):
             scrollDiection = .right
-            print("오른쪽")
         default:
             break
         }
@@ -227,13 +251,11 @@ extension HomeViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         switch scrollDiection {
         case .left:
-            print("왼쪽")
             updateCalendarPoint()
             scrollLeftDiection()
-        case .none?:
+        case .center:
             break
         case .right:
-            print("오른쪽")
             updateCalendarPoint()
             scrollRightDirection()
         default:

@@ -35,6 +35,7 @@ class HomeViewModel: HomeViewModelProtocol, ViewModelFactoryProtocol {
     var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
     var yearData = BehaviorRelay<[tempNutrient]>(value: [])
     var sumData = BehaviorRelay<sugarSum>(value: .empty)
+    
     var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
     
     init(useCase: HomeUseCase, calendarUseCase: CalendarUseCase) {
@@ -84,6 +85,8 @@ extension HomeViewModel {
             .disposed(by: disposeBag)
     }
     
+    
+    // MARK: RENAME
     func retrivePreviousMouthData() {
         calendarUseCase.createPreviousCalendarData()
             .map { BatteryEntity(calendar: $0) }
@@ -93,6 +96,7 @@ extension HomeViewModel {
             .disposed(by: disposeBag)
     }
     
+    // MARK: RENAME
     func retriveNextMouthData() {
         calendarUseCase.createNextCalendarData()
             .map { BatteryEntity(calendar: $0) }
@@ -101,4 +105,14 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
     }
+    
+    func leftDrag() {
+        
+        
+    }
+    
+    func rightDrag() {
+        
+    }
+    
 }

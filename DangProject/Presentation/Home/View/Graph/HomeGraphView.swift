@@ -10,10 +10,10 @@ import UIKit
 import Then
 import RxSwift
 
-class HomeGraphView: UIView, ViewFactoryProtocol {
+class HomeGraphView: UIView {
     static let identifier = "HomeGraphCell"
-    var viewModel: GraphItemViewModel?
-    var disposeBag = DisposeBag()
+    private var viewModel: GraphViewModel?
+    private var disposeBag = DisposeBag()
     private var graphMainView = UIView()
     private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Mouth", "Year"])
     private var graphBackgroundStackView = UIStackView()
@@ -162,7 +162,7 @@ class HomeGraphView: UIView, ViewFactoryProtocol {
 }
 
 extension HomeGraphView {
-    func bind(viewModel: GraphItemViewModel) {
+    func bind(viewModel: GraphViewModel) {
         self.viewModel = viewModel
         subscribe()
     }

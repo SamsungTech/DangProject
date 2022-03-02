@@ -10,15 +10,9 @@ import UIKit
 import Then
 import RxSwift
 
-enum ScrollDiection {
-    case right
-    case none
-    case left
-}
-
-class BatteryView: UIView, ViewFactoryProtocol {
+class BatteryView: UIView {
     static let identifier = "BatteryCell"
-    var viewModel: BatteryCellViewModel?
+    var viewModel: BatteryViewModel?
     private var disposeBag = DisposeBag()
     private var mainView = UIView()
     private var gradient = CAGradientLayer()
@@ -36,10 +30,17 @@ class BatteryView: UIView, ViewFactoryProtocol {
     private var timer = Timer()
     var targetNumberTopAnchor: NSLayoutConstraint?
     var cirlceProgressBarTopAnchor: NSLayoutConstraint?
-    var calendarStackView = UIStackView()
-    var calendarScrollView = UIScrollView()
-    var scrollViewTopAnchor: NSLayoutConstraint?
-    var calendarViews: [CalendarView] = [CalendarView(), CalendarView(), CalendarView()]
+    
+    var calendarViewTopAnchor: NSLayoutConstraint?
+    
+    lazy var calendarCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.isPagingEnabled = true
+        
+        return collectionView
+    }()
     
     let colors: [UIColor] = [ .systemGreen, .systemYellow, .systemBlue ]
     
@@ -76,16 +77,16 @@ class BatteryView: UIView, ViewFactoryProtocol {
             $0.font = UIFont.systemFont(ofSize: 20)
             $0.text = "암것도없네"
         }
-        calendarScrollView.do {
-            $0.showsVerticalScrollIndicator = true
-            $0.isPagingEnabled = true
-            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX * 3, height: 300)
+        calendarCollectionView.do {
+            $0.register(CalendarCollectionViewCell.self,
+                        forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
+            $0.delegate = self
+            $0.dataSource = self
         }
     }
     
     private func layout() {
-        calendarScrollView.addSubview(calendarStackView)
-        [ circleProgressBarView, calendarScrollView ].forEach() { self.addSubview($0) }
+        [ calendarCollectionView, circleProgressBarView ].forEach() { self.addSubview($0) }
         [ targetNumber, percentLabel, targetSugar ].forEach() { circleProgressBarView.addSubview($0) }
         
         circleProgressBarView.do {
@@ -112,24 +113,17 @@ class BatteryView: UIView, ViewFactoryProtocol {
             $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: 5).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
-        calendarScrollView.do {
+        calendarCollectionView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.heightAnchor.constraint(equalToConstant: 290).isActive = true
-            scrollViewTopAnchor = calendarScrollView.topAnchor.constraint(equalTo: self.topAnchor, constant: -70)
-            scrollViewTopAnchor?.isActive = true
+            calendarViewTopAnchor = calendarCollectionView.topAnchor.constraint(equalTo: self.topAnchor, constant: -70)
+            calendarViewTopAnchor?.isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         }
-        calendarStackView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: calendarScrollView.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: calendarScrollView.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: calendarScrollView.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: calendarScrollView.bottomAnchor).isActive = true
-        }
     }
     
-    func circleConfigure() {
+    private func circleConfigure() {
         let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
                                         startAngle: -CGFloat.pi / 2,
@@ -176,56 +170,61 @@ class BatteryView: UIView, ViewFactoryProtocol {
 }
 
 extension BatteryView {
-    func bind(viewModel: BatteryCellViewModel) {
+    func bind(viewModel: BatteryViewModel) {
         self.viewModel = viewModel
         subscribe()
     }
     
     private func subscribe() {
         viewModel?.items
-            .subscribe(onNext: { foodData in
-                self.targetSugar.text = "목표: " + String(format: "%.1f", foodData.sum) + "/25.6g"
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] foodData in
+                self?.targetSugar.text = "목표: " + String(format: "%.1f", foodData.sum) + "/25.6g"
             })
             .disposed(by: disposeBag)
         
         viewModel?.batteryData
-            .subscribe(onNext: { batteryData in
-                print("init CalendarDataArray","\n",
-                      batteryData.calendar?[0].yearMouth ?? "","\n",
-                      batteryData.calendar?[1].yearMouth ?? "","\n",
-                      batteryData.calendar?[2].yearMouth ?? "")
-                self.calendarViews[0].calendarCollectionView.reloadData()
-                self.calendarViews[1].calendarCollectionView.reloadData()
-                self.calendarViews[2].calendarCollectionView.reloadData()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] batteryData in
+                self?.calendarCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
-        viewModel?.publishBatteryData
-            .subscribe {
-                print("계속올끼?")
-            }
-            .disposed(by: disposeBag)
-        createStackView()
-    }
-    
-    // MARK: 데이터를 받지말고 viewModel을 주입 (3번)
-    func createStackView() {
-        for i in 0..<3 {
-            if let viewModelItem = viewModel?.batteryData.value.calendar?[i] {
-                let calendarViewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: viewModelItem))
-                calendarViews[i].bind(viewModel: calendarViewModel)
-                calendarViews[i].do {
-                    $0.translatesAutoresizingMaskIntoConstraints = false
-                    $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-                    $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
-                    $0.backgroundColor = colors[i]
-                }
-                calendarStackView.addArrangedSubview(calendarViews[i])
-            }
-        }
-        
     }
 }
 
+extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        guard let count = viewModel?.batteryData.value.calendar?.count else { return 0 }
+        
+        print(count)
+        return count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let calendarCell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: CalendarCollectionViewCell.identifier,
+            for: indexPath
+        ) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
+        
+        if let data = viewModel?.batteryData.value.calendar?[indexPath.item] {
+            let viewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: data))
+            calendarCell.bind(viewModel: viewModel)
+        }
+        
+        return calendarCell
+    }
+}
+
+extension BatteryView: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: <#T##CGFloat#>,
+                      height: <#T##CGFloat#>)
+    }
+}
 
 extension BatteryView {
     private func animateShapeLayer() {
