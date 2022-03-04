@@ -9,13 +9,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Then
-import CloudKit
-
-enum ScrollDiection {
-    case right
-    case center
-    case left
-}
 
 class HomeViewController: UIViewController {
     var viewModel: HomeViewModel?
@@ -42,9 +35,6 @@ class HomeViewController: UIViewController {
     var homeGraphView = HomeGraphView()
     var heightAnchor1: NSLayoutConstraint?
     private var isExpandBatteryView = false
-    private var scrollDiection: ScrollDiection?
-    
-    
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -68,8 +58,8 @@ class HomeViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
-//        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
+        let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
+        batteryView.calendarCollectionView.setContentOffset(centerPoint, animated: false)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -94,7 +84,6 @@ class HomeViewController: UIViewController {
         batteryView.do {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = 30
-//            $0.calendarScrollView.delegate = self
         }
     }
     
@@ -157,17 +146,19 @@ class HomeViewController: UIViewController {
                 self?.batteryAnimation()
             }
             .disposed(by: disposeBag)
+        
         bind()
     }
-    
+}
+
+extension HomeViewController {
     private func bind() {
         viewModel?.batteryData
             .observe(on: MainScheduler.instance) // MARK: 메인 쓰레드
             .subscribe(onNext: { [weak self] data in
                 let calendarViewModel = BatteryViewModel(batteryData: data)
-                let factoryCalendarViewModel =
-                self?.batteryView.bind(viewModel: calendarViewModel)
-                self?.customNavigationBar.dateLabel.text = data.calendar?[1].yearMouth
+                self?.batteryView.bind(viewModel: calendarViewModel, homeViewController: self!)
+                self?.customNavigationBar.dateLabel.text = self?.viewModel?.batteryTestData[1].yearMouth!
             })
             .disposed(by: disposeBag)
         
@@ -217,49 +208,5 @@ extension HomeViewController {
         })
         isExpandBatteryView = false
     }
-    
-    func scrollLeftDiection() {
-        viewModel?.retrivePreviousMouthData()
-    }
-    
-    func scrollRightDirection() {
-        viewModel?.retriveNextMouthData()
-    }
 }
 
-extension HomeViewController: UIScrollViewDelegate {
-    private func updateCalendarPoint() {
-        let centerPoint = CGPoint(x: batteryView.frame.width, y: .zero)
-//        batteryView.calendarScrollView.setContentOffset(centerPoint, animated: false)
-    }
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
-                                   withVelocity velocity: CGPoint,
-                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        switch targetContentOffset.pointee.x {
-        case 0:
-            scrollDiection = .left
-        case batteryView.frame.width * CGFloat(1):
-            scrollDiection = .center
-            break
-        case batteryView.frame.width * CGFloat(2):
-            scrollDiection = .right
-        default:
-            break
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        switch scrollDiection {
-        case .left:
-            updateCalendarPoint()
-            scrollLeftDiection()
-        case .center:
-            break
-        case .right:
-            updateCalendarPoint()
-            scrollRightDirection()
-        default:
-            break
-        }
-    }
-}

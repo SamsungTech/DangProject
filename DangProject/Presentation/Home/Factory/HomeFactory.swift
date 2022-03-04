@@ -52,29 +52,29 @@ protocol HomeFactoryProtocol {
 }
 
 class HomeFactory: HomeFactoryProtocol {
-    func createViewModel(homeViewModel: HomeViewModel,
-                         viewModelType: viewModelFactory) -> ViewModelFactoryProtocol {
-        switch viewModelType {
-        case .calendarViewModel:
-            
-            return CalendarViewModel(calendarData: )
-            
-        case .batteryCellItemViewModel:
-
-            return BatteryCellViewModel(item: <#T##sugarSum#>)
-
-        case .batteryCellDataViewModel:
-
-            return BatteryCellViewModel(batteryData: <#T##BatteryEntity#>)
-
-        case .ateFoodItemViewModel:
-            <#code#>
-        case .ateFoodCellInItemViewModel:
-            <#code#>
-        case .graphItemViewModel:
-            <#code#>
-        }
-    }
+//    func createViewModel(homeViewModel: HomeViewModel,
+//                         viewModelType: viewModelFactory) -> ViewModelFactoryProtocol {
+//        switch viewModelType {
+//        case .calendarViewModel:
+//            
+//            return CalendarViewModel(calendarData: )
+//            
+//        case .batteryCellItemViewModel:
+//
+//            return BatteryCellViewModel(item: <#T##sugarSum#>)
+//
+//        case .batteryCellDataViewModel:
+//
+//            return BatteryCellViewModel(batteryData: <#T##BatteryEntity#>)
+//
+//        case .ateFoodItemViewModel:
+//            <#code#>
+//        case .ateFoodCellInItemViewModel:
+//            <#code#>
+//        case .graphItemViewModel:
+//            <#code#>
+//        }
+//    }
     //
     //    func createView(viewType: viewFactory) -> ViewFactoryProtocol {
     //        <#code#>

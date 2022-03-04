@@ -60,7 +60,11 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     }
     
     private func subscribe() {
-        
+        viewModel?.calendarData
+            .subscribe(onNext: { data in
+                self.calendarCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -83,10 +87,9 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DaysCollectionViewCell.identifier, for: indexPath) as? DaysCollectionViewCell else { return UICollectionViewCell() }
-        
         if let data = viewModel?.calendarData.value.calendar?.days?[indexPath.item] {
-            let calendarCellViewModel = CalendarCellViewModel(calendarData: CalendarCellEntity(days: data))
-            cell.bind(viewModel: calendarCellViewModel)
+            let viewModel = CalendarCellViewModel(calendarData: CalendarCellEntity(days: data))
+            cell.bind(viewModel: viewModel)
         }
         return cell
     }

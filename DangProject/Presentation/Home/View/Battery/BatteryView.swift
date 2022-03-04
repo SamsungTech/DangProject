@@ -14,6 +14,7 @@ class BatteryView: UIView {
     static let identifier = "BatteryCell"
     var viewModel: BatteryViewModel?
     private var disposeBag = DisposeBag()
+    private var homeViewController: HomeViewController?
     private var mainView = UIView()
     private var gradient = CAGradientLayer()
     
@@ -30,19 +31,18 @@ class BatteryView: UIView {
     private var timer = Timer()
     var targetNumberTopAnchor: NSLayoutConstraint?
     var cirlceProgressBarTopAnchor: NSLayoutConstraint?
-    
     var calendarViewTopAnchor: NSLayoutConstraint?
+    private var scrollDiection: ScrollDiection?
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = true
         
         return collectionView
-    }()
-    
-    let colors: [UIColor] = [ .systemGreen, .systemYellow, .systemBlue ]
+    }()    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -170,8 +170,10 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    func bind(viewModel: BatteryViewModel) {
+    func bind(viewModel: BatteryViewModel,
+              homeViewController: HomeViewController) {
         self.viewModel = viewModel
+        self.homeViewController = homeViewController
         subscribe()
     }
     
@@ -195,9 +197,7 @@ extension BatteryView {
 extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        guard let count = viewModel?.batteryData.value.calendar?.count else { return 0 }
-        
-        print(count)
+        guard let count = homeViewController?.viewModel?.batteryTestData.count else { return 0 }
         return count
     }
     
@@ -208,7 +208,7 @@ extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
             for: indexPath
         ) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
         
-        if let data = viewModel?.batteryData.value.calendar?[indexPath.item] {
+        if let data = homeViewController?.viewModel?.batteryTestData[indexPath.item] {
             let viewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: data))
             calendarCell.bind(viewModel: viewModel)
         }
@@ -221,10 +221,71 @@ extension BatteryView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: <#T##CGFloat#>,
-                      height: <#T##CGFloat#>)
+        return CGSize(width: UIScreen.main.bounds.maxX,
+                      height: 290)
+    }
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }
+
+extension BatteryView {
+    private func updateCalendarPoint() {
+        switch scrollDiection {
+        case .left:
+            let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
+            self.calendarCollectionView.setContentOffset(centerPoint, animated: false)
+        case .center:
+            break
+        case .right:
+            let calendarCount = homeViewController?.viewModel?.batteryTestData.count ?? 0
+            let count = calendarCount - 2
+            let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX * CGFloat(count), y: .zero)
+            self.calendarCollectionView.setContentOffset(centerPoint, animated: true)
+        default:
+            break
+        }
+    }
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        switch targetContentOffset.pointee.x {
+        case 0:
+            scrollDiection = .left
+            print("left")
+        case UIScreen.main.bounds.maxX * CGFloat((homeViewController?.viewModel?.batteryTestData.count)!-1):
+            scrollDiection = .right
+            print("right")
+        default:
+            scrollDiection = .center
+            print("center")
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        switch scrollDiection {
+        case .left:
+            homeViewController?.viewModel?.scrolledCalendarToLeft()
+            calendarCollectionView.reloadData()
+            updateCalendarPoint()
+        case .center:
+            break
+        case .right:
+            homeViewController?.viewModel?.scrolledCalendarToRight()
+            calendarCollectionView.reloadData()
+            updateCalendarPoint()
+        default:
+            break
+        }
+    }
+    
+    private func calcalateCurrentPoint(point: CGFloat) {
+        
+    }
+}
+
 
 extension BatteryView {
     private func animateShapeLayer() {

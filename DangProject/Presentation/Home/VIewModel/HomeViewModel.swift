@@ -11,8 +11,6 @@ import RxRelay
 
 protocol HomeViewModelInputProtocol {
     func viewDidLoad()
-    func retrivePreviousMouthData()
-    func retriveNextMouthData()
 }
 
 protocol HomeViewModelOutputProtocol {
@@ -27,7 +25,7 @@ protocol HomeViewModelOutputProtocol {
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
 
 class HomeViewModel: HomeViewModelProtocol, ViewModelFactoryProtocol {
-    private var useCase: HomeUseCase
+    private var homeUseCase: HomeUseCase
     private var calendarUseCase: CalendarUseCase
     var disposeBag = DisposeBag()
     var tempData = BehaviorRelay<[tempNutrient]>(value: [])
@@ -35,84 +33,72 @@ class HomeViewModel: HomeViewModelProtocol, ViewModelFactoryProtocol {
     var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
     var yearData = BehaviorRelay<[tempNutrient]>(value: [])
     var sumData = BehaviorRelay<sugarSum>(value: .empty)
-    
     var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
+    var batteryTestData: [CalendarEntity] = []
     
     init(useCase: HomeUseCase, calendarUseCase: CalendarUseCase) {
-        self.useCase = useCase
+        self.homeUseCase = useCase
         self.calendarUseCase = calendarUseCase
     }
 }
 
 extension HomeViewModel {
     func viewDidLoad() {
-        useCase.execute()
+        calendarUseCase.initCalculationDaysInMouth()
+            .map { BatteryEntity(calendar: $0) }
+            .subscribe(onNext: { data in
+                self.batteryTestData = data.calendar!
+            })
+            .disposed(by: disposeBag)
+        
+        homeUseCase.execute()
             .subscribe(onNext: { data in
                 self.tempData.accept(data)
             })
             .disposed(by: disposeBag)
         
-        useCase.retriveWeekData()
+        homeUseCase.retriveWeekData()
             .map { $0.map { weekTemp(tempNutrient: $0) } }
             .subscribe(onNext: { data in
                 self.weekData.accept(data)
             })
             .disposed(by: disposeBag)
         
-        useCase.retriveMouthData()
+        homeUseCase.retriveMouthData()
             .subscribe(onNext: { data in
                 self.mouthData.accept(data)
             })
             .disposed(by: disposeBag)
         
-        useCase.retriveYearData()
+        homeUseCase.retriveYearData()
             .subscribe(onNext: { data in
                 self.yearData.accept(data)
             })
             .disposed(by: disposeBag)
         
-        useCase.calculateSugarSum()
+        homeUseCase.calculateSugarSum()
             .subscribe(onNext: { data in
                 self.sumData.accept(data)
             })
             .disposed(by: disposeBag)
-        
-        calendarUseCase.initCalculationDaysInMouth()
-            .map { BatteryEntity(calendar: $0) }
-            .subscribe(onNext: { data in
-                self.batteryData.accept(data)
-            })
-            .disposed(by: disposeBag)
     }
-    
-    
-    // MARK: RENAME
-    func retrivePreviousMouthData() {
+}
+
+extension HomeViewModel {
+    func scrolledCalendarToLeft() {
         calendarUseCase.createPreviousCalendarData()
-            .map { BatteryEntity(calendar: $0) }
-            .subscribe(onNext: { data in
-                self.batteryData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.batteryTestData.insert(data, at: 0)
             })
             .disposed(by: disposeBag)
+
     }
     
-    // MARK: RENAME
-    func retriveNextMouthData() {
+    func scrolledCalendarToRight() {
         calendarUseCase.createNextCalendarData()
-            .map { BatteryEntity(calendar: $0) }
-            .subscribe(onNext: { data in
-                self.batteryData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.batteryTestData.insert(data, at: (self?.batteryTestData.count)!-1)
             })
             .disposed(by: disposeBag)
     }
-    
-    func leftDrag() {
-        
-        
-    }
-    
-    func rightDrag() {
-        
-    }
-    
 }

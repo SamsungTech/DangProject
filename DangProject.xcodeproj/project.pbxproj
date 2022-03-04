@@ -238,7 +238,6 @@
 			children = (
 				0B97986F27BB84970021162A /* Entities */,
 				0BB4350C27984CCE00634E51 /* Repository */,
-				0BB4351227984E2600634E51 /* CoreData */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -252,18 +251,10 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		0BB4351227984E2600634E51 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
 		0BB4351327984E5A00634E51 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
 				0BB4351727984E9F00634E51 /* Home */,
-				0BB4354E27B2272E00634E51 /* Calendar */,
 				0BB4351427984E7F00634E51 /* Utils */,
 			);
 			path = Presentation;
@@ -272,7 +263,6 @@
 		0BB4351427984E7F00634E51 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				0BB4351627984E9100634E51 /* Protocols */,
 				0BB4351527984E8900634E51 /* Extensions */,
 			);
 			path = Utils;
@@ -284,13 +274,6 @@
 				0BB4352C279919AD00634E51 /* Extensions.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		0BB4351627984E9100634E51 /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Protocols;
 			sourceTree = "<group>";
 		};
 		0BB4351727984E9F00634E51 /* Home */ = {
@@ -371,45 +354,6 @@
 				0B97987A27BDEBA10021162A /* Calendar */,
 			);
 			path = Battery;
-			sourceTree = "<group>";
-		};
-		0BB4354E27B2272E00634E51 /* Calendar */ = {
-			isa = PBXGroup;
-			children = (
-				0BB4355227B2275D00634E51 /* Coordinator */,
-				0BB4355127B2275300634E51 /* DIContainer */,
-				0BB4355027B2274E00634E51 /* ViewModel */,
-				0BB4354F27B2274700634E51 /* View */,
-			);
-			path = Calendar;
-			sourceTree = "<group>";
-		};
-		0BB4354F27B2274700634E51 /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		0BB4355027B2274E00634E51 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		0BB4355127B2275300634E51 /* DIContainer */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = DIContainer;
-			sourceTree = "<group>";
-		};
-		0BB4355227B2275D00634E51 /* Coordinator */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Coordinator;
 			sourceTree = "<group>";
 		};
 		0BE0DA2D27BB5BDB00AFD089 /* Interfaces */ = {

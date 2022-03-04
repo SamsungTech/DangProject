@@ -9,6 +9,12 @@ import Foundation
 import RxRelay
 import RxSwift
 
+enum ScrollDiection {
+    case right
+    case center
+    case left
+}
+
 struct BatteryEntity {
     static let empty: Self = .init(calendar: [])
     
@@ -21,7 +27,6 @@ struct BatteryEntity {
 }
 
 class BatteryViewModel {
-    private var useCase: CalendarUseCase?
     var items = BehaviorRelay<sugarSum>(value: .empty)
     var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
     

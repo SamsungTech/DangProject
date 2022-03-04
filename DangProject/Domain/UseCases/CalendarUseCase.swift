@@ -102,49 +102,39 @@ class CalendarUseCase {
                            lineNumber: self.animationLineNumber)
         )
     }
-    
-    func createPreviousCalendarData() -> Observable<[CalendarEntity]> {
-        minusNumber -= 1
-        plusNumber -= 1
-        calendarDataArray.removeLast()
-        calculatePreviousMouth()
-        calendarDataArray.insert(CalendarEntity(days: self.days,
-                                                daysCount: self.daysCount,
-                                                weeks: self.weeks,
-                                                yearMouth: self.yearMonth,
-                                                lineNumber: self.animationLineNumber), at: 0)
-        return Observable.create { [weak self] (observer) -> Disposable in
-            observer.onNext(self?.calendarDataArray ?? [])
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    
-    func createNextCalendarData() -> Observable<[CalendarEntity]> {
-        plusNumber += 1
-        minusNumber += 1
-        calendarDataArray.removeFirst()
-        calculateNextMouth()
-        calendarDataArray.insert(CalendarEntity(days: self.days,
-                                                daysCount: self.daysCount,
-                                                weeks: self.weeks,
-                                                yearMouth: self.yearMonth,
-                                                lineNumber: self.animationLineNumber), at: 2)
-        return Observable.create { [weak self] (observer) -> Disposable in
-            observer.onNext(self?.calendarDataArray ?? [])
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
 }
 
 extension CalendarUseCase {
-    func leftDrag() {
+    func createPreviousCalendarData() -> Observable<CalendarEntity> {
+        minusNumber -= 1
+        calculatePreviousMouth()
+        let calendarEntity = CalendarEntity(days: self.days,
+                                            daysCount: self.daysCount,
+                                            weeks: self.weeks,
+                                            yearMouth: self.yearMonth,
+                                            lineNumber: self.animationLineNumber)
         
+        return Observable.create { (observer) -> Disposable in
+            observer.onNext(calendarEntity)
+            observer.onCompleted()
+            return Disposables.create()
+        }
     }
     
-    func rightDrag() {
+    func createNextCalendarData() -> Observable<CalendarEntity> {
+        plusNumber += 1
+        calculateNextMouth()
+        let calendarEntity = CalendarEntity(days: self.days,
+                                            daysCount: self.daysCount,
+                                            weeks: self.weeks,
+                                            yearMouth: self.yearMonth,
+                                            lineNumber: self.animationLineNumber)
         
+        return Observable.create { (observer) -> Disposable in
+            observer.onNext(calendarEntity)
+            observer.onCompleted()
+            return Disposables.create()
+        }
     }
 }
 
