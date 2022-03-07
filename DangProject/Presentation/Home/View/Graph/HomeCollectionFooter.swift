@@ -10,7 +10,6 @@ import UIKit
 import Then
 
 class HomeCollectionFooter: UICollectionReusableView {
-    static let identfier = "HomeCollectionFooter"
     private var footerTitle = UILabel()
     private var context = UILabel()
     

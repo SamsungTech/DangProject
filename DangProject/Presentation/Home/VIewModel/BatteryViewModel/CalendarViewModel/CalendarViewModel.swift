@@ -19,7 +19,7 @@ struct CalendarStackViewEntity {
     }
 }
 
-class CalendarViewModel: ViewModelFactoryProtocol {
+class CalendarViewModel {
     var calendarData = BehaviorRelay<CalendarStackViewEntity>(value: .empty)
     
     init(calendarData: CalendarStackViewEntity) {

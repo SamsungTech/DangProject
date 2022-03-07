@@ -9,7 +9,7 @@ import Foundation
 import RxRelay
 import RxSwift
 
-enum ScrollDiection {
+enum ScrollDirection {
     case right
     case center
     case left
@@ -23,17 +23,5 @@ struct BatteryEntity {
     init(calendar: [CalendarEntity]?) {
         guard let calendar = calendar else { return }
         self.calendar = calendar
-    }
-}
-
-class BatteryViewModel {
-    var items = BehaviorRelay<sugarSum>(value: .empty)
-    var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
-    
-    init(item: sugarSum) {
-        self.items.accept(item)
-    }
-    init(batteryData: BatteryEntity) {
-        self.batteryData.accept(batteryData)
     }
 }

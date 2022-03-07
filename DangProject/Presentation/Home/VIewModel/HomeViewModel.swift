@@ -11,6 +11,8 @@ import RxRelay
 
 protocol HomeViewModelInputProtocol {
     func viewDidLoad()
+    func scrolledCalendarToLeft()
+    func scrolledCalendarToRight()
 }
 
 protocol HomeViewModelOutputProtocol {
@@ -19,12 +21,14 @@ protocol HomeViewModelOutputProtocol {
     var mouthData: BehaviorRelay<[tempNutrient]> { get }
     var yearData: BehaviorRelay<[tempNutrient]> { get }
     var sumData: BehaviorRelay<sugarSum> { get }
-    var batteryData: BehaviorRelay<BatteryEntity> { get }
+    var currentXPoint: BehaviorRelay<Int> { get }
+    
+    func retriveBatteryData() -> BatteryEntity
 }
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
 
-class HomeViewModel: HomeViewModelProtocol, ViewModelFactoryProtocol {
+class HomeViewModel: HomeViewModelProtocol {
     private var homeUseCase: HomeUseCase
     private var calendarUseCase: CalendarUseCase
     var disposeBag = DisposeBag()
@@ -33,10 +37,11 @@ class HomeViewModel: HomeViewModelProtocol, ViewModelFactoryProtocol {
     var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
     var yearData = BehaviorRelay<[tempNutrient]>(value: [])
     var sumData = BehaviorRelay<sugarSum>(value: .empty)
-    var batteryData = BehaviorRelay<BatteryEntity>(value: .empty)
-    var batteryTestData: [CalendarEntity] = []
+    var batteryViewCalendarData: BatteryEntity = BatteryEntity(calendar: [])
+    var currentXPoint = BehaviorRelay<Int>(value: 1)
     
-    init(useCase: HomeUseCase, calendarUseCase: CalendarUseCase) {
+    init(useCase: HomeUseCase,
+         calendarUseCase: CalendarUseCase) {
         self.homeUseCase = useCase
         self.calendarUseCase = calendarUseCase
     }
@@ -47,7 +52,7 @@ extension HomeViewModel {
         calendarUseCase.initCalculationDaysInMouth()
             .map { BatteryEntity(calendar: $0) }
             .subscribe(onNext: { data in
-                self.batteryTestData = data.calendar!
+                self.batteryViewCalendarData = data
             })
             .disposed(by: disposeBag)
         
@@ -82,23 +87,24 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
     }
-}
-
-extension HomeViewModel {
+    
     func scrolledCalendarToLeft() {
         calendarUseCase.createPreviousCalendarData()
             .subscribe(onNext: { [weak self] data in
-                self?.batteryTestData.insert(data, at: 0)
+                self?.batteryViewCalendarData.calendar?.insert(data, at: 0)
             })
             .disposed(by: disposeBag)
-
     }
     
     func scrolledCalendarToRight() {
         calendarUseCase.createNextCalendarData()
             .subscribe(onNext: { [weak self] data in
-                self?.batteryTestData.insert(data, at: (self?.batteryTestData.count)!-1)
+                self?.batteryViewCalendarData.calendar?.append(data)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func retriveBatteryData() -> BatteryEntity {
+        return batteryViewCalendarData
     }
 }

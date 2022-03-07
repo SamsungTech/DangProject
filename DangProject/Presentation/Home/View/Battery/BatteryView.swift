@@ -12,7 +12,6 @@ import RxSwift
 
 class BatteryView: UIView {
     static let identifier = "BatteryCell"
-    var viewModel: BatteryViewModel?
     private var disposeBag = DisposeBag()
     private var homeViewController: HomeViewController?
     private var mainView = UIView()
@@ -30,9 +29,10 @@ class BatteryView: UIView {
     private var currentCount: Int = 0
     private var timer = Timer()
     var targetNumberTopAnchor: NSLayoutConstraint?
-    var cirlceProgressBarTopAnchor: NSLayoutConstraint?
+    var circleProgressBarTopAnchor: NSLayoutConstraint?
     var calendarViewTopAnchor: NSLayoutConstraint?
-    private var scrollDiection: ScrollDiection?
+    private var scrollDirection: ScrollDirection?
+    private var currentPoint: CGFloat = 0
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -92,8 +92,8 @@ class BatteryView: UIView {
         circleProgressBarView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            cirlceProgressBarTopAnchor = circleProgressBarView.topAnchor.constraint(equalTo: self.topAnchor, constant: 170)
-            cirlceProgressBarTopAnchor?.isActive = true
+            circleProgressBarTopAnchor = circleProgressBarView.topAnchor.constraint(equalTo: self.topAnchor, constant: 170)
+            circleProgressBarTopAnchor?.isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
             $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
@@ -170,25 +170,16 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    func bind(viewModel: BatteryViewModel,
-              homeViewController: HomeViewController) {
-        self.viewModel = viewModel
+    func bind(homeViewController: HomeViewController) {
         self.homeViewController = homeViewController
         subscribe()
     }
     
     private func subscribe() {
-        viewModel?.items
+        homeViewController?.viewModel?.sumData
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] foodData in
-                self?.targetSugar.text = "목표: " + String(format: "%.1f", foodData.sum) + "/25.6g"
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.batteryData
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] batteryData in
-                self?.calendarCollectionView.reloadData()
+            .subscribe(onNext: { [weak self] data in
+                self?.targetSugar.text = "목표: " + String(format: "%.1f", data.sum) + "/25.6g"
             })
             .disposed(by: disposeBag)
     }
@@ -197,7 +188,7 @@ extension BatteryView {
 extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        guard let count = homeViewController?.viewModel?.batteryTestData.count else { return 0 }
+        guard let count = homeViewController?.viewModel?.retriveBatteryData().calendar?.count else { return 0 }
         return count
     }
     
@@ -208,7 +199,7 @@ extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
             for: indexPath
         ) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
         
-        if let data = homeViewController?.viewModel?.batteryTestData[indexPath.item] {
+        if let data = homeViewController?.viewModel?.retriveBatteryData().calendar?[indexPath.item] {
             let viewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: data))
             calendarCell.bind(viewModel: viewModel)
         }
@@ -233,17 +224,17 @@ extension BatteryView: UICollectionViewDelegateFlowLayout {
 
 extension BatteryView {
     private func updateCalendarPoint() {
-        switch scrollDiection {
+        switch scrollDirection {
         case .left:
             let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
             self.calendarCollectionView.setContentOffset(centerPoint, animated: false)
         case .center:
             break
         case .right:
-            let calendarCount = homeViewController?.viewModel?.batteryTestData.count ?? 0
+            let calendarCount = homeViewController?.viewModel?.retriveBatteryData().calendar?.count ?? 0
             let count = calendarCount - 2
             let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX * CGFloat(count), y: .zero)
-            self.calendarCollectionView.setContentOffset(centerPoint, animated: true)
+            self.calendarCollectionView.setContentOffset(centerPoint, animated: false)
         default:
             break
         }
@@ -251,38 +242,57 @@ extension BatteryView {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                    withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        switch targetContentOffset.pointee.x {
-        case 0:
-            scrollDiection = .left
-            print("left")
-        case UIScreen.main.bounds.maxX * CGFloat((homeViewController?.viewModel?.batteryTestData.count)!-1):
-            scrollDiection = .right
-            print("right")
-        default:
-            scrollDiection = .center
-            print("center")
+        currentPoint = targetContentOffset.pointee.x
+        if currentPoint <= 0 {
+            scrollDirection = .left
+        } else if currentPoint >= UIScreen.main.bounds.maxX * CGFloat((homeViewController?
+                                                                        .viewModel?
+                                                                        .retriveBatteryData()
+                                                                        .calendar?.count)!-1) {
+            scrollDirection = .right
+        } else {
+            scrollDirection = .center
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        switch scrollDiection {
+        switch scrollDirection {
         case .left:
             homeViewController?.viewModel?.scrolledCalendarToLeft()
             calendarCollectionView.reloadData()
             updateCalendarPoint()
+            calculateCurrentPoint(point: currentPoint)
         case .center:
+            calculateCurrentPoint(point: currentPoint)
             break
         case .right:
             homeViewController?.viewModel?.scrolledCalendarToRight()
             calendarCollectionView.reloadData()
             updateCalendarPoint()
+            calculateCurrentPoint(point: currentPoint)
         default:
             break
         }
     }
     
-    private func calcalateCurrentPoint(point: CGFloat) {
+    private func calculateCurrentPoint(point: CGFloat) {
+        let maxXValue = UIScreen.main.bounds.maxX
+        let result = point / maxXValue
         
+        switch scrollDirection {
+        case .left:
+            homeViewController?.viewModel?.currentXPoint.accept(1)
+            break
+        case .right:
+            guard let number = homeViewController?.viewModel?.retriveBatteryData().calendar?.count else { return }
+            homeViewController?.viewModel?.currentXPoint.accept(Int(number-2))
+            break
+        case .center:
+            homeViewController?.viewModel?.currentXPoint.accept(Int(result))
+            break
+        case .none:
+            break
+        }
     }
 }
 

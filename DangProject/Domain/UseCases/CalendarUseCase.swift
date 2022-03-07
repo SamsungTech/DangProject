@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import RxSwift
+import RxRelay
 
 class CalendarUseCase {
     private let currentDate = Date()
@@ -20,11 +21,9 @@ class CalendarUseCase {
     private var startDay = 0
     private var yearMonth = ""
     private var animationLineNumber = 0
-    
-    private var calendarDataArray: [CalendarEntity] = []
-    
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
+    private var calendarDataArray: [CalendarEntity] = []
     
     private func initDateFormatter() {
         dateFormatter.dateFormat = "yyyy년 M월"
@@ -113,7 +112,6 @@ extension CalendarUseCase {
                                             weeks: self.weeks,
                                             yearMouth: self.yearMonth,
                                             lineNumber: self.animationLineNumber)
-        
         return Observable.create { (observer) -> Disposable in
             observer.onNext(calendarEntity)
             observer.onCompleted()
@@ -129,11 +127,19 @@ extension CalendarUseCase {
                                             weeks: self.weeks,
                                             yearMouth: self.yearMonth,
                                             lineNumber: self.animationLineNumber)
-        
         return Observable.create { (observer) -> Disposable in
             observer.onNext(calendarEntity)
             observer.onCompleted()
             return Disposables.create()
+        }
+    }
+    
+    
+    func testPrevious() {
+        for i in minusNumber-1...minusNumber-5 {
+            minusNumber = i
+            calculatePreviousMouth()
+            
         }
     }
 }

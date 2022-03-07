@@ -153,14 +153,7 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
     private func bind() {
-        viewModel?.batteryData
-            .observe(on: MainScheduler.instance) // MARK: 메인 쓰레드
-            .subscribe(onNext: { [weak self] data in
-                let calendarViewModel = BatteryViewModel(batteryData: data)
-                self?.batteryView.bind(viewModel: calendarViewModel, homeViewController: self!)
-                self?.customNavigationBar.dateLabel.text = self?.viewModel?.batteryTestData[1].yearMouth!
-            })
-            .disposed(by: disposeBag)
+        batteryView.bind(homeViewController: self)
         
         viewModel?.tempData
             .subscribe(onNext: { [weak self] data in
@@ -173,6 +166,16 @@ extension HomeViewController {
             .subscribe(onNext: { [weak self] data in
                 let homeGraphViewModel = GraphViewModel(item: data)
                 self?.homeGraphView.bind(viewModel: homeGraphViewModel)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.currentXPoint
+            .subscribe(onNext: { data in
+                if let text = self.viewModel?
+                    .retriveBatteryData()
+                    .calendar?[self.viewModel?.currentXPoint.value ?? 1].yearMouth {
+                    self.customNavigationBar.dateLabel.text = text
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -189,7 +192,7 @@ extension HomeViewController {
     
     private func expandAnimation() {
         batteryView.calendarViewTopAnchor?.constant = 110
-        batteryView.cirlceProgressBarTopAnchor?.constant = 400
+        batteryView.circleProgressBarTopAnchor?.constant = 400
         heightAnchor1?.constant = UIScreen.main.bounds.maxY
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1544)
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
@@ -200,7 +203,7 @@ extension HomeViewController {
     
     private func revertAnimation() {
         batteryView.calendarViewTopAnchor?.constant = -70
-        batteryView.cirlceProgressBarTopAnchor?.constant = 170
+        batteryView.circleProgressBarTopAnchor?.constant = 170
         heightAnchor1?.constant = 500
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
