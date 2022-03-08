@@ -82,7 +82,7 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         ateFoodCell.contentView.layer.masksToBounds = true
-        ateFoodCell.contentView.layer.cornerRadius = 20
+        ateFoodCell.contentView.layer.cornerRadius = xValueRatio(20)
         ateFoodCell.contentView.backgroundColor = .systemYellow
         
         return ateFoodCell
@@ -91,7 +91,7 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 150, height: 80)
+        return CGSize(width: xValueRatio(150), height: yValueRatio(80))
     }
 }
 

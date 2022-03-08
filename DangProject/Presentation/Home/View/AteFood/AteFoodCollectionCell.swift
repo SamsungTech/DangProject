@@ -35,17 +35,17 @@ class AteFoodCollectionCell: UICollectionViewCell {
     private func configure() {
         contentView.do {
             $0.layer.masksToBounds = true
-            $0.layer.cornerRadius = 20
+            $0.layer.cornerRadius = xValueRatio(20)
             
         }
         foodNameLabel.do {
             $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: 17)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(17))
             $0.textAlignment = .center
         }
         dangLabel.do {
             $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: 13)
+            $0.font = UIFont.systemFont(ofSize: xValueRatio(13))
             $0.textAlignment = .center
         }
     }
@@ -55,12 +55,12 @@ class AteFoodCollectionCell: UICollectionViewCell {
         
         foodNameLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: 20).isActive = true
+            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: xValueRatio(20)).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
         dangLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: 5).isActive = true
+            $0.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: xValueRatio(5)).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
     }

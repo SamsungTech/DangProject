@@ -17,8 +17,6 @@ class HomeViewController: UIViewController {
     private var customNavigationBar = CustomNavigationBar()
     private var heightAnchor: NSLayoutConstraint?
     private var firstContentY: CGFloat = 0
-    private var batteryCellHeight: CGFloat?
-    private var barHeight: CGFloat = 90
     private let gradient = CAGradientLayer()
     private let newColors = [
         UIColor.systemRed.cgColor,
@@ -33,7 +31,7 @@ class HomeViewController: UIViewController {
     var ateFoodView = AteFoodView()
     let graphTitleView = GraphTitleView()
     var homeGraphView = HomeGraphView()
-    var heightAnchor1: NSLayoutConstraint?
+    var batteryViewHeightAnchor: NSLayoutConstraint?
     private var isExpandBatteryView = false
     
     static func create(viewModel: HomeViewModel,
@@ -70,7 +68,7 @@ class HomeViewController: UIViewController {
         homeScrollView.do {
             $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = true
-            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
+            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: overSizeYValueRatio(1200))
             $0.contentInsetAdjustmentBehavior = .automatic
             $0.bounces = false
         }
@@ -83,7 +81,7 @@ class HomeViewController: UIViewController {
         }
         batteryView.do {
             $0.layer.masksToBounds = true
-            $0.layer.cornerRadius = 30
+            $0.layer.cornerRadius = xValueRatio(30)
         }
     }
     
@@ -99,7 +97,7 @@ class HomeViewController: UIViewController {
             $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-            heightAnchor = $0.heightAnchor.constraint(equalToConstant: 110)
+            heightAnchor = $0.heightAnchor.constraint(equalToConstant: yValueRatio(110))
             heightAnchor?.isActive = true
         }
         homeScrollView.do {
@@ -111,35 +109,35 @@ class HomeViewController: UIViewController {
         }
         homeStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor, constant: -47).isActive = true
+            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor, constant: yValueRatio(-47)).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
         batteryView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            heightAnchor1 = batteryView.heightAnchor.constraint(equalToConstant: 500)
-            heightAnchor1?.isActive = true
+            batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
+            batteryViewHeightAnchor?.isActive = true
         }
         ateFoodTitleView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
         }
         ateFoodView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 100).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: yValueRatio(100)).isActive = true
         }
         graphTitleView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
         }
         homeGraphView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-40).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
         }
         customNavigationBar.yearMouthButton.rx.tap
             .bind { [weak self] _ in
@@ -170,11 +168,11 @@ extension HomeViewController {
             .disposed(by: disposeBag)
         
         viewModel?.currentXPoint
-            .subscribe(onNext: { data in
-                if let text = self.viewModel?
+            .subscribe(onNext: { [weak self] data in
+                if let text = self?.viewModel?
                     .retriveBatteryData()
-                    .calendar?[self.viewModel?.currentXPoint.value ?? 1].yearMouth {
-                    self.customNavigationBar.dateLabel.text = text
+                    .calendar?[self?.viewModel?.currentXPoint.value ?? 1].yearMouth {
+                    self?.customNavigationBar.dateLabel.text = text
                 }
             })
             .disposed(by: disposeBag)
@@ -191,10 +189,11 @@ extension HomeViewController {
     }
     
     private func expandAnimation() {
-        batteryView.calendarViewTopAnchor?.constant = 110
-        batteryView.circleProgressBarTopAnchor?.constant = 400
-        heightAnchor1?.constant = UIScreen.main.bounds.maxY
-        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1544)
+        batteryView.calendarViewTopAnchor?.constant = yValueRatio(110)
+        batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(470)
+        batteryViewHeightAnchor?.constant = UIScreen.main.bounds.maxY
+        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
+                                            height: overSizeYValueRatio(1544))
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
@@ -202,14 +201,15 @@ extension HomeViewController {
     }
     
     private func revertAnimation() {
-        batteryView.calendarViewTopAnchor?.constant = -70
-        batteryView.circleProgressBarTopAnchor?.constant = 170
-        heightAnchor1?.constant = 500
-        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: 1200)
+        let lineNumber = batteryView.currentLineNumber
+        batteryView.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*lineNumber)))
+        batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(170)
+        batteryViewHeightAnchor?.constant = yValueRatio(500)
+        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
+                                            height: overSizeYValueRatio(1200))
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
         isExpandBatteryView = false
     }
 }
-

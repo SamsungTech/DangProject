@@ -11,7 +11,6 @@ import Then
 import RxSwift
 
 class BatteryView: UIView {
-    static let identifier = "BatteryCell"
     private var disposeBag = DisposeBag()
     private var homeViewController: HomeViewController?
     private var mainView = UIView()
@@ -33,6 +32,7 @@ class BatteryView: UIView {
     var calendarViewTopAnchor: NSLayoutConstraint?
     private var scrollDirection: ScrollDirection?
     private var currentPoint: CGFloat = 0
+    var currentLineNumber = 0
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -42,15 +42,19 @@ class BatteryView: UIView {
         collectionView.isPagingEnabled = true
         
         return collectionView
-    }()    
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        calculateCurrentLineNumber()
+        configure()
         layout()
         circleConfigure()
-        configure()
         backgroundColor = .systemYellow
         bringSubviewToFront(circleProgressBarView)
+        animatePulsatingLayer()
+        animateShapeLayer()
+        countAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -63,18 +67,18 @@ class BatteryView: UIView {
         }
         targetNumber.do {
             $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: 50)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(50))
             $0.textAlignment = .right
         }
         percentLabel.do {
             $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: 30)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(30))
             $0.textAlignment = .center
             $0.text = "%"
         }
         targetSugar.do {
             $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: 20)
+            $0.font = UIFont.systemFont(ofSize: xValueRatio(20))
             $0.text = "암것도없네"
         }
         calendarCollectionView.do {
@@ -92,31 +96,33 @@ class BatteryView: UIView {
         circleProgressBarView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            circleProgressBarTopAnchor = circleProgressBarView.topAnchor.constraint(equalTo: self.topAnchor, constant: 170)
+            circleProgressBarTopAnchor = circleProgressBarView.topAnchor.constraint(equalTo: self.topAnchor, constant: yValueRatio(170))
             circleProgressBarTopAnchor?.isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 300).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
         }
         targetNumber.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: circleProgressBarView.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: circleProgressBarView.centerYAnchor, constant: -25).isActive = true
+            $0.centerYAnchor.constraint(equalTo: circleProgressBarView.centerYAnchor, constant: xValueRatio(-25)).isActive = true
         }
         percentLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 50).isActive = true
-            $0.bottomAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: -5).isActive = true
+            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: xValueRatio(50)).isActive = true
+            $0.bottomAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(-5)).isActive = true
         }
         targetSugar.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: 5).isActive = true
+            $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(5)).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
         calendarCollectionView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.heightAnchor.constraint(equalToConstant: 290).isActive = true
-            calendarViewTopAnchor = calendarCollectionView.topAnchor.constraint(equalTo: self.topAnchor, constant: -70)
+            $0.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
+            calendarViewTopAnchor = calendarCollectionView
+                .topAnchor
+                .constraint(equalTo: self.topAnchor, constant: yValueRatio(CGFloat(110-(60*currentLineNumber))))
             calendarViewTopAnchor?.isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
@@ -124,6 +130,8 @@ class BatteryView: UIView {
     }
     
     private func circleConfigure() {
+        [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBarView.layer.addSublayer($0) }
+
         let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
                                         startAngle: -CGFloat.pi / 2,
@@ -138,7 +146,7 @@ class BatteryView: UIView {
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
-            $0.position = CGPoint(x: 200, y: 150)
+            $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
         }
         pulsatingLayer.do {
             $0.path = circularPath.cgPath
@@ -149,7 +157,7 @@ class BatteryView: UIView {
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
-            $0.position = CGPoint(x: 200, y: 150)
+            $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
         }
         shapeLayer.do {
             $0.path = circularPath.cgPath
@@ -158,14 +166,8 @@ class BatteryView: UIView {
             $0.lineWidth = 14
             $0.lineCap = .round
             $0.strokeEnd = 0
-            $0.position = CGPoint(x: 200, y: 150)
+            $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
         }
-        
-        [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBarView.layer.addSublayer($0) }
-        
-        animatePulsatingLayer()
-        animateShapeLayer()
-        countAnimation()
     }
 }
 
@@ -213,7 +215,7 @@ extension BatteryView: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: UIScreen.main.bounds.maxX,
-                      height: 290)
+                      height: yValueRatio(360))
     }
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -242,13 +244,12 @@ extension BatteryView {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                    withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard let count = homeViewController?.viewModel?.retriveBatteryData().calendar?.count else { return }
         currentPoint = targetContentOffset.pointee.x
+        
         if currentPoint <= 0 {
             scrollDirection = .left
-        } else if currentPoint >= UIScreen.main.bounds.maxX * CGFloat((homeViewController?
-                                                                        .viewModel?
-                                                                        .retriveBatteryData()
-                                                                        .calendar?.count)!-1) {
+        } else if currentPoint >= UIScreen.main.bounds.maxX * CGFloat(count-1) {
             scrollDirection = .right
         } else {
             scrollDirection = .center
@@ -335,4 +336,79 @@ extension BatteryView {
             self.timer.invalidate()
         }
     }
+}
+
+extension BatteryView {
+    // MARK: viewModel이나 useCase로 빼고싶다.
+    func calculateCurrentLineNumber() {
+        var days: [String] = []
+        var daysCount = 0
+        var startDay = 0
+        var dateComponents = DateComponents()
+        let currentDate = Date()
+        let calendar = Calendar.current
+
+        dateComponents.year = calendar.component(.year, from: currentDate)
+        dateComponents.month = calendar.component(.month, from: currentDate)
+        dateComponents.day = 1
+        
+        if let firstDay = calendar.date(from: dateComponents) {
+            let firstWeekDay = calendar.component(.weekday, from: firstDay)
+            daysCount = calendar.range(of: .day, in: .month, for: firstDay)?.count ?? 0
+            startDay = 2 - firstWeekDay
+        }
+        
+        days.removeAll()
+        
+        for day in startDay...daysCount {
+            if day < 1 {
+                days.append("")
+            } else {
+                days.append(String(day))
+            }
+        }
+        
+        calculateCurrentCellYPoint(days: days,
+                                   startDay: startDay,
+                                   currentDate: currentDate,
+                                   calendar: calendar)
+    }
+    
+    func calculateCurrentCellYPoint(days: [String],
+                                    startDay: Int,
+                                    currentDate: Date,
+                                    calendar: Calendar) {
+        if days.first == "" {
+            let startEmpty = abs(startDay - 1)
+            let currentDay = calendar.component(.day, from: currentDate) + startEmpty
+            calculateCurrentLine(currentDay: currentDay)
+        } else {
+            let currentDay = calendar.component(.day, from: currentDate)
+            calculateCurrentLine(currentDay: currentDay)
+        }
+    }
+    
+    func calculateCurrentLine(currentDay: Int) {
+        switch abs(currentDay/7) {
+        case 0:
+            print("첫번째 줄")
+            currentLineNumber = 0
+        case 1:
+            print("두번째 줄")
+            currentLineNumber = 1
+        case 2:
+            print("세번째 줄")
+            currentLineNumber = 2
+        case 3:
+            print("네번째 줄")
+            currentLineNumber = 3
+        case 4:
+            print("다섯번째 줄")
+            currentLineNumber = 4
+        default:
+            print("여섯번째 줄")
+            currentLineNumber = 5
+        }
+    }
+    
 }

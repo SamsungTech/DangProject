@@ -38,11 +38,11 @@ class CustomNavigationBar: UIView {
         profileImageView.do {
             $0.image = UIImage(named: "231.png")
             $0.tintColor = .white
-            $0.viewRadius(cornerRadius: 20)
+            $0.viewRadius(cornerRadius: xValueRatio(20))
         }
         dateLabel.do {
             $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: 25, weight: .bold)
+            $0.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .bold)
             $0.text = "2020년 2월"
             $0.textAlignment = .center
         }
@@ -62,29 +62,29 @@ class CustomNavigationBar: UIView {
         
         profileImageView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: 40).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 40).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -30).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: xValueRatio(-20)).isActive = true
+            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: xValueRatio(-30)).isActive = true
         }
         dateLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
             $0.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         }
         yearMouthButton.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: 5).isActive = true
+            $0.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: xValueRatio(5)).isActive = true
             $0.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: 40).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
         }
         weekStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 10).isActive = true
+            $0.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: xValueRatio(10)).isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: xValueRatio(20)).isActive = true
         }
     }
     
@@ -94,7 +94,7 @@ class CustomNavigationBar: UIView {
             label.do {
                 $0.textAlignment = .center
                 $0.textColor = .white
-                $0.font = UIFont.boldSystemFont(ofSize: 13)
+                $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(13))
                 $0.text = "\(item)"
             }
             weekStackView.addArrangedSubview(label)

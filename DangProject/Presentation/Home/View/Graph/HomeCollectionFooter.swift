@@ -29,12 +29,12 @@ class HomeCollectionFooter: UICollectionReusableView {
     
     private func configure() {
         footerTitle.do {
-            $0.font = UIFont.boldSystemFont(ofSize: 25)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
             $0.textColor = .lightGray
             $0.text = "Dang_Project"
         }
         context.do {
-            $0.font = UIFont.boldSystemFont(ofSize: 20)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(20))
             $0.textColor = .lightGray
             $0.text = "1.0.0"
         }
@@ -50,7 +50,7 @@ class HomeCollectionFooter: UICollectionReusableView {
         }
         context.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: footerTitle.bottomAnchor,constant: 10).isActive = true
+            $0.topAnchor.constraint(equalTo: footerTitle.bottomAnchor, constant: yValueRatio(10)).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
     }

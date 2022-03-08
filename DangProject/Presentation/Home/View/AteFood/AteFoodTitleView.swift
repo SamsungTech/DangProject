@@ -25,7 +25,7 @@ class AteFoodTitleView: UIView {
     
     private func configure() {
         ateFoodTitle.do {
-            $0.font = UIFont.boldSystemFont(ofSize: 25)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
             $0.textColor = .black
             $0.text = "오늘 먹은것들"
         }
@@ -37,7 +37,7 @@ class AteFoodTitleView: UIView {
         ateFoodTitle.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(30)).isActive = true
         }
     }
     

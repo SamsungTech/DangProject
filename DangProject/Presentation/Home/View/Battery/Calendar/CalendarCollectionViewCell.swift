@@ -13,6 +13,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     private var viewModel: CalendarViewModel?
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
@@ -75,13 +76,14 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return viewModel?.calendarData.value.calendar?.days?.count ?? 0
+        guard let count = viewModel?.calendarData.value.calendar?.days?.count else { return 0 }
+        return count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 55, height: 50)
+        return CGSize(width: xValueRatio(55), height: yValueRatio(60))
     }
     
     func collectionView(_ collectionView: UICollectionView,

@@ -29,7 +29,7 @@ class DaysCollectionViewCell: UICollectionViewCell {
         dayLabel.do {
             $0.textColor = .black
             $0.textAlignment = .center
-            $0.font = UIFont.boldSystemFont(ofSize: 15)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
         }
         self.contentView.backgroundColor = .clear
     }

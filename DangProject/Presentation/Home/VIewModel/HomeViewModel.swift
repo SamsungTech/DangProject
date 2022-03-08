@@ -39,6 +39,7 @@ class HomeViewModel: HomeViewModelProtocol {
     var sumData = BehaviorRelay<sugarSum>(value: .empty)
     var batteryViewCalendarData: BatteryEntity = BatteryEntity(calendar: [])
     var currentXPoint = BehaviorRelay<Int>(value: 1)
+    var currentLineNumber = 0
     
     init(useCase: HomeUseCase,
          calendarUseCase: CalendarUseCase) {
@@ -51,8 +52,15 @@ extension HomeViewModel {
     func viewDidLoad() {
         calendarUseCase.initCalculationDaysInMouth()
             .map { BatteryEntity(calendar: $0) }
-            .subscribe(onNext: { data in
-                self.batteryViewCalendarData = data
+            .subscribe(onNext: { [weak self] data in
+                self?.batteryViewCalendarData = data
+            })
+            .disposed(by: disposeBag)
+        
+        calendarUseCase.currentLine
+            .subscribe(onNext: { [weak self] data in
+                self?.currentLineNumber = data
+                
             })
             .disposed(by: disposeBag)
         
@@ -107,4 +115,16 @@ extension HomeViewModel {
     func retriveBatteryData() -> BatteryEntity {
         return batteryViewCalendarData
     }
+    
+    func retriveLineAnimationNumber() -> Int {
+        calendarUseCase.calculateCurrentCellYPoint()
+        calendarUseCase.currentLine
+            .subscribe(onNext: { [weak self] data in
+                self?.currentLineNumber = data
+            })
+            .disposed(by: disposeBag)
+        
+        return currentLineNumber
+    }
 }
+

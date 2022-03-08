@@ -24,7 +24,7 @@ class GraphTitleView: UIView {
     
     private func configure() {
         GraphCellTitle.do {
-            $0.font = UIFont.boldSystemFont(ofSize: 25)
+            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
             $0.textColor = .black
             $0.text = "당수치 그래프입니다."
         }
@@ -36,7 +36,7 @@ class GraphTitleView: UIView {
         GraphCellTitle.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(30)).isActive = true
         }
     }
 }

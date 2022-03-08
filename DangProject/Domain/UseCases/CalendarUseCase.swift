@@ -24,6 +24,7 @@ class CalendarUseCase {
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
     private var calendarDataArray: [CalendarEntity] = []
+    var currentLine = BehaviorRelay<Int>(value: 0)
     
     private func initDateFormatter() {
         dateFormatter.dateFormat = "yyyy년 M월"
@@ -34,15 +35,11 @@ class CalendarUseCase {
     
     private func calculateMouthCalendar() {
         if let firstDay = calendar.date(from: dateComponents) {
-            
             let firstWeekDay = calendar.component(.weekday, from: firstDay)
-            
-            daysCount = calendar.range(of: .day, in: .month, for: firstDay)?.count ?? 0
-            
+            guard let calendarRange = calendar.range(of: .day, in: .month, for: firstDay)?.count else { return }
+            daysCount = calendarRange
             startDay = 2 - firstWeekDay
-            
             yearMonth = dateFormatter.string(from: firstDay)
-            
         }
         
         self.days.removeAll()
@@ -97,21 +94,17 @@ class CalendarUseCase {
             CalendarEntity(days: self.days,
                            daysCount: self.daysCount,
                            weeks: self.weeks,
-                           yearMouth: self.yearMonth,
-                           lineNumber: self.animationLineNumber)
+                           yearMouth: self.yearMonth)
         )
     }
-}
-
-extension CalendarUseCase {
+    
     func createPreviousCalendarData() -> Observable<CalendarEntity> {
         minusNumber -= 1
         calculatePreviousMouth()
         let calendarEntity = CalendarEntity(days: self.days,
                                             daysCount: self.daysCount,
                                             weeks: self.weeks,
-                                            yearMouth: self.yearMonth,
-                                            lineNumber: self.animationLineNumber)
+                                            yearMouth: self.yearMonth)
         return Observable.create { (observer) -> Disposable in
             observer.onNext(calendarEntity)
             observer.onCompleted()
@@ -125,54 +118,47 @@ extension CalendarUseCase {
         let calendarEntity = CalendarEntity(days: self.days,
                                             daysCount: self.daysCount,
                                             weeks: self.weeks,
-                                            yearMouth: self.yearMonth,
-                                            lineNumber: self.animationLineNumber)
+                                            yearMouth: self.yearMonth)
         return Observable.create { (observer) -> Disposable in
             observer.onNext(calendarEntity)
             observer.onCompleted()
             return Disposables.create()
         }
     }
-    
-    
-    func testPrevious() {
-        for i in minusNumber-1...minusNumber-5 {
-            minusNumber = i
-            calculatePreviousMouth()
-            
-        }
-    }
 }
 
 extension CalendarUseCase {
-    private func calculateCurrentCellYPoint() {
+    func calculateCurrentCellYPoint() {
         if days.first == "" {
             let startEmpty = abs(startDay - 1)
             let currentDay = calendar.component(.day, from: currentDate) + startEmpty
-            animationLineNumber = calculateCurrentLine(currentDay: currentDay)
+            calculateCurrentLine(currentDay: currentDay)
         } else {
             let currentDay = calendar.component(.day, from: currentDate)
-            animationLineNumber = calculateCurrentLine(currentDay: currentDay)
+            calculateCurrentLine(currentDay: currentDay)
         }
     }
     
-    private func calculateCurrentLine(currentDay: Int) -> Int {
+    func calculateCurrentLine(currentDay: Int) {
         switch abs(currentDay/7) {
         case 0:
             print("첫번째 줄")
-            return 1
+            currentLine.accept(0)
         case 1:
             print("두번째 줄")
-            return 2
+            currentLine.accept(1)
         case 2:
             print("세번째 줄")
-            return 3
+            currentLine.accept(2)
         case 3:
             print("네번째 줄")
-            return 4
-        default:
+            currentLine.accept(3)
+        case 4:
             print("다섯번째 줄")
-            return 5
+            currentLine.accept(4)
+        default:
+            print("여섯번째 줄")
+            currentLine.accept(5)
         }
     }
 }
