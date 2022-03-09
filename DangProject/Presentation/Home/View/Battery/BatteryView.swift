@@ -32,7 +32,6 @@ class BatteryView: UIView {
     var calendarViewTopAnchor: NSLayoutConstraint?
     private var scrollDirection: ScrollDirection?
     private var currentPoint: CGFloat = 0
-    var currentLineNumber = 0
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -46,7 +45,6 @@ class BatteryView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        calculateCurrentLineNumber()
         configure()
         layout()
         circleConfigure()
@@ -120,9 +118,7 @@ class BatteryView: UIView {
         calendarCollectionView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
-            calendarViewTopAnchor = calendarCollectionView
-                .topAnchor
-                .constraint(equalTo: self.topAnchor, constant: yValueRatio(CGFloat(110-(60*currentLineNumber))))
+            calendarViewTopAnchor = calendarCollectionView.topAnchor.constraint(equalTo: self.topAnchor)
             calendarViewTopAnchor?.isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
@@ -217,6 +213,7 @@ extension BatteryView: UICollectionViewDelegateFlowLayout {
         return CGSize(width: UIScreen.main.bounds.maxX,
                       height: yValueRatio(360))
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -241,6 +238,7 @@ extension BatteryView {
             break
         }
     }
+    
     func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                    withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -308,6 +306,7 @@ extension BatteryView {
         animation.isRemovedOnCompletion = false
         shapeLayer.add(animation, forKey: "urSoBasic")
     }
+    
     private func animatePulsatingLayer() {
         let animation = CABasicAnimation(keyPath: "transform.scale")
         
@@ -318,6 +317,7 @@ extension BatteryView {
         animation.repeatCount = Float.infinity
         pulsatingLayer.add(animation, forKey: "plusing")
     }
+    
     private func countAnimation() {
         DispatchQueue.main.async {
             self.endCount = 50
@@ -329,6 +329,7 @@ extension BatteryView {
                                               repeats: true)
         }
     }
+    
     @objc func updateNumber() {
         self.targetNumber.text = String(currentCount)
         currentCount += 1
@@ -336,79 +337,4 @@ extension BatteryView {
             self.timer.invalidate()
         }
     }
-}
-
-extension BatteryView {
-    // MARK: viewModel이나 useCase로 빼고싶다.
-    func calculateCurrentLineNumber() {
-        var days: [String] = []
-        var daysCount = 0
-        var startDay = 0
-        var dateComponents = DateComponents()
-        let currentDate = Date()
-        let calendar = Calendar.current
-
-        dateComponents.year = calendar.component(.year, from: currentDate)
-        dateComponents.month = calendar.component(.month, from: currentDate)
-        dateComponents.day = 1
-        
-        if let firstDay = calendar.date(from: dateComponents) {
-            let firstWeekDay = calendar.component(.weekday, from: firstDay)
-            daysCount = calendar.range(of: .day, in: .month, for: firstDay)?.count ?? 0
-            startDay = 2 - firstWeekDay
-        }
-        
-        days.removeAll()
-        
-        for day in startDay...daysCount {
-            if day < 1 {
-                days.append("")
-            } else {
-                days.append(String(day))
-            }
-        }
-        
-        calculateCurrentCellYPoint(days: days,
-                                   startDay: startDay,
-                                   currentDate: currentDate,
-                                   calendar: calendar)
-    }
-    
-    func calculateCurrentCellYPoint(days: [String],
-                                    startDay: Int,
-                                    currentDate: Date,
-                                    calendar: Calendar) {
-        if days.first == "" {
-            let startEmpty = abs(startDay - 1)
-            let currentDay = calendar.component(.day, from: currentDate) + startEmpty
-            calculateCurrentLine(currentDay: currentDay)
-        } else {
-            let currentDay = calendar.component(.day, from: currentDate)
-            calculateCurrentLine(currentDay: currentDay)
-        }
-    }
-    
-    func calculateCurrentLine(currentDay: Int) {
-        switch abs(currentDay/7) {
-        case 0:
-            print("첫번째 줄")
-            currentLineNumber = 0
-        case 1:
-            print("두번째 줄")
-            currentLineNumber = 1
-        case 2:
-            print("세번째 줄")
-            currentLineNumber = 2
-        case 3:
-            print("네번째 줄")
-            currentLineNumber = 3
-        case 4:
-            print("다섯번째 줄")
-            currentLineNumber = 4
-        default:
-            print("여섯번째 줄")
-            currentLineNumber = 5
-        }
-    }
-    
 }

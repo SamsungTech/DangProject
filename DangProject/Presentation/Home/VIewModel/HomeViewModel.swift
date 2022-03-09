@@ -31,6 +31,7 @@ protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputP
 class HomeViewModel: HomeViewModelProtocol {
     private var homeUseCase: HomeUseCase
     private var calendarUseCase: CalendarUseCase
+    private var currentDateYearMonth = ""
     var disposeBag = DisposeBag()
     var tempData = BehaviorRelay<[tempNutrient]>(value: [])
     var weekData = BehaviorRelay<[weekTemp]>(value: [])
@@ -40,6 +41,8 @@ class HomeViewModel: HomeViewModelProtocol {
     var batteryViewCalendarData: BatteryEntity = BatteryEntity(calendar: [])
     var currentXPoint = BehaviorRelay<Int>(value: 1)
     var currentLineNumber = 0
+    
+    var currentDateCGPoint = BehaviorRelay<CGPoint>(value: CGPoint())
     
     init(useCase: HomeUseCase,
          calendarUseCase: CalendarUseCase) {
@@ -60,38 +63,43 @@ extension HomeViewModel {
         calendarUseCase.currentLine
             .subscribe(onNext: { [weak self] data in
                 self?.currentLineNumber = data
-                
+            })
+            .disposed(by: disposeBag)
+        
+        calendarUseCase.currentDateYearMonth
+            .subscribe(onNext: { [weak self] data in
+                self?.currentDateYearMonth = data
             })
             .disposed(by: disposeBag)
         
         homeUseCase.execute()
-            .subscribe(onNext: { data in
-                self.tempData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.tempData.accept(data)
             })
             .disposed(by: disposeBag)
         
         homeUseCase.retriveWeekData()
             .map { $0.map { weekTemp(tempNutrient: $0) } }
-            .subscribe(onNext: { data in
-                self.weekData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.weekData.accept(data)
             })
             .disposed(by: disposeBag)
         
         homeUseCase.retriveMouthData()
-            .subscribe(onNext: { data in
-                self.mouthData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.mouthData.accept(data)
             })
             .disposed(by: disposeBag)
         
         homeUseCase.retriveYearData()
-            .subscribe(onNext: { data in
-                self.yearData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.yearData.accept(data)
             })
             .disposed(by: disposeBag)
         
         homeUseCase.calculateSugarSum()
-            .subscribe(onNext: { data in
-                self.sumData.accept(data)
+            .subscribe(onNext: { [weak self] data in
+                self?.sumData.accept(data)
             })
             .disposed(by: disposeBag)
     }
@@ -113,6 +121,8 @@ extension HomeViewModel {
     }
     
     func retriveBatteryData() -> BatteryEntity {
+        
+        
         return batteryViewCalendarData
     }
     
@@ -125,6 +135,21 @@ extension HomeViewModel {
             .disposed(by: disposeBag)
         
         return currentLineNumber
+    }
+    
+    func calculateCurrentDatePoint() {
+        guard let count = batteryViewCalendarData.calendar?.count else { return }
+        
+        for i in 0..<count {
+            if batteryViewCalendarData.calendar?[i].yearMouth == currentDateYearMonth {
+                let point = CGPoint(x: UIScreen.main.bounds.maxX*CGFloat(i), y: .zero)
+                currentXPoint.accept(i)
+                currentDateCGPoint.accept(point)
+                break
+            } else {
+                continue
+            }
+        }
     }
 }
 

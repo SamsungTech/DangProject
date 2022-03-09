@@ -17,6 +17,8 @@ class AteFoodView: UIView {
     lazy var foodCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 20
+        layout.minimumLineSpacing = 15
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
         return collectionView
@@ -87,14 +89,18 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         return ateFoodCell
     }
-    
+}
+
+extension AteFoodView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: xValueRatio(150), height: yValueRatio(80))
     }
-}
-
-extension AteFoodView: UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+    }
 }

@@ -24,7 +24,9 @@ class CalendarUseCase {
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
     private var calendarDataArray: [CalendarEntity] = []
+    var currentDateYearMonth = BehaviorRelay<String>(value: "")
     var currentLine = BehaviorRelay<Int>(value: 0)
+    var currentDatePoint = BehaviorRelay<CGPoint>(value: CGPoint())
     
     private func initDateFormatter() {
         dateFormatter.dateFormat = "yyyy년 M월"
@@ -72,6 +74,7 @@ class CalendarUseCase {
         initDateFormatter()
         calculateMouthCalendar()
         appendCalendarDataArray()
+        currentDateYearMonth.accept(yearMonth)
         calculateCurrentCellYPoint()
     }
     

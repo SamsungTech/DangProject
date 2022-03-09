@@ -33,6 +33,7 @@ class HomeViewController: UIViewController {
     var homeGraphView = HomeGraphView()
     var batteryViewHeightAnchor: NSLayoutConstraint?
     private var isExpandBatteryView = false
+    private var currentCGPoint = CGPoint()
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -46,11 +47,13 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel?.viewDidLoad()
-        view.backgroundColor = .white
         self.navigationController?.navigationBar.isHidden = true
+        view.backgroundColor = .white
+        viewModel?.viewDidLoad()
         configure()
         layout()
+        bind()
+        view.layoutIfNeeded()
         view.bringSubviewToFront(customNavigationBar)
     }
     
@@ -90,11 +93,12 @@ class HomeViewController: UIViewController {
         [ homeStackView ].forEach() { homeScrollView.addSubview($0) }
         [ batteryView, ateFoodTitleView, ateFoodView,
           graphTitleView, homeGraphView ].forEach() { viewsInStackView.append($0) }
+        
         viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         
         customNavigationBar.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            $0.topAnchor.constraint(equalTo: batteryView.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
             heightAnchor = $0.heightAnchor.constraint(equalToConstant: yValueRatio(110))
@@ -114,10 +118,12 @@ class HomeViewController: UIViewController {
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
         batteryView.do {
+            guard let constant = viewModel?.retriveLineAnimationNumber() else { return }
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
             batteryViewHeightAnchor?.isActive = true
+            $0.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*constant)))
         }
         ateFoodTitleView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -139,13 +145,6 @@ class HomeViewController: UIViewController {
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
             $0.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
         }
-        customNavigationBar.yearMouthButton.rx.tap
-            .bind { [weak self] _ in
-                self?.batteryAnimation()
-            }
-            .disposed(by: disposeBag)
-        
-        bind()
     }
 }
 
@@ -169,12 +168,22 @@ extension HomeViewController {
         
         viewModel?.currentXPoint
             .subscribe(onNext: { [weak self] data in
-                if let text = self?.viewModel?
-                    .retriveBatteryData()
-                    .calendar?[self?.viewModel?.currentXPoint.value ?? 1].yearMouth {
+                if let text = self?.viewModel?.retriveBatteryData().calendar?[data].yearMouth {
                     self?.customNavigationBar.dateLabel.text = text
                 }
             })
+            .disposed(by: disposeBag)
+        
+        viewModel?.currentDateCGPoint
+            .subscribe(onNext: { [weak self] data in
+                self?.currentCGPoint = data
+            })
+            .disposed(by: disposeBag)
+        
+        customNavigationBar.yearMouthButton.rx.tap
+            .bind { [weak self] _ in
+                self?.batteryAnimation()
+            }
             .disposed(by: disposeBag)
     }
 }
@@ -197,19 +206,26 @@ extension HomeViewController {
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
+        homeScrollView.isScrollEnabled = false
         isExpandBatteryView = true
     }
     
     private func revertAnimation() {
-        let lineNumber = batteryView.currentLineNumber
+        viewModel?.calculateCurrentDatePoint()
+        guard let lineNumber = viewModel?.retriveLineAnimationNumber() else { return }
         batteryView.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*lineNumber)))
         batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(170)
         batteryViewHeightAnchor?.constant = yValueRatio(500)
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                             height: overSizeYValueRatio(1200))
-        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
             self?.view.layoutIfNeeded()
+        }, completion: { [weak self] _ in
+            guard let currentCGPoint = self?.currentCGPoint else { return }
+            self?.batteryView.calendarCollectionView.setContentOffset(currentCGPoint, animated: true)
         })
+        // MARK: 빠르게 돌릴시 revertAnimation을 하면 view가 틀어짐
+        homeScrollView.isScrollEnabled = true
         isExpandBatteryView = false
     }
 }
