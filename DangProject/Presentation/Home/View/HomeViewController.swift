@@ -5,35 +5,31 @@
 //  Created by 김동우 on 2021/12/20.
 //
 
-import UIKit
-import RxSwift
-import RxCocoa
 import Then
+import UIKit
+
+import RxCocoa
+import RxSwift
 
 class HomeViewController: UIViewController {
     var viewModel: HomeViewModel?
-    weak var coordinator: Coordinator?
+    private weak var coordinator: Coordinator?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
+    private var batteryView = BatteryView()
+    private let ateFoodTitleView = AteFoodTitleView()
+    private var ateFoodView = AteFoodView()
+    private let graphTitleView = GraphTitleView()
+    private var homeGraphView = HomeGraphView()
     private var heightAnchor: NSLayoutConstraint?
+    private var batteryViewHeightAnchor: NSLayoutConstraint?
     private var firstContentY: CGFloat = 0
-    private let gradient = CAGradientLayer()
-    private let newColors = [
-        UIColor.systemRed.cgColor,
-        UIColor.orange.cgColor,
-        UIColor.systemYellow.cgColor
-    ]
     private var homeScrollView = UIScrollView()
     private var homeStackView = UIStackView()
     private var viewsInStackView: [UIView] = []
-    var batteryView = BatteryView()
-    let ateFoodTitleView = AteFoodTitleView()
-    var ateFoodView = AteFoodView()
-    let graphTitleView = GraphTitleView()
-    var homeGraphView = HomeGraphView()
-    var batteryViewHeightAnchor: NSLayoutConstraint?
     private var isExpandBatteryView = false
     private var currentCGPoint = CGPoint()
+    private var currentLineNumber = 0
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -49,6 +45,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .white
+        bindCurrentLineNumber()
         viewModel?.viewDidLoad()
         configure()
         layout()
@@ -118,12 +115,11 @@ class HomeViewController: UIViewController {
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
         batteryView.do {
-            guard let constant = viewModel?.retriveLineAnimationNumber() else { return }
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
             batteryViewHeightAnchor?.isActive = true
-            $0.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*constant)))
+            $0.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*currentLineNumber)))
         }
         ateFoodTitleView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -186,6 +182,14 @@ extension HomeViewController {
             }
             .disposed(by: disposeBag)
     }
+    
+    private func bindCurrentLineNumber() {
+        viewModel?.currentLineNumber
+            .subscribe(onNext: { [weak self] data in
+                self?.currentLineNumber = data
+            })
+            .disposed(by: disposeBag)
+    }
 }
 
 extension HomeViewController {
@@ -212,19 +216,19 @@ extension HomeViewController {
     
     private func revertAnimation() {
         viewModel?.calculateCurrentDatePoint()
-        guard let lineNumber = viewModel?.retriveLineAnimationNumber() else { return }
-        batteryView.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*lineNumber)))
+        batteryView.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*currentLineNumber)))
         batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(170)
         batteryViewHeightAnchor?.constant = yValueRatio(500)
+        
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                             height: overSizeYValueRatio(1200))
+        
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         }, completion: { [weak self] _ in
             guard let currentCGPoint = self?.currentCGPoint else { return }
             self?.batteryView.calendarCollectionView.setContentOffset(currentCGPoint, animated: true)
         })
-        // MARK: 빠르게 돌릴시 revertAnimation을 하면 view가 틀어짐
         homeScrollView.isScrollEnabled = true
         isExpandBatteryView = false
     }

@@ -22,6 +22,7 @@ protocol HomeViewModelOutputProtocol {
     var yearData: BehaviorRelay<[tempNutrient]> { get }
     var sumData: BehaviorRelay<sugarSum> { get }
     var currentXPoint: BehaviorRelay<Int> { get }
+    var currentDateCGPoint: BehaviorRelay<CGPoint> { get }
     
     func retriveBatteryData() -> BatteryEntity
 }
@@ -31,18 +32,17 @@ protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputP
 class HomeViewModel: HomeViewModelProtocol {
     private var homeUseCase: HomeUseCase
     private var calendarUseCase: CalendarUseCase
+    private var disposeBag = DisposeBag()
     private var currentDateYearMonth = ""
-    var disposeBag = DisposeBag()
+    private var batteryViewCalendarData: BatteryEntity = BatteryEntity(calendar: [])
     var tempData = BehaviorRelay<[tempNutrient]>(value: [])
     var weekData = BehaviorRelay<[weekTemp]>(value: [])
     var mouthData = BehaviorRelay<[tempNutrient]>(value: [])
     var yearData = BehaviorRelay<[tempNutrient]>(value: [])
     var sumData = BehaviorRelay<sugarSum>(value: .empty)
-    var batteryViewCalendarData: BatteryEntity = BatteryEntity(calendar: [])
     var currentXPoint = BehaviorRelay<Int>(value: 1)
-    var currentLineNumber = 0
-    
     var currentDateCGPoint = BehaviorRelay<CGPoint>(value: CGPoint())
+    var currentLineNumber = BehaviorRelay<Int>(value: 0)
     
     init(useCase: HomeUseCase,
          calendarUseCase: CalendarUseCase) {
@@ -62,7 +62,7 @@ extension HomeViewModel {
         
         calendarUseCase.currentLine
             .subscribe(onNext: { [weak self] data in
-                self?.currentLineNumber = data
+                self?.currentLineNumber.accept(data)
             })
             .disposed(by: disposeBag)
         
@@ -121,20 +121,7 @@ extension HomeViewModel {
     }
     
     func retriveBatteryData() -> BatteryEntity {
-        
-        
         return batteryViewCalendarData
-    }
-    
-    func retriveLineAnimationNumber() -> Int {
-        calendarUseCase.calculateCurrentCellYPoint()
-        calendarUseCase.currentLine
-            .subscribe(onNext: { [weak self] data in
-                self?.currentLineNumber = data
-            })
-            .disposed(by: disposeBag)
-        
-        return currentLineNumber
     }
     
     func calculateCurrentDatePoint() {
