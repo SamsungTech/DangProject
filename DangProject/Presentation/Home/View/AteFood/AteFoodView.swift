@@ -13,6 +13,7 @@ import RxSwift
 class AteFoodView: UIView {
     static let identifier = "AteFoodCell"
     private var viewModel: AteFoodViewModel?
+    private var disposeBag = DisposeBag()
     private var cardView = UIView()
     lazy var foodCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -23,7 +24,6 @@ class AteFoodView: UIView {
         
         return collectionView
     }()
-    private var disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -85,7 +85,7 @@ extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         ateFoodCell.contentView.layer.masksToBounds = true
         ateFoodCell.contentView.layer.cornerRadius = xValueRatio(20)
-        ateFoodCell.contentView.backgroundColor = .systemYellow
+        ateFoodCell.contentView.backgroundColor = .customHomeColor(.homeBoxColor)
         
         return ateFoodCell
     }

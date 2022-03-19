@@ -12,17 +12,17 @@ import RxSwift
 
 class BatteryView: UIView {
     private var disposeBag = DisposeBag()
-    private var homeViewController: HomeViewController?
+    private var viewModel: HomeViewModel?
     private var mainView = UIView()
     private var gradient = CAGradientLayer()
     
-    let shapeLayer = CAShapeLayer()
-    let trackLayer = CAShapeLayer()
     private var circleProgressBarView = UIView()
     var targetNumber = UILabel()
     var percentLabel = UILabel()
     var targetSugar = UILabel()
-    private var pulsatingLayer = CAShapeLayer()
+    private var animationLineLayer = CAShapeLayer()
+    private let percentLineLayer = CAShapeLayer()
+    private let percentLineBackgroundLayer = CAShapeLayer()
     
     private var endCount: Int = 0
     private var currentCount: Int = 0
@@ -30,8 +30,8 @@ class BatteryView: UIView {
     var targetNumberTopAnchor: NSLayoutConstraint?
     var circleProgressBarTopAnchor: NSLayoutConstraint?
     var calendarViewTopAnchor: NSLayoutConstraint?
-    private var scrollDirection: ScrollDirection?
-    private var currentPoint: CGFloat = 0
+    
+    private var batteryCalendarDataCount = 0
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -39,6 +39,8 @@ class BatteryView: UIView {
         layout.minimumLineSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = true
+        collectionView.isPrefetchingEnabled = true
         
         return collectionView
     }()
@@ -48,7 +50,7 @@ class BatteryView: UIView {
         configure()
         layout()
         circleConfigure()
-        backgroundColor = .systemYellow
+        backgroundColor = .customHomeColor(.homeBoxColor)
         bringSubviewToFront(circleProgressBarView)
         animatePulsatingLayer()
         animateShapeLayer()
@@ -61,7 +63,7 @@ class BatteryView: UIView {
     
     private func configure() {
         circleProgressBarView.do {
-            $0.backgroundColor = .systemYellow
+            $0.backgroundColor = .customHomeColor(.homeBoxColor)
         }
         targetNumber.do {
             $0.textColor = .white
@@ -84,6 +86,7 @@ class BatteryView: UIView {
                         forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
             $0.delegate = self
             $0.dataSource = self
+            $0.backgroundColor = .customHomeColor(.homeBackgroundColor)
         }
     }
     
@@ -126,38 +129,32 @@ class BatteryView: UIView {
     }
     
     private func circleConfigure() {
-        [ pulsatingLayer, trackLayer, shapeLayer ].forEach() { circleProgressBarView.layer.addSublayer($0) }
+        [ animationLineLayer, percentLineBackgroundLayer, percentLineLayer ].forEach() { circleProgressBarView.layer.addSublayer($0) }
 
         let circularPath = UIBezierPath(arcCenter: .zero,
                                         radius: 110,
                                         startAngle: -CGFloat.pi / 2,
                                         endAngle: 2 * CGFloat.pi,
                                         clockwise: true)
-        trackLayer.do {
+        percentLineBackgroundLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.init(red: 255/255,
-                                          green: 244/255,
-                                          blue: 109/255,
-                                          alpha: 1).cgColor
+            $0.strokeColor = UIColor.customCircleBackgroundColor(.circleBackgroundColorYellow).cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
             $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
         }
-        pulsatingLayer.do {
+        animationLineLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.init(red: 1,
-                                          green: 1,
-                                          blue: 1,
-                                          alpha: 0.3).cgColor
+            $0.strokeColor = UIColor.customCircleAnimationColor(.circleAnimationColorYellow).cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
             $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
         }
-        shapeLayer.do {
+        percentLineLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.white.cgColor
+            $0.strokeColor = UIColor.customCircleColor(.circleColorYellow).cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
@@ -168,40 +165,65 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    func bind(homeViewController: HomeViewController) {
-        self.homeViewController = homeViewController
+    func bind(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
         subscribe()
+        bindReloadData()
+        bindPagingState()
     }
     
     private func subscribe() {
-        homeViewController?.viewModel?.sumData
+        viewModel?.sumData
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] data in
-                self?.targetSugar.text = "목표: " + String(format: "%.1f", data.sum) + "/25.6g"
+            .subscribe(onNext: { [weak self] in
+                self?.targetSugar.text = "목표: " + String(format: "%.1f", $0.sum) + "/25.6g"
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.batteryViewCalendarData
+            .subscribe(onNext: { [weak self] in
+                self?.batteryCalendarDataCount = $0.count
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindReloadData() {
+        viewModel?.reloadData
+            .subscribe(onNext: { [weak self] in
+                self?.calendarCollectionView.reloadData()
+            }).disposed(by: disposeBag)
+    }
+    
+    private func bindPagingState() {
+        viewModel?.pagingState
+            .subscribe(onNext: { [weak self] in
+                guard let batteryView = self else { return }
+                self?.viewModel?.handlePagingState($0, view: batteryView)
             })
             .disposed(by: disposeBag)
     }
 }
 
 extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        guard let count = homeViewController?.viewModel?.retriveBatteryData().calendar?.count else { return 0 }
+        guard let count = viewModel?.batteryViewCalendarData.value.count else { return 3 }
         return count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let calendarCell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: CalendarCollectionViewCell.identifier,
-            for: indexPath
-        ) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
+        guard let calendarCell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier,
+                                                                    for: indexPath) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
         
-        if let data = homeViewController?.viewModel?.retriveBatteryData().calendar?[indexPath.item] {
-            let viewModel = CalendarViewModel(calendarData: CalendarStackViewEntity(calendar: data))
+        if let data = viewModel?.batteryViewCalendarData.value[indexPath.item] {
+            let viewModel = CalendarViewModel(calendarData: data)
             calendarCell.bind(viewModel: viewModel)
         }
-        
         return calendarCell
     }
 }
@@ -222,76 +244,14 @@ extension BatteryView: UICollectionViewDelegateFlowLayout {
 }
 
 extension BatteryView {
-    private func updateCalendarPoint() {
-        switch scrollDirection {
-        case .left:
-            let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
-            self.calendarCollectionView.setContentOffset(centerPoint, animated: false)
-        case .center:
-            break
-        case .right:
-            let calendarCount = homeViewController?.viewModel?.retriveBatteryData().calendar?.count ?? 0
-            let count = calendarCount - 2
-            let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX * CGFloat(count), y: .zero)
-            self.calendarCollectionView.setContentOffset(centerPoint, animated: false)
-        default:
-            break
-        }
-    }
-    
     func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                    withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        guard let count = homeViewController?.viewModel?.retriveBatteryData().calendar?.count else { return }
-        currentPoint = targetContentOffset.pointee.x
-        
-        if currentPoint <= 0 {
-            scrollDirection = .left
-        } else if currentPoint >= UIScreen.main.bounds.maxX * CGFloat(count-1) {
-            scrollDirection = .right
-        } else {
-            scrollDirection = .center
-        }
+        viewModel?.giveDirections(currentPoint: targetContentOffset.pointee.x)
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        switch scrollDirection {
-        case .left:
-            homeViewController?.viewModel?.scrolledCalendarToLeft()
-            calendarCollectionView.reloadData()
-            updateCalendarPoint()
-            calculateCurrentPoint(point: currentPoint)
-        case .center:
-            calculateCurrentPoint(point: currentPoint)
-            break
-        case .right:
-            homeViewController?.viewModel?.scrolledCalendarToRight()
-            calendarCollectionView.reloadData()
-            updateCalendarPoint()
-            calculateCurrentPoint(point: currentPoint)
-        default:
-            break
-        }
-    }
-    
-    private func calculateCurrentPoint(point: CGFloat) {
-        let maxXValue = UIScreen.main.bounds.maxX
-        let result = point / maxXValue
-        
-        switch scrollDirection {
-        case .left:
-            homeViewController?.viewModel?.currentXPoint.accept(1)
-            break
-        case .right:
-            guard let number = homeViewController?.viewModel?.retriveBatteryData().calendar?.count else { return }
-            homeViewController?.viewModel?.currentXPoint.accept(Int(number-2))
-            break
-        case .center:
-            homeViewController?.viewModel?.currentXPoint.accept(Int(result))
-            break
-        case .none:
-            break
-        }
+        viewModel?.calculateAfterSettingDirection()
     }
 }
 
@@ -304,7 +264,7 @@ extension BatteryView {
         animation.duration = 2
         animation.fillMode = .forwards
         animation.isRemovedOnCompletion = false
-        shapeLayer.add(animation, forKey: "urSoBasic")
+        percentLineLayer.add(animation, forKey: "urSoBasic")
     }
     
     private func animatePulsatingLayer() {
@@ -315,7 +275,7 @@ extension BatteryView {
         animation.autoreverses = true
         animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
         animation.repeatCount = Float.infinity
-        pulsatingLayer.add(animation, forKey: "plusing")
+        animationLineLayer.add(animation, forKey: "plusing")
     }
     
     private func countAnimation() {

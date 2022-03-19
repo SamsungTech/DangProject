@@ -11,16 +11,17 @@ import RxSwift
 class CalendarCollectionViewCell: UICollectionViewCell {
     static let identifier = "CalendarCollectionViewCell"
     private var viewModel: CalendarViewModel?
+    private var disposeBag = DisposeBag()
+    private var testAnimationButton = UIButton()
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.isPrefetchingEnabled = false
         
         return collectionView
     }()
-    private var testAnimationButton = UIButton()
-    private var disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,23 +77,21 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        guard let count = viewModel?.calendarData.value.calendar?.days?.count else { return 0 }
-        return count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: xValueRatio(55), height: yValueRatio(60))
+        return 42
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DaysCollectionViewCell.identifier, for: indexPath) as? DaysCollectionViewCell else { return UICollectionViewCell() }
-        if let data = viewModel?.calendarData.value.calendar?.days?[indexPath.item] {
-            let viewModel = CalendarCellViewModel(calendarData: CalendarCellEntity(days: data))
+        
+        if let data = self.viewModel?.calendarData.value {
+            let viewModel = DaysCellViewModel(calendarData: data, indexPathItem: indexPath.item)
             cell.bind(viewModel: viewModel)
+            if data.isCurrentDayArray?[indexPath.item] == true {
+                cell.dayLabel.textColor = .white
+            }
         }
+        
         return cell
     }
 }
@@ -103,5 +102,10 @@ extension CalendarCollectionViewCell: UICollectionViewDelegateFlowLayout {
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: xValueRatio(55), height: yValueRatio(60))
+    }
 }
-

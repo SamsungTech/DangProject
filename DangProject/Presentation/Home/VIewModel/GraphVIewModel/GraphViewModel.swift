@@ -23,6 +23,7 @@ struct weekTemp {
 class GraphViewModel {
     var items = BehaviorRelay<[weekTemp]>(value: [])
     
+    
     init(item: [weekTemp]) {
         self.items.accept(item)
     }

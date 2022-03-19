@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 
 class HomeUseCase {
-    private let repository: TempRepositoryProtocol
+    private let repository: HomeRepository
     var sum: Double = 0.0
     
     var nutrient: [tempNutrient] = [
@@ -30,15 +30,9 @@ class HomeUseCase {
         tempNutrient(dang: "10.0", foodName: "나시고랭"),
         tempNutrient(dang: "22.2", foodName: "깍두기")
     ]
-    var mouthData: [tempNutrient] = [
-        tempNutrient(dang: "20.5", foodName: "김치말이국수"),
-        tempNutrient(dang: "21.8", foodName: "김치볶음밥"),
-        tempNutrient(dang: "18.5", foodName: "라면"),
-        tempNutrient(dang: "5.8", foodName: "탕수육"),
-        tempNutrient(dang: "8.0", foodName: "냉모밀"),
-        tempNutrient(dang: "10.0", foodName: "나시고랭"),
-        tempNutrient(dang: "20.2", foodName: "깍두기")
-    ]
+    
+    var monthDangArray: [String] = []
+    
     var yearData: [tempNutrient] = [
         tempNutrient(dang: "10.5", foodName: "김치말이국수"),
         tempNutrient(dang: "5.8", foodName: "김치볶음밥"),
@@ -49,7 +43,7 @@ class HomeUseCase {
         tempNutrient(dang: "10.2", foodName: "깍두기")
     ]
     
-    init(repository: TempRepositoryProtocol) {
+    init(repository: HomeRepository) {
         self.repository = repository
     }
     
@@ -69,9 +63,9 @@ class HomeUseCase {
         }
     }
     
-    func retriveMouthData() -> Observable<[tempNutrient]> {
+    func retriveMouthData() -> Observable<[MonthDangEntity]> {
         return Observable.create { (observer) -> Disposable in
-            observer.onNext(self.mouthData)
+            observer.onNext(self.repository.monthData)
             observer.onCompleted()
             return Disposables.create()
         }
@@ -92,7 +86,6 @@ class HomeUseCase {
         }
         
         let sugarSum = sugarSum.init(sum: sum)
-        
         
         return Observable.create { (observer) -> Disposable in
             observer.onNext(sugarSum)

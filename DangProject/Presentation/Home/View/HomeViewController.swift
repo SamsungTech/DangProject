@@ -11,12 +11,14 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-class HomeViewController: UIViewController {
+protocol HomeViewControllerProtocol: AnyObject {}
+
+class HomeViewController: UIViewController, HomeViewControllerProtocol {
     var viewModel: HomeViewModel?
     private weak var coordinator: Coordinator?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
-    private var batteryView = BatteryView()
+    var batteryView = BatteryView()
     private let ateFoodTitleView = AteFoodTitleView()
     private var ateFoodView = AteFoodView()
     private let graphTitleView = GraphTitleView()
@@ -29,12 +31,11 @@ class HomeViewController: UIViewController {
     private var viewsInStackView: [UIView] = []
     private var isExpandBatteryView = false
     private var currentCGPoint = CGPoint()
-    private var currentLineNumber = 0
+    private var currentLineNumber: CGFloat = 0
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
         let viewController = HomeViewController()
-        
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
         
@@ -44,20 +45,21 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
-        view.backgroundColor = .white
+        view.backgroundColor = .customHomeColor(.homeBackgroundColor)
         bindCurrentLineNumber()
         viewModel?.viewDidLoad()
         configure()
         layout()
         bind()
-        view.layoutIfNeeded()
         view.bringSubviewToFront(customNavigationBar)
+        view.layoutIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let centerPoint = CGPoint(x: UIScreen.main.bounds.maxX, y: .zero)
-        batteryView.calendarCollectionView.setContentOffset(centerPoint, animated: false)
+        batteryView.calendarCollectionView.scrollToItem(at: .init(item: 1, section: 0),
+                                                        at: .centeredHorizontally,
+                                                        animated: false)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -68,20 +70,22 @@ class HomeViewController: UIViewController {
         homeScrollView.do {
             $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = true
-            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX, height: overSizeYValueRatio(1200))
+            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
+                                    height: overSizeYValueRatio(1200))
             $0.contentInsetAdjustmentBehavior = .automatic
             $0.bounces = false
         }
         homeStackView.do {
             $0.axis = .vertical
             $0.spacing = 10
-            $0.backgroundColor = .clear
+            $0.backgroundColor = .customHomeColor(.homeBackgroundColor)
             $0.distribution = .fill
             $0.alignment = .center
         }
         batteryView.do {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = xValueRatio(30)
+            $0.calendarCollectionView.isScrollEnabled = false
         }
     }
     
@@ -110,7 +114,11 @@ class HomeViewController: UIViewController {
         }
         homeStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
+            
+            // MARK: 여기서 생긴 constant때문에 애니메이션 넣을때 디버그 생기는듯
             $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor, constant: yValueRatio(-47)).isActive = true
+            
+            
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
@@ -119,7 +127,11 @@ class HomeViewController: UIViewController {
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
             batteryViewHeightAnchor?.isActive = true
-            $0.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*currentLineNumber)))
+            
+            
+            $0.calendarViewTopAnchor?.constant = -10 //MARK: 숫자는 똑같은데 왜 애니메이션 넣으면 달라짐?
+            print(currentLineNumber, "configureCurrentLineNumber")
+            view.layoutIfNeeded()
         }
         ateFoodTitleView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -146,38 +158,38 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
     private func bind() {
-        batteryView.bind(homeViewController: self)
+        batteryView.bind(viewModel: viewModel!)
         
         viewModel?.tempData
-            .subscribe(onNext: { [weak self] data in
-                let ateFoodViewModel = AteFoodViewModel(item: data)
+            .subscribe(onNext: { [weak self] in
+                let ateFoodViewModel = AteFoodViewModel(item: $0)
                 self?.ateFoodView.bind(viewModel: ateFoodViewModel)
             })
             .disposed(by: disposeBag)
         
         viewModel?.weekData
-            .subscribe(onNext: { [weak self] data in
-                let homeGraphViewModel = GraphViewModel(item: data)
+            .subscribe(onNext: { [weak self] in
+                let homeGraphViewModel = GraphViewModel(item: $0)
                 self?.homeGraphView.bind(viewModel: homeGraphViewModel)
             })
             .disposed(by: disposeBag)
         
         viewModel?.currentXPoint
-            .subscribe(onNext: { [weak self] data in
-                if let text = self?.viewModel?.retriveBatteryData().calendar?[data].yearMouth {
+            .subscribe(onNext: { [weak self] in
+                if let text = self?.viewModel?.batteryViewCalendarData.value[$0].yearMonth {
                     self?.customNavigationBar.dateLabel.text = text
                 }
             })
             .disposed(by: disposeBag)
         
         viewModel?.currentDateCGPoint
-            .subscribe(onNext: { [weak self] data in
-                self?.currentCGPoint = data
+            .subscribe(onNext: { [weak self] in
+                self?.currentCGPoint = $0
             })
             .disposed(by: disposeBag)
         
         customNavigationBar.yearMouthButton.rx.tap
-            .bind { [weak self] _ in
+            .bind { [weak self] in
                 self?.batteryAnimation()
             }
             .disposed(by: disposeBag)
@@ -185,14 +197,16 @@ extension HomeViewController {
     
     private func bindCurrentLineNumber() {
         viewModel?.currentLineNumber
-            .subscribe(onNext: { [weak self] data in
-                self?.currentLineNumber = data
+            .subscribe(onNext: { [weak self] in
+                
+                self?.currentLineNumber = $0
             })
             .disposed(by: disposeBag)
     }
 }
 
 extension HomeViewController {
+    // MARK: 이 분기도 viewModel로 가야되나?
     private func batteryAnimation() {
         if isExpandBatteryView == false {
             expandAnimation()
@@ -202,6 +216,7 @@ extension HomeViewController {
     }
     
     private func expandAnimation() {
+        batteryView.calendarCollectionView.isScrollEnabled = true
         batteryView.calendarViewTopAnchor?.constant = yValueRatio(110)
         batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(470)
         batteryViewHeightAnchor?.constant = UIScreen.main.bounds.maxY
@@ -216,13 +231,15 @@ extension HomeViewController {
     
     private func revertAnimation() {
         viewModel?.calculateCurrentDatePoint()
-        batteryView.calendarViewTopAnchor?.constant = yValueRatio(CGFloat(110-(60*currentLineNumber)))
+        
+        
+        batteryView.calendarViewTopAnchor?.constant = -57 //MARK: 여기랑 왜 달라?
+        
+        
         batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(170)
         batteryViewHeightAnchor?.constant = yValueRatio(500)
-        
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                             height: overSizeYValueRatio(1200))
-        
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         }, completion: { [weak self] _ in
@@ -231,5 +248,6 @@ extension HomeViewController {
         })
         homeScrollView.isScrollEnabled = true
         isExpandBatteryView = false
+        batteryView.calendarCollectionView.isScrollEnabled = false
     }
 }

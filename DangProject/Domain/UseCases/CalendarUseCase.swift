@@ -11,6 +11,7 @@ import RxSwift
 import RxRelay
 
 class CalendarUseCase {
+    private var repository: HomeRepository?
     private let currentDate = Date()
     private var calendar = Calendar.current
     private let dateFormatter = DateFormatter()
@@ -24,9 +25,17 @@ class CalendarUseCase {
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
     private var calendarDataArray: [CalendarEntity] = []
+    private var isCurrentDayArray: [Bool] = []
+    private var currentDay = 0
+    
     var currentDateYearMonth = BehaviorRelay<String>(value: "")
     var currentLine = BehaviorRelay<Int>(value: 0)
     var currentDatePoint = BehaviorRelay<CGPoint>(value: CGPoint())
+    var isHiddenArray: [Bool] = []
+    
+    init(repository: HomeRepository) {
+        self.repository = repository
+    }
     
     private func initDateFormatter() {
         dateFormatter.dateFormat = "yyyy년 M월"
@@ -36,6 +45,10 @@ class CalendarUseCase {
     }
     
     private func calculateMouthCalendar() {
+        guard let calculateMonth = dateComponents.month else { return }
+        let currentMonth = calendar.component(.month, from: currentDate)
+        let currentDay = calendar.component(.day, from: currentDate)
+        
         if let firstDay = calendar.date(from: dateComponents) {
             let firstWeekDay = calendar.component(.weekday, from: firstDay)
             guard let calendarRange = calendar.range(of: .day, in: .month, for: firstDay)?.count else { return }
@@ -44,15 +57,88 @@ class CalendarUseCase {
             yearMonth = dateFormatter.string(from: firstDay)
         }
         
+        for day in 1...daysCount {
+            self.days.append(String(day))
+            isHiddenArray.append(false)
+            calculateCurrentMonthDay(currentMonth: currentMonth,
+                                     calculateMonth: calculateMonth,
+                                     day: day,
+                                     currentDay: currentDay)
+        }
+    }
+    
+    private func calculateCurrentMonthDay(currentMonth: Int,
+                                          calculateMonth: Int,
+                                          day: Int,
+                                          currentDay: Int) {
+        if currentMonth == calculateMonth && day == currentDay {
+            isCurrentDayArray.append(true)
+        } else {
+            isCurrentDayArray.append(false)
+        }
+    }
+    
+    private func calculateEmptyFirstDay() {
+        if let firstDay = calendar.date(from: dateComponents) {
+            let firstWeekDay = calendar.component(.weekday, from: firstDay)
+            guard let calendarRange = calendar.range(of: .day, in: .month, for: firstDay)?.count else { return }
+            daysCount = calendarRange
+            startDay = firstWeekDay - 1
+            yearMonth = dateFormatter.string(from: firstDay)
+        }
+    }
+    
+    private func calculatePreviousMonthEmptyData() {
+        dateComponents.month = dateComponents.month! - 1
+        calculateEmptyFirstDay()
         self.days.removeAll()
         
+        var previousMonthData: [String] = []
         
-        for day in startDay...daysCount {
-            if day < 1 {
-                self.days.append("")
-            } else {
-                self.days.append(String(day))
+        for i in 1...daysCount {
+            previousMonthData.append(String(i))
+        }
+        
+        dateComponents.month = dateComponents.month! + 1
+        calculateEmptyFirstDay()
+        self.days.removeAll()
+        let emptyCount = previousMonthData.count - startDay
+        
+        if emptyCount != previousMonthData.count {
+            for i in emptyCount..<previousMonthData.count {
+                days.append(previousMonthData[i])
+                isHiddenArray.append(true)
+                isCurrentDayArray.append(false)
             }
+        }
+        
+        if let firstDay = calendar.date(from: dateComponents) {
+            yearMonth = dateFormatter.string(from: firstDay)
+        }
+        
+    }
+    
+    private func calculateNextMonthEmptyData() {
+        dateComponents.month = dateComponents.month! + 1
+        let backEmptyCount = 42 - days.count
+        calculateEmptyFirstDay()
+        
+        var nextMonthData: [String] = []
+        
+        for i in 1...daysCount {
+            nextMonthData.append(String(i))
+        }
+        
+        for i in 0..<backEmptyCount {
+            self.days.append(nextMonthData[i])
+            self.isHiddenArray.append(true)
+            isCurrentDayArray.append(false)
+        }
+        
+        dateComponents.month = dateComponents.month! - 1
+        
+        if let firstDay = calendar.date(from: dateComponents) {
+            yearMonth = dateFormatter.string(from: firstDay)
         }
     }
     
@@ -72,9 +158,11 @@ class CalendarUseCase {
     
     private func calculateCurrentMouth() {
         initDateFormatter()
+        calculatePreviousMonthEmptyData()
         calculateMouthCalendar()
-        appendCalendarDataArray()
+        calculateNextMonthEmptyData()
         currentDateYearMonth.accept(yearMonth)
+        appendCalendarDataArray()
         calculateCurrentCellYPoint()
     }
     
@@ -82,14 +170,18 @@ class CalendarUseCase {
         initDateFormatter()
         let minusMonthSumData = dateComponents.month! + minusNumber
         dateComponents.month = minusMonthSumData
+        calculatePreviousMonthEmptyData()
         calculateMouthCalendar()
+        calculateNextMonthEmptyData()
     }
     
     private func calculateNextMouth() {
         initDateFormatter()
         let plusMonthSumData = dateComponents.month! + plusNumber
         dateComponents.month = plusMonthSumData
+        calculatePreviousMonthEmptyData()
         calculateMouthCalendar()
+        calculateNextMonthEmptyData()
     }
     
     private func appendCalendarDataArray() {
@@ -97,8 +189,14 @@ class CalendarUseCase {
             CalendarEntity(days: self.days,
                            daysCount: self.daysCount,
                            weeks: self.weeks,
-                           yearMouth: self.yearMonth)
+                           yearMouth: self.yearMonth,
+                           isHiddenArray: self.isHiddenArray,
+                           dangArray: self.repository?.monthData[0].dang,
+                           maxDangArray: self.repository?.monthData[0].maxDang,
+                           isCurrentDayArray: self.isCurrentDayArray)
         )
+        isCurrentDayArray.removeAll()
+        isHiddenArray.removeAll()
     }
     
     func createPreviousCalendarData() -> Observable<CalendarEntity> {
@@ -107,7 +205,13 @@ class CalendarUseCase {
         let calendarEntity = CalendarEntity(days: self.days,
                                             daysCount: self.daysCount,
                                             weeks: self.weeks,
-                                            yearMouth: self.yearMonth)
+                                            yearMouth: self.yearMonth,
+                                            isHiddenArray: self.isHiddenArray,
+                                            dangArray: self.repository?.monthData[0].dang,
+                                            maxDangArray: self.repository?.monthData[0].maxDang,
+                                            isCurrentDayArray: self.isCurrentDayArray)
+        isCurrentDayArray.removeAll()
+        isHiddenArray.removeAll()
         return Observable.create { (observer) -> Disposable in
             observer.onNext(calendarEntity)
             observer.onCompleted()
@@ -121,7 +225,13 @@ class CalendarUseCase {
         let calendarEntity = CalendarEntity(days: self.days,
                                             daysCount: self.daysCount,
                                             weeks: self.weeks,
-                                            yearMouth: self.yearMonth)
+                                            yearMouth: self.yearMonth,
+                                            isHiddenArray: self.isHiddenArray,
+                                            dangArray: self.repository?.monthData[0].dang,
+                                            maxDangArray: self.repository?.monthData[0].maxDang,
+                                            isCurrentDayArray: self.isCurrentDayArray)
+        isCurrentDayArray.removeAll()
+        isHiddenArray.removeAll()
         return Observable.create { (observer) -> Disposable in
             observer.onNext(calendarEntity)
             observer.onCompleted()
@@ -131,6 +241,7 @@ class CalendarUseCase {
 }
 
 extension CalendarUseCase {
+    // MARK: ViewModel로 가야될듯
     func calculateCurrentCellYPoint() {
         if days.first == "" {
             let startEmpty = abs(startDay - 1)
@@ -145,22 +256,16 @@ extension CalendarUseCase {
     func calculateCurrentLine(currentDay: Int) {
         switch abs(currentDay/7) {
         case 0:
-            print("첫번째 줄")
             currentLine.accept(0)
         case 1:
-            print("두번째 줄")
             currentLine.accept(1)
         case 2:
-            print("세번째 줄")
             currentLine.accept(2)
         case 3:
-            print("네번째 줄")
             currentLine.accept(3)
         case 4:
-            print("다섯번째 줄")
             currentLine.accept(4)
         default:
-            print("여섯번째 줄")
             currentLine.accept(5)
         }
     }

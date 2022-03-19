@@ -13,23 +13,25 @@ class HomeDIContainer {
         let navigationView = UINavigationController(rootViewController: makeHomeViewController(coordinator: coordinator))
         return navigationView
     }
+    
     func makeHomeViewController(coordinator: Coordinator) -> HomeViewController {
         return HomeViewController.create(viewModel: makeHomeViewModel() as! HomeViewModel,
                                          coordinator: coordinator)
     }
+    
     func makeHomeViewModel() -> HomeViewModelProtocol {
         return HomeViewModel(useCase: makeHomeUseCase(), calendarUseCase: makeCalendarUseCase())
     }
+    
     func makeHomeUseCase() -> HomeUseCase {
-        return HomeUseCase(repository: makeTampRepository())
+        return HomeUseCase(repository: makeHomeRepository())
     }
+    
     func makeCalendarUseCase() -> CalendarUseCase {
-        return CalendarUseCase()
-    }
-    func makeTampRepository() -> TempRepository {
-        return TempRepository()
+        return CalendarUseCase(repository: makeHomeRepository())
     }
     
-    
-    
+    func makeHomeRepository() -> HomeRepository {
+        return HomeRepository()
+    }
 }

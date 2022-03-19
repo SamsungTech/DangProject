@@ -24,8 +24,7 @@
 		0B97988227C16C260021162A /* CalendarEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988127C16C260021162A /* CalendarEntity.swift */; };
 		0B97988727C67DE50021162A /* CalendarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988627C67DE50021162A /* CalendarCollectionViewCell.swift */; };
 		0B97988927CA1EEB0021162A /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988827CA1EEB0021162A /* CalendarViewModel.swift */; };
-		0B97988C27CCADC90021162A /* HomeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988B27CCADC80021162A /* HomeFactory.swift */; };
-		0B97988E27CE53970021162A /* CalendarCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988D27CE53970021162A /* CalendarCellViewModel.swift */; };
+		0B97988E27CE53970021162A /* DaysCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97988D27CE53970021162A /* DaysCellViewModel.swift */; };
 		0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351827984F5E00634E51 /* Nutrient.swift */; };
 		0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4351E2798503200634E51 /* MainCoordinator.swift */; };
 		0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435202798518C00634E51 /* HomeCoordinator.swift */; };
@@ -42,6 +41,8 @@
 		0BB43546279FD45F00634E51 /* AteFoodTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB43545279FD45F00634E51 /* AteFoodTitleView.swift */; };
 		0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4354C27A03A1A00634E51 /* HomeCollectionFooter.swift */; };
 		0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4355327B8BC4700634E51 /* AteFoodCollectionCell.swift */; };
+		0BD3596427D9BF6900E3412D /* MonthDangEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD3596327D9BF6900E3412D /* MonthDangEntity.swift */; };
+		0BD3596627DC398900E3412D /* HomeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD3596527DC398900E3412D /* HomeRepository.swift */; };
 		0BE0DA3127BB5C3100AFD089 /* RepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */; };
 		406DE831D86791792DAD62BD /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64F741B1CC607F30779F70B /* Pods_DangProject.framework */; };
 /* End PBXBuildFile section */
@@ -67,8 +68,7 @@
 		0B97988127C16C260021162A /* CalendarEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEntity.swift; sourceTree = "<group>"; };
 		0B97988627C67DE50021162A /* CalendarCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCollectionViewCell.swift; sourceTree = "<group>"; };
 		0B97988827CA1EEB0021162A /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
-		0B97988B27CCADC80021162A /* HomeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFactory.swift; sourceTree = "<group>"; };
-		0B97988D27CE53970021162A /* CalendarCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCellViewModel.swift; sourceTree = "<group>"; };
+		0B97988D27CE53970021162A /* DaysCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysCellViewModel.swift; sourceTree = "<group>"; };
 		0BB4351827984F5E00634E51 /* Nutrient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nutrient.swift; sourceTree = "<group>"; };
 		0BB4351E2798503200634E51 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		0BB435202798518C00634E51 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
@@ -85,6 +85,8 @@
 		0BB43545279FD45F00634E51 /* AteFoodTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodTitleView.swift; sourceTree = "<group>"; };
 		0BB4354C27A03A1A00634E51 /* HomeCollectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionFooter.swift; sourceTree = "<group>"; };
 		0BB4355327B8BC4700634E51 /* AteFoodCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodCollectionCell.swift; sourceTree = "<group>"; };
+		0BD3596327D9BF6900E3412D /* MonthDangEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthDangEntity.swift; sourceTree = "<group>"; };
+		0BD3596527DC398900E3412D /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
 		0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocol.swift; sourceTree = "<group>"; };
 		F64F741B1CC607F30779F70B /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.release.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.release.xcconfig"; sourceTree = "<group>"; };
@@ -152,14 +154,6 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
-		0B97988A27CCAB140021162A /* Factory */ = {
-			isa = PBXGroup;
-			children = (
-				0B97988B27CCADC80021162A /* HomeFactory.swift */,
-			);
-			path = Factory;
-			sourceTree = "<group>";
-		};
 		0B97988F27CF7BE90021162A /* BatteryViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,7 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				0B97988827CA1EEB0021162A /* CalendarViewModel.swift */,
-				0B97988D27CE53970021162A /* CalendarCellViewModel.swift */,
+				0B97988D27CE53970021162A /* DaysCellViewModel.swift */,
 			);
 			path = CalendarViewModel;
 			sourceTree = "<group>";
@@ -219,6 +213,7 @@
 			children = (
 				0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */,
 				0BB4353F279FBEDE00634E51 /* TempRepository.swift */,
+				0BD3596527DC398900E3412D /* HomeRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -247,6 +242,7 @@
 			children = (
 				0B97986D27BB84700021162A /* TempEntities.swift */,
 				0B97988127C16C260021162A /* CalendarEntity.swift */,
+				0BD3596327D9BF6900E3412D /* MonthDangEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -279,7 +275,6 @@
 		0BB4351727984E9F00634E51 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				0B97988A27CCAB140021162A /* Factory */,
 				0BB4351D2798501400634E51 /* Coordinator */,
 				0BB4351C2798500900634E51 /* DIContainer */,
 				0BB4351B27984FF800634E51 /* VIewModel */,
@@ -516,7 +511,9 @@
 				0BB43535279985A300634E51 /* BatteryView.swift in Sources */,
 				0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */,
 				0B97987327BBAA100021162A /* GraphViewModel.swift in Sources */,
+				0BD3596427D9BF6900E3412D /* MonthDangEntity.swift in Sources */,
 				0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */,
+				0BD3596627DC398900E3412D /* HomeRepository.swift in Sources */,
 				0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */,
 				0BB4352F27996E5900634E51 /* HomeGraphView.swift in Sources */,
 				0BB43546279FD45F00634E51 /* AteFoodTitleView.swift in Sources */,
@@ -526,7 +523,6 @@
 				0BB4353A279A660E00634E51 /* CustomNavigationBar.swift in Sources */,
 				0BE0DA3127BB5C3100AFD089 /* RepositoryProtocol.swift in Sources */,
 				0BB43540279FBEDE00634E51 /* TempRepository.swift in Sources */,
-				0B97988C27CCADC90021162A /* HomeFactory.swift in Sources */,
 				0B97988727C67DE50021162A /* CalendarCollectionViewCell.swift in Sources */,
 				0B97988927CA1EEB0021162A /* CalendarViewModel.swift in Sources */,
 				0B97987127BB9D370021162A /* AteFoodViewModel.swift in Sources */,
@@ -535,7 +531,7 @@
 				0BB43542279FC9C000634E51 /* GraphTitleView.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
 				0B97987527BBE07C0021162A /* AteFoodCellInItemViewModel.swift in Sources */,
-				0B97988E27CE53970021162A /* CalendarCellViewModel.swift in Sources */,
+				0B97988E27CE53970021162A /* DaysCellViewModel.swift in Sources */,
 				0BB4352D279919AD00634E51 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

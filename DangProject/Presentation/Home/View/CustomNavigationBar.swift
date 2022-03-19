@@ -24,7 +24,7 @@ class CustomNavigationBar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .systemYellow
+        self.backgroundColor = .customHomeColor(.homeBoxColor)
         createWeekLabel()
         configure()
         layout()

@@ -45,7 +45,7 @@ class AteFoodCollectionCell: UICollectionViewCell {
         }
         dangLabel.do {
             $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: xValueRatio(13))
+            $0.font = UIFont.systemFont(ofSize: xValueRatio(15))
             $0.textAlignment = .center
         }
     }

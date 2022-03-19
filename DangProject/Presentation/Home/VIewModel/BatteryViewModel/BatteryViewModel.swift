@@ -8,20 +8,37 @@
 import Foundation
 import RxRelay
 import RxSwift
+import UIKit
 
-enum ScrollDirection {
-    case right
-    case center
-    case left
-}
 
 struct BatteryEntity {
-    static let empty: Self = .init(calendar: [])
+    static let empty: Self = .init(calendar: .empty)
     
-    var calendar: [CalendarEntity]?
+    var daysArray: [String]?
+    var daysCount: Int?
+    var weeks: [String]?
+    var yearMonth: String?
+    var isHiddenArray: [Bool]?
+    var dangArray: [Double]?
+    var maxDangArray: [Double]?
+    var isCurrentDayArray: [Bool]?
     
-    init(calendar: [CalendarEntity]?) {
-        guard let calendar = calendar else { return }
-        self.calendar = calendar
+    init(calendar: CalendarEntity?) {
+        guard let daysArray = calendar?.days,
+              let daysCount = calendar?.daysCount,
+              let weeks = calendar?.weeks,
+              let yearMonth = calendar?.yearMouth,
+              let isHiddenArray = calendar?.isHiddenArray,
+              let dangArray = calendar?.dangArray,
+              let maxDangArray = calendar?.maxDangArray,
+              let isCurrentDayArray = calendar?.isCurrentDayArray else { return }
+        self.daysArray = daysArray
+        self.daysCount = daysCount
+        self.weeks = weeks
+        self.yearMonth = yearMonth
+        self.isHiddenArray = isHiddenArray
+        self.dangArray = dangArray
+        self.maxDangArray = maxDangArray
+        self.isCurrentDayArray = isCurrentDayArray
     }
 }

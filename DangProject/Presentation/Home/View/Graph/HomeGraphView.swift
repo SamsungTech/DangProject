@@ -20,8 +20,6 @@ class HomeGraphView: UIView {
     private var graphStackView = UIStackView()
     private var graphNameStackView = UIStackView()
     private let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
-    // MARK: 홀더 없애기
-    var weekNumbers: [weekTemp] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,7 +40,7 @@ class HomeGraphView: UIView {
     
     private func configure() {
         graphMainView.do {
-            $0.backgroundColor = .systemOrange
+            $0.backgroundColor = .customHomeColor(.homeBoxColor)
         }
         graphSegmentedControl.do {
             $0.selectedSegmentIndex = 0
@@ -127,6 +125,7 @@ class HomeGraphView: UIView {
             graphBackgroundStackView.addArrangedSubview(view)
         }
     }
+    
     private func createGraphViews(items: [weekTemp]) {
         var height: CGFloat?
         
@@ -151,8 +150,8 @@ class HomeGraphView: UIView {
         for item in week {
             let label = UILabel()
             label.do {
-                $0.textColor = .black
-                $0.font = UIFont.systemFont(ofSize: xValueRatio(15))
+                $0.textColor = .white
+                $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
                 $0.text = item
                 $0.textAlignment = .center
             }
@@ -169,11 +168,9 @@ extension HomeGraphView {
     
     private func subscribe() {
         viewModel?.items
-            .subscribe(onNext: { data in
-                self.weekNumbers = data
+            .subscribe(onNext: { [weak self] data in
+                self?.createGraphViews(items: data)
             })
             .disposed(by: disposeBag)
-        
-        createGraphViews(items: weekNumbers)
     }
 }
