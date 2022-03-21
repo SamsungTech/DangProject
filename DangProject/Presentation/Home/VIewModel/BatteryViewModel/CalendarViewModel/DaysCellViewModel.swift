@@ -87,7 +87,7 @@ class DaysCellViewModel {
     }
     
     private func calculateColor(dang: Double,
-                        maxDang: Double) -> CGColor {
+                                maxDang: Double) -> CGColor {
         let colorCalculateNumber: Double = (dang/maxDang)*100
         
         if colorCalculateNumber > 63 {

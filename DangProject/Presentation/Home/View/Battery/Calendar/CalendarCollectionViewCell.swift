@@ -11,6 +11,7 @@ import RxSwift
 class CalendarCollectionViewCell: UICollectionViewCell {
     static let identifier = "CalendarCollectionViewCell"
     private var viewModel: CalendarViewModel?
+    private var homeViewModel: HomeViewModel?
     private var disposeBag = DisposeBag()
     private var testAnimationButton = UIButton()
     lazy var calendarCollectionView: UICollectionView = {
@@ -56,8 +57,10 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func bind(viewModel: CalendarViewModel) {
+    func bind(viewModel: CalendarViewModel,
+              homeViewModel: HomeViewModel) {
         self.viewModel = viewModel
+        self.homeViewModel = homeViewModel
         subscribe()
     }
     
@@ -93,6 +96,31 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
         }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
+        guard let selectedDangData = viewModel?.calendarData.value.dangArray?[indexPath.item],
+              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray?[indexPath.item],
+              let circlePercentValue = homeViewModel?.calculatePercentValue(dang: selectedDangData,
+                                                                            maxDang: selectedMaxDangData),
+              let circleDangValue = homeViewModel?.calculateMonthDangDataNumber(dang: selectedDangData,
+                                                                                maxDang: selectedMaxDangData),
+              let circleColor = homeViewModel?.calculateCircleProgressBarColor(dang: selectedDangData,
+                                                                               maxDang: selectedMaxDangData),
+              let circleBackgroundColor = homeViewModel?.calculateCircleProgressBackgroundColor(dang: selectedDangData,
+                                                                                                maxDang: selectedMaxDangData),
+              let animationLineColor = homeViewModel?.calculateCirclePercentLineColor(dang: selectedDangData,
+                                                                                      maxDang: selectedMaxDangData) else { return }
+        
+        homeViewModel?.circleDangValue.accept(circleDangValue)
+        homeViewModel?.circlePercentValue.accept(circlePercentValue)
+        homeViewModel?.selectedDangValue.accept(String(selectedDangData))
+        homeViewModel?.selectedMaxDangValue.accept(String(selectedMaxDangData))
+        homeViewModel?.selectedCircleColor.accept(circleColor)
+        homeViewModel?.selectedCircleBackgroundColor.accept(circleBackgroundColor)
+        homeViewModel?.selectedAnimationLineColor.accept(animationLineColor)
+        homeViewModel?.didTapCell()
     }
 }
 

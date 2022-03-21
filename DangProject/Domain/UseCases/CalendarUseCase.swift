@@ -20,13 +20,14 @@ class CalendarUseCase {
     private var days: [String] = []
     private var daysCount = 0
     private var startDay = 0
+    private var startEmptyCount = 0
     private var yearMonth = ""
     private var animationLineNumber = 0
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
     private var calendarDataArray: [CalendarEntity] = []
     private var isCurrentDayArray: [Bool] = []
-    private var currentDay = 0
+    var currentDay = BehaviorRelay<Int>(value: 0)
     
     var currentDateYearMonth = BehaviorRelay<String>(value: "")
     var currentLine = BehaviorRelay<Int>(value: 0)
@@ -159,12 +160,12 @@ class CalendarUseCase {
     private func calculateCurrentMouth() {
         initDateFormatter()
         calculatePreviousMonthEmptyData()
+        startEmptyCount = days.count
         calculateMouthCalendar()
         calculateNextMonthEmptyData()
         currentDateYearMonth.accept(yearMonth)
         appendCalendarDataArray()
-        calculateCurrentCellYPoint()
-    }
+        calculateCurrentCellYPoint()    }
     
     private func calculatePreviousMouth() {
         initDateFormatter()
@@ -241,16 +242,10 @@ class CalendarUseCase {
 }
 
 extension CalendarUseCase {
-    // MARK: ViewModel로 가야될듯
     func calculateCurrentCellYPoint() {
-        if days.first == "" {
-            let startEmpty = abs(startDay - 1)
-            let currentDay = calendar.component(.day, from: currentDate) + startEmpty
-            calculateCurrentLine(currentDay: currentDay)
-        } else {
-            let currentDay = calendar.component(.day, from: currentDate)
-            calculateCurrentLine(currentDay: currentDay)
-        }
+        let currentDayCount = calendar.component(.day, from: currentDate) + startEmptyCount
+        currentDay.accept(currentDayCount)
+        calculateCurrentLine(currentDay: currentDayCount)
     }
     
     func calculateCurrentLine(currentDay: Int) {

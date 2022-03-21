@@ -11,7 +11,9 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-protocol HomeViewControllerProtocol: AnyObject {}
+protocol HomeViewControllerProtocol: AnyObject {
+    func resetBatteryViewConfigure()
+}
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
     var viewModel: HomeViewModel?
@@ -33,11 +35,20 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     private var currentCGPoint = CGPoint()
     private var currentLineNumber: CGFloat = 0
     
+    private var circleDangValue: CGFloat = 0
+    private var circlePercentValue: Int = 0
+    private var selectedDangValue: String = ""
+    private var selectedMaxDangValue: String = ""
+    private var selectedCircleColor: CGColor = UIColor.clear.cgColor
+    private var selectedCircleBackground: CGColor = UIColor.clear.cgColor
+    private var selectedAnimationLineColor: CGColor = UIColor.clear.cgColor
+    
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
         let viewController = HomeViewController()
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
+        viewModel.homeViewController = viewController
         
         return viewController
     }
@@ -52,7 +63,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
         layout()
         bind()
         view.bringSubviewToFront(customNavigationBar)
-        view.layoutIfNeeded()
+        configureBatteryView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -66,6 +77,17 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
         coordinator?.childDidFinish(coordinator)
     }
     
+    private func configureBatteryView() {
+        batteryView.do {
+            $0.layer.masksToBounds = true
+            $0.layer.cornerRadius = xValueRatio(30)
+            $0.calendarCollectionView.isScrollEnabled = false
+            $0.animateShapeLayer(circleDangValue)
+            $0.countAnimation(circlePercentValue)
+            $0.targetSugar.text = "목표: " + selectedDangValue + "/" + selectedMaxDangValue
+        }
+    }
+    
     private func configure() {
         homeScrollView.do {
             $0.backgroundColor = .clear
@@ -74,6 +96,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
                                     height: overSizeYValueRatio(1200))
             $0.contentInsetAdjustmentBehavior = .automatic
             $0.bounces = false
+            $0.contentInsetAdjustmentBehavior = .never
         }
         homeStackView.do {
             $0.axis = .vertical
@@ -81,11 +104,6 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             $0.backgroundColor = .customHomeColor(.homeBackgroundColor)
             $0.distribution = .fill
             $0.alignment = .center
-        }
-        batteryView.do {
-            $0.layer.masksToBounds = true
-            $0.layer.cornerRadius = xValueRatio(30)
-            $0.calendarCollectionView.isScrollEnabled = false
         }
     }
     
@@ -116,8 +134,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             $0.translatesAutoresizingMaskIntoConstraints = false
             
             // MARK: 여기서 생긴 constant때문에 애니메이션 넣을때 디버그 생기는듯
-            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor, constant: yValueRatio(-47)).isActive = true
-            
+            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor).isActive = true
             
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -127,10 +144,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
             batteryViewHeightAnchor?.isActive = true
-            
-            
-            $0.calendarViewTopAnchor?.constant = -10 //MARK: 숫자는 똑같은데 왜 애니메이션 넣으면 달라짐?
-            print(currentLineNumber, "configureCurrentLineNumber")
+            $0.calendarViewTopAnchor?.constant = currentLineNumber
             view.layoutIfNeeded()
         }
         ateFoodTitleView.do {
@@ -193,12 +207,54 @@ extension HomeViewController {
                 self?.batteryAnimation()
             }
             .disposed(by: disposeBag)
+        
+        viewModel?.circleDangValue
+            .subscribe(onNext: { [weak self] in
+                self?.circleDangValue = $0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.circlePercentValue
+            .subscribe(onNext: { [weak self] in
+                self?.circlePercentValue = $0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.selectedDangValue
+            .subscribe(onNext: { [weak self] in
+                self?.selectedDangValue = $0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.selectedMaxDangValue
+            .subscribe(onNext: { [weak self] in
+                self?.selectedMaxDangValue = $0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.selectedCircleColor
+            .subscribe(onNext: { [weak self] in
+                self?.selectedCircleColor = $0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.selectedCircleBackgroundColor
+            .subscribe(onNext: { [weak self] in
+                self?.selectedCircleBackground = $0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.selectedAnimationLineColor
+            .subscribe(onNext: { [weak self] in
+                self?.selectedAnimationLineColor = $0
+            })
+            .disposed(by: disposeBag)
+            
     }
     
     private func bindCurrentLineNumber() {
-        viewModel?.currentLineNumber
+        viewModel?.currentLineYValue
             .subscribe(onNext: { [weak self] in
-                
                 self?.currentLineNumber = $0
             })
             .disposed(by: disposeBag)
@@ -206,6 +262,17 @@ extension HomeViewController {
 }
 
 extension HomeViewController {
+    func resetBatteryViewConfigure() {
+        batteryView.do {
+            $0.animateShapeLayer(circleDangValue)
+            $0.countAnimation(circlePercentValue)
+            $0.targetSugar.text = "목표: " + selectedDangValue + "/" + selectedMaxDangValue
+            $0.animationLineLayer.strokeColor = selectedCircleColor
+            $0.percentLineBackgroundLayer.strokeColor = selectedCircleBackground
+            $0.percentLineLayer.strokeColor = selectedAnimationLineColor
+        }
+    }
+    
     // MARK: 이 분기도 viewModel로 가야되나?
     private func batteryAnimation() {
         if isExpandBatteryView == false {
@@ -231,13 +298,10 @@ extension HomeViewController {
     
     private func revertAnimation() {
         viewModel?.calculateCurrentDatePoint()
-        
-        
-        batteryView.calendarViewTopAnchor?.constant = -57 //MARK: 여기랑 왜 달라?
-        
-        
+        batteryView.calendarViewTopAnchor?.constant = currentLineNumber
         batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(170)
         batteryViewHeightAnchor?.constant = yValueRatio(500)
+        calculateColorWhenRevertAnimation()
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                             height: overSizeYValueRatio(1200))
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
@@ -249,5 +313,26 @@ extension HomeViewController {
         homeScrollView.isScrollEnabled = true
         isExpandBatteryView = false
         batteryView.calendarCollectionView.isScrollEnabled = false
+    }
+    
+    private func calculateColorWhenRevertAnimation() {
+        guard let currentDang = viewModel?.currentDangValue.value,
+              let currentMaxDang = viewModel?.currentMaxDangValue.value,
+              let circleColor = viewModel?.calculateCircleProgressBarColor(dang: currentDang,
+                                                                           maxDang: currentMaxDang),
+              let circleBackgroundColor = viewModel?.calculateCircleProgressBackgroundColor(dang: currentDang,
+                                                                                            maxDang: currentMaxDang),
+              let animationLineColor = viewModel?.calculateCirclePercentLineColor(dang: currentDang,
+                                                                                  maxDang: currentMaxDang),
+              let circlePercentValue = viewModel?.calculatePercentValue(dang: currentDang,
+                                                                        maxDang: currentMaxDang),
+              let circleDangValue = viewModel?.calculateMonthDangDataNumber(dang: currentDang,
+                                                                            maxDang: currentMaxDang) else { return }
+        batteryView.animationLineLayer.strokeColor = circleColor
+        batteryView.percentLineBackgroundLayer.strokeColor = circleBackgroundColor
+        batteryView.percentLineLayer.strokeColor = animationLineColor
+        batteryView.animateShapeLayer(circleDangValue)
+        batteryView.countAnimation(circlePercentValue)
+        batteryView.targetSugar.text = "목표: " + String(currentDang) + "/" + String(currentMaxDang)
     }
 }

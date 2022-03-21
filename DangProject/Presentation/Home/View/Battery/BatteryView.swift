@@ -20,9 +20,9 @@ class BatteryView: UIView {
     var targetNumber = UILabel()
     var percentLabel = UILabel()
     var targetSugar = UILabel()
-    private var animationLineLayer = CAShapeLayer()
-    private let percentLineLayer = CAShapeLayer()
-    private let percentLineBackgroundLayer = CAShapeLayer()
+    var animationLineLayer = CAShapeLayer()
+    var percentLineLayer = CAShapeLayer()
+    var percentLineBackgroundLayer = CAShapeLayer()
     
     private var endCount: Int = 0
     private var currentCount: Int = 0
@@ -32,6 +32,8 @@ class BatteryView: UIView {
     var calendarViewTopAnchor: NSLayoutConstraint?
     
     private var batteryCalendarDataCount = 0
+    
+    private var mainProgressBarDangValue: CGFloat = 0
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -53,8 +55,6 @@ class BatteryView: UIView {
         backgroundColor = .customHomeColor(.homeBoxColor)
         bringSubviewToFront(circleProgressBarView)
         animatePulsatingLayer()
-        animateShapeLayer()
-        countAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -110,7 +110,7 @@ class BatteryView: UIView {
         }
         percentLabel.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: xValueRatio(50)).isActive = true
+            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: xValueRatio(55)).isActive = true
             $0.bottomAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(-5)).isActive = true
         }
         targetSugar.do {
@@ -219,10 +219,10 @@ extension BatteryView: UICollectionViewDelegate, UICollectionViewDataSource {
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let calendarCell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.identifier,
                                                                     for: indexPath) as? CalendarCollectionViewCell else { return UICollectionViewCell() }
-        
-        if let data = viewModel?.batteryViewCalendarData.value[indexPath.item] {
+        if let data = viewModel?.batteryViewCalendarData.value[indexPath.item],
+           let homeViewModel = self.viewModel {
             let viewModel = CalendarViewModel(calendarData: data)
-            calendarCell.bind(viewModel: viewModel)
+            calendarCell.bind(viewModel: viewModel, homeViewModel: homeViewModel)
         }
         return calendarCell
     }
@@ -257,10 +257,10 @@ extension BatteryView {
 
 
 extension BatteryView {
-    private func animateShapeLayer() {
+    func animateShapeLayer(_ circleDangValue: CGFloat) {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         
-        animation.toValue = 0.4
+        animation.toValue = circleDangValue
         animation.duration = 2
         animation.fillMode = .forwards
         animation.isRemovedOnCompletion = false
@@ -278,11 +278,12 @@ extension BatteryView {
         animationLineLayer.add(animation, forKey: "plusing")
     }
     
-    private func countAnimation() {
+    func countAnimation(_ endCount: Int) {
+        self.timer.invalidate()
         DispatchQueue.main.async {
-            self.endCount = 50
+            self.endCount = endCount
             self.currentCount = 0
-            self.timer = Timer.scheduledTimer(timeInterval: 2/50,
+            self.timer = Timer.scheduledTimer(timeInterval: 4/100,
                                               target: self,
                                               selector: #selector(BatteryView.updateNumber),
                                               userInfo: nil,
