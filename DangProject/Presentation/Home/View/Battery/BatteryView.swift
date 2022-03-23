@@ -42,7 +42,7 @@ class BatteryView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = true
-        collectionView.isPrefetchingEnabled = true
+        collectionView.isPrefetchingEnabled = false
         
         return collectionView
     }()
@@ -257,11 +257,12 @@ extension BatteryView {
 
 
 extension BatteryView {
-    func animateShapeLayer(_ circleDangValue: CGFloat) {
+    func animateShapeLayer(_ circleDangValue: CGFloat,
+                           _ duration: Double) {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         
         animation.toValue = circleDangValue
-        animation.duration = 2
+        animation.duration = duration
         animation.fillMode = .forwards
         animation.isRemovedOnCompletion = false
         percentLineLayer.add(animation, forKey: "urSoBasic")
@@ -283,7 +284,7 @@ extension BatteryView {
         DispatchQueue.main.async {
             self.endCount = endCount
             self.currentCount = 0
-            self.timer = Timer.scheduledTimer(timeInterval: 4/100,
+            self.timer = Timer.scheduledTimer(timeInterval: 3/100,
                                               target: self,
                                               selector: #selector(BatteryView.updateNumber),
                                               userInfo: nil,

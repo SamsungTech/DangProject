@@ -45,7 +45,6 @@ class HomeViewModel: HomeViewModelProtocol {
     private var calendarUseCase: CalendarUseCase
     var homeViewController: HomeViewControllerProtocol?
     private var disposeBag = DisposeBag()
-    private var currentDateYearMonth = ""
     var currentPoint = BehaviorRelay<CGFloat>(value: CGFloat())
     var batteryViewCalendarData = BehaviorRelay<[BatteryEntity]>(value: [])
     var reloadData = BehaviorRelay<Void>(value: ())
@@ -59,13 +58,16 @@ class HomeViewModel: HomeViewModelProtocol {
     var currentXPoint = BehaviorRelay<Int>(value: 1)
     var currentDateCGPoint = BehaviorRelay<CGPoint>(value: CGPoint())
     var currentLineYValue = BehaviorRelay<CGFloat>(value: 0)
+    var currentCount = BehaviorRelay<Int>(value: 0)
+    var currentYearMonth = BehaviorRelay<String>(value: "")
     var circleColor: [CGColor] = []
     var circleNumber: [CGFloat] = []
     var circleDangValue = BehaviorRelay<CGFloat>(value: 0)
     var circlePercentValue = BehaviorRelay<Int>(value: 0)
-    
+
     var currentDangValue = BehaviorRelay<Double>(value: 0.0)
     var currentMaxDangValue = BehaviorRelay<Double>(value: 0.0)
+    var circleAnimationDuration = BehaviorRelay<Double>(value: 0.0)
     
     var selectedDangValue = BehaviorRelay<String>(value: "")
     var selectedMaxDangValue = BehaviorRelay<String>(value: "")
@@ -100,7 +102,7 @@ extension HomeViewModel {
         
         calendarUseCase.currentDateYearMonth
             .subscribe(onNext: { [weak self] in
-                self?.currentDateYearMonth = $0
+                self?.currentYearMonth.accept($0)
             })
             .disposed(by: disposeBag)
         
@@ -143,18 +145,19 @@ extension HomeViewModel {
                       let circleBackgroundColor = self?.calculateCircleProgressBackgroundColor(dang: currentDayDang,
                                                                                                maxDang: currentMaxDang),
                       let animationLineColor = self?.calculateCirclePercentLineColor(dang: currentDayDang,
+                                                                                     maxDang: currentMaxDang),
+                      let animationDuration = self?.calculateCircleAnimationDuration(dang: currentDayDang,
                                                                                      maxDang: currentMaxDang) else { return }
-                
+                self?.currentCount.accept($0)
                 self?.selectedCircleColor.accept(circleColor)
                 self?.selectedCircleBackgroundColor.accept(circleBackgroundColor)
-                self?.circleDangValue.accept(circleDangValue)
-                self?.circlePercentValue.accept(circlePercentValue)
-                
-                self?.currentDangValue.accept(currentDayDang)
-                self?.currentMaxDangValue.accept(currentMaxDang)
-                
                 self?.selectedDangValue.accept(String(currentDayDang))
                 self?.selectedMaxDangValue.accept(String(currentMaxDang))
+                self?.circleDangValue.accept(circleDangValue)
+                self?.circlePercentValue.accept(circlePercentValue)
+                self?.currentDangValue.accept(currentDayDang)
+                self?.currentMaxDangValue.accept(currentMaxDang)
+                self?.circleAnimationDuration.accept(animationDuration)
                 self?.selectedAnimationLineColor.accept(animationLineColor)
                 
             })
@@ -221,7 +224,7 @@ extension HomeViewModel {
         let count = batteryViewCalendarData.value.count
         
         for i in 0..<count {
-            if batteryViewCalendarData.value[i].yearMonth == currentDateYearMonth {
+            if batteryViewCalendarData.value[i].yearMonth == currentYearMonth.value {
                 let point = CGPoint(x: UIScreen.main.bounds.maxX*CGFloat(i), y: .zero)
                 currentXPoint.accept(i)
                 currentDateCGPoint.accept(point)
@@ -341,11 +344,34 @@ extension HomeViewModel {
         }
     }
     
-    func didTapCell() {
-        homeViewController?.resetBatteryViewConfigure()
+    func calculateCircleAnimationDuration(dang: Double, maxDang: Double) -> Double {
+        return Double((dang/maxDang)*3)
     }
     
-    
-    
+    func didTapCalendarViewCell(_ selectedDangData: Double,
+                                _ selectedMaxDangData: Double) {
+        let circlePercentValue = calculatePercentValue(dang: selectedDangData,
+                                                       maxDang: selectedMaxDangData)
+        let circleDangValue = calculateMonthDangDataNumber(dang: selectedDangData,
+                                                           maxDang: selectedMaxDangData)
+        let circleColor = calculateCircleProgressBarColor(dang: selectedDangData,
+                                                          maxDang: selectedMaxDangData)
+        let circleBackgroundColor = calculateCircleProgressBackgroundColor(dang: selectedDangData,
+                                                                           maxDang: selectedMaxDangData)
+        let animationLineColor = calculateCirclePercentLineColor(dang: selectedDangData,
+                                                                 maxDang: selectedMaxDangData)
+        let animationDuration = calculateCircleAnimationDuration(dang: selectedDangData,
+                                                                 maxDang: selectedMaxDangData)
+        
+        self.circleDangValue.accept(circleDangValue)
+        self.circlePercentValue.accept(circlePercentValue)
+        self.selectedDangValue.accept(String(selectedDangData))
+        self.selectedMaxDangValue.accept(String(selectedMaxDangData))
+        self.selectedCircleColor.accept(circleColor)
+        self.selectedCircleBackgroundColor.accept(circleBackgroundColor)
+        self.selectedAnimationLineColor.accept(animationLineColor)
+        self.circleAnimationDuration.accept(animationDuration)
+        homeViewController?.resetBatteryViewConfigure()
+    }
 }
 

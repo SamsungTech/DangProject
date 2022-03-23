@@ -19,7 +19,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.isPrefetchingEnabled = false
+        collectionView.isPrefetchingEnabled = true
         
         return collectionView
     }()
@@ -90,9 +90,15 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
         if let data = self.viewModel?.calendarData.value {
             let viewModel = DaysCellViewModel(calendarData: data, indexPathItem: indexPath.item)
             cell.bind(viewModel: viewModel)
-            if data.isCurrentDayArray?[indexPath.item] == true {
-                cell.dayLabel.textColor = .white
-            }
+        }
+        
+        if indexPath.item == homeViewModel?.currentCount.value ?? 0 && self.homeViewModel?.currentYearMonth.value == self.viewModel?.calendarData.value.yearMonth ?? "" {
+            cell.selectedLineView.layer.borderColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
+            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .init())
+        } else {
+            cell.selectedLineView.layer.borderColor = .init(red: 1, green: 1, blue: 1, alpha: 0.0)
+            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
         }
         
         return cell
@@ -101,26 +107,19 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         guard let selectedDangData = viewModel?.calendarData.value.dangArray?[indexPath.item],
-              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray?[indexPath.item],
-              let circlePercentValue = homeViewModel?.calculatePercentValue(dang: selectedDangData,
-                                                                            maxDang: selectedMaxDangData),
-              let circleDangValue = homeViewModel?.calculateMonthDangDataNumber(dang: selectedDangData,
-                                                                                maxDang: selectedMaxDangData),
-              let circleColor = homeViewModel?.calculateCircleProgressBarColor(dang: selectedDangData,
-                                                                               maxDang: selectedMaxDangData),
-              let circleBackgroundColor = homeViewModel?.calculateCircleProgressBackgroundColor(dang: selectedDangData,
-                                                                                                maxDang: selectedMaxDangData),
-              let animationLineColor = homeViewModel?.calculateCirclePercentLineColor(dang: selectedDangData,
-                                                                                      maxDang: selectedMaxDangData) else { return }
+              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray?[indexPath.item] else { return }
         
-        homeViewModel?.circleDangValue.accept(circleDangValue)
-        homeViewModel?.circlePercentValue.accept(circlePercentValue)
-        homeViewModel?.selectedDangValue.accept(String(selectedDangData))
-        homeViewModel?.selectedMaxDangValue.accept(String(selectedMaxDangData))
-        homeViewModel?.selectedCircleColor.accept(circleColor)
-        homeViewModel?.selectedCircleBackgroundColor.accept(circleBackgroundColor)
-        homeViewModel?.selectedAnimationLineColor.accept(animationLineColor)
-        homeViewModel?.didTapCell()
+        homeViewModel?.didTapCalendarViewCell(selectedDangData, selectedMaxDangData)
+        if let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell {
+            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell {
+            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
+        }
     }
 }
 

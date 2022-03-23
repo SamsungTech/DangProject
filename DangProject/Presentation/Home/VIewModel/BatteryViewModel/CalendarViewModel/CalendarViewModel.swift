@@ -21,6 +21,7 @@ struct CalendarMonthDangEntity {
 struct CalendarStackViewEntity {
     static let empty: Self = .init(batteryEntity: .empty)
     
+    var yearMonth: String?
     var daysArray: [String]?
     var isHiddenArray: [Bool]?
     var dangArray: [Double]?
@@ -28,11 +29,13 @@ struct CalendarStackViewEntity {
     var isCurrentDayArray: [Bool]?
     
     init(batteryEntity: BatteryEntity?) {
-        guard let daysArray = batteryEntity?.daysArray,
+        guard let yearMonth = batteryEntity?.yearMonth,
+              let daysArray = batteryEntity?.daysArray,
               let isHiddenArray = batteryEntity?.isHiddenArray,
               let dangArray = batteryEntity?.dangArray,
               let maxDangArray = batteryEntity?.maxDangArray,
               let isCurrentDayArray = batteryEntity?.isCurrentDayArray else { return }
+        self.yearMonth = yearMonth
         self.daysArray = daysArray
         self.isHiddenArray = isHiddenArray
         self.dangArray = dangArray

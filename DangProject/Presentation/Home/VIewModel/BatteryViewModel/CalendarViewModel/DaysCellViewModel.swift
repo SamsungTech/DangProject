@@ -10,22 +10,26 @@ import RxRelay
 import QuartzCore
 
 struct DaysCellEntity {
-    static let empty: Self = .init(days: String(),
+    static let empty: Self = .init(yearMonth: "",
+                                   days: String(),
                                    isHidden: Bool(),
                                    dang: Double(),
                                    maxDang: Double(),
                                    isCurrentDay: Bool())
+    var yearMonth: String?
     var days: String?
     var isHidden: Bool?
     var dang: Double?
     var maxDang: Double?
     var isCurrentDay: Bool?
     
-    init(days: String,
+    init(yearMonth: String?,
+         days: String,
          isHidden: Bool,
          dang: Double,
          maxDang: Double,
          isCurrentDay: Bool) {
+        self.yearMonth = yearMonth
         self.days = days
         self.isHidden = isHidden
         self.dang = dang
@@ -35,6 +39,7 @@ struct DaysCellEntity {
 }
 
 class DaysCellViewModel {
+    var yearMonth = BehaviorRelay<String>(value: "")
     var days = BehaviorRelay<String>(value: "")
     var isHidden = BehaviorRelay<Bool>(value: Bool())
     var circleColor = BehaviorRelay<CGColor>(value: UIColor.clear.cgColor)
@@ -43,11 +48,13 @@ class DaysCellViewModel {
     
     init(calendarData: CalendarStackViewEntity,
          indexPathItem: Int) {
-        guard let days = calendarData.daysArray?[indexPathItem],
+        guard let yearMonth = calendarData.yearMonth,
+              let days = calendarData.daysArray?[indexPathItem],
               let isHidden = calendarData.isHiddenArray?[indexPathItem],
               let dang = calendarData.dangArray?[indexPathItem],
               let maxDang = calendarData.maxDangArray?[indexPathItem],
               let isCurrentDay = calendarData.isCurrentDayArray?[indexPathItem] else { return }
+        self.yearMonth.accept(yearMonth)
         self.days.accept(days)
         self.isHidden.accept(isHidden)
         self.circleColor.accept(calculateColor(dang: dang, maxDang: maxDang))

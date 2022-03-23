@@ -37,6 +37,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     
     private var circleDangValue: CGFloat = 0
     private var circlePercentValue: Int = 0
+    private var circleAnimationDuration: Double = 0
     private var selectedDangValue: String = ""
     private var selectedMaxDangValue: String = ""
     private var selectedCircleColor: CGColor = UIColor.clear.cgColor
@@ -82,7 +83,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = xValueRatio(30)
             $0.calendarCollectionView.isScrollEnabled = false
-            $0.animateShapeLayer(circleDangValue)
+            $0.animateShapeLayer(circleDangValue, circleAnimationDuration)
             $0.countAnimation(circlePercentValue)
             $0.targetSugar.text = "목표: " + selectedDangValue + "/" + selectedMaxDangValue
         }
@@ -249,6 +250,12 @@ extension HomeViewController {
                 self?.selectedAnimationLineColor = $0
             })
             .disposed(by: disposeBag)
+        
+        viewModel?.circleAnimationDuration
+            .subscribe(onNext: { [weak self] in
+                self?.circleAnimationDuration = $0
+            })
+            .disposed(by: disposeBag)
             
     }
     
@@ -264,7 +271,7 @@ extension HomeViewController {
 extension HomeViewController {
     func resetBatteryViewConfigure() {
         batteryView.do {
-            $0.animateShapeLayer(circleDangValue)
+            $0.animateShapeLayer(circleDangValue, circleAnimationDuration)
             $0.countAnimation(circlePercentValue)
             $0.targetSugar.text = "목표: " + selectedDangValue + "/" + selectedMaxDangValue
             $0.animationLineLayer.strokeColor = selectedCircleColor
@@ -327,11 +334,13 @@ extension HomeViewController {
               let circlePercentValue = viewModel?.calculatePercentValue(dang: currentDang,
                                                                         maxDang: currentMaxDang),
               let circleDangValue = viewModel?.calculateMonthDangDataNumber(dang: currentDang,
-                                                                            maxDang: currentMaxDang) else { return }
+                                                                            maxDang: currentMaxDang),
+              let animationDuration = viewModel?.calculateCircleAnimationDuration(dang: currentDang,
+                                                                                  maxDang: currentMaxDang) else { return }
         batteryView.animationLineLayer.strokeColor = circleColor
         batteryView.percentLineBackgroundLayer.strokeColor = circleBackgroundColor
         batteryView.percentLineLayer.strokeColor = animationLineColor
-        batteryView.animateShapeLayer(circleDangValue)
+        batteryView.animateShapeLayer(circleDangValue, animationDuration)
         batteryView.countAnimation(circlePercentValue)
         batteryView.targetSugar.text = "목표: " + String(currentDang) + "/" + String(currentMaxDang)
     }

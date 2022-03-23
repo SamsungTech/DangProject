@@ -11,9 +11,11 @@ import RxSwift
 
 class DaysCollectionViewCell: UICollectionViewCell {
     static let identifier = "DaysCollectionViewCell"
-    private var viewModel: DaysCellViewModel?
+    var viewModel: DaysCellViewModel?
     private var disposeBag = DisposeBag()
     var dayLabel = UILabel()
+    var selectedView = UIView()
+    var selectedLineView = UIView()
     private let smallPercentLineLayer = CAShapeLayer()
     private let smallPercentLineBackgroundLayer = CAShapeLayer()
     private let circularPath = UIBezierPath(arcCenter: .zero,
@@ -60,16 +62,20 @@ class DaysCollectionViewCell: UICollectionViewCell {
             $0.lineCap = .round
             $0.position = CGPoint(x: 28, y: 40)
         }
-        currentDayBackground.do {
-            $0.backgroundColor = .init(red: 1, green: 1, blue: 1, alpha: 0.05)
+        selectedView.do {
+            $0.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
+            $0.viewRadius(cornerRadius: 11)
+        }
+        selectedLineView.do {
+            $0.backgroundColor = .clear
+            $0.layer.borderColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
+            $0.layer.borderWidth = 3
             $0.viewRadius(cornerRadius: 15)
-            $0.layer.borderColor = UIColor.init(red: 1, green: 1, blue: 1, alpha: 0.7).cgColor
-            $0.layer.borderWidth = 3.0
         }
     }
     
     private func layout() {
-        [ dayLabel, currentDayBackground ].forEach() { contentView.addSubview($0) }
+        [ selectedLineView, selectedView, dayLabel ].forEach() { contentView.addSubview($0) }
         [ smallPercentLineBackgroundLayer, smallPercentLineLayer ].forEach() { contentView.layer.addSublayer($0) }
         
         dayLabel.do {
@@ -77,12 +83,19 @@ class DaysCollectionViewCell: UICollectionViewCell {
             $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
             $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         }
-        currentDayBackground.do {
+        selectedView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 1).isActive = true
-            $0.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -1).isActive = true
+            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: 3).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 3).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3).isActive = true
+            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -3).isActive = true
+        }
+        selectedLineView.do {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         }
     }
     
