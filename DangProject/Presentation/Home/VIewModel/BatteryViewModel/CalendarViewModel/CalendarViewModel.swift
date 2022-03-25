@@ -8,6 +8,19 @@
 import Foundation
 import RxRelay
 
+struct SelectedCalendarCellEntity {
+    static let empty: Self = .init(yearMonth: "",
+                                   indexPath: IndexPath(item: 0, section: 0))
+    
+    var yearMonth: String?
+    var indexPath: IndexPath?
+    
+    init(yearMonth: String, indexPath: IndexPath) {
+        self.yearMonth = yearMonth
+        self.indexPath = indexPath
+    }
+}
+
 struct CalendarMonthDangEntity {
     static let empty: Self = .init(calendarMonthDang: [])
     
@@ -46,6 +59,7 @@ struct CalendarStackViewEntity {
 
 class CalendarViewModel {
     var calendarData = BehaviorRelay<CalendarStackViewEntity>(value: .empty)
+    var selectedCellIndexPath = BehaviorRelay<IndexPath>(value: IndexPath(item: 0, section: 0))
     
     init(calendarData: BatteryEntity) {
         self.calendarData.accept(CalendarStackViewEntity(batteryEntity: calendarData))

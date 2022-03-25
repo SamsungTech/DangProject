@@ -74,6 +74,7 @@ class CalendarUseCase {
                                           currentDay: Int) {
         if currentMonth == calculateMonth && day == currentDay {
             isCurrentDayArray.append(true)
+            self.currentDay.accept(isCurrentDayArray.count-1)
         } else {
             isCurrentDayArray.append(false)
         }
@@ -162,6 +163,9 @@ class CalendarUseCase {
         calculatePreviousMonthEmptyData()
         startEmptyCount = days.count
         calculateMouthCalendar()
+        
+        
+        
         calculateNextMonthEmptyData()
         currentDateYearMonth.accept(yearMonth)
         appendCalendarDataArray()

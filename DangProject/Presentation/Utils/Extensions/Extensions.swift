@@ -77,6 +77,16 @@ enum CustomSmallCircleBackgroundColorType {
     case smallCircleBackgroundColorRed
 }
 
+enum selectedCellColorType {
+    case selectedCellViewColor
+    case selectedCellViewHiddenColor
+}
+
+enum selectedCellLineColorType {
+    case selectedCellLineColor
+    case selectedCellLineHiddenColor
+}
+
 extension UIColor {
     static func customHomeColor(_ color: CustomHomeColorType) -> UIColor {
         switch color {
@@ -139,6 +149,24 @@ extension UIColor {
             return UIColor.init(red: 90/255, green: 60/255, blue: 30/255, alpha: 0.1)
         case .smallCircleBackgroundColorRed:
             return UIColor.init(red: 100/255, green: 40/255, blue: 40/255, alpha: 0.1)
+        }
+    }
+    
+    static func selectedCellViewColor(_ color: selectedCellColorType) -> UIColor {
+        switch color {
+        case .selectedCellViewColor:
+            return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
+        case .selectedCellViewHiddenColor:
+            return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
+        }
+    }
+    
+    static func selectedCellLineViewColor(_ color: selectedCellLineColorType) -> CGColor {
+        switch color {
+        case .selectedCellLineColor:
+            return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0).cgColor
+        case .selectedCellLineHiddenColor:
+            return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0).cgColor
         }
     }
 }

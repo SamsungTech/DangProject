@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxRelay
+import UIKit
 
 protocol HomeViewModelInputProtocol {
     func viewDidLoad()
@@ -71,10 +72,11 @@ class HomeViewModel: HomeViewModelProtocol {
     
     var selectedDangValue = BehaviorRelay<String>(value: "")
     var selectedMaxDangValue = BehaviorRelay<String>(value: "")
-    
+    var selectedYearMonth = BehaviorRelay<String>(value: "")
     var selectedCircleColor = BehaviorRelay<CGColor>(value: UIColor.clear.cgColor)
     var selectedCircleBackgroundColor = BehaviorRelay<CGColor>(value: UIColor.clear.cgColor)
     var selectedAnimationLineColor = BehaviorRelay<CGColor>(value: UIColor.clear.cgColor)
+    var selectedCellData = BehaviorRelay<SelectedCalendarCellEntity>(value: .empty)
     
     init(useCase: HomeUseCase,
          calendarUseCase: CalendarUseCase) {
@@ -88,13 +90,17 @@ extension HomeViewModel {
         calendarUseCase.initCalculationDaysInMouth()
             .map { $0.map { BatteryEntity(calendar: $0)} }
             .subscribe(onNext: { [weak self] in
+                guard let yearMonth = $0[1].yearMonth,
+                      let currentCount = self?.calendarUseCase.currentDay.value else { return }
                 self?.batteryViewCalendarData.accept($0)
+                self?.selectedCellData.accept(SelectedCalendarCellEntity(yearMonth: yearMonth,
+                                                                         indexPath: IndexPath(item: currentCount-1, section: 0)))
                 self?.reloadData.accept(())
             })
             .disposed(by: disposeBag)
         
         calendarUseCase.currentLine
-            .map { self.calculateCalendarTopAnchor(value: $0) }
+            .map { self.calculateRevertAnimationYValue(value: $0) }
             .subscribe(onNext: { [weak self] in
                 self?.currentLineYValue.accept($0)
             })
@@ -163,6 +169,17 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
         
+        selectedCellData
+            .subscribe(onNext: { [weak self] in
+                guard let indexPathItem = $0.indexPath?.item else { return }
+                self?.calendarUseCase.calculateCurrentLine(currentDay: indexPathItem)
+                
+                guard let orderNumber = self?.calendarUseCase.currentLine.value,
+                      let yValue = self?.calculateRevertAnimationYValue(value: orderNumber) else { return }
+                self?.currentLineYValue.accept(yValue)
+            })
+            .disposed(by: disposeBag)
+        
         retriveMonthDangData()
     }
     
@@ -220,11 +237,11 @@ extension HomeViewModel {
         }
     }
     
-    func calculateCurrentDatePoint() {
+    func calculateSelectedDayXPoint() {
         let count = batteryViewCalendarData.value.count
         
         for i in 0..<count {
-            if batteryViewCalendarData.value[i].yearMonth == currentYearMonth.value {
+            if batteryViewCalendarData.value[i].yearMonth == selectedCellData.value.yearMonth {
                 let point = CGPoint(x: UIScreen.main.bounds.maxX*CGFloat(i), y: .zero)
                 currentXPoint.accept(i)
                 currentDateCGPoint.accept(point)
@@ -235,7 +252,7 @@ extension HomeViewModel {
         }
     }
     
-    private func calculateCalendarTopAnchor(value: Int) -> CGFloat {
+    private func calculateRevertAnimationYValue(value: Int) -> CGFloat {
         switch value {
         case 0:
             return UIScreen.main.bounds.maxY*((CGFloat(63))/844)
@@ -348,8 +365,9 @@ extension HomeViewModel {
         return Double((dang/maxDang)*3)
     }
     
-    func didTapCalendarViewCell(_ selectedDangData: Double,
-                                _ selectedMaxDangData: Double) {
+    func didTapCalendarViewCell(selectedDangData: Double,
+                                selectedMaxDangData: Double,
+                                cell: DaysCollectionViewCell) {
         let circlePercentValue = calculatePercentValue(dang: selectedDangData,
                                                        maxDang: selectedMaxDangData)
         let circleDangValue = calculateMonthDangDataNumber(dang: selectedDangData,
@@ -371,7 +389,32 @@ extension HomeViewModel {
         self.selectedCircleBackgroundColor.accept(circleBackgroundColor)
         self.selectedAnimationLineColor.accept(animationLineColor)
         self.circleAnimationDuration.accept(animationDuration)
+        cell.selectedView.backgroundColor = .selectedCellViewColor(.selectedCellViewColor)
         homeViewController?.resetBatteryViewConfigure()
+    }
+    
+    func calculateCurrentDayLineViewColor(indexPath: IndexPath,
+                                          yearMonth: String,
+                                          cell: DaysCollectionViewCell,
+                                          collectionView: UICollectionView) {
+        
+        // MARK: cell 클릭시 스팟 저장
+        if indexPath.item == selectedCellData.value.indexPath?.item && selectedCellData.value.yearMonth == yearMonth {
+            cell.selectedView.backgroundColor = .selectedCellViewColor(.selectedCellViewColor)
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .init())
+        } else {
+            cell.selectedView.backgroundColor = .selectedCellViewColor(.selectedCellViewHiddenColor)
+        }
+        
+        
+        
+        if indexPath.item == currentCount.value && currentYearMonth.value == yearMonth {
+            cell.selectedLineView.layer.borderColor = UIColor.selectedCellLineViewColor(.selectedCellLineColor)
+        } else {
+            cell.selectedLineView.layer.borderColor = UIColor.selectedCellLineViewColor(.selectedCellLineHiddenColor)
+        }
+        
+        
     }
 }
 

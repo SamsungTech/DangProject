@@ -87,18 +87,14 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DaysCollectionViewCell.identifier, for: indexPath) as? DaysCollectionViewCell else { return UICollectionViewCell() }
         
-        if let data = self.viewModel?.calendarData.value {
+        if let data = self.viewModel?.calendarData.value,
+           let yearMonth = self.viewModel?.calendarData.value.yearMonth {
             let viewModel = DaysCellViewModel(calendarData: data, indexPathItem: indexPath.item)
             cell.bind(viewModel: viewModel)
-        }
-        
-        if indexPath.item == homeViewModel?.currentCount.value ?? 0 && self.homeViewModel?.currentYearMonth.value == self.viewModel?.calendarData.value.yearMonth ?? "" {
-            cell.selectedLineView.layer.borderColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
-            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .init())
-        } else {
-            cell.selectedLineView.layer.borderColor = .init(red: 1, green: 1, blue: 1, alpha: 0.0)
-            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
+            homeViewModel?.calculateCurrentDayLineViewColor(indexPath: indexPath,
+                                                            yearMonth: yearMonth,
+                                                            cell: cell,
+                                                            collectionView: collectionView)
         }
         
         return cell
@@ -107,18 +103,43 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         guard let selectedDangData = viewModel?.calendarData.value.dangArray?[indexPath.item],
-              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray?[indexPath.item] else { return }
+              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray?[indexPath.item],
+              let selectedYearMonth = viewModel?.calendarData.value.yearMonth,
+              let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell else { return }
         
-        homeViewModel?.didTapCalendarViewCell(selectedDangData, selectedMaxDangData)
-        if let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell {
-            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0)
+        // MARK: viewModel에 정리하기
+        if viewModel?.calendarData.value.isHiddenArray?[indexPath.item] == false {
+            
+            homeViewModel?.didTapCalendarViewCell(selectedDangData: selectedDangData,
+                                                  selectedMaxDangData: selectedMaxDangData,
+                                                  cell: cell)
+            
+            viewModel?.selectedCellIndexPath.accept(indexPath)
+            homeViewModel?.selectedCellData.accept(SelectedCalendarCellEntity(yearMonth: selectedYearMonth,
+                                                                              indexPath: indexPath))
+        } else {
+            
+            guard let indexPath = homeViewModel?.selectedCellData.value.indexPath,
+                  let selectedYearMonth = homeViewModel?.selectedCellData.value.yearMonth else { return }
+            
+            // MARK: 지금 empty cell 클릭한 곳이 selectedYearMonth 와 같다면
+            if selectedYearMonth == viewModel?.calendarData.value.yearMonth {
+                if let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell {
+                    cell.selectedView.backgroundColor = .selectedCellViewColor(.selectedCellViewColor)
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .init())
+                }
+            }
+            
         }
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         didDeselectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell {
-            cell.selectedView.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell else { return }
+        if viewModel?.calendarData.value.isHiddenArray?[indexPath.item] == false {
+            cell.selectedView.backgroundColor = .selectedCellViewColor(.selectedCellViewHiddenColor)
+        } else {
+            
         }
     }
 }

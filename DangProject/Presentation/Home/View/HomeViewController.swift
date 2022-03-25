@@ -33,7 +33,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     private var viewsInStackView: [UIView] = []
     private var isExpandBatteryView = false
     private var currentCGPoint = CGPoint()
-    private var currentLineNumber: CGFloat = 0
+    private var selectedDayYValue: CGFloat = 0
     
     private var circleDangValue: CGFloat = 0
     private var circlePercentValue: Int = 0
@@ -145,7 +145,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
             batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
             batteryViewHeightAnchor?.isActive = true
-            $0.calendarViewTopAnchor?.constant = currentLineNumber
+            $0.calendarViewTopAnchor?.constant = selectedDayYValue
             view.layoutIfNeeded()
         }
         ateFoodTitleView.do {
@@ -262,7 +262,7 @@ extension HomeViewController {
     private func bindCurrentLineNumber() {
         viewModel?.currentLineYValue
             .subscribe(onNext: { [weak self] in
-                self?.currentLineNumber = $0
+                self?.selectedDayYValue = $0
             })
             .disposed(by: disposeBag)
     }
@@ -304,11 +304,10 @@ extension HomeViewController {
     }
     
     private func revertAnimation() {
-        viewModel?.calculateCurrentDatePoint()
-        batteryView.calendarViewTopAnchor?.constant = currentLineNumber
+        viewModel?.calculateSelectedDayXPoint()
+        batteryView.calendarViewTopAnchor?.constant = selectedDayYValue
         batteryView.circleProgressBarTopAnchor?.constant = yValueRatio(170)
         batteryViewHeightAnchor?.constant = yValueRatio(500)
-        calculateColorWhenRevertAnimation()
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                             height: overSizeYValueRatio(1200))
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
@@ -320,28 +319,5 @@ extension HomeViewController {
         homeScrollView.isScrollEnabled = true
         isExpandBatteryView = false
         batteryView.calendarCollectionView.isScrollEnabled = false
-    }
-    
-    private func calculateColorWhenRevertAnimation() {
-        guard let currentDang = viewModel?.currentDangValue.value,
-              let currentMaxDang = viewModel?.currentMaxDangValue.value,
-              let circleColor = viewModel?.calculateCircleProgressBarColor(dang: currentDang,
-                                                                           maxDang: currentMaxDang),
-              let circleBackgroundColor = viewModel?.calculateCircleProgressBackgroundColor(dang: currentDang,
-                                                                                            maxDang: currentMaxDang),
-              let animationLineColor = viewModel?.calculateCirclePercentLineColor(dang: currentDang,
-                                                                                  maxDang: currentMaxDang),
-              let circlePercentValue = viewModel?.calculatePercentValue(dang: currentDang,
-                                                                        maxDang: currentMaxDang),
-              let circleDangValue = viewModel?.calculateMonthDangDataNumber(dang: currentDang,
-                                                                            maxDang: currentMaxDang),
-              let animationDuration = viewModel?.calculateCircleAnimationDuration(dang: currentDang,
-                                                                                  maxDang: currentMaxDang) else { return }
-        batteryView.animationLineLayer.strokeColor = circleColor
-        batteryView.percentLineBackgroundLayer.strokeColor = circleBackgroundColor
-        batteryView.percentLineLayer.strokeColor = animationLineColor
-        batteryView.animateShapeLayer(circleDangValue, animationDuration)
-        batteryView.countAnimation(circlePercentValue)
-        batteryView.targetSugar.text = "목표: " + String(currentDang) + "/" + String(currentMaxDang)
     }
 }
