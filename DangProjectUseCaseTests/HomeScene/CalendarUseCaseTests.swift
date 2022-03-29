@@ -8,7 +8,8 @@
 import XCTest
 
 class CalendarUseCaseTests: XCTestCase {
-
+    
+    // MARK: 함해볼까?
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -30,6 +31,10 @@ class CalendarUseCaseTests: XCTestCase {
         measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func test() throws {
+        
     }
 
 }
