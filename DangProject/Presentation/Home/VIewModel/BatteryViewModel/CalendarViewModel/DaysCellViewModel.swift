@@ -57,8 +57,8 @@ class DaysCellViewModel {
         self.yearMonth.accept(yearMonth)
         self.days.accept(days)
         self.isHidden.accept(isHidden)
-        self.circleColor.accept(calculateColor(dang: dang, maxDang: maxDang))
-        self.circleNumber.accept(calculateMonthDangDataNumber(dang: dang, maxDang: maxDang))
+        self.circleColor.accept(.calculateColor(dang: dang, maxDang: maxDang))
+        self.circleNumber.accept(.calculateMonthDangDataNumber(dang: dang, maxDang: maxDang))
         self.isCurrentDay.accept(isCurrentDay)
     }
     
@@ -81,28 +81,6 @@ class DaysCellViewModel {
             view.isHidden = true
         } else {
             view.isHidden = false
-        }
-    }
-    
-    private func calculateMonthDangDataNumber(dang: Double,
-                                      maxDang: Double) -> CGFloat {
-        let dangValueNumber: Double = (dang/maxDang)*Double(80)
-        let number3: Double = 80*(dangValueNumber/80)
-        let result: Double = number3/100
-        
-        return CGFloat(result)
-    }
-    
-    private func calculateColor(dang: Double,
-                                maxDang: Double) -> CGColor {
-        let colorCalculateNumber: Double = (dang/maxDang)*100
-        
-        if colorCalculateNumber > 63 {
-            return UIColor.customSmallCircleColor(.smallCircleColorRed).cgColor
-        } else if colorCalculateNumber > 33 {
-            return UIColor.customSmallCircleColor(.smallCircleColorYellow).cgColor
-        } else {
-            return UIColor.customSmallCircleColor(.smallCircleColorGreen).cgColor
         }
     }
 }

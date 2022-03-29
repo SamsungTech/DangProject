@@ -40,7 +40,7 @@ class HomeGraphView: UIView {
     
     private func configure() {
         graphMainView.do {
-            $0.backgroundColor = .customHomeColor(.homeBoxColor)
+            $0.backgroundColor = .homeBoxColor
         }
         graphSegmentedControl.do {
             $0.selectedSegmentIndex = 0

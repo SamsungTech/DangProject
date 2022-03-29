@@ -13,9 +13,9 @@ class DaysCollectionViewCell: UICollectionViewCell {
     static let identifier = "DaysCollectionViewCell"
     var viewModel: DaysCellViewModel?
     private var disposeBag = DisposeBag()
-    var dayLabel = UILabel()
+    private var dayLabel = UILabel()
     var selectedView = UIView()
-    var selectedLineView = UIView()
+    var currentLineView = UIView()
     private let smallPercentLineLayer = CAShapeLayer()
     private let smallPercentLineBackgroundLayer = CAShapeLayer()
     private let circularPath = UIBezierPath(arcCenter: .zero,
@@ -46,7 +46,7 @@ class DaysCollectionViewCell: UICollectionViewCell {
         }
         smallPercentLineLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.customCircleColor(.circleColorYellow).cgColor
+            $0.strokeColor = UIColor.circleColorYellow.cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 4
             $0.lineCap = .round
@@ -56,26 +56,24 @@ class DaysCollectionViewCell: UICollectionViewCell {
         }
         smallPercentLineBackgroundLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.customSmallCircleBackgroundColor(.smallCircleBackgroundColorYellow).cgColor
+            $0.strokeColor = UIColor.smallCircleBackgroundColorYellow.cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 4
             $0.lineCap = .round
             $0.position = CGPoint(x: 28, y: 40)
         }
         selectedView.do {
-            $0.backgroundColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
             $0.viewRadius(cornerRadius: 11)
         }
-        selectedLineView.do {
+        currentLineView.do {
             $0.backgroundColor = .clear
-            $0.layer.borderColor = .init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
             $0.layer.borderWidth = 3
             $0.viewRadius(cornerRadius: 15)
         }
     }
     
     private func layout() {
-        [ selectedLineView, selectedView, dayLabel ].forEach() { contentView.addSubview($0) }
+        [ currentLineView, selectedView, dayLabel ].forEach() { contentView.addSubview($0) }
         [ smallPercentLineBackgroundLayer, smallPercentLineLayer ].forEach() { contentView.layer.addSublayer($0) }
         
         dayLabel.do {
@@ -90,7 +88,7 @@ class DaysCollectionViewCell: UICollectionViewCell {
             $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3).isActive = true
             $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -3).isActive = true
         }
-        selectedLineView.do {
+        currentLineView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
             $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
@@ -145,15 +143,5 @@ class DaysCollectionViewCell: UICollectionViewCell {
                 self?.smallPercentLineLayer.strokeEnd = $0
             })
             .disposed(by: disposeBag)
-    }
-    
-    func animateShapeLayer() {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        
-        animation.toValue = 0.8
-        animation.duration = 2
-        animation.fillMode = .forwards
-        animation.isRemovedOnCompletion = false
-        smallPercentLineLayer.add(animation, forKey: "urSoBasic")
     }
 }

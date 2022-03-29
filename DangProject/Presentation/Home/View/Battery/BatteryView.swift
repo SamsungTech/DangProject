@@ -11,29 +11,25 @@ import Then
 import RxSwift
 
 class BatteryView: UIView {
-    private var disposeBag = DisposeBag()
     private var viewModel: HomeViewModel?
+    private var disposeBag = DisposeBag()
     private var mainView = UIView()
     private var gradient = CAGradientLayer()
-    
     private var circleProgressBarView = UIView()
+    private var endCount: Int = 0
+    private var currentCount: Int = 0
+    private var timer = Timer()
+    private var batteryCalendarDataCount = 0
+    private var mainProgressBarDangValue: CGFloat = 0
     var targetNumber = UILabel()
     var percentLabel = UILabel()
     var targetSugar = UILabel()
     var animationLineLayer = CAShapeLayer()
     var percentLineLayer = CAShapeLayer()
     var percentLineBackgroundLayer = CAShapeLayer()
-    
-    private var endCount: Int = 0
-    private var currentCount: Int = 0
-    private var timer = Timer()
     var targetNumberTopAnchor: NSLayoutConstraint?
     var circleProgressBarTopAnchor: NSLayoutConstraint?
     var calendarViewTopAnchor: NSLayoutConstraint?
-    
-    private var batteryCalendarDataCount = 0
-    
-    private var mainProgressBarDangValue: CGFloat = 0
     
     lazy var calendarCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -52,7 +48,7 @@ class BatteryView: UIView {
         configure()
         layout()
         circleConfigure()
-        backgroundColor = .customHomeColor(.homeBoxColor)
+        backgroundColor = .homeBoxColor
         bringSubviewToFront(circleProgressBarView)
         animatePulsatingLayer()
     }
@@ -63,7 +59,7 @@ class BatteryView: UIView {
     
     private func configure() {
         circleProgressBarView.do {
-            $0.backgroundColor = .customHomeColor(.homeBoxColor)
+            $0.backgroundColor = .homeBoxColor
         }
         targetNumber.do {
             $0.textColor = .white
@@ -86,7 +82,7 @@ class BatteryView: UIView {
                         forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
             $0.delegate = self
             $0.dataSource = self
-            $0.backgroundColor = .customHomeColor(.homeBackgroundColor)
+            $0.backgroundColor = .homeBackgroundColor
         }
     }
     
@@ -138,7 +134,7 @@ class BatteryView: UIView {
                                         clockwise: true)
         percentLineBackgroundLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.customCircleBackgroundColor(.circleBackgroundColorYellow).cgColor
+            $0.strokeColor = UIColor.circleBackgroundColorYellow.cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
@@ -146,7 +142,7 @@ class BatteryView: UIView {
         }
         animationLineLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.customCircleAnimationColor(.circleAnimationColorYellow).cgColor
+            $0.strokeColor = UIColor.circleAnimationColorYellow.cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
@@ -154,7 +150,7 @@ class BatteryView: UIView {
         }
         percentLineLayer.do {
             $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.customCircleColor(.circleColorYellow).cgColor
+            $0.strokeColor = UIColor.circleColorYellow.cgColor
             $0.fillColor = UIColor.clear.cgColor
             $0.lineWidth = 14
             $0.lineCap = .round
@@ -167,12 +163,12 @@ class BatteryView: UIView {
 extension BatteryView {
     func bind(viewModel: HomeViewModel) {
         self.viewModel = viewModel
-        subscribe()
+        bindBatteryCalendarData()
         bindReloadData()
         bindPagingState()
     }
     
-    private func subscribe() {
+    private func bindBatteryCalendarData() {
         viewModel?.sumData
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
@@ -191,14 +187,27 @@ extension BatteryView {
         viewModel?.reloadData
             .subscribe(onNext: { [weak self] in
                 self?.calendarCollectionView.reloadData()
-            }).disposed(by: disposeBag)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindPagingState() {
         viewModel?.pagingState
             .subscribe(onNext: { [weak self] in
-                guard let batteryView = self else { return }
-                self?.viewModel?.handlePagingState($0, view: batteryView)
+                switch $0 {
+                case .left:
+                    UIView.performWithoutAnimation {
+                        self?.calendarCollectionView.insertItems(at: [.init(item: 0, section: 0)])
+                        self?.calendarCollectionView.scrollToItem(at: IndexPath(item: 1, section: 0),
+                                                                  at: .centeredHorizontally,
+                                                                  animated: false)
+                        self?.calendarCollectionView.reloadItems(at: [.init(item: 0, section: 0)])
+                    }
+                case .right(let index):
+                    self?.calendarCollectionView.insertItems(at: [.init(item: index, section: 0)])
+                    self?.calendarCollectionView.reloadItems(at: [.init(item: index, section: 0)])
+                case .empty: break
+                }
             })
             .disposed(by: disposeBag)
     }

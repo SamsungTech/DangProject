@@ -31,7 +31,7 @@
 		0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435222798519800634E51 /* HomeDIContainer.swift */; };
 		0BB43525279851A300634E51 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB43524279851A300634E51 /* HomeViewModel.swift */; };
 		0BB435272798537900634E51 /* HomeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB435262798537900634E51 /* HomeUseCase.swift */; };
-		0BB4352D279919AD00634E51 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4352C279919AD00634E51 /* Extensions.swift */; };
+		0BB4352D279919AD00634E51 /* UIView+Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4352C279919AD00634E51 /* UIView+Ratio.swift */; };
 		0BB4352F27996E5900634E51 /* HomeGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4352E27996E5900634E51 /* HomeGraphView.swift */; };
 		0BB43535279985A300634E51 /* BatteryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB43534279985A300634E51 /* BatteryView.swift */; };
 		0BB4353A279A660E00634E51 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB43539279A660E00634E51 /* CustomNavigationBar.swift */; };
@@ -43,6 +43,13 @@
 		0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB4355327B8BC4700634E51 /* AteFoodCollectionCell.swift */; };
 		0BD3596427D9BF6900E3412D /* MonthDangEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD3596327D9BF6900E3412D /* MonthDangEntity.swift */; };
 		0BD3596627DC398900E3412D /* HomeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BD3596527DC398900E3412D /* HomeRepository.swift */; };
+		0BDC74A327F2CDF900EB1BA5 /* UIColor+CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74A227F2CDF900EB1BA5 /* UIColor+CustomColor.swift */; };
+		0BDC74A527F2CE8500EB1BA5 /* UIView+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74A427F2CE8500EB1BA5 /* UIView+Radius.swift */; };
+		0BDC74AB27F2EE2000EB1BA5 /* CGFloat+Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74AA27F2EE2000EB1BA5 /* CGFloat+Calculate.swift */; };
+		0BDC74AD27F2EF3200EB1BA5 /* CGColor+Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74AC27F2EF3200EB1BA5 /* CGColor+Calculate.swift */; };
+		0BDC74AF27F2F08300EB1BA5 /* Int+Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74AE27F2F08300EB1BA5 /* Int+Calculate.swift */; };
+		0BDC74B127F2F08F00EB1BA5 /* Double+Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74B027F2F08F00EB1BA5 /* Double+Calculate.swift */; };
+		0BDC74B327F2F1C800EB1BA5 /* UIViewController+Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74B227F2F1C800EB1BA5 /* UIViewController+Ratio.swift */; };
 		0BE0DA3127BB5C3100AFD089 /* RepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */; };
 		406DE831D86791792DAD62BD /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64F741B1CC607F30779F70B /* Pods_DangProject.framework */; };
 /* End PBXBuildFile section */
@@ -75,7 +82,7 @@
 		0BB435222798519800634E51 /* HomeDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDIContainer.swift; sourceTree = "<group>"; };
 		0BB43524279851A300634E51 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 1; path = HomeViewModel.swift; sourceTree = "<group>"; usesTabs = 0; };
 		0BB435262798537900634E51 /* HomeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUseCase.swift; sourceTree = "<group>"; };
-		0BB4352C279919AD00634E51 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		0BB4352C279919AD00634E51 /* UIView+Ratio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ratio.swift"; sourceTree = "<group>"; };
 		0BB4352E27996E5900634E51 /* HomeGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGraphView.swift; sourceTree = "<group>"; };
 		0BB43534279985A300634E51 /* BatteryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryView.swift; sourceTree = "<group>"; };
 		0BB43539279A660E00634E51 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
@@ -87,6 +94,13 @@
 		0BB4355327B8BC4700634E51 /* AteFoodCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodCollectionCell.swift; sourceTree = "<group>"; };
 		0BD3596327D9BF6900E3412D /* MonthDangEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthDangEntity.swift; sourceTree = "<group>"; };
 		0BD3596527DC398900E3412D /* HomeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRepository.swift; sourceTree = "<group>"; };
+		0BDC74A227F2CDF900EB1BA5 /* UIColor+CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CustomColor.swift"; sourceTree = "<group>"; };
+		0BDC74A427F2CE8500EB1BA5 /* UIView+Radius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Radius.swift"; sourceTree = "<group>"; };
+		0BDC74AA27F2EE2000EB1BA5 /* CGFloat+Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+Calculate.swift"; sourceTree = "<group>"; };
+		0BDC74AC27F2EF3200EB1BA5 /* CGColor+Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGColor+Calculate.swift"; sourceTree = "<group>"; };
+		0BDC74AE27F2F08300EB1BA5 /* Int+Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Calculate.swift"; sourceTree = "<group>"; };
+		0BDC74B027F2F08F00EB1BA5 /* Double+Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Calculate.swift"; sourceTree = "<group>"; };
+		0BDC74B227F2F1C800EB1BA5 /* UIViewController+Ratio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ratio.swift"; sourceTree = "<group>"; };
 		0BE0DA3027BB5C3100AFD089 /* RepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocol.swift; sourceTree = "<group>"; };
 		F64F741B1CC607F30779F70B /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.release.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.release.xcconfig"; sourceTree = "<group>"; };
@@ -129,6 +143,7 @@
 				0BB4351327984E5A00634E51 /* Presentation */,
 				0BB4350A27984CBB00634E51 /* Domain */,
 				0BB4351027984DE300634E51 /* Data */,
+				0BB4351427984E7F00634E51 /* Utils */,
 				0B1F4A84277076FE0006B9CF /* Assets.xcassets */,
 				0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */,
 				0B1F4A89277076FE0006B9CF /* Info.plist */,
@@ -251,7 +266,6 @@
 			isa = PBXGroup;
 			children = (
 				0BB4351727984E9F00634E51 /* Home */,
-				0BB4351427984E7F00634E51 /* Utils */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -267,7 +281,14 @@
 		0BB4351527984E8900634E51 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				0BB4352C279919AD00634E51 /* Extensions.swift */,
+				0BB4352C279919AD00634E51 /* UIView+Ratio.swift */,
+				0BDC74B227F2F1C800EB1BA5 /* UIViewController+Ratio.swift */,
+				0BDC74A427F2CE8500EB1BA5 /* UIView+Radius.swift */,
+				0BDC74A227F2CDF900EB1BA5 /* UIColor+CustomColor.swift */,
+				0BDC74AA27F2EE2000EB1BA5 /* CGFloat+Calculate.swift */,
+				0BDC74AC27F2EF3200EB1BA5 /* CGColor+Calculate.swift */,
+				0BDC74AE27F2F08300EB1BA5 /* Int+Calculate.swift */,
+				0BDC74B027F2F08F00EB1BA5 /* Double+Calculate.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -286,8 +307,8 @@
 		0BB4351A27984FF000634E51 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0BB43539279A660E00634E51 /* CustomNavigationBar.swift */,
-				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
+				0BDC74A927F2D4FF00EB1BA5 /* HomeView */,
+				0BDC74A827F2D4EE00EB1BA5 /* CustomNavigationBar */,
 				0BB43548279FD47700634E51 /* Battery */,
 				0BB43547279FD46400634E51 /* AteFood */,
 				0BB43536279A5F4700634E51 /* Graph */,
@@ -298,7 +319,7 @@
 		0BB4351B27984FF800634E51 /* VIewModel */ = {
 			isa = PBXGroup;
 			children = (
-				0BB43524279851A300634E51 /* HomeViewModel.swift */,
+				0BDC74A627F2D4D200EB1BA5 /* HomeViewModel */,
 				0B97988F27CF7BE90021162A /* BatteryViewModel */,
 				0B97989027CF7BFB0021162A /* AteFoodViewModel */,
 				0B97989227CF7C280021162A /* GraphVIewModel */,
@@ -349,6 +370,30 @@
 				0B97987A27BDEBA10021162A /* Calendar */,
 			);
 			path = Battery;
+			sourceTree = "<group>";
+		};
+		0BDC74A627F2D4D200EB1BA5 /* HomeViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				0BB43524279851A300634E51 /* HomeViewModel.swift */,
+			);
+			path = HomeViewModel;
+			sourceTree = "<group>";
+		};
+		0BDC74A827F2D4EE00EB1BA5 /* CustomNavigationBar */ = {
+			isa = PBXGroup;
+			children = (
+				0BB43539279A660E00634E51 /* CustomNavigationBar.swift */,
+			);
+			path = CustomNavigationBar;
+			sourceTree = "<group>";
+		};
+		0BDC74A927F2D4FF00EB1BA5 /* HomeView */ = {
+			isa = PBXGroup;
+			children = (
+				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
+			);
+			path = HomeView;
 			sourceTree = "<group>";
 		};
 		0BE0DA2D27BB5BDB00AFD089 /* Interfaces */ = {
@@ -500,6 +545,7 @@
 			files = (
 				0B97987C27BDEBB40021162A /* DaysCollectionViewCell.swift in Sources */,
 				0B97988227C16C260021162A /* CalendarEntity.swift in Sources */,
+				0BDC74A327F2CDF900EB1BA5 /* UIColor+CustomColor.swift in Sources */,
 				0B97987727BD218E0021162A /* BatteryViewModel.swift in Sources */,
 				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				0BB4351F2798503200634E51 /* MainCoordinator.swift in Sources */,
@@ -512,27 +558,33 @@
 				0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */,
 				0B97987327BBAA100021162A /* GraphViewModel.swift in Sources */,
 				0BD3596427D9BF6900E3412D /* MonthDangEntity.swift in Sources */,
+				0BDC74B127F2F08F00EB1BA5 /* Double+Calculate.swift in Sources */,
 				0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */,
 				0BD3596627DC398900E3412D /* HomeRepository.swift in Sources */,
 				0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */,
 				0BB4352F27996E5900634E51 /* HomeGraphView.swift in Sources */,
 				0BB43546279FD45F00634E51 /* AteFoodTitleView.swift in Sources */,
+				0BDC74A527F2CE8500EB1BA5 /* UIView+Radius.swift in Sources */,
+				0BDC74B327F2F1C800EB1BA5 /* UIViewController+Ratio.swift in Sources */,
 				0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */,
 				0B97986E27BB84700021162A /* TempEntities.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
 				0BB4353A279A660E00634E51 /* CustomNavigationBar.swift in Sources */,
 				0BE0DA3127BB5C3100AFD089 /* RepositoryProtocol.swift in Sources */,
 				0BB43540279FBEDE00634E51 /* TempRepository.swift in Sources */,
+				0BDC74AB27F2EE2000EB1BA5 /* CGFloat+Calculate.swift in Sources */,
 				0B97988727C67DE50021162A /* CalendarCollectionViewCell.swift in Sources */,
 				0B97988927CA1EEB0021162A /* CalendarViewModel.swift in Sources */,
 				0B97987127BB9D370021162A /* AteFoodViewModel.swift in Sources */,
 				0BB43544279FD16100634E51 /* AteFoodView.swift in Sources */,
 				0BB435272798537900634E51 /* HomeUseCase.swift in Sources */,
 				0BB43542279FC9C000634E51 /* GraphTitleView.swift in Sources */,
+				0BDC74AF27F2F08300EB1BA5 /* Int+Calculate.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
+				0BDC74AD27F2EF3200EB1BA5 /* CGColor+Calculate.swift in Sources */,
 				0B97987527BBE07C0021162A /* AteFoodCellInItemViewModel.swift in Sources */,
 				0B97988E27CE53970021162A /* DaysCellViewModel.swift in Sources */,
-				0BB4352D279919AD00634E51 /* Extensions.swift in Sources */,
+				0BB4352D279919AD00634E51 /* UIView+Ratio.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,11 +16,9 @@ protocol HomeViewControllerProtocol: AnyObject {
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
-    var viewModel: HomeViewModel?
     private weak var coordinator: Coordinator?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
-    var batteryView = BatteryView()
     private let ateFoodTitleView = AteFoodTitleView()
     private var ateFoodView = AteFoodView()
     private let graphTitleView = GraphTitleView()
@@ -32,17 +30,11 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     private var homeStackView = UIStackView()
     private var viewsInStackView: [UIView] = []
     private var isExpandBatteryView = false
-    private var currentCGPoint = CGPoint()
+    private var currentCGPoint: CGPoint = .zero
     private var selectedDayYValue: CGFloat = 0
-    
-    private var circleDangValue: CGFloat = 0
-    private var circlePercentValue: Int = 0
-    private var circleAnimationDuration: Double = 0
-    private var selectedDangValue: String = ""
-    private var selectedMaxDangValue: String = ""
-    private var selectedCircleColor: CGColor = UIColor.clear.cgColor
-    private var selectedCircleBackground: CGColor = UIColor.clear.cgColor
-    private var selectedAnimationLineColor: CGColor = UIColor.clear.cgColor
+    private var selectedCellEntity: SelectedCellEntity = .empty
+    var viewModel: HomeViewModel?
+    var batteryView = BatteryView()
     
     static func create(viewModel: HomeViewModel,
                        coordinator: Coordinator) -> HomeViewController {
@@ -57,12 +49,12 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
-        view.backgroundColor = .customHomeColor(.homeBackgroundColor)
-        bindCurrentLineNumber()
+        view.backgroundColor = .homeBackgroundColor
         viewModel?.viewDidLoad()
+        bindCurrentLineNumber()
         configure()
         layout()
-        bind()
+        subscribe()
         view.bringSubviewToFront(customNavigationBar)
         configureBatteryView()
     }
@@ -83,9 +75,11 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             $0.layer.masksToBounds = true
             $0.layer.cornerRadius = xValueRatio(30)
             $0.calendarCollectionView.isScrollEnabled = false
-            $0.animateShapeLayer(circleDangValue, circleAnimationDuration)
-            $0.countAnimation(circlePercentValue)
-            $0.targetSugar.text = "목표: " + selectedDangValue + "/" + selectedMaxDangValue
+            $0.animateShapeLayer(selectedCellEntity.circleDangValue,
+                                 selectedCellEntity.circleAnimationDuration)
+            $0.countAnimation(selectedCellEntity.circlePercentValue)
+            $0.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/"
+            + selectedCellEntity.selectedMaxDangValue
         }
     }
     
@@ -102,7 +96,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
         homeStackView.do {
             $0.axis = .vertical
             $0.spacing = 10
-            $0.backgroundColor = .customHomeColor(.homeBackgroundColor)
+            $0.backgroundColor = .homeBackgroundColor
             $0.distribution = .fill
             $0.alignment = .center
         }
@@ -113,7 +107,6 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
         [ homeStackView ].forEach() { homeScrollView.addSubview($0) }
         [ batteryView, ateFoodTitleView, ateFoodView,
           graphTitleView, homeGraphView ].forEach() { viewsInStackView.append($0) }
-        
         viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         
         customNavigationBar.do {
@@ -133,10 +126,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
         }
         homeStackView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            
-            // MARK: 여기서 생긴 constant때문에 애니메이션 넣을때 디버그 생기는듯
             $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor).isActive = true
-            
             $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
             $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
@@ -146,7 +136,6 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
             batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
             batteryViewHeightAnchor?.isActive = true
             $0.calendarViewTopAnchor?.constant = selectedDayYValue
-            view.layoutIfNeeded()
         }
         ateFoodTitleView.do {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -172,23 +161,39 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
 }
 
 extension HomeViewController {
-    private func bind() {
-        batteryView.bind(viewModel: viewModel!)
-        
+    private func subscribe() {
+        bindBatteryViewModel()
+        bindAteFoodViewModel()
+        bindHomeGraphViewModel()
+        bindCurrentDayPointData()
+        bindCalendarScaleAnimation()
+        bindSelectedCellViewData()
+    }
+    
+    private func bindBatteryViewModel() {
+        guard let viewModel = self.viewModel else { return }
+        batteryView.bind(viewModel: viewModel)
+    }
+    
+    private func bindAteFoodViewModel() {
         viewModel?.tempData
             .subscribe(onNext: { [weak self] in
                 let ateFoodViewModel = AteFoodViewModel(item: $0)
                 self?.ateFoodView.bind(viewModel: ateFoodViewModel)
             })
             .disposed(by: disposeBag)
-        
+    }
+    
+    private func bindHomeGraphViewModel() {
         viewModel?.weekData
             .subscribe(onNext: { [weak self] in
                 let homeGraphViewModel = GraphViewModel(item: $0)
                 self?.homeGraphView.bind(viewModel: homeGraphViewModel)
             })
             .disposed(by: disposeBag)
-        
+    }
+    
+    private func bindCurrentDayPointData() {
         viewModel?.currentXPoint
             .subscribe(onNext: { [weak self] in
                 if let text = self?.viewModel?.batteryViewCalendarData.value[$0].yearMonth {
@@ -202,61 +207,34 @@ extension HomeViewController {
                 self?.currentCGPoint = $0
             })
             .disposed(by: disposeBag)
-        
+    }
+    
+    private func bindCalendarScaleAnimation() {
         customNavigationBar.yearMouthButton.rx.tap
             .bind { [weak self] in
-                self?.batteryAnimation()
+                self?.viewModel?.calculateCalendarScaleState()
             }
             .disposed(by: disposeBag)
         
-        viewModel?.circleDangValue
+        viewModel?.calendarScaleAnimation
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
-                self?.circleDangValue = $0
+                switch $0 {
+                case .expand:
+                    self?.expandAnimation()
+                case .revert:
+                    self?.revertAnimation()
+                }
             })
             .disposed(by: disposeBag)
-        
-        viewModel?.circlePercentValue
+    }
+    
+    private func bindSelectedCellViewData() {
+        viewModel?.selectedCellViewData
             .subscribe(onNext: { [weak self] in
-                self?.circlePercentValue = $0
+                self?.selectedCellEntity = $0
             })
             .disposed(by: disposeBag)
-        
-        viewModel?.selectedDangValue
-            .subscribe(onNext: { [weak self] in
-                self?.selectedDangValue = $0
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.selectedMaxDangValue
-            .subscribe(onNext: { [weak self] in
-                self?.selectedMaxDangValue = $0
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.selectedCircleColor
-            .subscribe(onNext: { [weak self] in
-                self?.selectedCircleColor = $0
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.selectedCircleBackgroundColor
-            .subscribe(onNext: { [weak self] in
-                self?.selectedCircleBackground = $0
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.selectedAnimationLineColor
-            .subscribe(onNext: { [weak self] in
-                self?.selectedAnimationLineColor = $0
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.circleAnimationDuration
-            .subscribe(onNext: { [weak self] in
-                self?.circleAnimationDuration = $0
-            })
-            .disposed(by: disposeBag)
-            
     }
     
     private func bindCurrentLineNumber() {
@@ -271,21 +249,13 @@ extension HomeViewController {
 extension HomeViewController {
     func resetBatteryViewConfigure() {
         batteryView.do {
-            $0.animateShapeLayer(circleDangValue, circleAnimationDuration)
-            $0.countAnimation(circlePercentValue)
-            $0.targetSugar.text = "목표: " + selectedDangValue + "/" + selectedMaxDangValue
-            $0.animationLineLayer.strokeColor = selectedCircleColor
-            $0.percentLineBackgroundLayer.strokeColor = selectedCircleBackground
-            $0.percentLineLayer.strokeColor = selectedAnimationLineColor
-        }
-    }
-    
-    // MARK: 이 분기도 viewModel로 가야되나?
-    private func batteryAnimation() {
-        if isExpandBatteryView == false {
-            expandAnimation()
-        } else {
-            revertAnimation()
+            $0.animateShapeLayer(selectedCellEntity.circleDangValue,
+                                 selectedCellEntity.circleAnimationDuration)
+            $0.countAnimation(selectedCellEntity.circlePercentValue)
+            $0.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/" + selectedCellEntity.selectedMaxDangValue
+            $0.animationLineLayer.strokeColor = selectedCellEntity.selectedCircleColor
+            $0.percentLineBackgroundLayer.strokeColor = selectedCellEntity.selectedCircleBackgroundColor
+            $0.percentLineLayer.strokeColor = selectedCellEntity.selectedAnimationLineColor
         }
     }
     

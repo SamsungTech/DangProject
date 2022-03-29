@@ -27,8 +27,8 @@ class CalendarUseCase {
     private var minusNumber: Int = -1
     private var calendarDataArray: [CalendarEntity] = []
     private var isCurrentDayArray: [Bool] = []
-    var currentDay = BehaviorRelay<Int>(value: 0)
     
+    var currentDay = BehaviorRelay<Int>(value: 0)
     var currentDateYearMonth = BehaviorRelay<String>(value: "")
     var currentLine = BehaviorRelay<Int>(value: 0)
     var currentDatePoint = BehaviorRelay<CGPoint>(value: CGPoint())
@@ -163,9 +163,6 @@ class CalendarUseCase {
         calculatePreviousMonthEmptyData()
         startEmptyCount = days.count
         calculateMouthCalendar()
-        
-        
-        
         calculateNextMonthEmptyData()
         currentDateYearMonth.accept(yearMonth)
         appendCalendarDataArray()

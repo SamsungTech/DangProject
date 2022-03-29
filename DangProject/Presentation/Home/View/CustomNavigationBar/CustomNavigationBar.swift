@@ -13,18 +13,18 @@ import RxCocoa
 
 class CustomNavigationBar: UIView {
     var profileImageView = UIImageView()
-    fileprivate var barheightAnchor: NSLayoutConstraint?
+    fileprivate var barHeightAnchor: NSLayoutConstraint?
+    private let disposeBag = DisposeBag()
     private let gradient = CAGradientLayer()
-    var dateLabel = UILabel()
     private let week = ["일", "월", "화", "수", "목", "금", "토"]
     private var weekStackView = UIStackView()
     private var weekLabels: [UILabel] = []
+    var dateLabel = UILabel()
     var yearMouthButton = UIButton()
-    let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .customHomeColor(.homeBoxColor)
+        self.backgroundColor = .homeBoxColor
         createWeekLabel()
         configure()
         layout()
