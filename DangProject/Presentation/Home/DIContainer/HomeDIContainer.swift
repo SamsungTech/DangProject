@@ -31,7 +31,7 @@ class HomeDIContainer {
         return CalendarUseCase(repository: makeHomeRepository())
     }
     
-    func makeHomeRepository() -> HomeRepository {
+    func makeHomeRepository() -> HomeRepositoryProtocol {
         return HomeRepository()
     }
 }

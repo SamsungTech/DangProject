@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import Then
+
 import RxSwift
 
 class BatteryView: UIView {
@@ -58,70 +58,60 @@ class BatteryView: UIView {
     }
     
     private func configure() {
-        circleProgressBarView.do {
-            $0.backgroundColor = .homeBoxColor
-        }
-        targetNumber.do {
-            $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(50))
-            $0.textAlignment = .right
-        }
-        percentLabel.do {
-            $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(30))
-            $0.textAlignment = .center
-            $0.text = "%"
-        }
-        targetSugar.do {
-            $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: xValueRatio(20))
-            $0.text = "암것도없네"
-        }
-        calendarCollectionView.do {
-            $0.register(CalendarCollectionViewCell.self,
-                        forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
-            $0.delegate = self
-            $0.dataSource = self
-            $0.backgroundColor = .homeBackgroundColor
-        }
+        circleProgressBarView.backgroundColor = .homeBoxColor
+        
+        targetNumber.textColor = .white
+        targetNumber.font = UIFont.boldSystemFont(ofSize: xValueRatio(50))
+        targetNumber.textAlignment = .right
+        
+        percentLabel.textColor = .white
+        percentLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(30))
+        percentLabel.textAlignment = .center
+        percentLabel.text = "%"
+        
+        targetSugar.textColor = .white
+        targetSugar.font = UIFont.systemFont(ofSize: xValueRatio(20))
+        targetSugar.text = "암것도없네"
+        
+        calendarCollectionView.register(CalendarCollectionViewCell.self,
+                                        forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
+        calendarCollectionView.delegate = self
+        calendarCollectionView.dataSource = self
+        calendarCollectionView.backgroundColor = .homeBackgroundColor
+        
     }
     
     private func layout() {
         [ calendarCollectionView, circleProgressBarView ].forEach() { self.addSubview($0) }
         [ targetNumber, percentLabel, targetSugar ].forEach() { circleProgressBarView.addSubview($0) }
         
-        circleProgressBarView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            circleProgressBarTopAnchor = circleProgressBarView.topAnchor.constraint(equalTo: self.topAnchor, constant: yValueRatio(170))
-            circleProgressBarTopAnchor?.isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
-        }
-        targetNumber.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: circleProgressBarView.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: circleProgressBarView.centerYAnchor, constant: xValueRatio(-25)).isActive = true
-        }
-        percentLabel.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: xValueRatio(55)).isActive = true
-            $0.bottomAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(-5)).isActive = true
-        }
-        targetSugar.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(5)).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        }
-        calendarCollectionView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
-            calendarViewTopAnchor = calendarCollectionView.topAnchor.constraint(equalTo: self.topAnchor)
-            calendarViewTopAnchor?.isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        }
+        circleProgressBarView.translatesAutoresizingMaskIntoConstraints = false
+        circleProgressBarView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        circleProgressBarTopAnchor = circleProgressBarView.topAnchor.constraint(equalTo: self.topAnchor, constant: yValueRatio(170))
+        circleProgressBarTopAnchor?.isActive = true
+        circleProgressBarView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        circleProgressBarView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        circleProgressBarView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
+        
+        targetNumber.translatesAutoresizingMaskIntoConstraints = false
+        targetNumber.centerXAnchor.constraint(equalTo: circleProgressBarView.centerXAnchor).isActive = true
+        targetNumber.centerYAnchor.constraint(equalTo: circleProgressBarView.centerYAnchor, constant: xValueRatio(-25)).isActive = true
+        
+        percentLabel.translatesAutoresizingMaskIntoConstraints = false
+        percentLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: xValueRatio(55)).isActive = true
+        percentLabel.bottomAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(-5)).isActive = true
+        
+        targetSugar.translatesAutoresizingMaskIntoConstraints = false
+        targetSugar.topAnchor.constraint(equalTo: targetNumber.bottomAnchor, constant: xValueRatio(5)).isActive = true
+        targetSugar.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        calendarCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        calendarCollectionView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
+        calendarViewTopAnchor = calendarCollectionView.topAnchor.constraint(equalTo: self.topAnchor)
+        calendarViewTopAnchor?.isActive = true
+        calendarCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        calendarCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        
     }
     
     private func circleConfigure() {
@@ -132,31 +122,28 @@ class BatteryView: UIView {
                                         startAngle: -CGFloat.pi / 2,
                                         endAngle: 2 * CGFloat.pi,
                                         clockwise: true)
-        percentLineBackgroundLayer.do {
-            $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.circleBackgroundColorYellow.cgColor
-            $0.fillColor = UIColor.clear.cgColor
-            $0.lineWidth = 14
-            $0.lineCap = .round
-            $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
-        }
-        animationLineLayer.do {
-            $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.circleAnimationColorYellow.cgColor
-            $0.fillColor = UIColor.clear.cgColor
-            $0.lineWidth = 14
-            $0.lineCap = .round
-            $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
-        }
-        percentLineLayer.do {
-            $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.circleColorYellow.cgColor
-            $0.fillColor = UIColor.clear.cgColor
-            $0.lineWidth = 14
-            $0.lineCap = .round
-            $0.strokeEnd = 0
-            $0.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
-        }
+        
+        percentLineBackgroundLayer.path = circularPath.cgPath
+        percentLineBackgroundLayer.strokeColor = UIColor.circleBackgroundColorYellow.cgColor
+        percentLineBackgroundLayer.fillColor = UIColor.clear.cgColor
+        percentLineBackgroundLayer.lineWidth = 14
+        percentLineBackgroundLayer.lineCap = .round
+        percentLineBackgroundLayer.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
+        
+        animationLineLayer.path = circularPath.cgPath
+        animationLineLayer.strokeColor = UIColor.circleAnimationColorYellow.cgColor
+        animationLineLayer.fillColor = UIColor.clear.cgColor
+        animationLineLayer.lineWidth = 14
+        animationLineLayer.lineCap = .round
+        animationLineLayer.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
+        
+        percentLineLayer.path = circularPath.cgPath
+        percentLineLayer.strokeColor = UIColor.circleColorYellow.cgColor
+        percentLineLayer.fillColor = UIColor.clear.cgColor
+        percentLineLayer.lineWidth = 14
+        percentLineLayer.lineCap = .round
+        percentLineLayer.strokeEnd = 0
+        percentLineLayer.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
     }
 }
 
@@ -277,7 +264,7 @@ extension BatteryView {
         percentLineLayer.add(animation, forKey: "urSoBasic")
     }
     
-    private func animatePulsatingLayer() {
+    func animatePulsatingLayer() {
         let animation = CABasicAnimation(keyPath: "transform.scale")
         
         animation.toValue = 1.115

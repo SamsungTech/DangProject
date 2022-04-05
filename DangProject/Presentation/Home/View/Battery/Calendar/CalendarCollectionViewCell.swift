@@ -37,25 +37,21 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     }
     
     private func configure() {
-        calendarCollectionView.do {
-            $0.register(DaysCollectionViewCell.self,
-                        forCellWithReuseIdentifier: DaysCollectionViewCell.identifier)
-            $0.dataSource = self
-            $0.delegate = self
-            $0.backgroundColor = .clear
-        }
+        calendarCollectionView.register(DaysCollectionViewCell.self,
+                                        forCellWithReuseIdentifier: DaysCollectionViewCell.identifier)
+        calendarCollectionView.dataSource = self
+        calendarCollectionView.delegate = self
+        calendarCollectionView.backgroundColor = .clear
     }
     
     private func autoLayout() {
         [ calendarCollectionView ].forEach() { self.addSubview($0) }
         
-        calendarCollectionView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        }
+        calendarCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        calendarCollectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        calendarCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        calendarCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        calendarCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
     }
     
     func bind(viewModel: CalendarViewModel,

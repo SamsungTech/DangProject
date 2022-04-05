@@ -5,9 +5,7 @@
 //  Created by 김동우 on 2022/01/25.
 //
 
-import Foundation
 import UIKit
-import Then
 import RxSwift
 
 class AteFoodView: UIView {
@@ -37,25 +35,23 @@ class AteFoodView: UIView {
     }
     
     private func configure() {
-        foodCollectionView.do {
-            $0.register(AteFoodCollectionCell.self, forCellWithReuseIdentifier: AteFoodCollectionCell.identifier)
-            $0.delegate = self
-            $0.dataSource = self
-            $0.backgroundColor = .clear
-            $0.showsHorizontalScrollIndicator = false
-        }
+        foodCollectionView.register(AteFoodCollectionCell.self, forCellWithReuseIdentifier: AteFoodCollectionCell.identifier)
+        foodCollectionView.delegate = self
+        foodCollectionView.dataSource = self
+        foodCollectionView.backgroundColor = .clear
+        foodCollectionView.showsHorizontalScrollIndicator = false
+        
     }
     
     private func layout() {
         [ foodCollectionView ].forEach() { self.addSubview($0) }
         
-        foodCollectionView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        }
+        foodCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        foodCollectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        foodCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        foodCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        foodCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        
     }
 }
 

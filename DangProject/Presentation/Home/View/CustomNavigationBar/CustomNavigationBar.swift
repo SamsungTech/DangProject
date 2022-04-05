@@ -5,9 +5,7 @@
 //  Created by 김동우 on 2022/01/21.
 //
 
-import Foundation
 import UIKit
-import Then
 import RxSwift
 import RxCocoa
 
@@ -35,68 +33,58 @@ class CustomNavigationBar: UIView {
     }
     
     private func configure() {
-        profileImageView.do {
-            $0.image = UIImage(named: "231.png")
-            $0.tintColor = .white
-            $0.viewRadius(cornerRadius: xValueRatio(20))
-        }
-        dateLabel.do {
-            $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .bold)
-            $0.text = "2020년 2월"
-            $0.textAlignment = .center
-        }
-        yearMouthButton.do {
-            $0.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-            $0.tintColor = .white
-        }
-        weekStackView.do {
-            $0.distribution = .fillEqually
-            $0.alignment = .fill
-            $0.axis = .horizontal
-        }
+        profileImageView.image = UIImage(named: "231.png")
+        profileImageView.tintColor = .white
+        profileImageView.viewRadius(cornerRadius: xValueRatio(20))
+        
+        dateLabel.textColor = .white
+        dateLabel.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .bold)
+        dateLabel.text = "2020년 2월"
+        dateLabel.textAlignment = .center
+        
+        yearMouthButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        yearMouthButton.tintColor = .white
+        
+        weekStackView.distribution = .fillEqually
+        weekStackView.alignment = .fill
+        weekStackView.axis = .horizontal
     }
     
     private func layout() {
         [ profileImageView, dateLabel, yearMouthButton, weekStackView ].forEach() { self.addSubview($0) }
         
-        profileImageView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: xValueRatio(-20)).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: xValueRatio(-30)).isActive = true
-        }
-        dateLabel.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
-            $0.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-        }
-        yearMouthButton.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: xValueRatio(5)).isActive = true
-            $0.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
-        }
-        weekStackView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: xValueRatio(10)).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: xValueRatio(20)).isActive = true
-        }
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+        profileImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: xValueRatio(-20)).isActive = true
+        profileImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: xValueRatio(-30)).isActive = true
+        
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
+        dateLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+        
+        yearMouthButton.translatesAutoresizingMaskIntoConstraints = false
+        yearMouthButton.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: xValueRatio(5)).isActive = true
+        yearMouthButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
+        yearMouthButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+        yearMouthButton.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+        
+        weekStackView.translatesAutoresizingMaskIntoConstraints = false
+        weekStackView.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: xValueRatio(10)).isActive = true
+        weekStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        weekStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        weekStackView.heightAnchor.constraint(equalToConstant: xValueRatio(20)).isActive = true
+        
     }
     
     private func createWeekLabel() {
         for item in week {
             let label = UILabel()
-            label.do {
-                $0.textAlignment = .center
-                $0.textColor = .white
-                $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(13))
-                $0.text = "\(item)"
-            }
+            label.textAlignment = .center
+            label.textColor = .white
+            label.font = UIFont.boldSystemFont(ofSize: xValueRatio(13))
+            label.text = "\(item)"
+            
             weekStackView.addArrangedSubview(label)
         }
     }

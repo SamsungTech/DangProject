@@ -5,36 +5,42 @@
 //  Created by 김동우 on 2022/02/20.
 //
 
-import Foundation
 import UIKit
+
 import RxSwift
 import RxRelay
 
 class CalendarUseCase {
-    private var repository: HomeRepository?
+    private var repository: HomeRepositoryProtocol?
     private let currentDate = Date()
     private var calendar = Calendar.current
     private let dateFormatter = DateFormatter()
     private var dateComponents = DateComponents()
-    private var weeks: [String] = ["일", "월", "화", "수", "목", "금", "토"]
+    private var week: [String] = ["일", "월", "화", "수", "목", "금", "토"]
     private var days: [String] = []
-    private var daysCount = 0
     private var startDay = 0
     private var startEmptyCount = 0
     private var yearMonth = ""
     private var animationLineNumber = 0
     private var plusNumber: Int = 1
     private var minusNumber: Int = -1
-    private var calendarDataArray: [CalendarEntity] = []
     private var isCurrentDayArray: [Bool] = []
-    
+    private var isHiddenArray: [Bool] = []
+    private var daysCount = 0
+    var calendarPreviousMonthData = PublishSubject<CalendarEntity>()
+    var calendarNextMonthData = PublishSubject<CalendarEntity>()
+    var calendarDataArraySubject = BehaviorRelay<[CalendarEntity]>(value: [])
+    var calendarDataArray: [CalendarEntity] = []
     var currentDay = BehaviorRelay<Int>(value: 0)
     var currentDateYearMonth = BehaviorRelay<String>(value: "")
-    var currentLine = BehaviorRelay<Int>(value: 0)
-    var currentDatePoint = BehaviorRelay<CGPoint>(value: CGPoint())
-    var isHiddenArray: [Bool] = []
     
-    init(repository: HomeRepository) {
+    
+    var currentLine = PublishSubject<Int>()
+    
+    
+    var currentDatePoint = BehaviorRelay<CGPoint>(value: CGPoint())
+    
+    init(repository: HomeRepositoryProtocol) {
         self.repository = repository
     }
     
@@ -45,7 +51,7 @@ class CalendarUseCase {
         dateComponents.day = 1
     }
     
-    private func calculateMouthCalendar() {
+    func calculateMonthCalendar() {
         guard let calculateMonth = dateComponents.month else { return }
         let currentMonth = calendar.component(.month, from: currentDate)
         let currentDay = calendar.component(.day, from: currentDate)
@@ -144,36 +150,13 @@ class CalendarUseCase {
         }
     }
     
-    func initCalculationDaysInMouth() -> Observable<[CalendarEntity]> {
-        calendarDataArray.removeAll()
-        calculatePreviousMouth()
-        appendCalendarDataArray()
-        calculateCurrentMouth()
-        calculateNextMouth()
-        appendCalendarDataArray()
-        return Observable.create { [weak self] (observer) -> Disposable in
-            observer.onNext(self?.calendarDataArray ?? [])
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    
-    private func calculateCurrentMouth() {
-        initDateFormatter()
-        calculatePreviousMonthEmptyData()
-        startEmptyCount = days.count
-        calculateMouthCalendar()
-        calculateNextMonthEmptyData()
-        currentDateYearMonth.accept(yearMonth)
-        appendCalendarDataArray()
-        calculateCurrentCellYPoint()    }
     
     private func calculatePreviousMouth() {
         initDateFormatter()
         let minusMonthSumData = dateComponents.month! + minusNumber
         dateComponents.month = minusMonthSumData
         calculatePreviousMonthEmptyData()
-        calculateMouthCalendar()
+        calculateMonthCalendar()
         calculateNextMonthEmptyData()
     }
     
@@ -182,15 +165,14 @@ class CalendarUseCase {
         let plusMonthSumData = dateComponents.month! + plusNumber
         dateComponents.month = plusMonthSumData
         calculatePreviousMonthEmptyData()
-        calculateMouthCalendar()
+        calculateMonthCalendar()
         calculateNextMonthEmptyData()
     }
     
     private func appendCalendarDataArray() {
         calendarDataArray.append(
             CalendarEntity(days: self.days,
-                           daysCount: self.daysCount,
-                           weeks: self.weeks,
+                           week: self.week,
                            yearMouth: self.yearMonth,
                            isHiddenArray: self.isHiddenArray,
                            dangArray: self.repository?.monthData[0].dang,
@@ -200,13 +182,35 @@ class CalendarUseCase {
         isCurrentDayArray.removeAll()
         isHiddenArray.removeAll()
     }
+}
+
+extension CalendarUseCase: CalendarUseCaseProtocol {
+    func initCalculationDaysInMonth() {
+        calendarDataArray.removeAll()
+        calculatePreviousMouth()
+        appendCalendarDataArray()
+        calculateCurrentMonth()
+        calculateNextMouth()
+        appendCalendarDataArray()
+        calendarDataArraySubject.accept(self.calendarDataArray)
+    }
     
-    func createPreviousCalendarData() -> Observable<CalendarEntity> {
+    func calculateCurrentMonth() {
+        initDateFormatter()
+        calculatePreviousMonthEmptyData()
+        startEmptyCount = days.count
+        calculateMonthCalendar()
+        calculateNextMonthEmptyData()
+        currentDateYearMonth.accept(yearMonth)
+        appendCalendarDataArray()
+        calculateCurrentCellYPoint()
+    }
+    
+    func createPreviousCalendarData() {
         minusNumber -= 1
         calculatePreviousMouth()
         let calendarEntity = CalendarEntity(days: self.days,
-                                            daysCount: self.daysCount,
-                                            weeks: self.weeks,
+                                            week: self.week,
                                             yearMouth: self.yearMonth,
                                             isHiddenArray: self.isHiddenArray,
                                             dangArray: self.repository?.monthData[0].dang,
@@ -214,19 +218,14 @@ class CalendarUseCase {
                                             isCurrentDayArray: self.isCurrentDayArray)
         isCurrentDayArray.removeAll()
         isHiddenArray.removeAll()
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(calendarEntity)
-            observer.onCompleted()
-            return Disposables.create()
-        }
+        calendarPreviousMonthData.onNext(calendarEntity)
     }
     
-    func createNextCalendarData() -> Observable<CalendarEntity> {
+    func createNextCalendarData() {
         plusNumber += 1
         calculateNextMouth()
         let calendarEntity = CalendarEntity(days: self.days,
-                                            daysCount: self.daysCount,
-                                            weeks: self.weeks,
+                                            week: self.week,
                                             yearMouth: self.yearMonth,
                                             isHiddenArray: self.isHiddenArray,
                                             dangArray: self.repository?.monthData[0].dang,
@@ -234,15 +233,9 @@ class CalendarUseCase {
                                             isCurrentDayArray: self.isCurrentDayArray)
         isCurrentDayArray.removeAll()
         isHiddenArray.removeAll()
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(calendarEntity)
-            observer.onCompleted()
-            return Disposables.create()
-        }
+        calendarNextMonthData.onNext(calendarEntity)
     }
-}
-
-extension CalendarUseCase {
+    
     func calculateCurrentCellYPoint() {
         let currentDayCount = calendar.component(.day, from: currentDate) + startEmptyCount
         currentDay.accept(currentDayCount)
@@ -252,17 +245,17 @@ extension CalendarUseCase {
     func calculateCurrentLine(currentDay: Int) {
         switch abs(currentDay/7) {
         case 0:
-            currentLine.accept(0)
+            currentLine.onNext(0)
         case 1:
-            currentLine.accept(1)
+            currentLine.onNext(1)
         case 2:
-            currentLine.accept(2)
+            currentLine.onNext(2)
         case 3:
-            currentLine.accept(3)
+            currentLine.onNext(3)
         case 4:
-            currentLine.accept(4)
+            currentLine.onNext(4)
         default:
-            currentLine.accept(5)
+            currentLine.onNext(5)
         }
     }
 }

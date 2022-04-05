@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Then
 import RxSwift
 
 class AteFoodCollectionCell: UICollectionViewCell {
@@ -33,36 +32,28 @@ class AteFoodCollectionCell: UICollectionViewCell {
     }
     
     private func configure() {
-        contentView.do {
-            $0.layer.masksToBounds = true
-            $0.layer.cornerRadius = xValueRatio(20)
-            
-        }
-        foodNameLabel.do {
-            $0.textColor = .white
-            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(17))
-            $0.textAlignment = .center
-        }
-        dangLabel.do {
-            $0.textColor = .white
-            $0.font = UIFont.systemFont(ofSize: xValueRatio(15))
-            $0.textAlignment = .center
-        }
+        contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = xValueRatio(20)
+        
+        foodNameLabel.textColor = .white
+        foodNameLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(17))
+        foodNameLabel.textAlignment = .center
+        
+        dangLabel.textColor = .white
+        dangLabel.font = UIFont.systemFont(ofSize: xValueRatio(15))
+        dangLabel.textAlignment = .center
     }
     
     private func layout() {
         [ foodNameLabel, dangLabel ].forEach() { contentView.addSubview($0) }
         
-        foodNameLabel.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: xValueRatio(20)).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        }
-        dangLabel.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: xValueRatio(5)).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        }
+        foodNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        foodNameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: xValueRatio(20)).isActive = true
+        foodNameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        dangLabel.translatesAutoresizingMaskIntoConstraints = false
+        dangLabel.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor, constant: xValueRatio(5)).isActive = true
+        dangLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class HomeRepository {
+class HomeRepository: HomeRepositoryProtocol {
     
     var monthData: [MonthDangEntity] = [
         MonthDangEntity(

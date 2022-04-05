@@ -5,7 +5,6 @@
 //  Created by 김동우 on 2021/12/20.
 //
 
-import Then
 import UIKit
 
 import RxCocoa
@@ -71,35 +70,31 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     }
     
     private func configureBatteryView() {
-        batteryView.do {
-            $0.layer.masksToBounds = true
-            $0.layer.cornerRadius = xValueRatio(30)
-            $0.calendarCollectionView.isScrollEnabled = false
-            $0.animateShapeLayer(selectedCellEntity.circleDangValue,
+            batteryView.layer.masksToBounds = true
+            batteryView.layer.cornerRadius = xValueRatio(30)
+            batteryView.calendarCollectionView.isScrollEnabled = false
+            batteryView.animateShapeLayer(selectedCellEntity.circleDangValue,
                                  selectedCellEntity.circleAnimationDuration)
-            $0.countAnimation(selectedCellEntity.circlePercentValue)
-            $0.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/"
+            batteryView.countAnimation(selectedCellEntity.circlePercentValue)
+            batteryView.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/"
             + selectedCellEntity.selectedMaxDangValue
-        }
+        
     }
     
     private func configure() {
-        homeScrollView.do {
-            $0.backgroundColor = .clear
-            $0.showsVerticalScrollIndicator = true
-            $0.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
-                                    height: overSizeYValueRatio(1200))
-            $0.contentInsetAdjustmentBehavior = .automatic
-            $0.bounces = false
-            $0.contentInsetAdjustmentBehavior = .never
-        }
-        homeStackView.do {
-            $0.axis = .vertical
-            $0.spacing = 10
-            $0.backgroundColor = .homeBackgroundColor
-            $0.distribution = .fill
-            $0.alignment = .center
-        }
+        homeScrollView.backgroundColor = .clear
+        homeScrollView.showsVerticalScrollIndicator = true
+        homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
+                                            height: overSizeYValueRatio(1200))
+        homeScrollView.contentInsetAdjustmentBehavior = .automatic
+        homeScrollView.bounces = false
+        homeScrollView.contentInsetAdjustmentBehavior = .never
+        
+        homeStackView.axis = .vertical
+        homeStackView.spacing = 10
+        homeStackView.backgroundColor = .homeBackgroundColor
+        homeStackView.distribution = .fill
+        homeStackView.alignment = .center
     }
     
     private func layout() {
@@ -109,54 +104,45 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
           graphTitleView, homeGraphView ].forEach() { viewsInStackView.append($0) }
         viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         
-        customNavigationBar.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: batteryView.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-            heightAnchor = $0.heightAnchor.constraint(equalToConstant: yValueRatio(110))
-            heightAnchor?.isActive = true
-        }
-        homeScrollView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        }
-        homeStackView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: homeScrollView.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        }
-        batteryView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
-            batteryViewHeightAnchor?.isActive = true
-            $0.calendarViewTopAnchor?.constant = selectedDayYValue
-        }
-        ateFoodTitleView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
-        }
-        ateFoodView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(100)).isActive = true
-        }
-        graphTitleView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
-        }
-        homeGraphView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
-        }
+        customNavigationBar.translatesAutoresizingMaskIntoConstraints = false
+        customNavigationBar.topAnchor.constraint(equalTo: batteryView.topAnchor).isActive = true
+        customNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        customNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        heightAnchor = customNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(110))
+        heightAnchor?.isActive = true
+        
+        homeScrollView.translatesAutoresizingMaskIntoConstraints = false
+        homeScrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        homeScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        homeScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        homeScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        homeStackView.translatesAutoresizingMaskIntoConstraints = false
+        homeStackView.topAnchor.constraint(equalTo: homeScrollView.topAnchor).isActive = true
+        homeStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        homeStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        
+        batteryView.translatesAutoresizingMaskIntoConstraints = false
+        batteryView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+        batteryViewHeightAnchor = batteryView.heightAnchor.constraint(equalToConstant: yValueRatio(500))
+        batteryViewHeightAnchor?.isActive = true
+        batteryView.calendarViewTopAnchor?.constant = selectedDayYValue
+        
+        ateFoodTitleView.translatesAutoresizingMaskIntoConstraints = false
+        ateFoodTitleView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+        ateFoodTitleView.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
+        
+        ateFoodView.translatesAutoresizingMaskIntoConstraints = false
+        ateFoodView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+        ateFoodView.heightAnchor.constraint(equalToConstant: yValueRatio(100)).isActive = true
+        
+        graphTitleView.translatesAutoresizingMaskIntoConstraints = false
+        graphTitleView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
+        graphTitleView.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
+        
+        homeGraphView.translatesAutoresizingMaskIntoConstraints = false
+        homeGraphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
+        homeGraphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
     }
 }
 
@@ -248,15 +234,14 @@ extension HomeViewController {
 
 extension HomeViewController {
     func resetBatteryViewConfigure() {
-        batteryView.do {
-            $0.animateShapeLayer(selectedCellEntity.circleDangValue,
-                                 selectedCellEntity.circleAnimationDuration)
-            $0.countAnimation(selectedCellEntity.circlePercentValue)
-            $0.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/" + selectedCellEntity.selectedMaxDangValue
-            $0.animationLineLayer.strokeColor = selectedCellEntity.selectedCircleColor
-            $0.percentLineBackgroundLayer.strokeColor = selectedCellEntity.selectedCircleBackgroundColor
-            $0.percentLineLayer.strokeColor = selectedCellEntity.selectedAnimationLineColor
-        }
+        batteryView.animateShapeLayer(selectedCellEntity.circleDangValue,
+                                      selectedCellEntity.circleAnimationDuration)
+        batteryView.countAnimation(selectedCellEntity.circlePercentValue)
+        batteryView.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/" + selectedCellEntity.selectedMaxDangValue
+        batteryView.animationLineLayer.strokeColor = selectedCellEntity.selectedCircleColor
+        batteryView.percentLineBackgroundLayer.strokeColor = selectedCellEntity.selectedCircleBackgroundColor
+        batteryView.percentLineLayer.strokeColor = selectedCellEntity.selectedAnimationLineColor
+        batteryView.animatePulsatingLayer()
     }
     
     private func expandAnimation() {

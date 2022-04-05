@@ -7,5 +7,6 @@
 
 import Foundation
 
-protocol TempRepositoryProtocol: AnyObject {
+protocol HomeRepositoryProtocol: AnyObject {
+    var monthData: [MonthDangEntity] { get }
 }

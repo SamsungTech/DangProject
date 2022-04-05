@@ -39,62 +39,54 @@ class DaysCollectionViewCell: UICollectionViewCell {
     }
     
     private func configure() {
-        dayLabel.do {
-            $0.textColor = .white
-            $0.textAlignment = .center
-            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
-        }
-        smallPercentLineLayer.do {
-            $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.circleColorYellow.cgColor
-            $0.fillColor = UIColor.clear.cgColor
-            $0.lineWidth = 4
-            $0.lineCap = .round
-            $0.position = CGPoint(x: 28, y: 40)
-            $0.strokeStart = 0.0
-            $0.strokeEnd = 0.1
-        }
-        smallPercentLineBackgroundLayer.do {
-            $0.path = circularPath.cgPath
-            $0.strokeColor = UIColor.smallCircleBackgroundColorYellow.cgColor
-            $0.fillColor = UIColor.clear.cgColor
-            $0.lineWidth = 4
-            $0.lineCap = .round
-            $0.position = CGPoint(x: 28, y: 40)
-        }
-        selectedView.do {
-            $0.viewRadius(cornerRadius: 11)
-        }
-        currentLineView.do {
-            $0.backgroundColor = .clear
-            $0.layer.borderWidth = 3
-            $0.viewRadius(cornerRadius: 15)
-        }
+        dayLabel.textColor = .white
+        dayLabel.textAlignment = .center
+        dayLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
+        
+        smallPercentLineLayer.path = circularPath.cgPath
+        smallPercentLineLayer.strokeColor = UIColor.circleColorYellow.cgColor
+        smallPercentLineLayer.fillColor = UIColor.clear.cgColor
+        smallPercentLineLayer.lineWidth = 4
+        smallPercentLineLayer.lineCap = .round
+        smallPercentLineLayer.position = CGPoint(x: 28, y: 40)
+        smallPercentLineLayer.strokeStart = 0.0
+        smallPercentLineLayer.strokeEnd = 0.1
+        
+        smallPercentLineBackgroundLayer.path = circularPath.cgPath
+        smallPercentLineBackgroundLayer.strokeColor = UIColor.smallCircleBackgroundColorYellow.cgColor
+        smallPercentLineBackgroundLayer.fillColor = UIColor.clear.cgColor
+        smallPercentLineBackgroundLayer.lineWidth = 4
+        smallPercentLineBackgroundLayer.lineCap = .round
+        smallPercentLineBackgroundLayer.position = CGPoint(x: 28, y: 40)
+        
+        selectedView.viewRadius(cornerRadius: 11)
+        
+        currentLineView.backgroundColor = .clear
+        currentLineView.layer.borderWidth = 3
+        currentLineView.viewRadius(cornerRadius: 15)
+        
     }
     
     private func layout() {
         [ currentLineView, selectedView, dayLabel ].forEach() { contentView.addSubview($0) }
         [ smallPercentLineBackgroundLayer, smallPercentLineLayer ].forEach() { contentView.layer.addSublayer($0) }
         
-        dayLabel.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        }
-        selectedView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor, constant: 3).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 3).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -3).isActive = true
-        }
-        currentLineView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        }
+        dayLabel.translatesAutoresizingMaskIntoConstraints = false
+        dayLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        dayLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
+        selectedView.translatesAutoresizingMaskIntoConstraints = false
+        selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: 3).isActive = true
+        selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 3).isActive = true
+        selectedView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3).isActive = true
+        selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -3).isActive = true
+        
+        currentLineView.translatesAutoresizingMaskIntoConstraints = false
+        currentLineView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        currentLineView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        currentLineView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        currentLineView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        
     }
     
     func bind(viewModel: DaysCellViewModel) {

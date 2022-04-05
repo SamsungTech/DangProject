@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 
 class HomeUseCase {
-    private let repository: HomeRepository
+    private let repository: HomeRepositoryProtocol
     var sum: Double = 0.0
     
     var nutrient: [tempNutrient] = [
@@ -43,7 +43,7 @@ class HomeUseCase {
         tempNutrient(dang: "10.2", foodName: "깍두기")
     ]
     
-    init(repository: HomeRepository) {
+    init(repository: HomeRepositoryProtocol) {
         self.repository = repository
     }
     

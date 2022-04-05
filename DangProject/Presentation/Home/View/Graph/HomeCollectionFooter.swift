@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import Then
 
 class HomeCollectionFooter: UICollectionReusableView {
     private var footerTitle = UILabel()
@@ -28,30 +27,26 @@ class HomeCollectionFooter: UICollectionReusableView {
     }
     
     private func configure() {
-        footerTitle.do {
-            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
-            $0.textColor = .lightGray
-            $0.text = "Dang_Project"
-        }
-        context.do {
-            $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(20))
-            $0.textColor = .lightGray
-            $0.text = "1.0.0"
-        }
+        footerTitle.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
+        footerTitle.textColor = .lightGray
+        footerTitle.text = "Dang_Project"
+        
+        context.font = UIFont.boldSystemFont(ofSize: xValueRatio(20))
+        context.textColor = .lightGray
+        context.text = "1.0.0"
+        
     }
     
     private func layout() {
         [ footerTitle, context ].forEach() { self.addSubview($0) }
         
-        footerTitle.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        }
-        context.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: footerTitle.bottomAnchor, constant: yValueRatio(10)).isActive = true
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        }
+        footerTitle.translatesAutoresizingMaskIntoConstraints = false
+        footerTitle.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        footerTitle.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        
+        context.translatesAutoresizingMaskIntoConstraints = false
+        context.topAnchor.constraint(equalTo: footerTitle.bottomAnchor, constant: yValueRatio(10)).isActive = true
+        context.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        
     }
 }

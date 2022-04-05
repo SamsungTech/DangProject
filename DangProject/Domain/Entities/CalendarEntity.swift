@@ -7,10 +7,9 @@
 
 import Foundation
 
-struct CalendarEntity {
+struct CalendarEntity: Equatable {
     static let empty: Self = .init(days: [],
-                                   daysCount: 0,
-                                   weeks: [],
+                                   week: [],
                                    yearMouth: "",
                                    isHiddenArray: [],
                                    dangArray: [],
@@ -18,8 +17,7 @@ struct CalendarEntity {
                                    isCurrentDayArray: [])
     
     var days: [String]?
-    var daysCount: Int?
-    var weeks: [String]?
+    var week: [String]?
     var yearMouth: String?
     var isHiddenArray: [Bool]?
     var dangArray: [Double]?
@@ -27,16 +25,14 @@ struct CalendarEntity {
     var isCurrentDayArray: [Bool]?
     
     init(days: [String]?,
-         daysCount: Int?,
-         weeks: [String]?,
+         week: [String]?,
          yearMouth: String?,
          isHiddenArray: [Bool]?,
          dangArray: [Double]?,
          maxDangArray: [Double]?,
          isCurrentDayArray: [Bool]?) {
         self.days = days
-        self.daysCount = daysCount
-        self.weeks = weeks
+        self.week = week
         self.yearMouth = yearMouth
         self.isHiddenArray = isHiddenArray
         self.dangArray = dangArray

@@ -5,9 +5,7 @@
 //  Created by 김동우 on 2022/01/20.
 //
 
-import Foundation
 import UIKit
-import Then
 import RxSwift
 
 class HomeGraphView: UIView {
@@ -29,9 +27,8 @@ class HomeGraphView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        graphMainView.do {
-            $0.viewRadius(cornerRadius: xValueRatio(20))
-        }
+        graphMainView.viewRadius(cornerRadius: xValueRatio(20))
+        
     }
     
     required init?(coder: NSCoder) {
@@ -39,32 +36,27 @@ class HomeGraphView: UIView {
     }
     
     private func configure() {
-        graphMainView.do {
-            $0.backgroundColor = .homeBoxColor
-        }
-        graphSegmentedControl.do {
-            $0.selectedSegmentIndex = 0
-            $0.tintColor = .systemYellow
-        }
-        graphBackgroundStackView.do {
-            $0.backgroundColor = .clear
-            $0.distribution = .fillEqually
-            $0.spacing = xValueRatio(20)
-            $0.axis = .horizontal
-        }
-        graphStackView.do {
-            $0.backgroundColor = .clear
-            $0.spacing = xValueRatio(20)
-            $0.axis = .horizontal
-            $0.distribution = .fillProportionally
-            $0.alignment = .trailing
-        }
-        graphNameStackView.do {
-            $0.backgroundColor = .clear
-            $0.spacing = xValueRatio(20)
-            $0.axis = .horizontal
-            $0.distribution = .fillEqually
-        }
+        graphMainView.backgroundColor = .homeBoxColor
+        
+        graphSegmentedControl.selectedSegmentIndex = 0
+        graphSegmentedControl.tintColor = .systemYellow
+        
+        graphBackgroundStackView.backgroundColor = .clear
+        graphBackgroundStackView.distribution = .fillEqually
+        graphBackgroundStackView.spacing = xValueRatio(20)
+        graphBackgroundStackView.axis = .horizontal
+        
+        graphStackView.backgroundColor = .clear
+        graphStackView.spacing = xValueRatio(20)
+        graphStackView.axis = .horizontal
+        graphStackView.distribution = .fillProportionally
+        graphStackView.alignment = .trailing
+        
+        graphNameStackView.backgroundColor = .clear
+        graphNameStackView.spacing = xValueRatio(20)
+        graphNameStackView.axis = .horizontal
+        graphNameStackView.distribution = .fillEqually
+        
         createGraphBackgroundViews()
         createGraphName()
     }
@@ -74,54 +66,48 @@ class HomeGraphView: UIView {
         [ graphSegmentedControl, graphBackgroundStackView, graphNameStackView ].forEach() { graphMainView.addSubview($0) }
         graphBackgroundStackView.addSubview(graphStackView)
         
-        graphMainView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            $0.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: xValueRatio(350)).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
-        }
-        graphSegmentedControl.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: graphMainView.topAnchor, constant: xValueRatio(10)).isActive = true
-            $0.centerXAnchor.constraint(equalTo: graphMainView.centerXAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
-            $0.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
-        }
-        graphBackgroundStackView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: graphSegmentedControl.bottomAnchor, constant: yValueRatio(10)).isActive = true
-            $0.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
-            $0.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
-            $0.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: yValueRatio(-50)).isActive = true
-        }
-        graphStackView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: graphBackgroundStackView.topAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: graphBackgroundStackView.leadingAnchor).isActive = true
-            $0.trailingAnchor.constraint(equalTo: graphBackgroundStackView.trailingAnchor).isActive = true
-            $0.bottomAnchor.constraint(equalTo: graphBackgroundStackView.bottomAnchor).isActive = true
-        }
-        graphNameStackView.do {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.topAnchor.constraint(equalTo: graphStackView.bottomAnchor).isActive = true
-            $0.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
-            $0.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
-            $0.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: yValueRatio(-10)).isActive = true
-        }
+        graphMainView.translatesAutoresizingMaskIntoConstraints = false
+        graphMainView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        graphMainView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        graphMainView.widthAnchor.constraint(equalToConstant: xValueRatio(350)).isActive = true
+        graphMainView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
+        
+        graphSegmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        graphSegmentedControl.topAnchor.constraint(equalTo: graphMainView.topAnchor, constant: xValueRatio(10)).isActive = true
+        graphSegmentedControl.centerXAnchor.constraint(equalTo: graphMainView.centerXAnchor).isActive = true
+        graphSegmentedControl.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
+        graphSegmentedControl.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
+        graphSegmentedControl.heightAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
+        
+        graphBackgroundStackView.translatesAutoresizingMaskIntoConstraints = false
+        graphBackgroundStackView.topAnchor.constraint(equalTo: graphSegmentedControl.bottomAnchor, constant: yValueRatio(10)).isActive = true
+        graphBackgroundStackView.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
+        graphBackgroundStackView.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
+        graphBackgroundStackView.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: yValueRatio(-50)).isActive = true
+        
+        graphStackView.translatesAutoresizingMaskIntoConstraints = false
+        graphStackView.topAnchor.constraint(equalTo: graphBackgroundStackView.topAnchor).isActive = true
+        graphStackView.leadingAnchor.constraint(equalTo: graphBackgroundStackView.leadingAnchor).isActive = true
+        graphStackView.trailingAnchor.constraint(equalTo: graphBackgroundStackView.trailingAnchor).isActive = true
+        graphStackView.bottomAnchor.constraint(equalTo: graphBackgroundStackView.bottomAnchor).isActive = true
+        
+        graphNameStackView.translatesAutoresizingMaskIntoConstraints = false
+        graphNameStackView.topAnchor.constraint(equalTo: graphStackView.bottomAnchor).isActive = true
+        graphNameStackView.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
+        graphNameStackView.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
+        graphNameStackView.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: yValueRatio(-10)).isActive = true
+        
     }
     
     private func createGraphBackgroundViews() {
         for _ in 0..<7 {
             let view = UIView()
-            view.do {
-                $0.backgroundColor = .init(red: 0,
-                                           green: 0,
-                                           blue: 0,
-                                           alpha: 0.05)
-                $0.viewRadius(cornerRadius: xValueRatio(13))
-            }
+            view.backgroundColor = .init(red: 0,
+                                         green: 0,
+                                         blue: 0,
+                                         alpha: 0.05)
+            view.viewRadius(cornerRadius: xValueRatio(13))
+            
             graphBackgroundStackView.addArrangedSubview(view)
         }
     }
@@ -136,12 +122,11 @@ class HomeGraphView: UIView {
                 height = CGFloat(item.dangdang)
             }
             let view = UIView()
-            view.do {
-                $0.backgroundColor = .white
-                $0.viewRadius(cornerRadius: xValueRatio(13))
-                $0.translatesAutoresizingMaskIntoConstraints = false
-                $0.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
-            }
+            view.backgroundColor = .white
+            view.viewRadius(cornerRadius: xValueRatio(13))
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
+            
             graphStackView.addArrangedSubview(view)
         }
     }
@@ -149,12 +134,11 @@ class HomeGraphView: UIView {
     private func createGraphName() {
         for item in week {
             let label = UILabel()
-            label.do {
-                $0.textColor = .white
-                $0.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
-                $0.text = item
-                $0.textAlignment = .center
-            }
+            label.textColor = .white
+            label.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
+            label.text = item
+            label.textAlignment = .center
+            
             graphNameStackView.addArrangedSubview(label)
         }
     }
