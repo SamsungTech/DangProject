@@ -23,7 +23,17 @@ struct DaysCellEntity {
     var isCurrentDay: Bool
 }
 
-class DaysCellViewModel {
+protocol DaysCellViewModelInputProtocol: AnyObject {
+    
+}
+
+protocol DaysCellViewModelOutputProtocol: AnyObject {
+    
+}
+
+protocol DaysCellViewModelProtocol: DaysCellViewModelInputProtocol, DaysCellViewModelOutputProtocol {}
+
+class DaysCellViewModel: DaysCellViewModelProtocol {
     var yearMonth = BehaviorRelay<String>(value: "")
     var days = BehaviorRelay<String>(value: "")
     var isHidden = BehaviorRelay<Bool>(value: Bool())

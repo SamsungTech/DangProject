@@ -8,13 +8,13 @@
 import Foundation
 import RxRelay
 
-enum CurrentDayLineState {
+enum CurrentDayLineState: Equatable {
     case normal(DaysCollectionViewCell)
     case hidden(DaysCollectionViewCell)
     case empty
 }
 
-enum SelectedItemFillViewState {
+enum SelectedItemFillViewState: Equatable {
     case normal(UICollectionView,
                 DaysCollectionViewCell,
                 IndexPath)
@@ -22,27 +22,27 @@ enum SelectedItemFillViewState {
     case empty
 }
 
-enum SelectedItemIsHiddenState {
+enum SelectedItemIsHiddenState: Equatable {
     case selectedTrue(UICollectionView)
     case selectedFalse(UICollectionView,
                        IndexPath)
     case empty
 }
 
-enum DeSelectedItemIsHiddenState {
+enum DeSelectedItemIsHiddenState: Equatable {
     case DeSelectedTrue
     case DeSelectedFalse(UICollectionView,
                          IndexPath)
 }
 
-enum YearMonthState {
+enum YearMonthState: Equatable {
     case match(UICollectionView,
                IndexPath,
                DaysCollectionViewCell)
     case differ
 }
 
-struct SelectedCalendarCellEntity {
+struct SelectedCalendarCellEntity: Equatable {
     static let empty: Self = .init(yearMonth: "",
                                    indexPath: IndexPath(item: 0, section: 0))
     
@@ -58,18 +58,14 @@ struct SelectedCalendarCellEntity {
 struct CalendarMonthDangEntity {
     static let empty: Self = .init(calendarMonthDang: [])
     
-    var calendarMonthDang: [MonthDangEntity]?
+    var calendarMonthDang: [MonthDangEntity]
     
-    init(calendarMonthDang: [MonthDangEntity]?) {
+    init(calendarMonthDang: [MonthDangEntity]) {
         self.calendarMonthDang = calendarMonthDang
     }
 }
 
-extension CalendarMonthDangEntity {
-    
-}
-
-struct CalendarStackViewEntity {
+struct CalendarStackViewEntity: Equatable {
     static let empty: Self = .init(batteryEntity: .empty)
     
     var yearMonth: String
