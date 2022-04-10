@@ -8,23 +8,27 @@
 import Foundation
 import RxRelay
 
-struct weekTemp {
-    static let empty: Self = .init(tempNutrient: .empty)
+struct GraphViewEntity {
+    static let empty: Self = .init(weekDang: [],
+                                   monthDang: [],
+                                   yearDang: [])
+    var weekDang: [String]?
+    var monthDang: [Double]?
+    var yearDang: [String]?
     
-    var dangdang: Double = 0.0
-    
-    init(tempNutrient: tempNutrient) {
-        guard let dangdang = tempNutrient.dang else { return }
-        guard let dangdang = Double(dangdang) else { return }
-        self.dangdang = dangdang
+    init(weekDang: [String],
+         monthDang: [Double],
+         yearDang: [String]) {
+        self.weekDang = weekDang
+        self.monthDang = monthDang
+        self.yearDang = yearDang
     }
 }
 
 class GraphViewModel {
-    var items = BehaviorRelay<[weekTemp]>(value: [])
+    var items = BehaviorRelay<GraphViewEntity>(value: .empty)
     
-    
-    init(item: [weekTemp]) {
+    init(item: GraphViewEntity) {
         self.items.accept(item)
     }
 }

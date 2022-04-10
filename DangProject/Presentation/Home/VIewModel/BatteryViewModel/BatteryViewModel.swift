@@ -14,29 +14,23 @@ import UIKit
 struct BatteryEntity {
     static let empty: Self = .init(calendar: .empty)
     
-    var daysArray: [String]?
-    var daysCount: Int?
-    var week: [String]?
-    var yearMonth: String?
-    var isHiddenArray: [Bool]?
-    var dangArray: [Double]?
-    var maxDangArray: [Double]?
-    var isCurrentDayArray: [Bool]?
-    
-    init(calendar: CalendarEntity?) {
-        guard let daysArray = calendar?.days,
-              let week = calendar?.week,
-              let yearMonth = calendar?.yearMouth,
-              let isHiddenArray = calendar?.isHiddenArray,
-              let dangArray = calendar?.dangArray,
-              let maxDangArray = calendar?.maxDangArray,
-              let isCurrentDayArray = calendar?.isCurrentDayArray else { return }
-        self.daysArray = daysArray
-        self.week = week
-        self.yearMonth = yearMonth
-        self.isHiddenArray = isHiddenArray
-        self.dangArray = dangArray
-        self.maxDangArray = maxDangArray
-        self.isCurrentDayArray = isCurrentDayArray
+    var daysArray: [String]
+    var week: [String]
+    var yearMonth: String
+    var isHiddenArray: [Bool]
+    var dangArray: [Double]
+    var maxDangArray: [Double]
+    var isCurrentDayArray: [Bool]
+}
+
+extension BatteryEntity {
+    init(calendar: CalendarEntity) {
+        self.daysArray = calendar.days
+        self.week = calendar.week
+        self.yearMonth = calendar.yearMonth
+        self.isHiddenArray = calendar.isHiddenArray
+        self.dangArray = calendar.dangArray
+        self.maxDangArray = calendar.maxDangArray
+        self.isCurrentDayArray = calendar.isCurrentDayArray
     }
 }

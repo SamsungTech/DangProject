@@ -32,15 +32,15 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     private var currentCGPoint: CGPoint = .zero
     private var selectedDayYValue: CGFloat = 0
     private var selectedCellEntity: SelectedCellEntity = .empty
-    var viewModel: HomeViewModel?
+    var viewModel: HomeViewModelProtocol?
     var batteryView = BatteryView()
     
-    static func create(viewModel: HomeViewModel,
+    static func create(viewModel: HomeViewModelProtocol,
                        coordinator: Coordinator) -> HomeViewController {
         let viewController = HomeViewController()
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
-        viewModel.homeViewController = viewController
+        viewController.viewModel?.homeViewController = viewController
         
         return viewController
     }
@@ -162,18 +162,30 @@ extension HomeViewController {
     }
     
     private func bindAteFoodViewModel() {
-        viewModel?.tempData
+        viewModel?.dangComprehensiveData
             .subscribe(onNext: { [weak self] in
-                let ateFoodViewModel = AteFoodViewModel(item: $0)
+                guard let tempDang = $0.tempDang,
+                      let tempFoodName = $0.tempFoodName else { return }
+                let ateFoodViewModel = AteFoodViewModel(item: AteFoodData(
+                    dangArray: tempDang,
+                    foodNameArray: tempFoodName)
+                )
                 self?.ateFoodView.bind(viewModel: ateFoodViewModel)
             })
             .disposed(by: disposeBag)
     }
     
     private func bindHomeGraphViewModel() {
-        viewModel?.weekData
+        viewModel?.dangComprehensiveData
             .subscribe(onNext: { [weak self] in
-                let homeGraphViewModel = GraphViewModel(item: $0)
+                guard let weekDang = $0.weekDang,
+                      let monthDang = $0.monthDang,
+                      let yearDang = $0.yearDang else { return }
+                let homeGraphViewModel = GraphViewModel(
+                    item: GraphViewEntity(weekDang: weekDang,
+                                          monthDang: monthDang,
+                                          yearDang: yearDang)
+                )
                 self?.homeGraphView.bind(viewModel: homeGraphViewModel)
             })
             .disposed(by: disposeBag)

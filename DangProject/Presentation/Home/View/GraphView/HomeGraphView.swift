@@ -35,6 +35,13 @@ class HomeGraphView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func bind(viewModel: GraphViewModel) {
+        self.viewModel = viewModel
+        subscribe()
+    }
+}
+
+extension HomeGraphView {
     private func configure() {
         graphMainView.backgroundColor = .homeBoxColor
         
@@ -112,14 +119,14 @@ class HomeGraphView: UIView {
         }
     }
     
-    private func createGraphViews(items: [weekTemp]) {
+    private func createGraphViews(items: GraphViewEntity) {
         var height: CGFloat?
-        
+        guard let items = items.weekDang else { return }
         for item in items {
-            if item.dangdang > 30 {
+            if Double(item)! > 30 {
                 height = CGFloat(30)
             } else {
-                height = CGFloat(item.dangdang)
+                height = CGFloat(Double(item)!)
             }
             let view = UIView()
             view.backgroundColor = .white
@@ -142,18 +149,11 @@ class HomeGraphView: UIView {
             graphNameStackView.addArrangedSubview(label)
         }
     }
-}
-
-extension HomeGraphView {
-    func bind(viewModel: GraphViewModel) {
-        self.viewModel = viewModel
-        subscribe()
-    }
     
     private func subscribe() {
         viewModel?.items
-            .subscribe(onNext: { [weak self] data in
-                self?.createGraphViews(items: data)
+            .subscribe(onNext: { [weak self] in
+                self?.createGraphViews(items: $0)
             })
             .disposed(by: disposeBag)
     }

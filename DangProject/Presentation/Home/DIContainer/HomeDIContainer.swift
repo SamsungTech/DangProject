@@ -10,11 +10,13 @@ import UIKit
 
 class HomeDIContainer {
     func presentMemoListViewController(coordinator: Coordinator) -> UINavigationController {
-        let navigationView = UINavigationController(rootViewController: makeHomeViewController(coordinator: coordinator))
+        let navigationView = UINavigationController(
+            rootViewController: makeHomeViewController(coordinator: coordinator) as! UIViewController
+        )
         return navigationView
     }
     
-    func makeHomeViewController(coordinator: Coordinator) -> HomeViewController {
+    func makeHomeViewController(coordinator: Coordinator) -> HomeViewControllerProtocol {
         return HomeViewController.create(viewModel: makeHomeViewModel() as! HomeViewModel,
                                          coordinator: coordinator)
     }
@@ -23,11 +25,11 @@ class HomeDIContainer {
         return HomeViewModel(useCase: makeHomeUseCase(), calendarUseCase: makeCalendarUseCase())
     }
     
-    func makeHomeUseCase() -> HomeUseCase {
+    func makeHomeUseCase() -> HomeUseCaseProtocol {
         return HomeUseCase(repository: makeHomeRepository())
     }
     
-    func makeCalendarUseCase() -> CalendarUseCase {
+    func makeCalendarUseCase() -> CalendarUseCaseProtocol {
         return CalendarUseCase(repository: makeHomeRepository())
     }
     

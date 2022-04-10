@@ -15,24 +15,30 @@ enum CurrentDayLineState {
 }
 
 enum SelectedItemFillViewState {
-    case normal(UICollectionView, DaysCollectionViewCell, IndexPath)
+    case normal(UICollectionView,
+                DaysCollectionViewCell,
+                IndexPath)
     case hidden(DaysCollectionViewCell)
     case empty
 }
 
 enum SelectedItemIsHiddenState {
     case selectedTrue(UICollectionView)
-    case selectedFalse(UICollectionView, IndexPath)
+    case selectedFalse(UICollectionView,
+                       IndexPath)
     case empty
 }
 
 enum DeSelectedItemIsHiddenState {
     case DeSelectedTrue
-    case DeSelectedFalse(UICollectionView, IndexPath)
+    case DeSelectedFalse(UICollectionView,
+                         IndexPath)
 }
 
 enum YearMonthState {
-    case match(UICollectionView, IndexPath, DaysCollectionViewCell)
+    case match(UICollectionView,
+               IndexPath,
+               DaysCollectionViewCell)
     case differ
 }
 
@@ -59,33 +65,66 @@ struct CalendarMonthDangEntity {
     }
 }
 
+extension CalendarMonthDangEntity {
+    
+}
+
 struct CalendarStackViewEntity {
     static let empty: Self = .init(batteryEntity: .empty)
     
-    var yearMonth: String?
-    var daysArray: [String]?
-    var isHiddenArray: [Bool]?
-    var dangArray: [Double]?
-    var maxDangArray: [Double]?
-    var isCurrentDayArray: [Bool]?
-    
-    init(batteryEntity: BatteryEntity?) {
-        guard let yearMonth = batteryEntity?.yearMonth,
-              let daysArray = batteryEntity?.daysArray,
-              let isHiddenArray = batteryEntity?.isHiddenArray,
-              let dangArray = batteryEntity?.dangArray,
-              let maxDangArray = batteryEntity?.maxDangArray,
-              let isCurrentDayArray = batteryEntity?.isCurrentDayArray else { return }
-        self.yearMonth = yearMonth
-        self.daysArray = daysArray
-        self.isHiddenArray = isHiddenArray
-        self.dangArray = dangArray
-        self.maxDangArray = maxDangArray
-        self.isCurrentDayArray = isCurrentDayArray
+    var yearMonth: String
+    var daysArray: [String]
+    var isHiddenArray: [Bool]
+    var dangArray: [Double]
+    var maxDangArray: [Double]
+    var isCurrentDayArray: [Bool]
+}
+
+extension CalendarStackViewEntity {
+    init(batteryEntity: BatteryEntity) {
+        self.yearMonth = batteryEntity.yearMonth
+        self.daysArray = batteryEntity.daysArray
+        self.isHiddenArray = batteryEntity.isHiddenArray
+        self.dangArray = batteryEntity.dangArray
+        self.maxDangArray = batteryEntity.maxDangArray
+        self.isCurrentDayArray = batteryEntity.isCurrentDayArray
     }
 }
 
-class CalendarViewModel {
+protocol CalendarViewModelInputProtocol: AnyObject {
+    func compareCurrentDayCellData(indexPath: IndexPath,
+                                   yearMonth: String,
+                                   cell: DaysCollectionViewCell,
+                                   currentCount: Int,
+                                   currentYearMonth: String)
+    func compareSelectedDayCellData(indexPath: IndexPath,
+                                    yearMonth: String,
+                                    cell: DaysCollectionViewCell,
+                                    collectionView: UICollectionView,
+                                    selectedCellIndexPath: Int,
+                                    selectedCellYearMonth: String)
+    func calculateSelectedItemIsHiddenValue(collectionView: UICollectionView,
+                                            indexPath: IndexPath)
+    func calculateDeSelectedItemIsHiddenValue(collectionView: UICollectionView,
+                                              indexPath: IndexPath)
+    func compareSelectedYearMonthData(collectionView: UICollectionView,
+                                      selectedYearMonth: String,
+                                      indexPath: IndexPath,
+                                      cell: DaysCollectionViewCell)
+}
+
+protocol CalendarViewModelOutputProtocol: AnyObject {
+    var calendarData: BehaviorRelay<CalendarStackViewEntity> { get }
+    var currentDayCellLineViewState: BehaviorRelay<CurrentDayLineState> { get }
+    var selectedCellFillViewState: BehaviorRelay<SelectedItemFillViewState> { get }
+    var selectedYearMonthState: BehaviorRelay<YearMonthState> { get }
+    var selectedCalendarCellIsHidden: BehaviorRelay<SelectedItemIsHiddenState> { get }
+    var deSelectedCalendarCellIsHidden: BehaviorRelay<DeSelectedItemIsHiddenState> { get }
+}
+
+protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarViewModelOutputProtocol {}
+
+class CalendarViewModel: CalendarViewModelProtocol {
     var calendarData = BehaviorRelay<CalendarStackViewEntity>(value: .empty)
     var currentDayCellLineViewState = BehaviorRelay<CurrentDayLineState>(value: .empty)
     var selectedCellFillViewState = BehaviorRelay<SelectedItemFillViewState>(value: .empty)
@@ -94,7 +133,11 @@ class CalendarViewModel {
     var deSelectedCalendarCellIsHidden = BehaviorRelay<DeSelectedItemIsHiddenState>(value: .DeSelectedTrue)
     
     init(calendarData: BatteryEntity) {
-        self.calendarData.accept(CalendarStackViewEntity(batteryEntity: calendarData))
+        self.calendarData.accept(
+            CalendarStackViewEntity(
+                batteryEntity: calendarData
+            )
+        )
     }
 }
 
@@ -105,9 +148,13 @@ extension CalendarViewModel {
                                    currentCount: Int,
                                    currentYearMonth: String) {
         if indexPath.item == currentCount && currentYearMonth == yearMonth {
-            currentDayCellLineViewState.accept(.normal(cell))
+            currentDayCellLineViewState.accept(
+                .normal(cell)
+            )
         } else {
-            currentDayCellLineViewState.accept(.hidden(cell))
+            currentDayCellLineViewState.accept(
+                .hidden(cell)
+            )
         }
     }
     
@@ -118,35 +165,48 @@ extension CalendarViewModel {
                                     selectedCellIndexPath: Int,
                                     selectedCellYearMonth: String) {
         if indexPath.item == selectedCellIndexPath && selectedCellYearMonth == yearMonth {
-            selectedCellFillViewState.accept(.normal(collectionView, cell, indexPath))
+            selectedCellFillViewState.accept(
+                .normal(collectionView, cell,
+                        indexPath)
+            )
         } else {
-            selectedCellFillViewState.accept(.hidden(cell))
+            selectedCellFillViewState.accept(
+                .hidden(cell)
+            )
         }
     }
     
     func calculateSelectedItemIsHiddenValue(collectionView: UICollectionView,
                                             indexPath: IndexPath) {
-        let isHidden = calendarData.value.isHiddenArray?[indexPath.item]
+        let isHidden = calendarData.value.isHiddenArray[indexPath.item]
         
         switch isHidden {
         case true:
-            selectedCalendarCellIsHidden.accept(.selectedTrue(collectionView))
+            selectedCalendarCellIsHidden.accept(
+                .selectedTrue(collectionView)
+            )
         case false:
-            selectedCalendarCellIsHidden.accept(.selectedFalse(collectionView, indexPath))
-        default: break
+            selectedCalendarCellIsHidden.accept(
+                .selectedFalse(collectionView,
+                               indexPath)
+            )
         }
     }
     
     func calculateDeSelectedItemIsHiddenValue(collectionView: UICollectionView,
                                               indexPath: IndexPath) {
-        let isHidden = calendarData.value.isHiddenArray?[indexPath.item]
+        let isHidden = calendarData.value.isHiddenArray[indexPath.item]
         
         switch isHidden {
         case true:
-            deSelectedCalendarCellIsHidden.accept(.DeSelectedTrue)
+            deSelectedCalendarCellIsHidden.accept(
+                .DeSelectedTrue
+            )
         case false:
-            deSelectedCalendarCellIsHidden.accept(.DeSelectedFalse(collectionView, indexPath))
-        default: break
+            deSelectedCalendarCellIsHidden.accept(
+                .DeSelectedFalse(collectionView,
+                                 indexPath)
+            )
         }
     }
     

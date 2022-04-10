@@ -23,9 +23,7 @@ protocol CalendarUseCaseProtocol: AnyObject {
     func initCalculationDaysInMonth()
     func createPreviousCalendarData()
     func createNextCalendarData()
+    func calculateCurrentMonth()
     func calculateCurrentCellYPoint()
     func calculateCurrentLine(currentDay: Int)
-    func calculateMonthCalendar()
-    
-    func calculateCurrentMonth()
 }

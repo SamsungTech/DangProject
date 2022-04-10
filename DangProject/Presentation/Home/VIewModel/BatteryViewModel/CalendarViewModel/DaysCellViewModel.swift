@@ -7,7 +7,6 @@
 
 import Foundation
 import RxRelay
-import QuartzCore
 
 struct DaysCellEntity {
     static let empty: Self = .init(yearMonth: "",
@@ -16,26 +15,12 @@ struct DaysCellEntity {
                                    dang: Double(),
                                    maxDang: Double(),
                                    isCurrentDay: Bool())
-    var yearMonth: String?
-    var days: String?
-    var isHidden: Bool?
-    var dang: Double?
-    var maxDang: Double?
-    var isCurrentDay: Bool?
-    
-    init(yearMonth: String?,
-         days: String,
-         isHidden: Bool,
-         dang: Double,
-         maxDang: Double,
-         isCurrentDay: Bool) {
-        self.yearMonth = yearMonth
-        self.days = days
-        self.isHidden = isHidden
-        self.dang = dang
-        self.maxDang = maxDang
-        self.isCurrentDay = isCurrentDay
-    }
+    var yearMonth: String
+    var days: String
+    var isHidden: Bool
+    var dang: Double
+    var maxDang: Double
+    var isCurrentDay: Bool
 }
 
 class DaysCellViewModel {
@@ -48,20 +33,34 @@ class DaysCellViewModel {
     
     init(calendarData: CalendarStackViewEntity,
          indexPathItem: Int) {
-        guard let yearMonth = calendarData.yearMonth,
-              let days = calendarData.daysArray?[indexPathItem],
-              let isHidden = calendarData.isHiddenArray?[indexPathItem],
-              let dang = calendarData.dangArray?[indexPathItem],
-              let maxDang = calendarData.maxDangArray?[indexPathItem],
-              let isCurrentDay = calendarData.isCurrentDayArray?[indexPathItem] else { return }
-        self.yearMonth.accept(yearMonth)
-        self.days.accept(days)
-        self.isHidden.accept(isHidden)
-        self.circleColor.accept(.calculateColor(dang: dang, maxDang: maxDang))
-        self.circleNumber.accept(.calculateMonthDangDataNumber(dang: dang, maxDang: maxDang))
-        self.isCurrentDay.accept(isCurrentDay)
+        self.yearMonth.accept(
+            calendarData.yearMonth
+        )
+        self.days.accept(
+            calendarData.daysArray[indexPathItem]
+        )
+        self.isHidden.accept(
+            calendarData.isHiddenArray[indexPathItem]
+        )
+        self.circleColor.accept(
+            .calculateColor(
+                dang: calendarData.dangArray[indexPathItem],
+                maxDang: calendarData.maxDangArray[indexPathItem]
+            )
+        )
+        self.circleNumber.accept(
+            .calculateMonthDangDataNumber(
+                dang: calendarData.dangArray[indexPathItem],
+                maxDang: calendarData.maxDangArray[indexPathItem]
+            )
+        )
+        self.isCurrentDay.accept(
+            calendarData.isCurrentDayArray[indexPathItem]
+        )
     }
-    
+}
+
+extension DaysCellViewModel {
     func calculateAlphaHiddenValues(_ value: Bool,
                                     label: UILabel,
                                     Layer: CAShapeLayer,

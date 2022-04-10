@@ -19,7 +19,7 @@ class HomeCoordinator: Coordinator {
     }
     
     func start() {
-        let viewController = diContainer.makeHomeViewController(coordinator: self)
+        guard let viewController = diContainer.makeHomeViewController(coordinator: self) as? UIViewController else { return }
         self.navigationController.pushViewController(viewController, animated: false)
     }
     

@@ -11,7 +11,7 @@ import UIKit
 import RxSwift
 
 class BatteryView: UIView {
-    private var viewModel: HomeViewModel?
+    private var viewModel: HomeViewModelProtocol?
     private var disposeBag = DisposeBag()
     private var mainView = UIView()
     private var gradient = CAGradientLayer()
@@ -148,7 +148,7 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    func bind(viewModel: HomeViewModel) {
+    func bind(viewModel: HomeViewModelProtocol) {
         self.viewModel = viewModel
         bindBatteryCalendarData()
         bindReloadData()
@@ -156,10 +156,11 @@ extension BatteryView {
     }
     
     private func bindBatteryCalendarData() {
-        viewModel?.sumData
+        viewModel?.dangComprehensiveData
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
-                self?.targetSugar.text = "목표: " + String(format: "%.1f", $0.sum) + "/25.6g"
+                guard let sugarSum = $0.todaySugarSum else { return }
+                self?.targetSugar.text = "목표: " + String(format: "%.1f") +  sugarSum + "/25.6g"
             })
             .disposed(by: disposeBag)
         

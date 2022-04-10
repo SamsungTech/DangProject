@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct tempNutrient {
+struct TempNutrient {
     static let empty: Self = .init(dang: "", foodName: "")
     
     var dang: String?
@@ -20,9 +20,8 @@ struct tempNutrient {
     }
 }
 
-struct sugarSum {
-    static let empty: Self = .init(sum: 0.0)
+struct TodaySugarSum {
+    static let empty: Self = .init(todaySum: 0.0)
     
-    var sum: Double = 0.0
-    
+    var todaySum: Double = 0.0
 }

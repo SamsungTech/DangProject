@@ -8,5 +8,5 @@
 import Foundation
 
 protocol HomeRepositoryProtocol: AnyObject {
-    var monthData: [MonthDangEntity] { get }
+    var dangGeneralData: DangGeneral { get }
 }

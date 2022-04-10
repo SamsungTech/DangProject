@@ -66,16 +66,21 @@ extension AteFoodView {
 extension AteFoodView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        guard let tempDataCount = viewModel?.items.value.count else { return 0 }
+        guard let tempDataCount = viewModel?.items.value.dangArray.count else { return 0 }
+        
         return tempDataCount
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         guard let ateFoodCell = collectionView.dequeueReusableCell(withReuseIdentifier: AteFoodCollectionCell.identifier, for: indexPath) as? AteFoodCollectionCell else { return UICollectionViewCell() }
         
-        if let data = viewModel?.items.value[indexPath.item] {
-            let viewModel = AteFoodCellInItemViewModel(item: data)
+        if let dang = viewModel?.items.value.dangArray[indexPath.item],
+           let foodName = viewModel?.items.value.foodNameArray[indexPath.item] {
+            let viewModel = AteFoodCellInItemViewModel(
+                item: AteFoodCellEntity.init(dang: dang, foodName: foodName)
+            )
             ateFoodCell.bind(viewModel: viewModel)
         }
         

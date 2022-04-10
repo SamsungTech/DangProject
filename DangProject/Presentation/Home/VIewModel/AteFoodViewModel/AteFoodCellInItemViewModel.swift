@@ -8,10 +8,22 @@
 import Foundation
 import RxRelay
 
-class AteFoodCellInItemViewModel {
-    var items = BehaviorRelay<tempNutrient>(value: .empty)
+struct AteFoodCellEntity {
+    static let empty: Self = .init(dang: "", foodName: "")
+    var dang: String?
+    var foodName: String?
     
-    init(item: tempNutrient) {
+    init(dang: String,
+         foodName: String) {
+        self.dang = dang
+        self.foodName = foodName
+    }
+}
+
+class AteFoodCellInItemViewModel {
+    var items = BehaviorRelay<AteFoodCellEntity>(value: .empty)
+    
+    init(item: AteFoodCellEntity) {
         self.items.accept(item)
     }
 }

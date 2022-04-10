@@ -33,11 +33,7 @@ class CalendarUseCase {
     var calendarDataArray: [CalendarEntity] = []
     var currentDay = BehaviorRelay<Int>(value: 0)
     var currentDateYearMonth = BehaviorRelay<String>(value: "")
-    
-    
     var currentLine = PublishSubject<Int>()
-    
-    
     var currentDatePoint = BehaviorRelay<CGPoint>(value: CGPoint())
     
     init(repository: HomeRepositoryProtocol) {
@@ -51,7 +47,7 @@ class CalendarUseCase {
         dateComponents.day = 1
     }
     
-    func calculateMonthCalendar() {
+    private func calculateMonthCalendar() {
         guard let calculateMonth = dateComponents.month else { return }
         let currentMonth = calendar.component(.month, from: currentDate)
         let currentDay = calendar.component(.day, from: currentDate)
@@ -67,10 +63,12 @@ class CalendarUseCase {
         for day in 1...daysCount {
             self.days.append(String(day))
             isHiddenArray.append(false)
-            calculateCurrentMonthDay(currentMonth: currentMonth,
-                                     calculateMonth: calculateMonth,
-                                     day: day,
-                                     currentDay: currentDay)
+            calculateCurrentMonthDay(
+                currentMonth: currentMonth,
+                calculateMonth: calculateMonth,
+                day: day,
+                currentDay: currentDay
+            )
         }
     }
     
@@ -170,14 +168,18 @@ class CalendarUseCase {
     }
     
     private func appendCalendarDataArray() {
+        guard let dangArray = self.repository?.dangGeneralData.monthDang,
+              let maxDangArray = self.repository?.dangGeneralData.monthMaxDang else { return }
         calendarDataArray.append(
-            CalendarEntity(days: self.days,
-                           week: self.week,
-                           yearMouth: self.yearMonth,
-                           isHiddenArray: self.isHiddenArray,
-                           dangArray: self.repository?.monthData[0].dang,
-                           maxDangArray: self.repository?.monthData[0].maxDang,
-                           isCurrentDayArray: self.isCurrentDayArray)
+            CalendarEntity(
+                days: self.days,
+                week: self.week,
+                yearMonth: self.yearMonth,
+                isHiddenArray: self.isHiddenArray,
+                dangArray: dangArray,
+                maxDangArray: maxDangArray,
+                isCurrentDayArray: self.isCurrentDayArray
+            )
         )
         isCurrentDayArray.removeAll()
         isHiddenArray.removeAll()
@@ -207,30 +209,38 @@ extension CalendarUseCase: CalendarUseCaseProtocol {
     }
     
     func createPreviousCalendarData() {
+        guard let dangArray = self.repository?.dangGeneralData.monthDang,
+              let maxDangArray = self.repository?.dangGeneralData.monthMaxDang else { return }
         minusNumber -= 1
         calculatePreviousMouth()
-        let calendarEntity = CalendarEntity(days: self.days,
-                                            week: self.week,
-                                            yearMouth: self.yearMonth,
-                                            isHiddenArray: self.isHiddenArray,
-                                            dangArray: self.repository?.monthData[0].dang,
-                                            maxDangArray: self.repository?.monthData[0].maxDang,
-                                            isCurrentDayArray: self.isCurrentDayArray)
+        let calendarEntity = CalendarEntity(
+            days: self.days,
+            week: self.week,
+            yearMonth: self.yearMonth,
+            isHiddenArray: self.isHiddenArray,
+            dangArray: dangArray,
+            maxDangArray: maxDangArray,
+            isCurrentDayArray: self.isCurrentDayArray
+        )
         isCurrentDayArray.removeAll()
         isHiddenArray.removeAll()
         calendarPreviousMonthData.onNext(calendarEntity)
     }
     
     func createNextCalendarData() {
+        guard let dangArray = self.repository?.dangGeneralData.monthDang,
+              let maxDangArray = self.repository?.dangGeneralData.monthMaxDang else { return }
         plusNumber += 1
         calculateNextMouth()
-        let calendarEntity = CalendarEntity(days: self.days,
-                                            week: self.week,
-                                            yearMouth: self.yearMonth,
-                                            isHiddenArray: self.isHiddenArray,
-                                            dangArray: self.repository?.monthData[0].dang,
-                                            maxDangArray: self.repository?.monthData[0].maxDang,
-                                            isCurrentDayArray: self.isCurrentDayArray)
+        let calendarEntity = CalendarEntity(
+            days: self.days,
+            week: self.week,
+            yearMonth: self.yearMonth,
+            isHiddenArray: self.isHiddenArray,
+            dangArray: dangArray,
+            maxDangArray: maxDangArray,
+            isCurrentDayArray: self.isCurrentDayArray
+        )
         isCurrentDayArray.removeAll()
         isHiddenArray.removeAll()
         calendarNextMonthData.onNext(calendarEntity)

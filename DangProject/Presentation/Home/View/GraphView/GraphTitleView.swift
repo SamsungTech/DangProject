@@ -33,7 +33,6 @@ class GraphTitleView: UIView {
         GraphCellTitle.translatesAutoresizingMaskIntoConstraints = false
         GraphCellTitle.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         GraphCellTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
-        
     }
 }
 

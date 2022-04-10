@@ -5,65 +5,10 @@
 //  Created by 김동우 on 2022/01/19.
 //
 
-import Foundation
-import RxSwift
-import RxRelay
 import UIKit
 
-enum PagingState {
-    case left
-    case right(Int)
-    case empty
-}
-
-enum ScrollDirection {
-    case right
-    case center
-    case left
-}
-
-enum CalendarScaleState {
-    case expand
-    case revert
-}
-
-struct SelectedCellEntity {
-    static let empty: Self = .init(selectedCircleColor: UIColor.clear.cgColor,
-                                   selectedCircleBackgroundColor: UIColor.clear.cgColor,
-                                   selectedDangValue: "",
-                                   selectedMaxDangValue: "",
-                                   circleDangValue: 0,
-                                   circlePercentValue: 0,
-                                   circleAnimationDuration: 0.0,
-                                   selectedAnimationLineColor: UIColor.clear.cgColor)
-    
-    var selectedCircleColor: CGColor
-    var selectedCircleBackgroundColor: CGColor
-    var selectedDangValue: String
-    var selectedMaxDangValue: String
-    var circleDangValue: CGFloat
-    var circlePercentValue: Int
-    var circleAnimationDuration: Double
-    var selectedAnimationLineColor: CGColor
-    
-    init(selectedCircleColor: CGColor,
-         selectedCircleBackgroundColor: CGColor,
-         selectedDangValue: String,
-         selectedMaxDangValue: String,
-         circleDangValue: CGFloat,
-         circlePercentValue: Int,
-         circleAnimationDuration: Double,
-         selectedAnimationLineColor: CGColor) {
-        self.selectedCircleColor = selectedCircleColor
-        self.selectedCircleBackgroundColor = selectedCircleBackgroundColor
-        self.selectedDangValue = selectedDangValue
-        self.selectedMaxDangValue = selectedMaxDangValue
-        self.circleDangValue = circleDangValue
-        self.circlePercentValue = circlePercentValue
-        self.circleAnimationDuration = circleAnimationDuration
-        self.selectedAnimationLineColor = selectedAnimationLineColor
-    }
-}
+import RxSwift
+import RxRelay
 
 protocol HomeViewModelInputProtocol {
     func viewDidLoad()
@@ -77,11 +22,7 @@ protocol HomeViewModelInputProtocol {
 }
 
 protocol HomeViewModelOutputProtocol {
-    var tempData: BehaviorRelay<[tempNutrient]> { get }
-    var weekData: BehaviorRelay<[weekTemp]> { get }
-    var monthData: BehaviorRelay<CalendarMonthDangEntity> { get }
-    var yearData: BehaviorRelay<[tempNutrient]> { get }
-    var sumData: BehaviorRelay<sugarSum> { get }
+    var dangComprehensiveData: BehaviorRelay<DangComprehensive> { get }
     var batteryViewCalendarData: BehaviorRelay<[BatteryEntity]> { get }
     var reloadData: BehaviorRelay<Void> { get }
     var pagingState: BehaviorRelay<PagingState> { get }
@@ -96,58 +37,57 @@ protocol HomeViewModelOutputProtocol {
     var calendarScaleAnimation: BehaviorRelay<CalendarScaleState> { get }
 }
 
-protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
+protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {
+    var homeViewController: HomeViewControllerProtocol? { get set }
+}
 
-class HomeViewModel: HomeViewModelProtocol {
-    private var homeUseCase: HomeUseCase
-    private var calendarUseCase: CalendarUseCase
+class HomeViewModel {
+    private var homeUseCase: HomeUseCaseProtocol
+    private var calendarUseCase: CalendarUseCaseProtocol
     private var disposeBag = DisposeBag()
     private var currentPoint: CGFloat = 0
+    
     var homeViewController: HomeViewControllerProtocol?
-    var tempData = BehaviorRelay<[tempNutrient]>(value: [])
-    var weekData = BehaviorRelay<[weekTemp]>(value: [])
-    var monthData = BehaviorRelay<CalendarMonthDangEntity>(value: .empty)
-    var yearData = BehaviorRelay<[tempNutrient]>(value: [])
-    var sumData = BehaviorRelay<sugarSum>(value: .empty)
-    var batteryViewCalendarData = BehaviorRelay<[BatteryEntity]>(value: [])
-    var reloadData = BehaviorRelay<Void>(value: ())
-    var pagingState = BehaviorRelay<PagingState>(value: .empty)
     var scrollDirection = BehaviorRelay<ScrollDirection>(value: .center)
     var currentXPoint = BehaviorRelay<Int>(value: 1)
     var currentDateCGPoint = BehaviorRelay<CGPoint>(value: CGPoint())
-    var currentLineYValue = BehaviorRelay<CGFloat>(value: 0)
-    var currentLine = BehaviorRelay<Int>(value: 0)
     var currentCount = BehaviorRelay<Int>(value: 0)
-    var currentYearMonth = BehaviorRelay<String>(value: "")
-    var selectedCellViewData = BehaviorRelay<SelectedCellEntity>(value: .empty)
-    var selectedCellData = BehaviorRelay<SelectedCalendarCellEntity>(value: .empty)
     var calendarScaleAnimation = BehaviorRelay<CalendarScaleState>(value: .revert)
     
-    init(useCase: HomeUseCase,
-         calendarUseCase: CalendarUseCase) {
+    // MARK: ViewDidLoad 에서 이벤트 받게되는 Subjects
+    // MARK: 초기값 타이밍 이슈 있음
+    var selectedCellViewData = BehaviorRelay<SelectedCellEntity>(value: .empty)
+    var currentYearMonth = BehaviorRelay<String>(value: "")
+    
+    // MARK: Entity 합치기
+    var currentLine = BehaviorRelay<Int>(value: 0)
+    var currentLineYValue = BehaviorRelay<CGFloat>(value: 0)
+    
+    
+    var reloadData = BehaviorRelay<Void>(value: ())
+    var selectedCellData = BehaviorRelay<SelectedCalendarCellEntity>(value: .empty)
+    var batteryViewCalendarData = BehaviorRelay<[BatteryEntity]>(value: [])
+    var pagingState = BehaviorRelay<PagingState>(value: .empty)
+    var dangComprehensiveData = BehaviorRelay<DangComprehensive>(value: .empty)
+    
+    init(useCase: HomeUseCaseProtocol,
+         calendarUseCase: CalendarUseCaseProtocol) {
         self.homeUseCase = useCase
         self.calendarUseCase = calendarUseCase
     }
-}
-
-extension HomeViewModel {
-    func viewDidLoad() {
-        retrieveBatteryCalendarViewData()
-        retrieveHomeViewData()
-        retrieveSelectedCellData()
-    }
     
-    private func retrieveBatteryCalendarViewData() {
-        calendarUseCase.initCalculationDaysInMonth()
-        
+    private func bindCalendarViewData() {
         calendarUseCase.calendarDataArraySubject
             .map { $0.map { BatteryEntity(calendar: $0)} }
             .subscribe(onNext: { [weak self] in
-                guard let yearMonth = $0[1].yearMonth,
-                      let currentCount = self?.calendarUseCase.currentDay.value else { return }
+                guard let currentCount = self?.calendarUseCase.currentDay.value else { return }
                 self?.batteryViewCalendarData.accept($0)
-                self?.selectedCellData.accept(SelectedCalendarCellEntity(yearMonth: yearMonth,
-                                                                         indexPath: IndexPath(item: currentCount-1, section: 0)))
+                self?.selectedCellData.accept(
+                    SelectedCalendarCellEntity(
+                        yearMonth: $0[1].yearMonth,
+                        indexPath: IndexPath(item: currentCount-1, section: 0)
+                    )
+                )
                 self?.reloadData.accept(())
             })
             .disposed(by: disposeBag)
@@ -174,28 +114,40 @@ extension HomeViewModel {
         calendarUseCase.currentDay
             .map { $0-1 }
             .subscribe(onNext: { [weak self] in
-                guard let currentDayDang = self?.batteryViewCalendarData.value[1].dangArray?[$0],
-                      let currentMaxDang = self?.batteryViewCalendarData.value[1].maxDangArray?[$0] else { return }
-                let circleColor: CGColor = .calculateCircleProgressBarColor(dang: currentDayDang,
-                                                                            maxDang: currentMaxDang)
-                let circleBackgroundColor: CGColor = .calculateCircleProgressBackgroundColor(dang: currentDayDang,
-                                                                                             maxDang: currentMaxDang)
-                let dangValue = String(currentDayDang)
-                let maxDangValue = String(currentMaxDang)
-                let circleDangValue: CGFloat = .calculateMonthDangDataNumber(dang: currentDayDang, maxDang: currentMaxDang)
-                let circlePercentValue: Int = .calculatePercentValue(dang: currentDayDang, maxDang: currentMaxDang)
-                let circleAnimationDuration: Double = .calculateCircleAnimationDuration(dang: currentDayDang, maxDang: currentMaxDang)
-                let selectedAnimationLineColor: CGColor = .calculateCirclePercentLineColor(dang: currentDayDang, maxDang: currentMaxDang)
+                guard let currentDayDang = self?.batteryViewCalendarData.value[1].dangArray[$0],
+                      let currentMaxDang = self?.batteryViewCalendarData.value[1].maxDangArray[$0] else { return }
                 
                 self?.currentCount.accept($0)
-                self?.selectedCellViewData.accept(SelectedCellEntity(selectedCircleColor: circleColor,
-                                                                     selectedCircleBackgroundColor: circleBackgroundColor,
-                                                                     selectedDangValue: dangValue,
-                                                                     selectedMaxDangValue: maxDangValue,
-                                                                     circleDangValue: circleDangValue,
-                                                                     circlePercentValue: circlePercentValue,
-                                                                     circleAnimationDuration: circleAnimationDuration,
-                                                                     selectedAnimationLineColor: selectedAnimationLineColor))
+                self?.selectedCellViewData.accept(
+                    SelectedCellEntity(
+                        selectedCircleColor: .calculateCircleProgressBarColor(
+                            dang: currentDayDang,
+                            maxDang: currentMaxDang
+                        ),
+                        selectedCircleBackgroundColor: .calculateCircleProgressBackgroundColor(
+                            dang: currentDayDang,
+                            maxDang: currentMaxDang
+                        ),
+                        selectedDangValue: String(currentDayDang),
+                        selectedMaxDangValue: String(currentMaxDang),
+                        circleDangValue: .calculateMonthDangDataNumber(
+                            dang: currentDayDang,
+                            maxDang: currentMaxDang
+                        ),
+                        circlePercentValue: .calculatePercentValue(
+                            dang: currentDayDang,
+                            maxDang: currentMaxDang
+                        ),
+                        circleAnimationDuration: .calculateCircleAnimationDuration(
+                            dang: currentDayDang,
+                            maxDang: currentMaxDang
+                        ),
+                        selectedAnimationLineColor: .calculateCirclePercentLineColor(
+                            dang: currentDayDang,
+                            maxDang: currentMaxDang
+                        )
+                    )
+                )
             })
             .disposed(by: disposeBag)
         
@@ -221,41 +173,17 @@ extension HomeViewModel {
             .disposed(by: disposeBag)
     }
     
-    private func retrieveHomeViewData() {
-        homeUseCase.execute()
+    private func bindHomeViewData() {
+        homeUseCase.yearMonthWeekDangData
             .subscribe(onNext: { [weak self] in
-                self?.tempData.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        homeUseCase.retriveWeekData()
-            .map { $0.map { weekTemp(tempNutrient: $0) } }
-            .subscribe(onNext: { [weak self] in
-                self?.weekData.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        homeUseCase.retriveYearData()
-            .subscribe(onNext: { [weak self] in
-                self?.yearData.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        homeUseCase.calculateSugarSum()
-            .subscribe(onNext: { [weak self] in
-                self?.sumData.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        homeUseCase.retriveMouthData()
-            .map { CalendarMonthDangEntity(calendarMonthDang: $0) }
-            .subscribe(onNext: { [weak self] in
-                self?.monthData.accept($0)
+                self?.dangComprehensiveData.accept(
+                    DangComprehensive(yearMonthWeekDang: $0)
+                )
             })
             .disposed(by: disposeBag)
     }
     
-    private func retrieveSelectedCellData() {
+    private func bindSelectedCellData() {
         selectedCellData
             .subscribe(onNext: { [weak self] in
                 guard let indexPathItem = $0.indexPath?.item else { return }
@@ -263,15 +191,16 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
     }
-    
-    private func scrolledCalendarToLeft() {
-        calendarUseCase.createPreviousCalendarData()
+}
+
+extension HomeViewModel: HomeViewModelProtocol {
+    func viewDidLoad() {
+        calendarUseCase.initCalculationDaysInMonth()
+        homeUseCase.execute()
+        bindSelectedCellData()
+        bindCalendarViewData()
+        bindHomeViewData()
     }
-    
-    private func scrolledCalendarToRight() {
-        calendarUseCase.createNextCalendarData()
-    }
-    
     
     func calculateCalendarScaleState() {
         switch calendarScaleAnimation.value {
@@ -316,12 +245,12 @@ extension HomeViewModel {
         
         switch scrollDirection.value {
         case .left:
-            scrolledCalendarToLeft()
+            calendarUseCase.createPreviousCalendarData()
             currentXPoint.accept(1)
         case .center:
             currentXPoint.accept(Int(result))
         case .right:
-            scrolledCalendarToRight()
+            calendarUseCase.createNextCalendarData()
             let number = batteryViewCalendarData.value.count
             currentXPoint.accept(Int(number-2))
         }
@@ -329,29 +258,39 @@ extension HomeViewModel {
     
     func didTapCalendarViewCell(selectedDangData: Double,
                                 selectedMaxDangData: Double) {
-        let circleColor: CGColor = .calculateCircleProgressBarColor(dang: selectedDangData,
-                                                                    maxDang: selectedMaxDangData)
-        let circleBackgroundColor: CGColor = .calculateCircleProgressBackgroundColor(dang: selectedDangData,
-                                                                                     maxDang: selectedMaxDangData)
-        let dangValue = String(selectedDangData)
-        let maxDangValue = String(selectedMaxDangData)
-        let circleDangValue: CGFloat = .calculateMonthDangDataNumber(dang: selectedDangData, maxDang: selectedMaxDangData)
-        let circlePercentValue: Int = .calculatePercentValue(dang: selectedDangData, maxDang: selectedMaxDangData)
-        let circleAnimationDuration: Double = .calculateCircleAnimationDuration(dang: selectedDangData, maxDang: selectedMaxDangData)
-        let selectedAnimationLineColor: CGColor = .calculateCirclePercentLineColor(dang: selectedDangData, maxDang: selectedMaxDangData)
-        
-        selectedCellViewData.accept(SelectedCellEntity(selectedCircleColor: circleColor,
-                                                       selectedCircleBackgroundColor: circleBackgroundColor,
-                                                       selectedDangValue: dangValue,
-                                                       selectedMaxDangValue: maxDangValue,
-                                                       circleDangValue: circleDangValue,
-                                                       circlePercentValue: circlePercentValue,
-                                                       circleAnimationDuration: circleAnimationDuration,
-                                                       selectedAnimationLineColor: selectedAnimationLineColor))
+        selectedCellViewData.accept(
+            SelectedCellEntity(
+                selectedCircleColor: .calculateCircleProgressBarColor(
+                    dang: selectedDangData,
+                    maxDang: selectedMaxDangData
+                ),
+                selectedCircleBackgroundColor: .calculateCircleProgressBackgroundColor(
+                    dang: selectedDangData,
+                    maxDang: selectedMaxDangData
+                ),
+                selectedDangValue: String(selectedDangData),
+                selectedMaxDangValue: String(selectedMaxDangData),
+                circleDangValue: .calculateMonthDangDataNumber(
+                    dang: selectedDangData,
+                    maxDang: selectedMaxDangData
+                ),
+                circlePercentValue: .calculatePercentValue(
+                    dang: selectedDangData,
+                    maxDang: selectedMaxDangData
+                ),
+                circleAnimationDuration: .calculateCircleAnimationDuration(
+                    dang: selectedDangData,
+                    maxDang: selectedMaxDangData
+                ),
+                selectedAnimationLineColor: .calculateCirclePercentLineColor(
+                    dang: selectedDangData,
+                    maxDang: selectedMaxDangData
+                )
+            )
+        )
     }
     
     func resetBatteryViewMainCircleProgressBar() {
         homeViewController?.resetBatteryViewConfigure()
     }
 }
-

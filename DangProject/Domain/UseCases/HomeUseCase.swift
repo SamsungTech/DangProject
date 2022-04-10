@@ -6,93 +6,44 @@
 //
 
 import Foundation
-import RxSwift
 
-class HomeUseCase {
+import RxSwift
+import RxRelay
+
+// MARK: 쓸데없이 여러개의 subject만들지말고 한개의 subject안에 다 넣기
+
+// MARK: 새로운 음식 추가하는 순간 데이터 다시 리셋 시켜야하기 때문에 레포지토리에서 다시 전체를 끌고온다
+
+class HomeUseCase: HomeUseCaseProtocol {
     private let repository: HomeRepositoryProtocol
-    var sum: Double = 0.0
-    
-    var nutrient: [tempNutrient] = [
-        tempNutrient(dang: "0.5", foodName: "김치말이국수"),
-        tempNutrient(dang: "0.8", foodName: "김치볶음밥"),
-        tempNutrient(dang: "1.5", foodName: "라면"),
-        tempNutrient(dang: "1.8", foodName: "탕수육"),
-        tempNutrient(dang: "2.0", foodName: "냉모밀"),
-        tempNutrient(dang: "5.0", foodName: "나시고랭"),
-        tempNutrient(dang: "1.2", foodName: "깍두기")
-    ]
-    var weekData: [tempNutrient] = [
-        tempNutrient(dang: "5.5", foodName: "김치말이국수"),
-        tempNutrient(dang: "8.8", foodName: "김치볶음밥"),
-        tempNutrient(dang: "1.5", foodName: "라면"),
-        tempNutrient(dang: "11.8", foodName: "탕수육"),
-        tempNutrient(dang: "22.0", foodName: "냉모밀"),
-        tempNutrient(dang: "10.0", foodName: "나시고랭"),
-        tempNutrient(dang: "22.2", foodName: "깍두기")
-    ]
-    
-    var monthDangArray: [String] = []
-    
-    var yearData: [tempNutrient] = [
-        tempNutrient(dang: "10.5", foodName: "김치말이국수"),
-        tempNutrient(dang: "5.8", foodName: "김치볶음밥"),
-        tempNutrient(dang: "20.5", foodName: "라면"),
-        tempNutrient(dang: "5.8", foodName: "탕수육"),
-        tempNutrient(dang: "25.0", foodName: "냉모밀"),
-        tempNutrient(dang: "20.0", foodName: "나시고랭"),
-        tempNutrient(dang: "10.2", foodName: "깍두기")
-    ]
+    private let disposeBag = DisposeBag()
+    var yearMonthWeekDangData = BehaviorRelay<YearMonthWeekDang>(value: .empty)
     
     init(repository: HomeRepositoryProtocol) {
         self.repository = repository
     }
     
-    func execute() -> Observable<[tempNutrient]> {
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(self.nutrient)
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    // MARK: 여기서 계산을 다하고 viewModel한테 가야된다!
-    func retriveWeekData() -> Observable<[tempNutrient]> {
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(self.weekData)
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    
-    func retriveMouthData() -> Observable<[MonthDangEntity]> {
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(self.repository.monthData)
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    
-    func retriveYearData() -> Observable<[tempNutrient]> {
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(self.yearData)
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    
-    func calculateSugarSum() -> Observable<sugarSum> {
-        // MARK: 오퍼레이터로 만들수 있을 것 같은데?
-        for item in self.nutrient {
-            sum += Double(item.dang ?? "") ?? 0.0
-        }
+    func execute() {
+        let dangGeneralData = repository.dangGeneralData
         
-        let sugarSum = sugarSum.init(sum: sum)
-        
-        return Observable.create { (observer) -> Disposable in
-            observer.onNext(sugarSum)
-            observer.onCompleted()
-            return Disposables.create()
-        }
+        yearMonthWeekDangData.accept(
+            YearMonthWeekDang(
+                dangGeneral: dangGeneralData,
+                todaySugarSum: calculateDangArray(value: dangGeneralData.tempDang)
+            )
+        )
     }
 }
 
-
+extension HomeUseCase {
+    private func calculateDangArray(value: [String]) -> Double {
+        var result = 0.0
+        
+        for item in value {
+            guard let item = Double(item) else { return 0.0 }
+            result += item
+        }
+        
+        return result
+    }
+}

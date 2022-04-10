@@ -66,9 +66,9 @@ extension AteFoodCollectionCell {
     private func subscribe() {
         viewModel?.items
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] data in
-                self?.foodNameLabel.text = data.foodName
-                self?.dangLabel.text = data.dang
+            .subscribe(onNext: { [weak self] in
+                self?.foodNameLabel.text = $0.foodName
+                self?.dangLabel.text = $0.dang
             })
             .disposed(by: disposeBag)
     }

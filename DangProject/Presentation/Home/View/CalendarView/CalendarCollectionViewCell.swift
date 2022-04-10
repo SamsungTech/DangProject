@@ -11,7 +11,7 @@ import RxSwift
 class CalendarCollectionViewCell: UICollectionViewCell {
     static let identifier = "CalendarCollectionViewCell"
     private var viewModel: CalendarViewModel?
-    private var homeViewModel: HomeViewModel?
+    private var homeViewModel: HomeViewModelProtocol?
     private var disposeBag = DisposeBag()
     private var testAnimationButton = UIButton()
     
@@ -55,7 +55,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     }
     
     func bind(viewModel: CalendarViewModel,
-              homeViewModel: HomeViewModel) {
+              homeViewModel: HomeViewModelProtocol) {
         self.viewModel = viewModel
         self.homeViewModel = homeViewModel
         subscribe()
@@ -266,8 +266,8 @@ extension CalendarCollectionViewCell {
     
     private func setUpDidSelectedItemIsHiddenFalse(collectionView: UICollectionView,
                                                    indexPath: IndexPath) {
-        guard let selectedDangData = viewModel?.calendarData.value.dangArray?[indexPath.item],
-              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray?[indexPath.item],
+        guard let selectedDangData = viewModel?.calendarData.value.dangArray[indexPath.item],
+              let selectedMaxDangData = viewModel?.calendarData.value.maxDangArray[indexPath.item],
               let selectedYearMonth = viewModel?.calendarData.value.yearMonth,
               let cell = collectionView.cellForItem(at: indexPath) as? DaysCollectionViewCell else { return }
         
