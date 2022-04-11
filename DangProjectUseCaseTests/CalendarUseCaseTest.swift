@@ -47,8 +47,9 @@ class CalendarUseCaseTest: XCTestCase {
             .disposed(by: disposeBag)
         
         self.scheduler.start()
-//        XCTAssertEqual(testableObserver.events,
-//                       [.next(10, calendarDummyData.ExpectedInitCalendarDummyData)])
+        XCTAssertEqual(testableObserver.events,
+                       [.next(0, []),
+                        .next(10, calendarDummyData.ExpectedInitCalendarDummyData)])
     }
 }
 
@@ -69,7 +70,7 @@ extension CalendarUseCaseTest {
             .disposed(by: disposeBag)
         
         self.scheduler.start()
-        XCTAssertEqual(testableObserver.events, [.next(10, 1)])
+        XCTAssertEqual(testableObserver.events, [.next(10, 2)])
     }
     
     // MARK: PreviousMonthData Test - 테스트 완료!!

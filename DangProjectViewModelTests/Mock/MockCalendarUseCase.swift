@@ -21,7 +21,7 @@ class MockCalendarUseCase: CalendarUseCaseProtocol {
     var calendarDataArraySubject: BehaviorRelay<[CalendarEntity]>
     
     init() {
-        self.currentDay = BehaviorRelay<Int>(value: 0)
+        self.currentDay = BehaviorRelay<Int>(value: 1)
         self.currentDateYearMonth = BehaviorRelay<String>(value: "")
         self.currentLine = PublishSubject<Int>()
         self.currentDatePoint = BehaviorRelay<CGPoint>(value: .zero)
@@ -32,7 +32,35 @@ class MockCalendarUseCase: CalendarUseCaseProtocol {
     }
     
     func initCalculationDaysInMonth() {
-        calendarDataArraySubject.accept(self.calendarDataArray)
+        calendarDataArraySubject.accept(
+            [CalendarEntity(
+                days: ["1"],
+                week: ["월"],
+                yearMonth: "3월",
+                isHiddenArray: [false],
+                dangArray: [1.1, 1.1, 1.1],
+                maxDangArray: [1.1],
+                isCurrentDayArray: [false]
+            ),
+             CalendarEntity(
+                 days: ["1"],
+                 week: ["월"],
+                 yearMonth: "4월",
+                 isHiddenArray: [false],
+                 dangArray: [1.1, 1.1, 1.1],
+                 maxDangArray: [1.1],
+                 isCurrentDayArray: [false]
+             ),
+             CalendarEntity(
+                 days: ["1"],
+                 week: ["월"],
+                 yearMonth: "5월",
+                 isHiddenArray: [false],
+                 dangArray: [1.1, 1.1, 1.1],
+                 maxDangArray: [1.1],
+                 isCurrentDayArray: [false]
+             )]
+        )
     }
     
     func createPreviousCalendarData() {

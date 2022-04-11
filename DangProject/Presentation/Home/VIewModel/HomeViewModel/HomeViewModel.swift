@@ -41,7 +41,7 @@ protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputP
     var homeViewController: HomeViewControllerProtocol? { get set }
 }
 
-class HomeViewModel {
+class HomeViewModel: HomeViewModelProtocol {
     private var homeUseCase: HomeUseCaseProtocol
     private var calendarUseCase: CalendarUseCaseProtocol
     private var disposeBag = DisposeBag()
@@ -53,17 +53,12 @@ class HomeViewModel {
     var currentDateCGPoint = BehaviorRelay<CGPoint>(value: CGPoint())
     var currentCount = BehaviorRelay<Int>(value: 0)
     var calendarScaleAnimation = BehaviorRelay<CalendarScaleState>(value: .revert)
-    
     // MARK: ViewDidLoad 에서 이벤트 받게되는 Subjects
     // MARK: 초기값 타이밍 이슈 있음
     var selectedCellViewData = BehaviorRelay<SelectedCellEntity>(value: .empty)
     var currentYearMonth = BehaviorRelay<String>(value: "")
-    
-    // MARK: Entity 합치기
     var currentLine = BehaviorRelay<Int>(value: 0)
     var currentLineYValue = BehaviorRelay<CGFloat>(value: 0)
-    
-    
     var reloadData = BehaviorRelay<Void>(value: ())
     var selectedCellData = BehaviorRelay<SelectedCalendarCellEntity>(value: .empty)
     var batteryViewCalendarData = BehaviorRelay<[BatteryEntity]>(value: [])
@@ -193,7 +188,7 @@ class HomeViewModel {
     }
 }
 
-extension HomeViewModel: HomeViewModelProtocol {
+extension HomeViewModel {
     func viewDidLoad() {
         calendarUseCase.initCalculationDaysInMonth()
         homeUseCase.execute()
