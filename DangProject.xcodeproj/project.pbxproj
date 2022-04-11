@@ -24,7 +24,6 @@
 		0B93D73827FCA37E001C6DA0 /* MockHomeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D73727FCA37E001C6DA0 /* MockHomeUseCase.swift */; };
 		0B93D73A27FCA642001C6DA0 /* HomeUseCaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D73927FCA642001C6DA0 /* HomeUseCaseProtocol.swift */; };
 		0B93D74227FDD7A8001C6DA0 /* CalendarViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D74127FDD7A8001C6DA0 /* CalendarViewModelTest.swift */; };
-		0B93D74427FDD7B7001C6DA0 /* DaysCellViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D74327FDD7B7001C6DA0 /* DaysCellViewModelTest.swift */; };
 		0B93D74C27FFE27D001C6DA0 /* HomeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D74B27FFE27D001C6DA0 /* HomeEntity.swift */; };
 		0B93D74E27FFE288001C6DA0 /* BatteryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D74D27FFE288001C6DA0 /* BatteryEntity.swift */; };
 		0B93D75027FFE293001C6DA0 /* AteFoodEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D74F27FFE293001C6DA0 /* AteFoodEntity.swift */; };
@@ -110,7 +109,6 @@
 		0B93D73727FCA37E001C6DA0 /* MockHomeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHomeUseCase.swift; sourceTree = "<group>"; };
 		0B93D73927FCA642001C6DA0 /* HomeUseCaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUseCaseProtocol.swift; sourceTree = "<group>"; };
 		0B93D74127FDD7A8001C6DA0 /* CalendarViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModelTest.swift; sourceTree = "<group>"; };
-		0B93D74327FDD7B7001C6DA0 /* DaysCellViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysCellViewModelTest.swift; sourceTree = "<group>"; };
 		0B93D74B27FFE27D001C6DA0 /* HomeEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEntity.swift; sourceTree = "<group>"; };
 		0B93D74D27FFE288001C6DA0 /* BatteryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryEntity.swift; sourceTree = "<group>"; };
 		0B93D74F27FFE293001C6DA0 /* AteFoodEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodEntity.swift; sourceTree = "<group>"; };
@@ -280,7 +278,6 @@
 			children = (
 				0B93D73327FC7C9D001C6DA0 /* HomeViewModelTest.swift */,
 				0B93D74127FDD7A8001C6DA0 /* CalendarViewModelTest.swift */,
-				0B93D74327FDD7B7001C6DA0 /* DaysCellViewModelTest.swift */,
 			);
 			path = HomeScene;
 			sourceTree = "<group>";
@@ -858,7 +855,6 @@
 				0B93D71827F997CE001C6DA0 /* CalendarUseCaseTest.swift in Sources */,
 				0B93D73427FC7C9D001C6DA0 /* HomeViewModelTest.swift in Sources */,
 				0B93D74227FDD7A8001C6DA0 /* CalendarViewModelTest.swift in Sources */,
-				0B93D74427FDD7B7001C6DA0 /* DaysCellViewModelTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

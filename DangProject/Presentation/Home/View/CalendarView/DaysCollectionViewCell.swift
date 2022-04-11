@@ -105,22 +105,24 @@ class DaysCollectionViewCell: UICollectionViewCell {
         viewModel?.isHidden
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
-                guard let dayLabel = self?.dayLabel,
-                      let lineLayer = self?.smallPercentLineLayer,
-                      let lineBackgroundLayer = self?.smallPercentLineBackgroundLayer else { return }
-                self?.viewModel?.calculateAlphaHiddenValues($0,
-                                                            label: dayLabel,
-                                                            Layer: lineLayer,
-                                                            backgroundLayer: lineBackgroundLayer)
+                switch $0 {
+                case true:
+                    self?.setUpIsHiddenTrueCellView()
+                case false:
+                    self?.setUpIsHiddenFalseCellView()
+                }
             })
             .disposed(by: disposeBag)
         
         viewModel?.isCurrentDay
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
-                guard let currentBackgroundView = self?.currentDayBackground else { return }
-                self?.viewModel?.calculateCurrentDayAlphaValues($0,
-                                                                currentBackgroundView)
+                switch $0 {
+                case true:
+                    self?.setUpIsHiddenTrueCurrentDayBackgroundView()
+                case false:
+                    self?.setUpIsHiddenFalseCurrentDayBackgroundView()
+                }
             })
             .disposed(by: disposeBag)
         
@@ -135,5 +137,27 @@ class DaysCollectionViewCell: UICollectionViewCell {
                 self?.smallPercentLineLayer.strokeEnd = $0
             })
             .disposed(by: disposeBag)
+    }
+}
+
+extension DaysCollectionViewCell {
+    private func setUpIsHiddenTrueCellView() {
+        self.dayLabel.alpha = 0.2
+        self.smallPercentLineLayer.isHidden = true
+        self.smallPercentLineBackgroundLayer.isHidden = true
+    }
+    
+    private func setUpIsHiddenFalseCellView() {
+        self.dayLabel.alpha = 1.0
+        self.smallPercentLineLayer.isHidden = false
+        self.smallPercentLineBackgroundLayer.isHidden = false
+    }
+    
+    private func setUpIsHiddenTrueCurrentDayBackgroundView() {
+        self.currentDayBackground.isHidden = true
+    }
+    
+    private func setUpIsHiddenFalseCurrentDayBackgroundView() {
+        self.currentDayBackground.isHidden = false
     }
 }

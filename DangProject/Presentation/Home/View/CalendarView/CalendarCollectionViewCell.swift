@@ -164,11 +164,16 @@ extension CalendarCollectionViewCell: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DaysCollectionViewCell.identifier,
-                                                            for: indexPath) as? DaysCollectionViewCell,
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: DaysCollectionViewCell.identifier, for: indexPath) as? DaysCollectionViewCell,
               let data = self.viewModel?.calendarData.value else { return UICollectionViewCell() }
         
-        let viewModel = DaysCellViewModel(calendarData: data, indexPathItem: indexPath.item)
+        let viewModel = DaysCellViewModel(
+            daysCellData: DaysCellEntity(
+                calendarStackViewEntity: data,
+                indexPathItem: indexPath.item
+            )
+        )
         cell.bind(viewModel: viewModel)
         setUpCalendarCollectionViewCell(indexPath: indexPath,
                                         cell: cell,
@@ -274,8 +279,10 @@ extension CalendarCollectionViewCell {
         homeViewModel?.didTapCalendarViewCell(selectedDangData: selectedDangData,
                                               selectedMaxDangData: selectedMaxDangData)
         homeViewModel?.resetBatteryViewMainCircleProgressBar()
-        homeViewModel?.selectedCellData.accept(SelectedCalendarCellEntity(yearMonth: selectedYearMonth,
-                                                                          indexPath: indexPath))
+        homeViewModel?.selectedCellData.accept(
+            SelectedCalendarCellEntity(yearMonth: selectedYearMonth,
+                                       indexPath: indexPath)
+        )
         cell.selectedView.backgroundColor = .selectedCellViewColor
     }
     
