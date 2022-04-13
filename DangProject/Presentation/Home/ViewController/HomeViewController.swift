@@ -15,7 +15,7 @@ protocol HomeViewControllerProtocol: AnyObject {
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
-    private weak var coordinator: Coordinator?
+    private weak var coordinator: CoordinateEventProtocol?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
     private let ateFoodTitleView = AteFoodTitleView()
@@ -36,7 +36,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     var batteryView = BatteryView()
     
     static func create(viewModel: HomeViewModelProtocol,
-                       coordinator: Coordinator) -> HomeViewController {
+                       coordinator: CoordinateEventProtocol) -> HomeViewController {
         let viewController = HomeViewController()
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
@@ -154,6 +154,7 @@ extension HomeViewController {
         bindCurrentDayPointData()
         bindCalendarScaleAnimation()
         bindSelectedCellViewData()
+        bindNavigationImageButton()
     }
     
     private func bindBatteryViewModel() {
@@ -207,8 +208,20 @@ extension HomeViewController {
             .disposed(by: disposeBag)
     }
     
+    private func bindNavigationImageButton() {
+        customNavigationBar.profileImageButton.rx.tap
+            .bind { [weak self] in
+                guard let viewController = self else { return }
+                self?.coordinator?.navigationEvent(
+                    event: .present,
+                    .profile(viewController)
+                )
+            }
+            .disposed(by: disposeBag)
+    }
+    
     private func bindCalendarScaleAnimation() {
-        customNavigationBar.yearMouthButton.rx.tap
+        customNavigationBar.yearMonthButton.rx.tap
             .bind { [weak self] in
                 self?.viewModel?.calculateCalendarScaleState()
             }

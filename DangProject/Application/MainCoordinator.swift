@@ -16,6 +16,26 @@ protocol Coordinator: AnyObject {
     func childDidFinish(_ child: Coordinator?)
 }
 
+enum NavigationEventType {
+    case push
+    case pop
+    case present
+    case dismiss
+}
+
+enum ViewControllerType {
+    case profile(UIViewController)
+}
+
+protocol CoordinateEventProtocol: Coordinator {
+    func navigationEvent(event: NavigationEventType,
+                         _ viewControllerType: ViewControllerType)
+    func pushViewController(_ viewControllerType: ViewControllerType)
+    func popViewController(_ viewControllerType: ViewControllerType)
+    func presentViewController(_ viewControllerType: ViewControllerType)
+    func dismissViewController(_ viewControllerType: ViewControllerType)
+}
+
 class MainCoordinator: Coordinator {
     var parentsCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []

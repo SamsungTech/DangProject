@@ -12,7 +12,8 @@ extension Int {
                                       maxDang: Double) -> Int {
         let dangValueNumber: Double = (dang/maxDang)*Double(100)
         let division: Double = 100*(dangValueNumber/100)
+        let result = abs(division)
         
-        return Int(division)
+        return Int(result)
     }
 }
