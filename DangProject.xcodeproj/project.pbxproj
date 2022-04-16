@@ -31,6 +31,7 @@
 		7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */; };
 		7C4C78FF27C3E6F5000E0A09 /* ManageQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */; };
 		7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C790027C3ED8D000E0A09 /* QueryTableViewCell.swift */; };
+		7C540E9928097D6800BE279E /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C540E9828097D6800BE279E /* OnboardingViewModel.swift */; };
 		7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */; };
 		7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */; };
 		7C9B9D7727A0DBE30046F22C /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */; };
@@ -39,6 +40,8 @@
 		7C9B9D8327A0EBD50046F22C /* PreferenceCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D8227A0EBD50046F22C /* PreferenceCoordinator.swift */; };
 		7C9B9D8527A0F3AE0046F22C /* HomeDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D8427A0F3AD0046F22C /* HomeDIContainer.swift */; };
 		7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D8627A0F4C10046F22C /* PreferenceDIContainer.swift */; };
+		7CE61DA427DC4074003341E7 /* EatenFoods+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */; };
+		7CE61DA527DC4074003341E7 /* EatenFoods+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */; };
 		7CF02AC327BA4A110090B594 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC227BA4A110090B594 /* CoreDataManager.swift */; };
 		7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */; };
 		7CF02AC727BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */; };
@@ -48,6 +51,9 @@
 		7CF02AD727BD04A90090B594 /* DetailFoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD627BD04A90090B594 /* DetailFoodViewController.swift */; };
 		7CF02AD927BD04B60090B594 /* DetailFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD827BD04B60090B594 /* DetailFoodViewModel.swift */; };
 		7CF02ADB27C0DF7C0090B594 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02ADA27C0DF7C0090B594 /* Extension.swift */; };
+		7CFB399327FFF58800AE99E3 /* OnboardingMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */; };
+		7CFB399527FFF7E200AE99E3 /* UserInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399427FFF7E200AE99E3 /* UserInfoManager.swift */; };
+		7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +83,7 @@
 		7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFavoriteUseCase.swift; sourceTree = "<group>"; };
 		7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQueryUseCase.swift; sourceTree = "<group>"; };
 		7C4C790027C3ED8D000E0A09 /* QueryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTableViewCell.swift; sourceTree = "<group>"; };
+		7C540E9828097D6800BE279E /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodsUseCase.swift; sourceTree = "<group>"; };
 		7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +92,8 @@
 		7C9B9D8227A0EBD50046F22C /* PreferenceCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceCoordinator.swift; sourceTree = "<group>"; };
 		7C9B9D8427A0F3AD0046F22C /* HomeDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDIContainer.swift; sourceTree = "<group>"; };
 		7C9B9D8627A0F4C10046F22C /* PreferenceDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceDIContainer.swift; sourceTree = "<group>"; };
+		7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "EatenFoods+CoreDataClass.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/EatenFoods+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "EatenFoods+CoreDataProperties.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/EatenFoods+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		7CF02AC227BA4A110090B594 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataClass.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataProperties.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
@@ -94,6 +103,9 @@
 		7CF02AD627BD04A90090B594 /* DetailFoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodViewController.swift; sourceTree = "<group>"; };
 		7CF02AD827BD04B60090B594 /* DetailFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodViewModel.swift; sourceTree = "<group>"; };
 		7CF02ADA27C0DF7C0090B594 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OnboardingMasterViewController.swift; path = "DangProject/Presentation Layer/Onboarding/OnboardingMasterViewController.swift"; sourceTree = SOURCE_ROOT; };
+		7CFB399427FFF7E200AE99E3 /* UserInfoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManager.swift; sourceTree = "<group>"; };
+		7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingContentViewController.swift; sourceTree = "<group>"; };
 		F64F741B1CC607F30779F70B /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C652F5CAE53B0BDC449AB6 /* Pods-DangProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.release.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -293,6 +305,14 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		7C540E9728097D5200BE279E /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				7C540E9828097D6800BE279E /* OnboardingViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		7C94E85A27C39A58006F5574 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -306,6 +326,7 @@
 		7C9B9D7827A0DD3E0046F22C /* Presentation Layer */ = {
 			isa = PBXGroup;
 			children = (
+				7CFB399027FFF55D00AE99E3 /* Onboarding */,
 				7C1BF77527B2A59F00BDAE70 /* Utils */,
 				7C1BF74C27AB687700BDAE70 /* SearchFood */,
 				7CF02ACC27BD03C10090B594 /* DetailFood */,
@@ -338,10 +359,13 @@
 		7C9B9D7B27A0DD7D0046F22C /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */,
+				7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */,
 				0B1F4A78277076FC0006B9CF /* AppDelegate.swift */,
 				0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */,
 				7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */,
 				7C9B9D7C27A0DDB10046F22C /* MainCoordinator.swift */,
+				7CFB399427FFF7E200AE99E3 /* UserInfoManager.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -407,6 +431,24 @@
 				7CF02AD427BD048F0090B594 /* DetailFoodDIContainer.swift */,
 			);
 			path = DIContainer;
+			sourceTree = "<group>";
+		};
+		7CFB399027FFF55D00AE99E3 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				7CFB399127FFF56E00AE99E3 /* View */,
+				7C540E9728097D5200BE279E /* ViewModel */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		7CFB399127FFF56E00AE99E3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */,
+				7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		9F1823D23109421E5156D0E3 /* Frameworks */ = {
@@ -541,18 +583,21 @@
 				7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */,
 				7C1BF76D27B133A000BDAE70 /* SearchDIContainer.swift in Sources */,
 				7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */,
+				7CE61DA427DC4074003341E7 /* EatenFoods+CoreDataClass.swift in Sources */,
 				7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */,
 				7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */,
 				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				7C1BF75727B0BCE300BDAE70 /* SearchResultTableViewCell.swift in Sources */,
 				7C1BF75D27B0BED100BDAE70 /* FoodEntityFromAPI.swift in Sources */,
 				7CF02AD927BD04B60090B594 /* DetailFoodViewModel.swift in Sources */,
+				7CE61DA527DC4074003341E7 /* EatenFoods+CoreDataProperties.swift in Sources */,
 				7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */,
 				7C1BF76627B1172600BDAE70 /* SearchUseCase.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
 				7C9B9D7727A0DBE30046F22C /* PreferenceViewController.swift in Sources */,
 				7C1BF77227B1584500BDAE70 /* FoodDomainModel.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
+				7CFB399527FFF7E200AE99E3 /* UserInfoManager.swift in Sources */,
 				7C9B9D8527A0F3AE0046F22C /* HomeDIContainer.swift in Sources */,
 				7CF02AD727BD04A90090B594 /* DetailFoodViewController.swift in Sources */,
 				7C1BF77427B2440200BDAE70 /* SearchFoodViewModel.swift in Sources */,
@@ -560,11 +605,14 @@
 				7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */,
 				7CF02AC327BA4A110090B594 /* CoreDataManager.swift in Sources */,
 				7CF02AD327BD04430090B594 /* DetailFoodCoordinator.swift in Sources */,
+				7CFB399327FFF58800AE99E3 /* OnboardingMasterViewController.swift in Sources */,
 				7C9B9D7F27A0EB600046F22C /* HomeCoordinator.swift in Sources */,
 				7CF02ADB27C0DF7C0090B594 /* Extension.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
 				7CF02AD527BD048F0090B594 /* DetailFoodDIContainer.swift in Sources */,
+				7C540E9928097D6800BE279E /* OnboardingViewModel.swift in Sources */,
 				7C9B9D8327A0EBD50046F22C /* PreferenceCoordinator.swift in Sources */,
+				7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */,
 				7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */,
 				7C9B9D7D27A0DDB10046F22C /* MainCoordinator.swift in Sources */,
 				7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */,

@@ -2,7 +2,7 @@
 //  EatenFoods+CoreDataProperties.swift
 //  
 //
-//  Created by 김성원 on 2022/02/21.
+//  Created by 김성원 on 2022/03/12.
 //
 //
 
@@ -16,9 +16,9 @@ extension EatenFoods {
         return NSFetchRequest<EatenFoods>(entityName: "EatenFoods")
     }
 
+    @NSManaged public var amount: Double
+    @NSManaged public var foodCode: String?
     @NSManaged public var name: String?
     @NSManaged public var sugar: Double
-    @NSManaged public var foodCode: String?
-    @NSManaged public var amount: Double
 
 }
