@@ -9,12 +9,22 @@ import Foundation
 
 import RxSwift
 
+
+
+// MARK: 재인 - swift concurrency 꼭 찾아보기
+// MARK: TASK 이런거
 class FetchDataService {
     
     var foodInfoObservable = PublishSubject<[foodInfo]>()
         
     let disposeBag = DisposeBag()
     
+    
+    // MARK: 재인 - 이거 공통점들 다 모아서
+    // MARK: FetchFoodAPI(text: blahblah) { [weak self] in
+//                asd
+//           }
+    // MARK: 알라모파이어 어드밴스드 유세이지 이런거 많음 NetworkManager
     func fetchFood(text: String, onComplete: @escaping (Result<Data, Error>) -> Void) {
         let baseURL = "http://openapi.foodsafetykorea.go.kr/api/402a53aa1ef448f3bc9b/I2790/json/1/100/DESC_KOR=\(text)"
         let encodedStr = baseURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!

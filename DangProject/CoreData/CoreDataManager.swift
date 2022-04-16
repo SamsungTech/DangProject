@@ -36,7 +36,7 @@ class CoreDataManager {
             eatenFoods.amount = Double(food.amount)
         }
         do {
-            try context.save()
+            try context.save ()
         } catch {
             print(error.localizedDescription)
         }

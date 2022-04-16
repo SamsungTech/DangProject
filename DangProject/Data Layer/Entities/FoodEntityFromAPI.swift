@@ -8,19 +8,33 @@
 import Foundation
 
 struct FoodFromAPI: Codable {
-    let serviceType: serviceType?
+    let serviceType: ServiceType?
     
     enum CodingKeys: String, CodingKey {
         case serviceType = "I2790"
     }
 }
-struct serviceType: Codable {
+
+// MARK: 재인 - struct 대문자로 고치면조흘거같요
+struct ServiceType: Codable {
     var totalCount: String
     let foodInfo: [foodInfo]?
+    let result: Result?
+    
+    struct Result: Codable {
+        let msg: String
+        let code: String
+
+        enum CodingKeys: String, CodingKey {
+            case msg = "MSG"
+            case code = "CODE"
+        }
+    }
     
     enum CodingKeys: String, CodingKey {
         case totalCount = "total_count"
         case foodInfo = "row"
+        case result = "RESULT"
     }
 }
 
@@ -42,5 +56,4 @@ struct foodInfo: Codable {
         case nameContent = "DESC_KOR"
         case foodCode = "FOOD_CD"
     }
-    
 }

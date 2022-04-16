@@ -4,7 +4,6 @@
 //
 //  Created by 김성원 on 2022/02/03.
 //
-
 import Foundation
 import UIKit
 
@@ -12,6 +11,13 @@ import RxCocoa
 import RxSwift
 
 class SearchViewController: UIViewController {
+    
+    // MARK: 하드코딩이 어쩔 수 없이 들어가는 부분 최대한 이런식으로 정리해도 좋을듯
+    enum Style {
+        enum QueryResultTableView {
+            
+        }
+    }
     
     var coordinator: SearchCoordinator?
     
@@ -21,9 +27,10 @@ class SearchViewController: UIViewController {
     let searchResultTableView = UITableView()
     let recentSearchLabel = UILabel()
     let eraseAllQueryButton = UIButton()
-    let addCompleteLabel = UILabel()
-    var addCompleteLabelTop = NSLayoutConstraint()
+    let addCompleteToastLabel = UILabel()
+    var addCompleteLabelTopConstraint = NSLayoutConstraint()
     var disposeBag = DisposeBag()
+    
     // MARK: - Init
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
@@ -42,13 +49,14 @@ class SearchViewController: UIViewController {
     }
     // MARK: - Set Views
     private func setUpDefaultView() {
-        setUpBackGround()
+        setUpBackground()
         setUpRecentLabel()
         setUpQueryResultTableView()
         setUpEraseAllQueryButton()
+//        CoreDataManager.shared.deleteAll(request: EatenFoods.fetchRequest())
     }
     
-    private func setUpBackGround() {
+    private func setUpBackground() {
         view.backgroundColor = .white
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
     }
@@ -69,9 +77,10 @@ class SearchViewController: UIViewController {
         queryResultTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         queryResultTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         queryResultTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
-        queryResultTableView.register(QueryTableViewCell.self, forCellReuseIdentifier: "QueryCell")
+        queryResultTableView.register(QueryTableViewCell.self,
+                                      forCellReuseIdentifier: QueryTableViewCell.identifier)
         queryResultTableView.backgroundColor = .systemGray6
-        queryResultTableView.roundCorners(cornerRadius: 15, maskedCorners: [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner])
+        queryResultTableView.roundCorners(cornerRadius: 15)
     }
     
     private func setUpEraseAllQueryButton() {
@@ -82,7 +91,9 @@ class SearchViewController: UIViewController {
         eraseAllQueryButton.setTitle("모두지우기", for: .normal)
         eraseAllQueryButton.setTitleColor(.systemBlue, for: .normal)
         eraseAllQueryButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .light)
-        eraseAllQueryButton.addTarget(self, action: #selector(eraseAllQueryButtonTapped), for: .touchUpInside)
+        eraseAllQueryButton.addTarget(self,
+                                      action: #selector(eraseAllQueryButtonTapped),
+                                      for: .touchUpInside)
     }
     
     @objc private func eraseAllQueryButtonTapped() {
@@ -95,13 +106,15 @@ class SearchViewController: UIViewController {
     }
     
     private func setUpSearchController() {
-        self.navigationItem.searchController = searchController
-        self.navigationItem.title = viewModel.navigationItemTitle
+        navigationItem.searchController = searchController
+        navigationItem.title = viewModel.navigationItemTitle
         searchController.hidesNavigationBarDuringPresentation = false
+        // MARK: 재인 - placeholder 한단어 인지 보고 카멜케이스 제거
         searchController.searchBar.placeholder = viewModel.searchBarPlaceHolder
         searchController.searchBar.scopeButtonTitles = viewModel.searchBarScopeButtonTitles
         searchController.searchBar.delegate = self
     }
+    
     private func setUpSearchResultTableView() {
         view.addSubview(searchResultTableView)
         searchResultTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -110,42 +123,56 @@ class SearchViewController: UIViewController {
         searchResultTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         searchResultTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         searchResultTableView.backgroundColor = .white
-        searchResultTableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "Cell")
+        searchResultTableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.identifier)
         searchResultTableView.isHidden = true
         searchResultTableView.keyboardDismissMode = .onDrag
     }
     
-    private func setUpAddCompleteLabel() {
-        view.addSubview(addCompleteLabel)
-        self.view.bringSubviewToFront(addCompleteLabel)
-        addCompleteLabel.translatesAutoresizingMaskIntoConstraints = false
-        addCompleteLabelTop = addCompleteLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
-        addCompleteLabelTop.isActive = true
-        addCompleteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        addCompleteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        addCompleteLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        addCompleteLabel.backgroundColor = .systemBlue
-        addCompleteLabel.textAlignment = .center
-        addCompleteLabel.textColor = .white
-        addCompleteLabel.roundCorners(cornerRadius: 15, maskedCorners: [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner])
-        addCompleteLabel.alpha = 0.7
+    private func setUpAddCompleteToastLabel() {
+        view.addSubview(addCompleteToastLabel)
+        view.bringSubviewToFront(addCompleteToastLabel)
+        addCompleteToastLabel.translatesAutoresizingMaskIntoConstraints = false
+        addCompleteLabelTopConstraint = addCompleteToastLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
+        addCompleteLabelTopConstraint.isActive = true
+        addCompleteToastLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        addCompleteToastLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        addCompleteToastLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        addCompleteToastLabel.backgroundColor = .systemBlue
+        addCompleteToastLabel.textAlignment = .center
+        addCompleteToastLabel.textColor = .white
+        addCompleteToastLabel.roundCorners(cornerRadius: 15)
+        addCompleteToastLabel.numberOfLines = 0
+        addCompleteToastLabel.alpha = 0.7
     }
     
     private func addCompleteLabelAnimation(name: String, amount: String) {
-        addCompleteLabel.text = "\(name) \(amount)개가 추가됐습니다."
-        UIView.animate(withDuration: 0.5, delay: 0.5, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: { [self] in
-            self.addCompleteLabelTop.isActive = false
-            self.addCompleteLabelTop = self.addCompleteLabel.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
-            self.addCompleteLabelTop.isActive = true
+        addCompleteToastLabel.text = "\(name) \(amount)개가 추가됐습니다."
+        
+        UIView.animate(withDuration: 0.5,
+                       delay: 0.5,
+                       usingSpringWithDamping: 0.5,
+                       initialSpringVelocity: 0.5,
+                       options: .curveEaseInOut, animations: { [unowned self] in
+            self.addCompleteLabelTopConstraint.isActive = false
+            self.addCompleteLabelTopConstraint = self.addCompleteToastLabel.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80)
+            self.addCompleteLabelTopConstraint.isActive = true
             self.view.layoutIfNeeded()
         }, completion: { _ in
-            UIView.animate(withDuration: 0.5, delay: 2, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: { [self] in
-                self.addCompleteLabelTop.isActive = false
-                self.addCompleteLabelTop = addCompleteLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
-                self.addCompleteLabelTop.isActive = true
-                self.view.layoutIfNeeded()
-            }, completion: nil)
+            self.popAddCompleteToastLabel()
         })
+    }
+    
+    private func popAddCompleteToastLabel() {
+        UIView.animate(withDuration: 0.5,
+                       delay: 1.5,
+                       usingSpringWithDamping: 0.5,
+                       initialSpringVelocity: 0.5,
+                       options: .curveEaseInOut, animations: { [unowned self] in
+            self.addCompleteLabelTopConstraint.isActive = false
+            self.addCompleteLabelTopConstraint = addCompleteToastLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
+            self.addCompleteLabelTopConstraint.isActive = true
+            self.view.layoutIfNeeded()
+        }, completion: nil)
     }
     
     // MARK: - Set Binding (RxSwift)
@@ -153,14 +180,15 @@ class SearchViewController: UIViewController {
         bindSearchResultTableView()
         bindLoading()
         bindQueryTableView()
-        setUpAddCompleteLabel()
+        setUpAddCompleteToastLabel()
     }
     
     private func bindSearchResultTableView() {
         viewModel.searchFoodViewModelObservable
             .observe(on: MainScheduler.instance)
             .map({ $0.foodModels! })
-            .bind(to: searchResultTableView.rx.items(cellIdentifier: "Cell", cellType: SearchResultTableViewCell.self)) {index, item, cell in
+            .bind(to: searchResultTableView.rx.items(cellIdentifier: SearchResultTableViewCell.identifier,
+                                                     cellType: SearchResultTableViewCell.self)) {index, item, cell in
                 cell.cellDelegation = self
                 cell.bindTableViewCell(item: item)
             }
@@ -184,7 +212,8 @@ class SearchViewController: UIViewController {
     private func bindQueryTableView() {
         viewModel.searchQueryObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: queryResultTableView.rx.items(cellIdentifier: "QueryCell", cellType: QueryTableViewCell.self)) {index, item, cell in
+            .bind(to: queryResultTableView.rx.items(cellIdentifier: QueryTableViewCell.identifier,
+                                                    cellType: QueryTableViewCell.self)) {index, item, cell in
                 cell.bindTextLabel(name: item)
             }
             .disposed(by: disposeBag)
@@ -208,6 +237,7 @@ class SearchViewController: UIViewController {
     }
     
     private func bindSearchBar() {
+        // MARK: 얘가 검색결과에 쓸 텍스트인지, 즐겨찾기에 쓸 텍스트인지 알아야할 필요가 없이
         searchController.searchBar.rx.text
             .orEmpty
             .debounce(.seconds(1), scheduler: MainScheduler.instance)
@@ -275,8 +305,8 @@ extension SearchViewController: UISearchBarDelegate {
 }
 extension SearchViewController: TableViewCellDelegate {
     func favoriteButtonTapped(cell: UITableViewCell) {
-        let cellIndexpath = searchResultTableView.indexPath(for: cell)!
-        viewModel.changeFavorite(indexPath: cellIndexpath, foodModel: nil)
+        let cellIndexPath = searchResultTableView.indexPath(for: cell)!
+        viewModel.changeFavorite(indexPath: cellIndexPath, foodModel: nil)
     }
 }
 

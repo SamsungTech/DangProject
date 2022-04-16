@@ -93,7 +93,15 @@ class SearchViewModel: SearchViewModelProtocol {
         
     }
     
+    // MARK: 재인 - scopeState를 보고 분기
     func startSearching(searchBarText: String) {
+//        switch scopeState {
+//        case .query: break
+//        case .favorites: break
+//        case .searchResult:
+//            searchResultTextDidChanged(text: searchBarText)
+//        }
+//        
         scopeState = .searchResult
         guard currentKeyword != searchBarText else { return }
         currentKeyword = searchBarText
@@ -104,6 +112,10 @@ class SearchViewModel: SearchViewModelProtocol {
         loading.onNext(.startLoading)
     }
     
+    private func searchResultTextDidChanged(text: String) {
+        // debounce 여기
+        
+    }
     func favoriteSearchBarScopeTapped() {
         scopeState = .favorites
         favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()

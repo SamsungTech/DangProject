@@ -233,12 +233,14 @@ class DetailFoodViewController: UIViewController {
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }
     
-    @objc private func addButtonTapped(completion: @escaping()->Void) {
+    @objc private func addButtonTapped() {
         guard let amount = Int(amountTextField.text!) else { return }
-        viewModel.addFoods(foods: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))
-        self.navigationController?.popViewController(animated: true)
+        
+        viewModel.addFoods(foods: .init(amount: amount,
+                                        foodModel: viewModel.detailFood))
+
         parentableViewController?.addFoodsAfter(food: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))
- 
+        self.navigationController?.popViewController(animated: true)
     }
     
     private func updateSugarLabelAndAnimation(amount: Double) {
