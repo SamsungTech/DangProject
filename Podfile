@@ -1,6 +1,6 @@
 # Uncomment the next line to define a global platform for your project
 inhibit_all_warnings!
-platform :ios, '12.0'
+platform :ios, '9.0'
 
 target 'DangProject' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -9,6 +9,7 @@ target 'DangProject' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxRelay'
+  pod 'RxGesture'
   # Pods for DangProject
 
   target 'DangProjectTests' do

@@ -10,26 +10,66 @@ import UIKit
 import RxSwift
 import RxRelay
 import RxCocoa
+import RxGesture
 
 protocol ProfileViewControllerProtocol: AnyObject {
     
 }
 
 class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
-    private weak var coordinator: Coordinator?
+    private weak var coordinator: ProfileCoordinatorProtocol?
     private var viewModel: ProfileViewModelProtocol?
-    private var dismissButton = UIButton()
-    private var profileImageButton = UIButton()
-    private var profileTitleLabel = UILabel()
+    private let disposeBag = DisposeBag()
+    private var profileImageButton = ProfileImageButton()
+    private var profileNavigationBar = ProfileNavigationBar()
+    private var invisibleView = UIView()
+    private var invisibleViewTopConstraint: NSLayoutConstraint?
+    private var saveButtonBottomConstraint: NSLayoutConstraint?
+    private lazy var profileScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.delegate = self
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
+                                        height: overSizeYValueRatio(1200))
+        
+        return scrollView
+    }()
+    
+    private lazy var profileStackView: ProfileInformationStackView = {
+        let stackView = ProfileInformationStackView()
+        return stackView
+    }()
+    
+    private lazy var profileImagePicker: UIImagePickerController = {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        return imagePicker
+    }()
+    
+    private lazy var saveButton: SaveButton = {
+        let view = SaveButton()
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .homeBackgroundColor
-        setUpUI()
+        viewModel?.viewDidLoad()
+        configureUI()
+        bind()
+        view.bringSubviewToFront(profileNavigationBar)
+        view.bringSubviewToFront(invisibleView)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        coordinator?.childDidFinish(coordinator)
     }
     
     static func create(viewModel: ProfileViewModelProtocol,
-                       coordinator: Coordinator) -> ProfileViewController {
+                       coordinator: ProfileCoordinatorProtocol) -> ProfileViewController {
         let viewController = ProfileViewController()
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
@@ -37,19 +77,256 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         return viewController
     }
     
-    private func setUpUI() {
-        
+    private func configureUI() {
+        setUpProfileNavigationBar()
+        setUpScrollView()
+        setUpProfileImageButton()
+        setUpProfileStackView()
+        setUpSaveButton()
+        setUpInvisibleView()
     }
     
-    private func configureProfileImageButton() {
-    
+    private func bind() {
+        bindUI()
+        bindAnimationValue()
     }
     
-    private func configureDismissButton() {
-        
+    private func setUpProfileNavigationBar() {
+        view.addSubview(profileNavigationBar)
+        profileNavigationBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileNavigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: -yValueRatio(5)),
+            profileNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
+            profileNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
+            profileNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(100))
+        ])
     }
     
-    private func configureProfileTitleLabel() {
+    private func setUpScrollView() {
+        view.addSubview(profileScrollView)
+        profileScrollView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileScrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            profileScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            profileScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            profileScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func setUpProfileImageButton() {
+        profileScrollView.addSubview(profileImageButton)
+        profileImageButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileImageButton.topAnchor.constraint(equalTo: profileScrollView.topAnchor, constant: yValueRatio(150)),
+            profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(125)),
+            profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
+        ])
+    }
+    
+    private func setUpProfileStackView() {
+        profileScrollView.addSubview(profileStackView)
+        profileStackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileStackView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: yValueRatio(70)),
+            profileStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
+            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(700))
+        ])
+    }
+    
+    private func setUpSaveButton() {
+        profileScrollView.addSubview(saveButton)
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        saveButtonBottomConstraint = saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        saveButtonBottomConstraint?.isActive = true
+        NSLayoutConstraint.activate([
+            saveButton.heightAnchor.constraint(equalToConstant: yValueRatio(105)),
+            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
+    private func setUpInvisibleView() {
+        view.addSubview(invisibleView)
+        invisibleView.translatesAutoresizingMaskIntoConstraints = false
+        invisibleViewTopConstraint = invisibleView.topAnchor.constraint(equalTo: view.topAnchor, constant: UIScreen.main.bounds.maxY)
+        invisibleViewTopConstraint?.isActive = true
+        NSLayoutConstraint.activate([
+            invisibleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            invisibleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            invisibleView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxY)
+        ])
+    }
+    
+    private func bindUI() {
+        profileImageButton.rx.tapGesture()
+            .when(.recognized)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.present(self.profileImagePicker, animated: true)
+            })
+            .disposed(by: disposeBag)
         
+        profileNavigationBar.dismissButton.rx.tap
+            .bind { [weak self] in
+                if let coordinator = self?.coordinator as? ProfileCoordinator {
+                    coordinator.dismissViewController()
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        Observable.merge(
+            profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
+            profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
+        )
+            .bind(to: viewModel!.genderRelay)
+            .disposed(by: disposeBag)
+        
+        profileStackView.birthDateView.rx.tapGesture()
+            .when(.recognized)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel?.saveButtonDidTap()
+            })
+            .disposed(by: disposeBag)
+        
+        invisibleView.rx.tapGesture()
+            .when(.recognized)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel?.saveButtonDidTap()
+                self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        
+        saveButton.saveButton.rx.tap
+            .bind { [weak self] in
+                print("저-장")
+            }
+            .disposed(by: disposeBag)
+        
+        profileStackView.birthDateView.toolBarButton.rx.tap
+            .bind { [weak self] in
+                guard let self = self else { return }
+                print(self.profileStackView.birthDateView.pickerView.date)
+                self.viewModel?.saveButtonDidTap()
+                self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindAnimationValue() {
+        viewModel?.scrollValue
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                switch $0 {
+                case .top:
+                    self.profileNavigationBar.layer.borderColor = UIColor.clear.cgColor
+                case .scrolling:
+                    self.profileNavigationBar.layer.borderColor = UIColor.lightGray.cgColor
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.genderRelay
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                switch $0 {
+                case .none:
+                    break
+                case .male:
+                    self.animateMaleView()
+                case .female:
+                    self.animateFemaleView()
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.saveButtonAnimationRelay
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                switch $0 {
+                case .up:
+                    self.animateSaveButtonUp()
+                    self.animateInvisibleViewDown()
+                case .down:
+                    self.animateSaveButtonDown()
+                    self.animateInvisibleViewUp()
+                case .none: break
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+}
+
+extension ProfileViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        viewModel?.calculateScrollViewState(
+            yPosition: scrollView.contentOffset.y
+        )
+    }
+}
+
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
+        
+        self.profileImageButton.profileImageView.image = image
+        
+        // Coordinator로 옮기기
+        profileImagePicker.dismiss(animated: true)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        profileImagePicker.dismiss(animated: true)
+    }
+}
+
+extension ProfileViewController {
+    private func animateMaleView() {
+        profileStackView.genderView.leadingConstraint?.constant = xValueRatio(5)
+        profileStackView.genderView.maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
+        profileStackView.genderView.femaleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
+    }
+    
+    private func animateFemaleView() {
+        profileStackView.genderView.leadingConstraint?.constant = xValueRatio(180)
+        profileStackView.genderView.femaleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
+        profileStackView.genderView.maleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
+    }
+    
+    private func animateSaveButtonDown() {
+        saveButtonBottomConstraint?.constant = yValueRatio(105)
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
+    }
+    
+    private func animateSaveButtonUp() {
+        saveButtonBottomConstraint?.constant = 0
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
+    }
+    
+    private func animateInvisibleViewDown() {
+        invisibleViewTopConstraint?.constant = UIScreen.main.bounds.maxY
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
+    }
+    
+    private func animateInvisibleViewUp() {
+        invisibleViewTopConstraint?.constant = 0
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
     }
 }

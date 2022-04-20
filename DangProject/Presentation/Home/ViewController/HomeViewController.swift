@@ -15,7 +15,7 @@ protocol HomeViewControllerProtocol: AnyObject {
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
-    private weak var coordinator: CoordinateEventProtocol?
+    private weak var coordinator: HomeCoordinatorProtocol?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
     private let ateFoodTitleView = AteFoodTitleView()
@@ -36,7 +36,7 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     var batteryView = BatteryView()
     
     static func create(viewModel: HomeViewModelProtocol,
-                       coordinator: CoordinateEventProtocol) -> HomeViewController {
+                       coordinator: HomeCoordinatorProtocol) -> HomeViewController {
         let viewController = HomeViewController()
         viewController.viewModel = viewModel
         viewController.coordinator = coordinator
@@ -214,7 +214,7 @@ extension HomeViewController {
                 guard let viewController = self else { return }
                 self?.coordinator?.navigationEvent(
                     event: .present,
-                    .profile(viewController)
+                    type: .profile(viewController)
                 )
             }
             .disposed(by: disposeBag)

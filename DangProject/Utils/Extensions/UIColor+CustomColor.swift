@@ -15,6 +15,9 @@ extension UIColor {
     static var homeBoxColor: UIColor {
         return UIColor.init(red: 24/255, green: 23/255, blue: 33/255, alpha: 1)
     }
+    static var homeBackgroundColorAlphaZero: UIColor {
+        return UIColor.init(red: 19/255, green: 18/255, blue: 20/255, alpha: 0)
+    }
     
     // MARK: CustomCircleColor
     static var circleColorGreen: UIColor {
@@ -85,5 +88,26 @@ extension UIColor {
     }
     static var currentDayCellLineViewHiddenColor: CGColor {
         return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0).cgColor
+    }
+    
+    // MARK: ProfileTextField
+    static var profileImageBackgroundColor: UIColor {
+        return UIColor.init(red: 35/255, green: 36/255, blue: 41/255, alpha: 1.0)
+    }
+    
+    static var profileTextFieldBackgroundColor: UIColor {
+        return UIColor.init(red: 26/255, green: 24/255, blue: 29/255, alpha: 1.0)
+    }
+    
+    static var profileLineColor: UIColor {
+        return UIColor.init(red: 33/255, green: 31/255, blue: 38/255, alpha: 1.0)
+    }
+    
+    static var genderBackgroundViewColor: UIColor {
+        return UIColor.init(red: 32/255, green: 33/255, blue: 40/255, alpha: 1.0)
+    }
+    
+    static var genderSelectedBackgroundColor: UIColor {
+        return UIColor.init(red: 60/255, green: 60/255, blue: 70/255, alpha: 1.0)
     }
 }

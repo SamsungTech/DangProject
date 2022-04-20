@@ -8,32 +8,19 @@
 import Foundation
 import UIKit
 
+enum NavigationEventType {
+    case push
+    case pop
+    case present
+    case dismiss(UIViewController)
+}
+
 protocol Coordinator: AnyObject {
     var parentsCoordinator: Coordinator? { get set }
     var childCoordinators: [Coordinator] { get set }
     
     func start() // MARK: 무조건 PushView할때만
     func childDidFinish(_ child: Coordinator?)
-}
-
-enum NavigationEventType {
-    case push
-    case pop
-    case present
-    case dismiss
-}
-
-enum ViewControllerType {
-    case profile(UIViewController)
-}
-
-protocol CoordinateEventProtocol: Coordinator {
-    func navigationEvent(event: NavigationEventType,
-                         _ viewControllerType: ViewControllerType)
-    func pushViewController(_ viewControllerType: ViewControllerType)
-    func popViewController(_ viewControllerType: ViewControllerType)
-    func presentViewController(_ viewControllerType: ViewControllerType)
-    func dismissViewController(_ viewControllerType: ViewControllerType)
 }
 
 class MainCoordinator: Coordinator {

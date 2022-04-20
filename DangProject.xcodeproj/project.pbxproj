@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B09B570280EFFE600810D3C /* CustomDateTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B56F280EFFE600810D3C /* CustomDateTextFieldView.swift */; };
+		0B09B57328102E0700810D3C /* DangTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B57228102E0700810D3C /* DangTextFieldView.swift */; };
 		0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A78277076FC0006B9CF /* AppDelegate.swift */; };
 		0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */; };
 		0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */; };
@@ -16,7 +18,6 @@
 		0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */; };
 		0B93D71827F997CE001C6DA0 /* CalendarUseCaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D71727F997CE001C6DA0 /* CalendarUseCaseTest.swift */; };
 		0B93D71C27F99C85001C6DA0 /* MockRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D71B27F99C85001C6DA0 /* MockRepository.swift */; };
-		0B93D72427FAB3D4001C6DA0 /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B93D72327FAB3D4001C6DA0 /* Pods_DangProject.framework */; };
 		0B93D72827FAB7EA001C6DA0 /* CalendarUseCaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D72727FAB7EA001C6DA0 /* CalendarUseCaseProtocol.swift */; };
 		0B93D72C27FC1E91001C6DA0 /* DummyCalendarEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D72B27FC1E91001C6DA0 /* DummyCalendarEntity.swift */; };
 		0B93D73427FC7C9D001C6DA0 /* HomeViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D73327FC7C9D001C6DA0 /* HomeViewModelTest.swift */; };
@@ -34,6 +35,12 @@
 		0B93D76C28059826001C6DA0 /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D76B28059826001C6DA0 /* ProfileRepository.swift */; };
 		0B93D77328059922001C6DA0 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D77228059922001C6DA0 /* ProfileViewController.swift */; };
 		0B93D7752805992F001C6DA0 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D7742805992F001C6DA0 /* ProfileViewModel.swift */; };
+		0B93D77D2807D253001C6DA0 /* ProfileImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D77C2807D253001C6DA0 /* ProfileImageButton.swift */; };
+		0B93D77F28087670001C6DA0 /* ProfileInformationStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D77E28087670001C6DA0 /* ProfileInformationStackView.swift */; };
+		0B93D7812809C6DB001C6DA0 /* ProfileTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D7802809C6DB001C6DA0 /* ProfileTextFieldView.swift */; };
+		0B93D78B280B1233001C6DA0 /* GenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D78A280B1233001C6DA0 /* GenderView.swift */; };
+		0B93D78D280D3F3A001C6DA0 /* SaveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D78C280D3F3A001C6DA0 /* SaveButton.swift */; };
+		0B93D78F280D7820001C6DA0 /* ProfileNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D78E280D7820001C6DA0 /* ProfileNavigationBar.swift */; };
 		0B97986E27BB84700021162A /* TempEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97986D27BB84700021162A /* TempEntities.swift */; };
 		0B97987127BB9D370021162A /* AteFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987027BB9D370021162A /* AteFoodViewModel.swift */; };
 		0B97987327BBAA100021162A /* GraphViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B97987227BBAA100021162A /* GraphViewModel.swift */; };
@@ -72,6 +79,7 @@
 		0BDC74B327F2F1C800EB1BA5 /* UIViewController+Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC74B227F2F1C800EB1BA5 /* UIViewController+Ratio.swift */; };
 		0BE0DA3127BB5C3100AFD089 /* HomeRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE0DA3027BB5C3100AFD089 /* HomeRepositoryProtocol.swift */; };
 		C8510D0ECABF62A564DFB221 /* Pods_DangProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 213B28ACA9C59BBB053C4758 /* Pods_DangProjectTests.framework */; };
+		DFC9E754FF341D4E8F0CBED1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		EDB8B6CA906AD43D0284AFC5 /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E83A72FDA87B483B6B2A913 /* Pods_DangProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +94,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0B09B56F280EFFE600810D3C /* CustomDateTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDateTextFieldView.swift; sourceTree = "<group>"; };
+		0B09B57228102E0700810D3C /* DangTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DangTextFieldView.swift; sourceTree = "<group>"; };
 		0B1F4A75277076FC0006B9CF /* DangProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DangProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1F4A78277076FC0006B9CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -105,7 +115,6 @@
 		0B93D71D27F99D60001C6DA0 /* libRxTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRxTest.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B93D71F27F99D7B001C6DA0 /* libRxSwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRxSwift.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B93D72127F99D83001C6DA0 /* libRxRelay.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRxRelay.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		0B93D72327FAB3D4001C6DA0 /* Pods_DangProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_DangProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B93D72727FAB7EA001C6DA0 /* CalendarUseCaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarUseCaseProtocol.swift; sourceTree = "<group>"; };
 		0B93D72B27FC1E91001C6DA0 /* DummyCalendarEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyCalendarEntity.swift; sourceTree = "<group>"; };
 		0B93D73327FC7C9D001C6DA0 /* HomeViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTest.swift; sourceTree = "<group>"; };
@@ -123,6 +132,12 @@
 		0B93D76B28059826001C6DA0 /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
 		0B93D77228059922001C6DA0 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		0B93D7742805992F001C6DA0 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		0B93D77C2807D253001C6DA0 /* ProfileImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageButton.swift; sourceTree = "<group>"; };
+		0B93D77E28087670001C6DA0 /* ProfileInformationStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInformationStackView.swift; sourceTree = "<group>"; };
+		0B93D7802809C6DB001C6DA0 /* ProfileTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTextFieldView.swift; sourceTree = "<group>"; };
+		0B93D78A280B1233001C6DA0 /* GenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderView.swift; sourceTree = "<group>"; };
+		0B93D78C280D3F3A001C6DA0 /* SaveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveButton.swift; sourceTree = "<group>"; };
+		0B93D78E280D7820001C6DA0 /* ProfileNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileNavigationBar.swift; sourceTree = "<group>"; };
 		0B97986D27BB84700021162A /* TempEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempEntities.swift; sourceTree = "<group>"; };
 		0B97987027BB9D370021162A /* AteFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AteFoodViewModel.swift; sourceTree = "<group>"; };
 		0B97987227BBAA100021162A /* GraphViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphViewModel.swift; sourceTree = "<group>"; };
@@ -177,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EDB8B6CA906AD43D0284AFC5 /* Pods_DangProject.framework in Frameworks */,
+				DFC9E754FF341D4E8F0CBED1 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +200,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B93D72427FAB3D4001C6DA0 /* Pods_DangProject.framework in Frameworks */,
 				C8510D0ECABF62A564DFB221 /* Pods_DangProjectTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,6 +207,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B09B571280FFB7D00810D3C /* CustomTextField */ = {
+			isa = PBXGroup;
+			children = (
+				0B93D7802809C6DB001C6DA0 /* ProfileTextFieldView.swift */,
+				0B09B56F280EFFE600810D3C /* CustomDateTextFieldView.swift */,
+				0B93D78A280B1233001C6DA0 /* GenderView.swift */,
+				0B09B57228102E0700810D3C /* DangTextFieldView.swift */,
+			);
+			path = CustomTextField;
+			sourceTree = "<group>";
+		};
 		0B1F4A6C277076FC0006B9CF = {
 			isa = PBXGroup;
 			children = (
@@ -358,6 +384,11 @@
 		0B93D75C28057FC9001C6DA0 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B571280FFB7D00810D3C /* CustomTextField */,
+				0B93D78E280D7820001C6DA0 /* ProfileNavigationBar.swift */,
+				0B93D77C2807D253001C6DA0 /* ProfileImageButton.swift */,
+				0B93D77E28087670001C6DA0 /* ProfileInformationStackView.swift */,
+				0B93D78C280D3F3A001C6DA0 /* SaveButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -476,6 +507,53 @@
 			path = Interfaces;
 			sourceTree = "<group>";
 		};
+		0B93D782280AA160001C6DA0 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				0B93D785280AED89001C6DA0 /* Coordinator */,
+				0B93D786280AED91001C6DA0 /* DIContainer */,
+				0B93D788280AEDC0001C6DA0 /* ViewModel */,
+				0B93D789280AEDC5001C6DA0 /* ViewController */,
+				0B93D787280AEDB6001C6DA0 /* View */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
+		0B93D785280AED89001C6DA0 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		0B93D786280AED91001C6DA0 /* DIContainer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DIContainer;
+			sourceTree = "<group>";
+		};
+		0B93D787280AEDB6001C6DA0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		0B93D788280AEDC0001C6DA0 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		0B93D789280AEDC5001C6DA0 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
 		0B97986F27BB84970021162A /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -577,6 +655,7 @@
 		0BB4351327984E5A00634E51 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				0B93D782280AA160001C6DA0 /* Setting */,
 				0BB4351727984E9F00634E51 /* Home */,
 				0B93D75B28057FB8001C6DA0 /* Profile */,
 			);
@@ -713,7 +792,6 @@
 		9F1823D23109421E5156D0E3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0B93D72327FAB3D4001C6DA0 /* Pods_DangProject.framework */,
 				0B93D72127F99D83001C6DA0 /* libRxRelay.a */,
 				0B93D71F27F99D7B001C6DA0 /* libRxSwift.a */,
 				0B93D71D27F99D60001C6DA0 /* libRxTest.a */,
@@ -926,9 +1004,11 @@
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
 				0BB43525279851A300634E51 /* HomeViewModel.swift in Sources */,
 				0B93D77328059922001C6DA0 /* ProfileViewController.swift in Sources */,
+				0B93D78D280D3F3A001C6DA0 /* SaveButton.swift in Sources */,
 				0B93D73A27FCA642001C6DA0 /* HomeUseCaseProtocol.swift in Sources */,
 				0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */,
 				0B97988027C159100021162A /* CalendarUseCase.swift in Sources */,
+				0B93D7812809C6DB001C6DA0 /* ProfileTextFieldView.swift in Sources */,
 				0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */,
 				0BB43535279985A300634E51 /* BatteryView.swift in Sources */,
 				0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */,
@@ -938,6 +1018,7 @@
 				0B93D71C27F99C85001C6DA0 /* MockRepository.swift in Sources */,
 				0BB4354D27A03A1A00634E51 /* HomeCollectionFooter.swift in Sources */,
 				0BD3596627DC398900E3412D /* HomeRepository.swift in Sources */,
+				0B93D77D2807D253001C6DA0 /* ProfileImageButton.swift in Sources */,
 				0BB435232798519800634E51 /* HomeDIContainer.swift in Sources */,
 				0BB4352F27996E5900634E51 /* HomeGraphView.swift in Sources */,
 				0BB43546279FD45F00634E51 /* AteFoodTitleView.swift in Sources */,
@@ -945,8 +1026,10 @@
 				0BDC74A527F2CE8500EB1BA5 /* UIView+Radius.swift in Sources */,
 				0BDC74B327F2F1C800EB1BA5 /* UIViewController+Ratio.swift in Sources */,
 				0B93D768280596DA001C6DA0 /* ProfileUseCaseProtocol.swift in Sources */,
+				0B09B570280EFFE600810D3C /* CustomDateTextFieldView.swift in Sources */,
 				0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */,
 				0B97986E27BB84700021162A /* TempEntities.swift in Sources */,
+				0B09B57328102E0700810D3C /* DangTextFieldView.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
 				0BB4353A279A660E00634E51 /* CustomNavigationBar.swift in Sources */,
 				0BE0DA3127BB5C3100AFD089 /* HomeRepositoryProtocol.swift in Sources */,
@@ -954,12 +1037,15 @@
 				0B93D73827FCA37E001C6DA0 /* MockHomeUseCase.swift in Sources */,
 				0BB43540279FBEDE00634E51 /* TempRepository.swift in Sources */,
 				0B93D73627FCA2CD001C6DA0 /* MockCalendarUseCase.swift in Sources */,
+				0B93D78B280B1233001C6DA0 /* GenderView.swift in Sources */,
+				0B93D78F280D7820001C6DA0 /* ProfileNavigationBar.swift in Sources */,
 				0B93D76628059681001C6DA0 /* ProfileUseCase.swift in Sources */,
 				0BDC74AB27F2EE2000EB1BA5 /* CGFloat+Calculate.swift in Sources */,
 				0B97988727C67DE50021162A /* CalendarCollectionViewCell.swift in Sources */,
 				0B97988927CA1EEB0021162A /* CalendarViewModel.swift in Sources */,
 				0B93D76A280597EE001C6DA0 /* ProfileRepositoryProtocol.swift in Sources */,
 				0B97987127BB9D370021162A /* AteFoodViewModel.swift in Sources */,
+				0B93D77F28087670001C6DA0 /* ProfileInformationStackView.swift in Sources */,
 				0BB43544279FD16100634E51 /* AteFoodView.swift in Sources */,
 				0BB435272798537900634E51 /* HomeUseCase.swift in Sources */,
 				0B93D72C27FC1E91001C6DA0 /* DummyCalendarEntity.swift in Sources */,

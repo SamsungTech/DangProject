@@ -23,4 +23,8 @@ extension UIViewController {
         
         return CGFloat((500*divisionValue) + remainder)
     }
+    
+    func calculateXMax() -> CGFloat {
+        return UIScreen.main.bounds.maxX
+    }
 }

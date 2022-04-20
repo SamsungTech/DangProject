@@ -8,12 +8,21 @@
 import Foundation
 import UIKit
 
-class ProfileCoordinator: CoordinateEventProtocol {
+enum ProfileAccessibleViewType {
+    case ProfileViewController
+}
+
+protocol ProfileCoordinatorProtocol: Coordinator {
+    func dismissViewController()
+}
+
+class ProfileCoordinator: ProfileCoordinatorProtocol {
     weak var parentsCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController?
     var diContainer = ProfileDIContainer()
     var parentViewController: HomeViewControllerProtocol?
+    var viewController: ProfileViewControllerProtocol?
     
     init(parentCoordinator: Coordinator?,
          navigationController: UINavigationController) {
@@ -30,6 +39,7 @@ class ProfileCoordinator: CoordinateEventProtocol {
     func start() {
         let viewController = diContainer.makeProfileViewController(coordinator: self)
         self.navigationController?.pushViewController(viewController, animated: false)
+        self.viewController = viewController as? ProfileViewControllerProtocol
     }
     
     func childDidFinish(_ child: Coordinator?) {
@@ -40,12 +50,24 @@ class ProfileCoordinator: CoordinateEventProtocol {
             }
         }
     }
-}
-
-extension ProfileCoordinator {
-    func navigationEvent(event: NavigationEventType, _ viewControllerType: ViewControllerType) {}
-    func pushViewController(_ viewControllerType: ViewControllerType) {}
-    func popViewController(_ viewControllerType: ViewControllerType) {}
-    func presentViewController(_ viewControllerType: ViewControllerType) {}
-    func dismissViewController(_ viewControllerType: ViewControllerType) {}
+    
+    func click(event: NavigationEventType) {
+        switch event {
+        case .push:
+            break
+        case .pop:
+            break
+        case .present:
+            break
+        case .dismiss:
+            dismissViewController()
+        }
+    }
+    
+    func dismissViewController() {
+        
+        if let viewController = viewController as? UIViewController {
+            viewController.dismiss(animated: true)
+        }
+    }
 }

@@ -9,19 +9,19 @@ import Foundation
 import UIKit
 
 class ProfileDIContainer {
-    func makeProfileNavigationViewController(coordinator: Coordinator) -> UIViewController {
+    func makeProfileNavigationViewController(coordinator: ProfileCoordinatorProtocol) -> UINavigationController {
         let navigationViewController = UINavigationController(
             rootViewController: makeProfileViewController(coordinator: coordinator)
         )
         return navigationViewController
     }
     
-    func makeProfileViewController(coordinator: Coordinator) -> UIViewController {
+    func makeProfileViewController(coordinator: ProfileCoordinatorProtocol) -> UIViewController {
         return ProfileViewController.create(viewModel: makeProfileViewModel(),
                                             coordinator: coordinator)
     }
     
-    func makeProfileViewModel() -> ProfileViewModelProtocol {
+    func makeProfileViewModel() -> ProfileViewModel {
         return ProfileViewModel(useCase: makeProfileUseCase())
     }
     
