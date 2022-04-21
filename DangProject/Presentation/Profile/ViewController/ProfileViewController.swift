@@ -175,6 +175,32 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
             }
             .disposed(by: disposeBag)
         
+        invisibleView.rx.tapGesture()
+            .when(.recognized)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel?.saveButtonDidTap()
+                self.profileStackView.nameView.profileTextField.resignFirstResponder()
+                self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
+                self.profileStackView.heightView.profileTextField.resignFirstResponder()
+                self.profileStackView.weightView.profileTextField.resignFirstResponder()
+                self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        
+        Observable.merge(
+            profileStackView.nameView.profileTextField.rx.tapGesture().map { _ in },
+            profileStackView.birthDateView.profileTextField.rx.tapGesture().map { _ in  },
+            profileStackView.heightView.profileTextField.rx.tapGesture().map { _ in },
+            profileStackView.weightView.profileTextField.rx.tapGesture().map { _ in },
+            profileStackView.targetSugarView.profileTextField.rx.tapGesture().map { _ in  }
+        )
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel?.saveButtonDidTap()
+            })
+            .disposed(by: disposeBag)
+        
         Observable.merge(
             profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
             profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
@@ -182,35 +208,19 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
             .bind(to: viewModel!.genderRelay)
             .disposed(by: disposeBag)
         
-        profileStackView.birthDateView.rx.tapGesture()
-            .when(.recognized)
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                self.viewModel?.saveButtonDidTap()
-            })
-            .disposed(by: disposeBag)
-        
-        invisibleView.rx.tapGesture()
-            .when(.recognized)
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                self.viewModel?.saveButtonDidTap()
-                self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
-            })
+        Observable.merge(
+            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+            profileStackView.birthDateView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
+            profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
+        )
+            .bind(to: viewModel!.okButtonRelay)
             .disposed(by: disposeBag)
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
                 print("저-장")
-            }
-            .disposed(by: disposeBag)
-        
-        profileStackView.birthDateView.toolBarButton.rx.tap
-            .bind { [weak self] in
-                guard let self = self else { return }
-                print(self.profileStackView.birthDateView.pickerView.date)
-                self.viewModel?.saveButtonDidTap()
-                self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
             }
             .disposed(by: disposeBag)
     }
@@ -253,6 +263,30 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                     self.animateSaveButtonDown()
                     self.animateInvisibleViewUp()
                 case .none: break
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.okButtonRelay
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                switch $0 {
+                case .none: break
+                case .name:
+                    self.viewModel?.saveButtonDidTap()
+                    self.profileStackView.nameView.profileTextField.resignFirstResponder()
+                case .birthDate:
+                    self.viewModel?.saveButtonDidTap()
+                    self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
+                case .height:
+                    self.viewModel?.saveButtonDidTap()
+                    self.profileStackView.heightView.profileTextField.resignFirstResponder()
+                case .weight:
+                    self.viewModel?.saveButtonDidTap()
+                    self.profileStackView.weightView.profileTextField.resignFirstResponder()
+                case .targetSugar:
+                    self.viewModel?.saveButtonDidTap()
+                    self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
                 }
             })
             .disposed(by: disposeBag)

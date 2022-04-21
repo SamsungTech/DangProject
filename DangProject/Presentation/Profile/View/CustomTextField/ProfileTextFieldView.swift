@@ -8,6 +8,13 @@
 import UIKit
 
 class ProfileTextFieldView: UIView {
+    private lazy var downArrowImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "chevron.down")
+        imageView.tintColor = .white
+        return imageView
+    }()
+    
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
@@ -24,10 +31,24 @@ class ProfileTextFieldView: UIView {
         return view
     }()
     
+    private(set) lazy var toolBarButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .circleColorGreen
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        button.setTitle("확인", for: .normal)
+        button.frame = CGRect(x: .zero,
+                              y: .zero,
+                              width: calculateXMax(),
+                              height: yValueRatio(50))
+        return button
+    }()
+    
     private(set) lazy var profileTextField: UITextField = {
         let textField = UITextField()
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
         textField.textColor = .init(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.5)
+        textField.inputAccessoryView = toolBarButton
         return textField
     }()
     
@@ -45,6 +66,7 @@ extension ProfileTextFieldView {
     private func configureUI() {
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
+        setUpDownArrowImageView()
         setUpProfileTextField()
     }
     
@@ -65,6 +87,17 @@ extension ProfileTextFieldView {
             textFieldBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)),
             textFieldBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -xValueRatio(20)),
             textFieldBackgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(10))
+        ])
+    }
+    
+    private func setUpDownArrowImageView() {
+        textFieldBackgroundView.addSubview(downArrowImageView)
+        downArrowImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            downArrowImageView.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
+            downArrowImageView.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -xValueRatio(15)),
+            downArrowImageView.widthAnchor.constraint(equalToConstant: xValueRatio(20)),
+            downArrowImageView.heightAnchor.constraint(equalToConstant: yValueRatio(20))
         ])
     }
     

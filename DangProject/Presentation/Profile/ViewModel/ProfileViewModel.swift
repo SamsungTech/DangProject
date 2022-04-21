@@ -16,6 +16,15 @@ enum SaveButtonState {
     case none
 }
 
+enum TextFieldType {
+    case none
+    case name
+    case birthDate
+    case height
+    case weight
+    case targetSugar
+}
+
 enum ScrollState {
     case top
     case scrolling
@@ -37,6 +46,7 @@ protocol ProfileViewModelOutputProtocol {
     var scrollValue: BehaviorRelay<ScrollState> { get }
     var genderRelay: BehaviorRelay<GenderType> { get }
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
+    var okButtonRelay: BehaviorRelay<TextFieldType> { get }
 }
 
 protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewModelOutputProtocol {
@@ -48,6 +58,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
+    var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     
     init(useCase: ProfileUseCaseProtocol) {
         self.profileUseCase = useCase
@@ -72,4 +83,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
             saveButtonAnimationRelay.accept(.up)
         }
     }
+    
+    
 }

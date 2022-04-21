@@ -1,13 +1,13 @@
 //
-//  DangTextFieldView.swift
+//  ProfilePickerView.swift
 //  DangProject
 //
-//  Created by 김동우 on 2022/04/20.
+//  Created by 김동우 on 2022/04/19.
 //
 
 import UIKit
 
-class DangTextFieldView: UIView {
+class DateTextFieldView: UIView {
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
@@ -15,6 +15,12 @@ class DangTextFieldView: UIView {
         return imageView
     }()
     
+    private(set) var pickerView: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .wheels
+        return picker
+    }()
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
@@ -31,6 +37,14 @@ class DangTextFieldView: UIView {
         return view
     }()
     
+    private(set) lazy var profileTextField: UITextField = {
+        let textField = UITextField()
+        textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
+        textField.inputView = pickerView
+        textField.inputAccessoryView = toolBarButton
+        return textField
+    }()
+    
     private(set) lazy var toolBarButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .circleColorGreen
@@ -44,13 +58,6 @@ class DangTextFieldView: UIView {
         return button
     }()
     
-    private(set) lazy var profileTextField: UITextField = {
-        let textField = UITextField()
-        textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
-        textField.textColor = .init(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.5)
-        textField.inputAccessoryView = toolBarButton
-        return textField
-    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -62,7 +69,7 @@ class DangTextFieldView: UIView {
     }
 }
 
-extension DangTextFieldView {
+extension DateTextFieldView {
     private func configureUI() {
         setUpProfileLabel()
         setUpTextFieldBackgroundView()

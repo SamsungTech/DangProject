@@ -1,26 +1,13 @@
 //
-//  ProfilePickerView.swift
+//  NameTextField.swift
 //  DangProject
 //
-//  Created by 김동우 on 2022/04/19.
+//  Created by 김동우 on 2022/04/22.
 //
 
 import UIKit
 
-class CustomDateTextFieldView: UIView {
-    private var downArrowImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "chevron.down")
-        imageView.tintColor = .white
-        return imageView
-    }()
-    
-    private(set) var pickerView: UIDatePicker = {
-        let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .wheels
-        return picker
-    }()
+class NameTextField: UIView {
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
@@ -40,7 +27,6 @@ class CustomDateTextFieldView: UIView {
     private(set) lazy var profileTextField: UITextField = {
         let textField = UITextField()
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
-        textField.inputView = pickerView
         textField.inputAccessoryView = toolBarButton
         return textField
     }()
@@ -58,7 +44,6 @@ class CustomDateTextFieldView: UIView {
         return button
     }()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -69,11 +54,10 @@ class CustomDateTextFieldView: UIView {
     }
 }
 
-extension CustomDateTextFieldView {
+extension NameTextField {
     private func configureUI() {
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
-        setUpDownArrowImageView()
         setUpProfileTextField()
     }
     
@@ -94,17 +78,6 @@ extension CustomDateTextFieldView {
             textFieldBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)),
             textFieldBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -xValueRatio(20)),
             textFieldBackgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(10))
-        ])
-    }
-    
-    private func setUpDownArrowImageView() {
-        textFieldBackgroundView.addSubview(downArrowImageView)
-        downArrowImageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            downArrowImageView.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
-            downArrowImageView.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -xValueRatio(15)),
-            downArrowImageView.widthAnchor.constraint(equalToConstant: xValueRatio(20)),
-            downArrowImageView.heightAnchor.constraint(equalToConstant: yValueRatio(20))
         ])
     }
     

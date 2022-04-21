@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B09B570280EFFE600810D3C /* CustomDateTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B56F280EFFE600810D3C /* CustomDateTextFieldView.swift */; };
+		0B09B570280EFFE600810D3C /* DateTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B56F280EFFE600810D3C /* DateTextFieldView.swift */; };
 		0B09B57328102E0700810D3C /* DangTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B57228102E0700810D3C /* DangTextFieldView.swift */; };
+		0B09B5782810759300810D3C /* ProfileDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5772810759300810D3C /* ProfileDummy.swift */; };
+		0B09B57A2811BE7B00810D3C /* NameTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5792811BE7B00810D3C /* NameTextField.swift */; };
 		0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A78277076FC0006B9CF /* AppDelegate.swift */; };
 		0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */; };
 		0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */; };
@@ -94,8 +96,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0B09B56F280EFFE600810D3C /* CustomDateTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDateTextFieldView.swift; sourceTree = "<group>"; };
+		0B09B56F280EFFE600810D3C /* DateTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTextFieldView.swift; sourceTree = "<group>"; };
 		0B09B57228102E0700810D3C /* DangTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DangTextFieldView.swift; sourceTree = "<group>"; };
+		0B09B5772810759300810D3C /* ProfileDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDummy.swift; sourceTree = "<group>"; };
+		0B09B5792811BE7B00810D3C /* NameTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTextField.swift; sourceTree = "<group>"; };
 		0B1F4A75277076FC0006B9CF /* DangProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DangProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1F4A78277076FC0006B9CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -210,12 +214,21 @@
 		0B09B571280FFB7D00810D3C /* CustomTextField */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B5792811BE7B00810D3C /* NameTextField.swift */,
 				0B93D7802809C6DB001C6DA0 /* ProfileTextFieldView.swift */,
-				0B09B56F280EFFE600810D3C /* CustomDateTextFieldView.swift */,
+				0B09B56F280EFFE600810D3C /* DateTextFieldView.swift */,
 				0B93D78A280B1233001C6DA0 /* GenderView.swift */,
 				0B09B57228102E0700810D3C /* DangTextFieldView.swift */,
 			);
 			path = CustomTextField;
+			sourceTree = "<group>";
+		};
+		0B09B5762810757E00810D3C /* Dummy */ = {
+			isa = PBXGroup;
+			children = (
+				0B09B5772810759300810D3C /* ProfileDummy.swift */,
+			);
+			path = Dummy;
 			sourceTree = "<group>";
 		};
 		0B1F4A6C277076FC0006B9CF = {
@@ -665,6 +678,7 @@
 		0BB4351427984E7F00634E51 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B5762810757E00810D3C /* Dummy */,
 				0BB4351527984E8900634E51 /* Extensions */,
 			);
 			path = Utils;
@@ -1006,6 +1020,7 @@
 				0B93D77328059922001C6DA0 /* ProfileViewController.swift in Sources */,
 				0B93D78D280D3F3A001C6DA0 /* SaveButton.swift in Sources */,
 				0B93D73A27FCA642001C6DA0 /* HomeUseCaseProtocol.swift in Sources */,
+				0B09B5782810759300810D3C /* ProfileDummy.swift in Sources */,
 				0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */,
 				0B97988027C159100021162A /* CalendarUseCase.swift in Sources */,
 				0B93D7812809C6DB001C6DA0 /* ProfileTextFieldView.swift in Sources */,
@@ -1026,8 +1041,9 @@
 				0BDC74A527F2CE8500EB1BA5 /* UIView+Radius.swift in Sources */,
 				0BDC74B327F2F1C800EB1BA5 /* UIViewController+Ratio.swift in Sources */,
 				0B93D768280596DA001C6DA0 /* ProfileUseCaseProtocol.swift in Sources */,
-				0B09B570280EFFE600810D3C /* CustomDateTextFieldView.swift in Sources */,
+				0B09B570280EFFE600810D3C /* DateTextFieldView.swift in Sources */,
 				0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */,
+				0B09B57A2811BE7B00810D3C /* NameTextField.swift in Sources */,
 				0B97986E27BB84700021162A /* TempEntities.swift in Sources */,
 				0B09B57328102E0700810D3C /* DangTextFieldView.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
