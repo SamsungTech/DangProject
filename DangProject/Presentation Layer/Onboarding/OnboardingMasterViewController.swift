@@ -28,6 +28,8 @@ class OnboardingMasterViewController: UIViewController {
         }
     }
     
+    let navi = UIViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,6 +39,9 @@ class OnboardingMasterViewController: UIViewController {
         setupPageControl()
         setupNextButton()
         setupStartButton()
+        
+        navi.view.backgroundColor = .white
+        navi.title = "Login"
     }
     
     private func setupPageViewController() {
@@ -69,9 +74,9 @@ class OnboardingMasterViewController: UIViewController {
         pageControl.numberOfPages = viewModel.viewControllers.count
         pageControl.pageIndicatorTintColor = .gray
         pageControl.currentPageIndicatorTintColor = .label
-        pageControl.addTarget(self, action: #selector(pageControlDragged), for: .valueChanged)
+        pageControl.addTarget(self, action: #selector(pageChanged), for: .valueChanged)
     }
-    @objc func pageControlDragged() {
+    @objc func pageChanged() {
         if currentIndex < pageControl.currentPage {
             pageViewController.setViewControllers([viewModel.viewControllers[pageControl.currentPage]], direction: .forward, animated: true)
         } else {
@@ -121,6 +126,7 @@ class OnboardingMasterViewController: UIViewController {
     
     @objc func startButtonTapped() {
         viewModel.closeOnboardingView()
+        navigationController?.pushViewController(navi, animated: true)
         self.presentingViewController?.dismiss(animated: false)
     }
 }

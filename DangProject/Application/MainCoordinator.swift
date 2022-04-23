@@ -52,10 +52,15 @@ class MainCoordinator: Coordinator {
     //onboarding
     func checkFirstRun() {
         let userDefaults = UserDefaults.standard
+        userDefaults.set(false, forKey: UserInfoKey.onboarding)
         if userDefaults.bool(forKey: UserInfoKey.onboarding) == false {
+            let navigationView = UINavigationController()
+            navigationView.modalPresentationStyle = .fullScreen
+            
             let onboardingView = OnboardingMasterViewController()
-            onboardingView.modalPresentationStyle = .fullScreen
-            homeViewController.present(onboardingView, animated: false)
+            navigationView.pushViewController(onboardingView, animated: false)
+            
+            homeViewController.present(navigationView, animated: false)
         }
     }
     
