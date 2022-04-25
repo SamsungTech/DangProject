@@ -5,7 +5,6 @@
 //  Created by 김동우 on 2022/01/20.
 //
 
-import Foundation
 import UIKit
 
 import RxSwift
@@ -181,6 +180,7 @@ extension BatteryView {
     
     private func bindPagingState() {
         viewModel?.pagingState
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
                 switch $0 {
                 case .left:

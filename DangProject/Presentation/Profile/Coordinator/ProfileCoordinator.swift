@@ -17,29 +17,25 @@ protocol ProfileCoordinatorProtocol: Coordinator {
 }
 
 class ProfileCoordinator: ProfileCoordinatorProtocol {
-    weak var parentsCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController?
     var diContainer = ProfileDIContainer()
-    var parentViewController: HomeViewControllerProtocol?
-    var viewController: ProfileViewControllerProtocol?
+    var parentViewController: UIViewController?
     
-    init(parentCoordinator: Coordinator?,
-         navigationController: UINavigationController) {
+    init(navigationController: UINavigationController,
+         parentViewController: UIViewController) {
         self.navigationController = navigationController
-        self.parentsCoordinator = parentCoordinator
+        self.parentViewController = parentViewController
     }
     
-    init(parentCoordinator: Coordinator?,
-         parentViewController: HomeViewControllerProtocol) {
-        self.parentsCoordinator = parentCoordinator
+    init(parentViewController: UIViewController) {
         self.parentViewController = parentViewController
     }
     
     func start() {
-        let viewController = diContainer.makeProfileViewController(coordinator: self)
+        let viewController = diContainer.makeProfileViewController()
+        viewController.coordinator = self
         self.navigationController?.pushViewController(viewController, animated: false)
-        self.viewController = viewController as? ProfileViewControllerProtocol
     }
     
     func childDidFinish(_ child: Coordinator?) {
@@ -51,22 +47,8 @@ class ProfileCoordinator: ProfileCoordinatorProtocol {
         }
     }
     
-    func click(event: NavigationEventType) {
-        switch event {
-        case .push:
-            break
-        case .pop:
-            break
-        case .present:
-            break
-        case .dismiss:
-            dismissViewController()
-        }
-    }
-    
     func dismissViewController() {
-        
-        if let viewController = viewController as? UIViewController {
+        if let viewController = parentViewController {
             viewController.dismiss(animated: true)
         }
     }

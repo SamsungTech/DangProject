@@ -1,30 +1,25 @@
 //
-//  MainCoordinator.swift
+//  SettingCoordinator.swift
 //  DangProject
 //
-//  Created by 김동우 on 2022/01/19.
+//  Created by 김동우 on 2022/04/22.
 //
 
 import UIKit
 
-protocol Coordinator: AnyObject {
-    var childCoordinators: [Coordinator] { get set }
-    
-    func start()
-}
-
-class MainCoordinator: Coordinator {
+class SettingCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
+    private var diContainer = SettingDIContainer()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
     func start() {
-        let coordinator = SettingCoordinator(navigationController: navigationController)
-        self.childCoordinators.append(coordinator)
-        coordinator.start()
+        let viewController = diContainer.makeSettingViewController()
+        viewController.coordinator = self
+        self.navigationController.pushViewController(viewController, animated: false)
     }
     
     func childDidFinish(_ child: Coordinator?) {

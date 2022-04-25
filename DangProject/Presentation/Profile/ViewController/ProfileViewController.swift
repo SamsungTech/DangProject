@@ -17,8 +17,8 @@ protocol ProfileViewControllerProtocol: AnyObject {
 }
 
 class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
-    private weak var coordinator: ProfileCoordinatorProtocol?
-    private var viewModel: ProfileViewModelProtocol?
+    var coordinator: ProfileCoordinator?
+    var viewModel: ProfileViewModelProtocol?
     private let disposeBag = DisposeBag()
     private var profileImageButton = ProfileImageButton()
     private var profileNavigationBar = ProfileNavigationBar()
@@ -68,13 +68,13 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         coordinator?.childDidFinish(coordinator)
     }
     
-    static func create(viewModel: ProfileViewModelProtocol,
-                       coordinator: ProfileCoordinatorProtocol) -> ProfileViewController {
-        let viewController = ProfileViewController()
-        viewController.viewModel = viewModel
-        viewController.coordinator = coordinator
-        
-        return viewController
+    init(viewModel: ProfileViewModelProtocol) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func configureUI() {

@@ -7,34 +7,19 @@
 
 import UIKit
 
-enum HomeAccessibleViewType {
-    case profile(UIViewController)
-}
-
-protocol HomeCoordinatorProtocol: Coordinator {
-    func navigationEvent(event: NavigationEventType,
-                         type: HomeAccessibleViewType)
-    func pushViewController(type: HomeAccessibleViewType)
-    func popViewController(type: HomeAccessibleViewType)
-    func presentViewController(type: HomeAccessibleViewType)
-    func dismissViewController(type: HomeAccessibleViewType)
-}
-
-class HomeCoordinator: HomeCoordinatorProtocol {
-    weak var parentsCoordinator: Coordinator?
+class HomeCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     var diContainer = HomeDIContainer()
-    var parentViewController: HomeViewControllerProtocol?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
     func start() {
-        let viewController = diContainer.makeHomeViewController(coordinator: self)
+        let viewController = diContainer.makeHomeViewController()
+        viewController.coordinator = self
         self.navigationController.pushViewController(viewController, animated: false)
-        self.parentViewController = viewController as? HomeViewControllerProtocol
     }
     
     func childDidFinish(_ child: Coordinator?) {
@@ -46,35 +31,13 @@ class HomeCoordinator: HomeCoordinatorProtocol {
         }
     }
     
-    func navigationEvent(event: NavigationEventType, type: HomeAccessibleViewType) {
-        switch event {
-        case .push:
-            pushViewController(type: type)
-        case .pop:
-            popViewController(type: type)
-        case .present:
-            presentViewController(type: type)
-        case .dismiss:
-            dismissViewController(type: type)
-        }
-    }
-    func pushViewController(type: HomeAccessibleViewType) {}
-    func popViewController(type: HomeAccessibleViewType) {}
-    func presentViewController(type: HomeAccessibleViewType) {
-        switch type {
-        case .profile(let viewController):
-            presentProfile(viewController)
-        }
-    }
-    func dismissViewController(type: HomeAccessibleViewType) {}
-}
-
-extension HomeCoordinator {
-    private func presentProfile(_ viewController: UIViewController) {
-        let coordinator = ProfileCoordinator(parentCoordinator: self,
-                                             parentViewController: viewController as! HomeViewControllerProtocol)
-        let presentView = coordinator.diContainer.makeProfileNavigationViewController(coordinator: coordinator)
+    func presentProfile(_ viewController: UIViewController) {
+        let coordinator = ProfileCoordinator(parentViewController: viewController)
+        let presentView = coordinator.diContainer.makeProfileNavigationViewController()
         presentView.modalPresentationStyle = .fullScreen
+        presentView.modalTransitionStyle = .coverVertical
         viewController.present(presentView, animated: true)
     }
 }
+
+

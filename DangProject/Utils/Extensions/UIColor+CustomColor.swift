@@ -10,10 +10,10 @@ import UIKit
 extension UIColor {
     // MARK: CustomHomeColor
     static var homeBackgroundColor: UIColor {
-        return UIColor.init(red: 19/255, green: 18/255, blue: 20/255, alpha: 1)
+        return UIColor.init(red: 10/255, green: 9/255, blue: 12/255, alpha: 1)
     }
     static var homeBoxColor: UIColor {
-        return UIColor.init(red: 24/255, green: 23/255, blue: 33/255, alpha: 1)
+        return UIColor.init(red: 19/255, green: 17/255, blue: 23/255, alpha: 1)
     }
     static var homeBackgroundColorAlphaZero: UIColor {
         return UIColor.init(red: 19/255, green: 18/255, blue: 20/255, alpha: 0)
@@ -109,5 +109,11 @@ extension UIColor {
     
     static var genderSelectedBackgroundColor: UIColor {
         return UIColor.init(red: 60/255, green: 60/255, blue: 70/255, alpha: 1.0)
+    }
+    
+    // MARK: ButtonColor
+    
+    static var buttonColor: UIColor {
+        return UIColor.init(red: 158/255, green: 168/255, blue: 180/255, alpha: 1.0)
     }
 }

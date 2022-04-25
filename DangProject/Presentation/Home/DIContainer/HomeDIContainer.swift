@@ -9,17 +9,15 @@ import Foundation
 import UIKit
 
 class HomeDIContainer {
-    func makeMemoListNavigationViewController(coordinator: HomeCoordinatorProtocol) -> UINavigationController {
+    func makeHomeNavigationViewController() -> UINavigationController {
         let navigationView = UINavigationController(
-            rootViewController: makeHomeViewController(coordinator: coordinator)
+            rootViewController: makeHomeViewController()
         )
         return navigationView
     }
     
-    func makeHomeViewController(coordinator: HomeCoordinatorProtocol) -> UIViewController {
-        guard let coordinator = coordinator as? HomeCoordinatorProtocol else { return UIViewController() }
-        return HomeViewController.create(viewModel: makeHomeViewModel() as! HomeViewModel,
-                                         coordinator: coordinator)
+    func makeHomeViewController() -> HomeViewController {
+        return HomeViewController(viewModel: makeHomeViewModel())
     }
     
     func makeHomeViewModel() -> HomeViewModelProtocol {

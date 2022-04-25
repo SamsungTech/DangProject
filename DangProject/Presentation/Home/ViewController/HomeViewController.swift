@@ -15,7 +15,7 @@ protocol HomeViewControllerProtocol: AnyObject {
 }
 
 class HomeViewController: UIViewController, HomeViewControllerProtocol {
-    private weak var coordinator: HomeCoordinatorProtocol?
+    weak var coordinator: HomeCoordinator?
     private var disposeBag = DisposeBag()
     private var customNavigationBar = CustomNavigationBar()
     private let ateFoodTitleView = AteFoodTitleView()
@@ -35,14 +35,14 @@ class HomeViewController: UIViewController, HomeViewControllerProtocol {
     var viewModel: HomeViewModelProtocol?
     var batteryView = BatteryView()
     
-    static func create(viewModel: HomeViewModelProtocol,
-                       coordinator: HomeCoordinatorProtocol) -> HomeViewController {
-        let viewController = HomeViewController()
-        viewController.viewModel = viewModel
-        viewController.coordinator = coordinator
-        viewController.viewModel?.homeViewController = viewController
-        
-        return viewController
+    init(viewModel: HomeViewModelProtocol) {
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+        self.viewModel?.homeViewController = self
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -212,10 +212,7 @@ extension HomeViewController {
         customNavigationBar.profileImageButton.rx.tap
             .bind { [weak self] in
                 guard let viewController = self else { return }
-                self?.coordinator?.navigationEvent(
-                    event: .present,
-                    type: .profile(viewController)
-                )
+                self?.coordinator?.presentProfile(viewController)
             }
             .disposed(by: disposeBag)
     }

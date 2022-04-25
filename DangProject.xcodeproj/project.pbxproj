@@ -11,6 +11,19 @@
 		0B09B57328102E0700810D3C /* DangTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B57228102E0700810D3C /* DangTextFieldView.swift */; };
 		0B09B5782810759300810D3C /* ProfileDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5772810759300810D3C /* ProfileDummy.swift */; };
 		0B09B57A2811BE7B00810D3C /* NameTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5792811BE7B00810D3C /* NameTextField.swift */; };
+		0B09B57C2811C0A500810D3C /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B57B2811C0A500810D3C /* SettingViewController.swift */; };
+		0B09B57E2811C21F00810D3C /* SettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B57D2811C21F00810D3C /* SettingCoordinator.swift */; };
+		0B09B5802811C25200810D3C /* SettingDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B57F2811C25200810D3C /* SettingDIContainer.swift */; };
+		0B09B5822811C26F00810D3C /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5812811C26F00810D3C /* SettingViewModel.swift */; };
+		0B09B58C2811C47900810D3C /* SettingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B58B2811C47900810D3C /* SettingUseCase.swift */; };
+		0B09B5912812F70400810D3C /* SettingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5902812F70400810D3C /* SettingRepository.swift */; };
+		0B09B59628151A7600810D3C /* SettingFirstStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B59528151A7600810D3C /* SettingFirstStackView.swift */; };
+		0B09B59828153F3400810D3C /* SettingStackViewItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B59728153F3400810D3C /* SettingStackViewItems.swift */; };
+		0B09B59E2816A1F200810D3C /* SettingNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B59D2816A1F200810D3C /* SettingNavigationBar.swift */; };
+		0B09B5A12816BB4D00810D3C /* SettingAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5A02816BB4D00810D3C /* SettingAccountView.swift */; };
+		0B09B5A52816D02400810D3C /* SettingSecondStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5A42816D02400810D3C /* SettingSecondStackView.swift */; };
+		0B09B5AB2816D5B200810D3C /* SettingSecessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5AA2816D5B200810D3C /* SettingSecessionView.swift */; };
+		0B09B5AD2816D5E100810D3C /* SettingTermsOfServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B09B5AC2816D5E100810D3C /* SettingTermsOfServiceView.swift */; };
 		0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A78277076FC0006B9CF /* AppDelegate.swift */; };
 		0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */; };
 		0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */; };
@@ -32,7 +45,6 @@
 		0B93D762280581E9001C6DA0 /* ProfileCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D761280581E9001C6DA0 /* ProfileCoordinator.swift */; };
 		0B93D764280581FD001C6DA0 /* ProfileDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D763280581FD001C6DA0 /* ProfileDIContainer.swift */; };
 		0B93D76628059681001C6DA0 /* ProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D76528059681001C6DA0 /* ProfileUseCase.swift */; };
-		0B93D768280596DA001C6DA0 /* ProfileUseCaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D767280596DA001C6DA0 /* ProfileUseCaseProtocol.swift */; };
 		0B93D76A280597EE001C6DA0 /* ProfileRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D769280597EE001C6DA0 /* ProfileRepositoryProtocol.swift */; };
 		0B93D76C28059826001C6DA0 /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D76B28059826001C6DA0 /* ProfileRepository.swift */; };
 		0B93D77328059922001C6DA0 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B93D77228059922001C6DA0 /* ProfileViewController.swift */; };
@@ -100,6 +112,19 @@
 		0B09B57228102E0700810D3C /* DangTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DangTextFieldView.swift; sourceTree = "<group>"; };
 		0B09B5772810759300810D3C /* ProfileDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDummy.swift; sourceTree = "<group>"; };
 		0B09B5792811BE7B00810D3C /* NameTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTextField.swift; sourceTree = "<group>"; };
+		0B09B57B2811C0A500810D3C /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		0B09B57D2811C21F00810D3C /* SettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCoordinator.swift; sourceTree = "<group>"; };
+		0B09B57F2811C25200810D3C /* SettingDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingDIContainer.swift; sourceTree = "<group>"; };
+		0B09B5812811C26F00810D3C /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
+		0B09B58B2811C47900810D3C /* SettingUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingUseCase.swift; sourceTree = "<group>"; };
+		0B09B5902812F70400810D3C /* SettingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingRepository.swift; sourceTree = "<group>"; };
+		0B09B59528151A7600810D3C /* SettingFirstStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingFirstStackView.swift; sourceTree = "<group>"; };
+		0B09B59728153F3400810D3C /* SettingStackViewItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStackViewItems.swift; sourceTree = "<group>"; };
+		0B09B59D2816A1F200810D3C /* SettingNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingNavigationBar.swift; sourceTree = "<group>"; };
+		0B09B5A02816BB4D00810D3C /* SettingAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingAccountView.swift; sourceTree = "<group>"; };
+		0B09B5A42816D02400810D3C /* SettingSecondStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSecondStackView.swift; sourceTree = "<group>"; };
+		0B09B5AA2816D5B200810D3C /* SettingSecessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSecessionView.swift; sourceTree = "<group>"; };
+		0B09B5AC2816D5E100810D3C /* SettingTermsOfServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTermsOfServiceView.swift; sourceTree = "<group>"; };
 		0B1F4A75277076FC0006B9CF /* DangProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DangProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1F4A78277076FC0006B9CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -131,7 +156,6 @@
 		0B93D761280581E9001C6DA0 /* ProfileCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCoordinator.swift; sourceTree = "<group>"; };
 		0B93D763280581FD001C6DA0 /* ProfileDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDIContainer.swift; sourceTree = "<group>"; };
 		0B93D76528059681001C6DA0 /* ProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUseCase.swift; sourceTree = "<group>"; };
-		0B93D767280596DA001C6DA0 /* ProfileUseCaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUseCaseProtocol.swift; sourceTree = "<group>"; };
 		0B93D769280597EE001C6DA0 /* ProfileRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepositoryProtocol.swift; sourceTree = "<group>"; };
 		0B93D76B28059826001C6DA0 /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
 		0B93D77228059922001C6DA0 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -231,6 +255,90 @@
 			path = Dummy;
 			sourceTree = "<group>";
 		};
+		0B09B5842811C3DC00810D3C /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				0B09B58B2811C47900810D3C /* SettingUseCase.swift */,
+				0B93D76528059681001C6DA0 /* ProfileUseCase.swift */,
+				0B97987F27C159100021162A /* CalendarUseCase.swift */,
+				0BB435262798537900634E51 /* HomeUseCase.swift */,
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
+		0B09B5922813CE5700810D3C /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				0B93D76B28059826001C6DA0 /* ProfileRepository.swift */,
+				0B09B5902812F70400810D3C /* SettingRepository.swift */,
+				0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */,
+				0BB4353F279FBEDE00634E51 /* TempRepository.swift */,
+				0BD3596527DC398900E3412D /* HomeRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		0B09B59F2816BB3000810D3C /* StackVIewItems */ = {
+			isa = PBXGroup;
+			children = (
+				0B09B5A02816BB4D00810D3C /* SettingAccountView.swift */,
+				0B09B59528151A7600810D3C /* SettingFirstStackView.swift */,
+				0B09B5A42816D02400810D3C /* SettingSecondStackView.swift */,
+				0B09B59728153F3400810D3C /* SettingStackViewItems.swift */,
+				0B09B5AC2816D5E100810D3C /* SettingTermsOfServiceView.swift */,
+				0B09B5AA2816D5B200810D3C /* SettingSecessionView.swift */,
+			);
+			path = StackVIewItems;
+			sourceTree = "<group>";
+		};
+		0B09B5A22816C48E00810D3C /* AccountCheck */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AccountCheck;
+			sourceTree = "<group>";
+		};
+		0B09B5A32816C49C00810D3C /* SettingScene */ = {
+			isa = PBXGroup;
+			children = (
+				0B93D782280AA160001C6DA0 /* Setting */,
+				0B09B5A92816D3EA00810D3C /* Version */,
+				0B09B5A82816D3CE00810D3C /* Alram */,
+				0B09B5A72816D3C500810D3C /* Theme */,
+				0B09B5A62816D3BB00810D3C /* MyTarget */,
+				0B09B5A22816C48E00810D3C /* AccountCheck */,
+			);
+			path = SettingScene;
+			sourceTree = "<group>";
+		};
+		0B09B5A62816D3BB00810D3C /* MyTarget */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MyTarget;
+			sourceTree = "<group>";
+		};
+		0B09B5A72816D3C500810D3C /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		0B09B5A82816D3CE00810D3C /* Alram */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Alram;
+			sourceTree = "<group>";
+		};
+		0B09B5A92816D3EA00810D3C /* Version */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Version;
+			sourceTree = "<group>";
+		};
 		0B1F4A6C277076FC0006B9CF = {
 			isa = PBXGroup;
 			children = (
@@ -283,15 +391,6 @@
 				0B93D71B27F99C85001C6DA0 /* MockRepository.swift */,
 			);
 			path = Mock;
-			sourceTree = "<group>";
-		};
-		0B93D72627FAB7CF001C6DA0 /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D72727FAB7EA001C6DA0 /* CalendarUseCaseProtocol.swift */,
-				0B93D73927FCA642001C6DA0 /* HomeUseCaseProtocol.swift */,
-			);
-			path = Protocol;
 			sourceTree = "<group>";
 		};
 		0B93D72D27FC1F9A001C6DA0 /* Dummy */ = {
@@ -375,13 +474,6 @@
 			path = GraphView;
 			sourceTree = "<group>";
 		};
-		0B93D75A28057DA4001C6DA0 /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Protocol;
-			sourceTree = "<group>";
-		};
 		0B93D75B28057FB8001C6DA0 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -438,88 +530,6 @@
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
-		0B93D76D2805984A001C6DA0 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				0B97986F27BB84970021162A /* Entities */,
-				0BB4350C27984CCE00634E51 /* Repository */,
-				0B1F4A8F27708B230006B9CF /* FetchResearchRepository.swift */,
-				0BB4353F279FBEDE00634E51 /* TempRepository.swift */,
-				0BD3596527DC398900E3412D /* HomeRepository.swift */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		0B93D76E28059855001C6DA0 /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D77628059D0A001C6DA0 /* Entity */,
-				0B93D77728059D0E001C6DA0 /* Repository */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		0B93D76F28059863001C6DA0 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D72627FAB7CF001C6DA0 /* Protocol */,
-				0B93D77828059D52001C6DA0 /* UseCases */,
-				0BB4351127984DF200634E51 /* Entities */,
-				0BE0DA2D27BB5BDB00AFD089 /* Interfaces */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		0B93D77028059870001C6DA0 /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D77128059884001C6DA0 /* Protocol */,
-				0BB4350B27984CC900634E51 /* UseCases */,
-				0B93D77928059F70001C6DA0 /* Interfaces */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		0B93D77128059884001C6DA0 /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D767280596DA001C6DA0 /* ProfileUseCaseProtocol.swift */,
-			);
-			path = Protocol;
-			sourceTree = "<group>";
-		};
-		0B93D77628059D0A001C6DA0 /* Entity */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Entity;
-			sourceTree = "<group>";
-		};
-		0B93D77728059D0E001C6DA0 /* Repository */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D76B28059826001C6DA0 /* ProfileRepository.swift */,
-			);
-			path = Repository;
-			sourceTree = "<group>";
-		};
-		0B93D77828059D52001C6DA0 /* UseCases */ = {
-			isa = PBXGroup;
-			children = (
-				0B97987F27C159100021162A /* CalendarUseCase.swift */,
-				0BB435262798537900634E51 /* HomeUseCase.swift */,
-			);
-			path = UseCases;
-			sourceTree = "<group>";
-		};
-		0B93D77928059F70001C6DA0 /* Interfaces */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D769280597EE001C6DA0 /* ProfileRepositoryProtocol.swift */,
-			);
-			path = Interfaces;
-			sourceTree = "<group>";
-		};
 		0B93D782280AA160001C6DA0 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
@@ -535,6 +545,7 @@
 		0B93D785280AED89001C6DA0 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B57D2811C21F00810D3C /* SettingCoordinator.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -542,6 +553,7 @@
 		0B93D786280AED91001C6DA0 /* DIContainer */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B57F2811C25200810D3C /* SettingDIContainer.swift */,
 			);
 			path = DIContainer;
 			sourceTree = "<group>";
@@ -549,6 +561,8 @@
 		0B93D787280AEDB6001C6DA0 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B59D2816A1F200810D3C /* SettingNavigationBar.swift */,
+				0B09B59F2816BB3000810D3C /* StackVIewItems */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -556,6 +570,7 @@
 		0B93D788280AEDC0001C6DA0 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B5812811C26F00810D3C /* SettingViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -563,6 +578,7 @@
 		0B93D789280AEDC5001C6DA0 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				0B09B57B2811C0A500810D3C /* SettingViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -614,25 +630,11 @@
 		0BB4350A27984CBB00634E51 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				0B93D77028059870001C6DA0 /* Profile */,
-				0B93D76F28059863001C6DA0 /* Home */,
+				0BB4351127984DF200634E51 /* Entities */,
+				0B09B5842811C3DC00810D3C /* UseCases */,
+				0BE0DA2D27BB5BDB00AFD089 /* Interfaces */,
 			);
 			path = Domain;
-			sourceTree = "<group>";
-		};
-		0BB4350B27984CC900634E51 /* UseCases */ = {
-			isa = PBXGroup;
-			children = (
-				0B93D76528059681001C6DA0 /* ProfileUseCase.swift */,
-			);
-			path = UseCases;
-			sourceTree = "<group>";
-		};
-		0BB4350C27984CCE00634E51 /* Repository */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Repository;
 			sourceTree = "<group>";
 		};
 		0BB4350F27984D5600634E51 /* Application */ = {
@@ -648,8 +650,8 @@
 		0BB4351027984DE300634E51 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				0B93D76D2805984A001C6DA0 /* Home */,
-				0B93D76E28059855001C6DA0 /* Profile */,
+				0B09B5922813CE5700810D3C /* Repository */,
+				0B97986F27BB84970021162A /* Entities */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -668,7 +670,7 @@
 		0BB4351327984E5A00634E51 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				0B93D782280AA160001C6DA0 /* Setting */,
+				0B09B5A32816C49C00810D3C /* SettingScene */,
 				0BB4351727984E9F00634E51 /* Home */,
 				0B93D75B28057FB8001C6DA0 /* Profile */,
 			);
@@ -744,7 +746,6 @@
 		0BB4351D2798501400634E51 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
-				0B93D75A28057DA4001C6DA0 /* Protocol */,
 				0BB435202798518C00634E51 /* HomeCoordinator.swift */,
 			);
 			path = Coordinator;
@@ -779,17 +780,12 @@
 		0BE0DA2D27BB5BDB00AFD089 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
-				0BE0DA2E27BB5BEA00AFD089 /* RepositoryProtocol */,
-			);
-			path = Interfaces;
-			sourceTree = "<group>";
-		};
-		0BE0DA2E27BB5BEA00AFD089 /* RepositoryProtocol */ = {
-			isa = PBXGroup;
-			children = (
+				0B93D72727FAB7EA001C6DA0 /* CalendarUseCaseProtocol.swift */,
+				0B93D73927FCA642001C6DA0 /* HomeUseCaseProtocol.swift */,
+				0B93D769280597EE001C6DA0 /* ProfileRepositoryProtocol.swift */,
 				0BE0DA3027BB5C3100AFD089 /* HomeRepositoryProtocol.swift */,
 			);
-			path = RepositoryProtocol;
+			path = Interfaces;
 			sourceTree = "<group>";
 		};
 		408AEF6A9790F5EBEF1D177B /* Pods */ = {
@@ -1024,8 +1020,10 @@
 				0BB4351927984F5E00634E51 /* Nutrient.swift in Sources */,
 				0B97988027C159100021162A /* CalendarUseCase.swift in Sources */,
 				0B93D7812809C6DB001C6DA0 /* ProfileTextFieldView.swift in Sources */,
+				0B09B57E2811C21F00810D3C /* SettingCoordinator.swift in Sources */,
 				0B1F4A9027708B230006B9CF /* FetchResearchRepository.swift in Sources */,
 				0BB43535279985A300634E51 /* BatteryView.swift in Sources */,
+				0B09B5AD2816D5E100810D3C /* SettingTermsOfServiceView.swift in Sources */,
 				0BB4355427B8BC4700634E51 /* AteFoodCollectionCell.swift in Sources */,
 				0B97987327BBAA100021162A /* GraphViewModel.swift in Sources */,
 				0BD3596427D9BF6900E3412D /* MonthDangEntity.swift in Sources */,
@@ -1040,33 +1038,42 @@
 				0B93D75428015AA4001C6DA0 /* DangGeneral.swift in Sources */,
 				0BDC74A527F2CE8500EB1BA5 /* UIView+Radius.swift in Sources */,
 				0BDC74B327F2F1C800EB1BA5 /* UIViewController+Ratio.swift in Sources */,
-				0B93D768280596DA001C6DA0 /* ProfileUseCaseProtocol.swift in Sources */,
+				0B09B58C2811C47900810D3C /* SettingUseCase.swift in Sources */,
 				0B09B570280EFFE600810D3C /* DateTextFieldView.swift in Sources */,
 				0BB435212798518C00634E51 /* HomeCoordinator.swift in Sources */,
 				0B09B57A2811BE7B00810D3C /* NameTextField.swift in Sources */,
+				0B09B5802811C25200810D3C /* SettingDIContainer.swift in Sources */,
 				0B97986E27BB84700021162A /* TempEntities.swift in Sources */,
 				0B09B57328102E0700810D3C /* DangTextFieldView.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
 				0BB4353A279A660E00634E51 /* CustomNavigationBar.swift in Sources */,
+				0B09B5822811C26F00810D3C /* SettingViewModel.swift in Sources */,
+				0B09B57C2811C0A500810D3C /* SettingViewController.swift in Sources */,
 				0BE0DA3127BB5C3100AFD089 /* HomeRepositoryProtocol.swift in Sources */,
 				0B93D72827FAB7EA001C6DA0 /* CalendarUseCaseProtocol.swift in Sources */,
 				0B93D73827FCA37E001C6DA0 /* MockHomeUseCase.swift in Sources */,
 				0BB43540279FBEDE00634E51 /* TempRepository.swift in Sources */,
+				0B09B5AB2816D5B200810D3C /* SettingSecessionView.swift in Sources */,
 				0B93D73627FCA2CD001C6DA0 /* MockCalendarUseCase.swift in Sources */,
 				0B93D78B280B1233001C6DA0 /* GenderView.swift in Sources */,
 				0B93D78F280D7820001C6DA0 /* ProfileNavigationBar.swift in Sources */,
+				0B09B5A52816D02400810D3C /* SettingSecondStackView.swift in Sources */,
 				0B93D76628059681001C6DA0 /* ProfileUseCase.swift in Sources */,
+				0B09B59828153F3400810D3C /* SettingStackViewItems.swift in Sources */,
 				0BDC74AB27F2EE2000EB1BA5 /* CGFloat+Calculate.swift in Sources */,
 				0B97988727C67DE50021162A /* CalendarCollectionViewCell.swift in Sources */,
 				0B97988927CA1EEB0021162A /* CalendarViewModel.swift in Sources */,
+				0B09B5912812F70400810D3C /* SettingRepository.swift in Sources */,
 				0B93D76A280597EE001C6DA0 /* ProfileRepositoryProtocol.swift in Sources */,
 				0B97987127BB9D370021162A /* AteFoodViewModel.swift in Sources */,
 				0B93D77F28087670001C6DA0 /* ProfileInformationStackView.swift in Sources */,
+				0B09B5A12816BB4D00810D3C /* SettingAccountView.swift in Sources */,
 				0BB43544279FD16100634E51 /* AteFoodView.swift in Sources */,
 				0BB435272798537900634E51 /* HomeUseCase.swift in Sources */,
 				0B93D72C27FC1E91001C6DA0 /* DummyCalendarEntity.swift in Sources */,
 				0BB43542279FC9C000634E51 /* GraphTitleView.swift in Sources */,
 				0B93D764280581FD001C6DA0 /* ProfileDIContainer.swift in Sources */,
+				0B09B59E2816A1F200810D3C /* SettingNavigationBar.swift in Sources */,
 				0BDC74AF27F2F08300EB1BA5 /* Int+Calculate.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
 				0BDC74AD27F2EF3200EB1BA5 /* CGColor+Calculate.swift in Sources */,
@@ -1075,6 +1082,7 @@
 				0B97988E27CE53970021162A /* DaysCellViewModel.swift in Sources */,
 				0BB4352D279919AD00634E51 /* UIView+Ratio.swift in Sources */,
 				0B93D75228015659001C6DA0 /* YearMonthWeekDang.swift in Sources */,
+				0B09B59628151A7600810D3C /* SettingFirstStackView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
