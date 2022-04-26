@@ -6,42 +6,51 @@
 //
 
 import UIKit
+import RxSwift
 
 class OnboardingMasterViewController: UIViewController {
     
-    var viewModel = OnboardingViewModel()
     
-    var pageViewController = UIPageViewController(transitionStyle: .scroll,
-                                                  navigationOrientation: .horizontal)
-    var pageControl = UIPageControl()
-    var nextButton = UIButton()
-    var startButton = UIButton()
-    var currentIndex = 0 {
-        didSet {
-            if currentIndex == viewModel.viewControllers.count - 1 {
-                nextButton.isHidden = true
-                startButton.isHidden = false
-            } else {
-                nextButton.isHidden = false
-                startButton.isHidden = true
-            }
-        }
+    weak var coordinator: OnboardingCoordinator?
+    let viewModel: OnboardingViewModel
+    
+    private var pageViewController = UIPageViewController(transitionStyle: .scroll,
+                                                          navigationOrientation: .horizontal)
+    private var pageControl = UIPageControl()
+    private var nextButton = UIButton()
+    private var startButton = UIButton()
+    private let navi = UIViewController() // loginview될예정
+    
+    let disposeBag = DisposeBag()
+    
+    // MARK: - init
+    init(viewModel: OnboardingViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
-    let navi = UIViewController()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
+        setupViews()
+        bindCurrentPageIndexObservable()
         
+        navi.view.backgroundColor = .white
+        navi.title = "Login"
+    }
+    
+    private func setupViews() {
         setupPageViewController()
         setupPageControl()
         setupNextButton()
         setupStartButton()
-        
-        navi.view.backgroundColor = .white
-        navi.title = "Login"
     }
     
     private func setupPageViewController() {
@@ -76,16 +85,17 @@ class OnboardingMasterViewController: UIViewController {
         pageControl.currentPageIndicatorTintColor = .label
         pageControl.addTarget(self, action: #selector(pageChanged), for: .valueChanged)
     }
-    @objc func pageChanged() {
-        if currentIndex < pageControl.currentPage {
+    @objc private func pageChanged() {
+        if viewModel.currentPage < pageControl.currentPage {
             pageViewController.setViewControllers([viewModel.viewControllers[pageControl.currentPage]], direction: .forward, animated: true)
         } else {
             pageViewController.setViewControllers([viewModel.viewControllers[pageControl.currentPage]], direction: .reverse, animated: true)
         }
-        currentIndex = pageControl.currentPage
+        
+        viewModel.changeIndex(to: pageControl.currentPage)
     }
     
-    func setupNextButton() {
+    private func setupNextButton() {
         view.addSubview(nextButton)
         nextButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -99,7 +109,7 @@ class OnboardingMasterViewController: UIViewController {
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
-    func setupStartButton() {
+    private func setupStartButton() {
         view.addSubview(startButton)
         startButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -115,19 +125,30 @@ class OnboardingMasterViewController: UIViewController {
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
-    @objc func nextButtonTapped() {
-        guard currentIndex >= 0 && currentIndex < viewModel.viewControllers.count-1 else { return }
-        
-        currentIndex = currentIndex+1
-        pageViewController.setViewControllers([viewModel.viewControllers[currentIndex]], direction: .forward, animated: true)
-        pageControl.currentPage = currentIndex
-        
+    @objc private func nextButtonTapped() {
+        viewModel.nextIndex()
+        pageViewController.setViewControllers([viewModel.viewControllers[viewModel.currentPage]], direction: .forward, animated: true)
     }
     
     @objc func startButtonTapped() {
         viewModel.closeOnboardingView()
         navigationController?.pushViewController(navi, animated: true)
         self.presentingViewController?.dismiss(animated: false)
+    }
+    
+    func bindCurrentPageIndexObservable() {
+        viewModel.currentPageIndexObservable
+            .subscribe(onNext: { [unowned self] pageIndex in
+                pageControl.currentPage = pageIndex
+                if pageIndex == viewModel.viewControllers.count-1 {
+                    nextButton.isHidden = true
+                    startButton.isHidden = false
+                } else {
+                    startButton.isHidden = true
+                    nextButton.isHidden = false
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -151,8 +172,7 @@ extension OnboardingMasterViewController: UIPageViewControllerDataSource, UIPage
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if let currentPageViewController = pageViewController.viewControllers?.first as? OnboardingContentViewController {
             let index = viewModel.viewControllers.firstIndex(of: currentPageViewController)!
-            currentIndex = index
-            pageControl.currentPage = index
+            viewModel.changeIndex(to: index)
         }
     }
     
