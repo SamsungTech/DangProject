@@ -11,7 +11,7 @@ import RxSwift
 class OnboardingMasterViewController: UIViewController {
     
     
-    weak var coordinator: OnboardingCoordinator?
+    var coordinator: OnboardingCoordinator?
     let viewModel: OnboardingViewModel
     
     private var pageViewController = UIPageViewController(transitionStyle: .scroll,
@@ -19,7 +19,6 @@ class OnboardingMasterViewController: UIViewController {
     private var pageControl = UIPageControl()
     private var nextButton = UIButton()
     private var startButton = UIButton()
-    private let navi = UIViewController() // loginview될예정
     
     let disposeBag = DisposeBag()
     
@@ -42,8 +41,6 @@ class OnboardingMasterViewController: UIViewController {
         setupViews()
         bindCurrentPageIndexObservable()
         
-        navi.view.backgroundColor = .white
-        navi.title = "Login"
     }
     
     private func setupViews() {
@@ -132,8 +129,7 @@ class OnboardingMasterViewController: UIViewController {
     
     @objc func startButtonTapped() {
         viewModel.closeOnboardingView()
-        navigationController?.pushViewController(navi, animated: true)
-        self.presentingViewController?.dismiss(animated: false)
+        coordinator?.pushLoginView()
     }
     
     func bindCurrentPageIndexObservable() {

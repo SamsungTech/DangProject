@@ -14,8 +14,15 @@ class OnboardingCoordinator: NSObject, Coordinator {
         let diContainer = OnboardingDIContainer()
         let viewController = diContainer.makeOnboardingViewController()
         viewController.coordinator = self
-//        navigationController.delegate = self
+        navigationController.delegate = self
         navigationController.pushViewController(viewController, animated: false)
+    }
+    
+    func pushLoginView() {
+        let child = LoginCoordinator(navigationController: navigationController)
+        child.parentsCoordinator = self
+        childCoordinators.append(child)
+        child.start()
     }
     
     func childDidFinish(_ child: Coordinator?) {
@@ -28,18 +35,18 @@ class OnboardingCoordinator: NSObject, Coordinator {
     }
 
 }
-//extension SearchCoordinator: UINavigationControllerDelegate {
-//    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-//        guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from) else {
-//            return
-//        }
-//
-//        if navigationController.viewControllers.contains(fromViewController) {
-//            return
-//        }
-//
-//        if let detailFoodViewController = fromViewController as? DetailFoodViewController {
-//            childDidFinish(detailFoodViewController.coordinator)
-//        }
-//    }
-//}
+extension OnboardingCoordinator: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from) else {
+            return
+        }
+
+        if navigationController.viewControllers.contains(fromViewController) {
+            return
+        }
+
+        if let loginViewController = fromViewController as? LoginViewController {
+            childDidFinish(loginViewController.coordinator)
+        }
+    }
+}

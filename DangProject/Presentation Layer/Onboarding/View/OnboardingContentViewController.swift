@@ -10,7 +10,7 @@ import UIKit
 
 class OnboardingContentViewController: UIViewController {
     
-    var imageView = UIImageView()
+    private var imageView = UIImageView()
     var imageFile: String!
     var pageIndex: Int!
     
