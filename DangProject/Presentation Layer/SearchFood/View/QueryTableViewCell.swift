@@ -10,7 +10,7 @@ import UIKit
 
 class QueryTableViewCell: UITableViewCell {
     
-    let queryLabel = UILabel()
+    private let queryLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -22,7 +22,7 @@ class QueryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUpQueryLabel() {
+    private func setUpQueryLabel() {
         self.addSubview(queryLabel)
         queryLabel.translatesAutoresizingMaskIntoConstraints = false
         queryLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true

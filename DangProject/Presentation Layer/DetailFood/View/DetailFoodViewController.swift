@@ -7,6 +7,9 @@
 
 import Foundation
 import UIKit
+
+import RxSwift
+
 protocol DetailFoodParentable {
     func favoriteTapped(foodModel: FoodViewModel)
     func addFoodsAfter(food: AddFoodsViewModel)
@@ -33,29 +36,26 @@ class DetailFoodViewController: UIViewController {
         return imageView
     }()
     
-    let image = UIImage(named: "hand.png")
-    var favoriteButton = UIButton()
-    let sugarAmountLabel = UILabel()
-    let sugarLabel = UILabel()
-    let amountTextField = UITextField()
-    let amountPerButton = UIButton()
-    let amountPickerView = UIPickerView()
-    var pickerList: [String] = {
-        var arr: [String] = []
-        for i in 0...10 {
-            arr.append("\(i)")
-        }
-        return arr
-    }()
-    let pickerToolbar = UIToolbar()
-    let addButton = UIButton()
-    var addButtonTopConstraint: NSLayoutConstraint?
-    var amountPickerHeightConstraint: NSLayoutConstraint?
+    private let image = UIImage(named: "hand.png")
+    private var favoriteButton = UIButton()
+    private let totalSugarLabel = UILabel()
+    private let sugarLabel = UILabel()
+    private let amountTextField = UITextField()
+    private let amountPerButton = UIButton()
+    private let amountPickerView = UIPickerView()
+    
+    private let pickerToolbar = UIToolbar()
+    private let addButton = UIButton()
+    private var addButtonTopConstraint: NSLayoutConstraint?
+    private var amountPickerHeightConstraint: NSLayoutConstraint?
+    
+    let disposeBag = DisposeBag()
+    
     // MARK: - Init
     init(viewModel: DetailFoodViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-
+        
     }
     
     required init?(coder: NSCoder) {
@@ -65,6 +65,8 @@ class DetailFoodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpViews()
+        
+        setupBindings()
     }
     // MARK: - Set Views
     private func setUpViews() {
@@ -93,7 +95,7 @@ class DetailFoodViewController: UIViewController {
         favoriteButton.addTarget(self, action: #selector(favoriteButtonTapped), for: .touchUpInside)
     }
     
-    @objc func favoriteButtonTapped() {
+    @objc private func favoriteButtonTapped() {
         parentableViewController?.favoriteTapped(foodModel: viewModel.detailFood)
         viewModel.changeDetailFoodFavorite()
         favoriteButton.setImage(viewModel.detailFood.image, for: .normal)
@@ -125,20 +127,20 @@ class DetailFoodViewController: UIViewController {
     }
     
     private func setUpSugarAmountLabel() {
-        view.addSubview(sugarAmountLabel)
-        sugarAmountLabel.translatesAutoresizingMaskIntoConstraints = false
-        sugarAmountLabel.topAnchor.constraint(equalTo: indicatorImageView.bottomAnchor, constant: 25).isActive = true
-        sugarAmountLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        sugarAmountLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        sugarAmountLabel.text = viewModel.detailFood.sugar == "" ? "0g" : "\(viewModel.detailFood.sugar!)g"
-        sugarAmountLabel.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
-        sugarAmountLabel.textColor = UIColor.black
+        view.addSubview(totalSugarLabel)
+        totalSugarLabel.translatesAutoresizingMaskIntoConstraints = false
+        totalSugarLabel.topAnchor.constraint(equalTo: indicatorImageView.bottomAnchor, constant: 25).isActive = true
+        totalSugarLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        totalSugarLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        totalSugarLabel.text = viewModel.detailFood.sugar == "" ? "0g" : "\(viewModel.detailFood.sugar!)g"
+        totalSugarLabel.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
+        totalSugarLabel.textColor = UIColor.black
     }
     
     private func setUpSugarLabel() {
         view.addSubview(sugarLabel)
         sugarLabel.translatesAutoresizingMaskIntoConstraints = false
-        sugarLabel.topAnchor.constraint(equalTo: sugarAmountLabel.bottomAnchor).isActive = true
+        sugarLabel.topAnchor.constraint(equalTo: totalSugarLabel.bottomAnchor).isActive = true
         sugarLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         sugarLabel.text = "당분"
         sugarLabel.font = UIFont.systemFont(ofSize: 15)
@@ -186,23 +188,7 @@ class DetailFoodViewController: UIViewController {
     }
     
     @objc private func amountPerButtonTapped() {
-        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
-        addButtonTopConstraint?.isActive = false
-        amountPickerHeightConstraint?.isActive = false
-        if amountPickerView.frame.height == 0 {
-            amountPerButton.setImage(UIImage(systemName: "chevron.up", withConfiguration: imageConfiguration), for: .normal)
-            addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 220)
-            amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 200)
-        } else {
-            amountPerButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: imageConfiguration), for: .normal)
-            addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 10)
-            amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 0)
-        }
-        addButtonTopConstraint?.isActive = true
-        amountPickerHeightConstraint?.isActive = true
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.view.layoutIfNeeded()
-        }, completion: nil)
+        viewModel.changePickerViewWillActivated()
     }
     
     private func setUpAmountPickerView() {
@@ -239,41 +225,86 @@ class DetailFoodViewController: UIViewController {
         
         viewModel.addFoods(foods: .init(amount: amount,
                                         foodModel: viewModel.detailFood))
-
-        parentableViewController?.addFoodsAfter(food: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))
+        
         self.navigationController?.popViewController(animated: true)
+        parentableViewController?.addFoodsAfter(food: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))
     }
     
-    private func updateSugarLabelAndAnimation(amount: Double) {
-        UIView.animate(withDuration: 2.0, animations: { [self] in
-            self.arrowImageView.transform = CGAffineTransform(rotationAngle: viewModel.setSugarArrowAngle(amount: amount)*CGFloat.pi / 180)
+    private func startIndicatorAnimation(amount: Double) {
+        UIView.animate(withDuration: 2.0, animations: { [unowned self] in
+            arrowImageView.transform = CGAffineTransform(rotationAngle: viewModel.setSugarArrowAngle(amount: amount))
         })
-        sugarAmountLabel.text = viewModel.detailFood.sugar == "" ? "0g" : "\((Double(viewModel.detailFood.sugar!)!*amount).roundDecimal(to: 2))g"
-        // buttonSet
-        if amount == 0 {
-            addButton.backgroundColor = .systemGray4
-            addButton.isEnabled = false
-        } else {
-            addButton.backgroundColor = .systemBlue
-            addButton.isEnabled = true
-        }
     }
+    
+    private func startPickerViewAnimation(_ pickerIsActivated: Bool) {
+        addButtonTopConstraint?.isActive = false
+        amountPickerHeightConstraint?.isActive = false
+        
+        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
+        
+        if pickerIsActivated {
+            amountPerButton.setImage(UIImage(systemName: "chevron.up", withConfiguration: imageConfiguration), for: .normal)
+            addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 220)
+            amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 200)
+        } else {
+            amountPerButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: imageConfiguration), for: .normal)
+            addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 10)
+            amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 0)
+        }
+        addButtonTopConstraint?.isActive = true
+        amountPickerHeightConstraint?.isActive = true
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+        
+    }
+    
+    // MARK: - Bindings
+    private func setupBindings() {
+        bindPickerView()
+        bindDetailFood()
+    }
+    
+    private func bindPickerView() {
+        viewModel.pickerViewIsActivatedObservable
+//            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [unowned self] pickerIsActivated in
+                startPickerViewAnimation(pickerIsActivated)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindDetailFood() {
+        viewModel.detailFoodObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [unowned self] food in
+                totalSugarLabel.text = "\(viewModel.getTotalSugar())g"
+                amountTextField.text = "\(viewModel.amount)"
+                startIndicatorAnimation(amount: Double(viewModel.amount))
+                
+                if viewModel.amount == 0 {
+                    addButton.backgroundColor = .systemGray4
+                    addButton.isEnabled = false
+                } else {
+                    addButton.backgroundColor = .systemBlue
+                    addButton.isEnabled = true
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
     
 }
 // MARK: - Extension
 extension DetailFoodViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        if amountPickerView.frame.height == 0 {
-            return 0
-        } else {
-            return 2
-        }
+        return viewModel.numberOfComponents()
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch component {
-        case 0: return pickerList.count
+        case 0: return viewModel.pickerList.count
         case 1: return 1
         default:
             return 0
@@ -291,7 +322,7 @@ extension DetailFoodViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch component {
-        case 0: return pickerList[row]
+        case 0: return viewModel.pickerList[row]
         case 1: return amountPerButton.currentTitle
         default:
             return ""
@@ -299,13 +330,9 @@ extension DetailFoodViewController: UIPickerViewDelegate, UIPickerViewDataSource
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let amount = pickerList[row]
-        amountTextField.text = amount
+        let amount = viewModel.pickerList[row]
         
-        if let foodAmount = Double(amountTextField.text!) {
-            updateSugarLabelAndAnimation(amount: foodAmount)
-            sugarAmountLabel.text = viewModel.detailFood.sugar == "" ? "0g" : "\((Double(viewModel.detailFood.sugar!)!*foodAmount).roundDecimal(to: 2))g"
-        }
+        viewModel.amountChanged(amount: Int(amount) ?? 0)
     }
 }
 extension DetailFoodViewController: UITextFieldDelegate {
@@ -314,7 +341,7 @@ extension DetailFoodViewController: UITextFieldDelegate {
             amountTextField.text = "0"
         }
         guard let amount = Double(amountTextField.text!) else { return }
-        updateSugarLabelAndAnimation(amount: amount)
+        viewModel.amountChanged(amount: Int(amount))
         self.view.endEditing(true)
     }
 }

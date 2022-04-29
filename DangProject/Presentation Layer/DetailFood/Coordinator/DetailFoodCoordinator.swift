@@ -1,16 +1,8 @@
-//
-//  DetailFoodCoordinator.swift
-//  DangProject
-//
-//  Created by 김성원 on 2022/02/16.
-//
 
-import Foundation
 import UIKit
 
 class DetailFoodCoordinator: Coordinator {
     
-    weak var parentsCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     

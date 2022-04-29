@@ -1,11 +1,3 @@
-//
-//  SearchFoodCoordinator.swift
-//  DangProject
-//
-//  Created by 김성원 on 2022/02/03.
-//
-
-import Foundation
 import UIKit
 
 class SearchCoordinator: NSObject, Coordinator {
@@ -40,7 +32,6 @@ class SearchCoordinator: NSObject, Coordinator {
         let child = DetailFoodCoordinator(navigationController: navigationController,
                                           selectedFood: food,
                                           parentableViewController: viewController)
-        child.parentsCoordinator = self
         childCoordinators.append(child)
         child.start()
     }

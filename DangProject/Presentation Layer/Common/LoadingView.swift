@@ -1,11 +1,3 @@
-//
-//  LoadingView.swift
-//  DangProject
-//
-//  Created by 김성원 on 2022/02/08.
-//
-
-import Foundation
 import UIKit
 
 public class LoadingView {
@@ -17,7 +9,6 @@ public class LoadingView {
     }
     static func showLoading() {
         DispatchQueue.main.async {
-            // 최상단에 있는 window 객체 획득
             guard let window = UIApplication.shared.windows.last else { return }
             
             let loadingIndicatorView: UIActivityIndicatorView
@@ -25,9 +16,9 @@ public class LoadingView {
                 loadingIndicatorView = existedView
             } else {
                 loadingIndicatorView = UIActivityIndicatorView(style: .large)
-                /// 다른 UI가 눌리지 않도록 indicatorView의 크기를 full로 할당
+                
                 loadingIndicatorView.frame = window.safeAreaLayoutGuide.layoutFrame
-                // 이 frame을 건드려야되는데..
+
                 loadingIndicatorView.color = .darkGray
                 window.addSubview(loadingIndicatorView)
             }

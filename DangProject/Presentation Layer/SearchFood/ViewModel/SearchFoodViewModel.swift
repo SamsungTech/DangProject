@@ -34,7 +34,6 @@ struct FoodViewModel {
     let sugar: String?
     let code: String?
     var image: UIImage?
-//    var amount = 1
     
     init (name: String, sugar: String, code: String, image: UIImage) {
         self.name = name

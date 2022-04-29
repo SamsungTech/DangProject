@@ -25,9 +25,10 @@ class MainCoordinator: Coordinator {
     }
     
     // MARK: - First Start
-    lazy var homeViewController = UINavigationController()
-    lazy var preferenceViewController = UINavigationController()
-    lazy var searchViewController = UINavigationController()
+    var homeViewController = UINavigationController()
+    var preferenceViewController = UINavigationController()
+    var searchViewController = UINavigationController()
+    lazy var onboardingNavigationViewContoller = UINavigationController()
     
     func start() {
 
@@ -37,10 +38,12 @@ class MainCoordinator: Coordinator {
         homeCoordinator.start()
         
         let preferenceCoordinator = PreferenceCoordinator(navigationController: UINavigationController())
+        childCoordinators.append(preferenceCoordinator)
         preferenceViewController = preferenceCoordinator.navigationController
         preferenceCoordinator.start()
         
         let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
+        childCoordinators.append(searchCoordinator)
         searchViewController = searchCoordinator.navigationController
         searchCoordinator.start()
     }
@@ -54,14 +57,15 @@ class MainCoordinator: Coordinator {
         let userDefaults = UserDefaults.standard
         userDefaults.set(false, forKey: UserInfoKey.onboarding)
         if userDefaults.bool(forKey: UserInfoKey.onboarding) == false {
-            let navigationView = UINavigationController()
-            navigationView.modalPresentationStyle = .fullScreen
-            
-            let onboardingView = OnboardingMasterViewController()
-            navigationView.pushViewController(onboardingView, animated: false)
-            
-            homeViewController.present(navigationView, animated: false)
+            startOnboarding()
         }
+    }
+    
+    func startOnboarding() {
+        onboardingNavigationViewContoller.modalPresentationStyle = .fullScreen
+        let onboardingCoordinator = OnboardingCoordinator(navigationController: onboardingNavigationViewContoller)
+        onboardingCoordinator.start()
+        homeViewController.present(onboardingNavigationViewContoller, animated: false)
     }
     
 }

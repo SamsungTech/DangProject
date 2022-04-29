@@ -112,10 +112,10 @@ class SearchViewModel: SearchViewModelProtocol {
         loading.onNext(.startLoading)
     }
     
-    private func searchResultTextDidChanged(text: String) {
-        // debounce 여기
-        
-    }
+//    private func searchResultTextDidChanged(text: String) {
+//        // debounce 여기
+//        
+//    }
     func favoriteSearchBarScopeTapped() {
         scopeState = .favorites
         favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()

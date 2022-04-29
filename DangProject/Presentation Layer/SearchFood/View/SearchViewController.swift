@@ -19,7 +19,7 @@ class SearchViewController: UIViewController {
         }
     }
     
-    var coordinator: SearchCoordinator?
+    weak var coordinator: SearchCoordinator?
     
     let viewModel: SearchViewModel
     let searchController = UISearchController(searchResultsController: nil)
@@ -53,7 +53,6 @@ class SearchViewController: UIViewController {
         setUpRecentLabel()
         setUpQueryResultTableView()
         setUpEraseAllQueryButton()
-//        CoreDataManager.shared.deleteAll(request: EatenFoods.fetchRequest())
     }
     
     private func setUpBackground() {
@@ -103,6 +102,7 @@ class SearchViewController: UIViewController {
     private func setUpSearchingPreferenceViews() {
         setUpSearchController()
         setUpSearchResultTableView()
+        setUpAddCompleteToastLabel()
     }
     
     private func setUpSearchController() {
@@ -129,7 +129,7 @@ class SearchViewController: UIViewController {
     }
     
     private func setUpAddCompleteToastLabel() {
-        view.addSubview(addCompleteToastLabel)
+        searchResultTableView.addSubview(addCompleteToastLabel)
         view.bringSubviewToFront(addCompleteToastLabel)
         addCompleteToastLabel.translatesAutoresizingMaskIntoConstraints = false
         addCompleteLabelTopConstraint = addCompleteToastLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
@@ -143,9 +143,10 @@ class SearchViewController: UIViewController {
         addCompleteToastLabel.roundCorners(cornerRadius: 15)
         addCompleteToastLabel.numberOfLines = 0
         addCompleteToastLabel.alpha = 0.7
+
     }
     
-    private func addCompleteLabelAnimation(name: String, amount: String) {
+    func addCompleteLabelAnimation(name: String, amount: String) {
         addCompleteToastLabel.text = "\(name) \(amount)개가 추가됐습니다."
         
         UIView.animate(withDuration: 0.5,
@@ -153,10 +154,10 @@ class SearchViewController: UIViewController {
                        usingSpringWithDamping: 0.5,
                        initialSpringVelocity: 0.5,
                        options: .curveEaseInOut, animations: { [unowned self] in
-            self.addCompleteLabelTopConstraint.isActive = false
-            self.addCompleteLabelTopConstraint = self.addCompleteToastLabel.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80)
-            self.addCompleteLabelTopConstraint.isActive = true
-            self.view.layoutIfNeeded()
+            addCompleteLabelTopConstraint.isActive = false
+            addCompleteLabelTopConstraint = addCompleteToastLabel.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
+            addCompleteLabelTopConstraint.isActive = true
+            view.layoutIfNeeded()
         }, completion: { _ in
             self.popAddCompleteToastLabel()
         })
@@ -180,7 +181,6 @@ class SearchViewController: UIViewController {
         bindSearchResultTableView()
         bindLoading()
         bindQueryTableView()
-        setUpAddCompleteToastLabel()
     }
     
     private func bindSearchResultTableView() {
