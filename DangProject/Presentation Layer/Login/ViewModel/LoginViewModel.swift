@@ -42,9 +42,9 @@ class LoginViewModel {
         firebaseFireStoreUseCase.profileExistenceObservable
             .subscribe(onNext: { [unowned self] isExist in
                 if isExist {
-                    profileExistenceObservable.accept(isExist)
+                    profileExistenceObservable.accept(true)
                 } else {
-                    profileExistenceObservable.accept(!isExist)
+                    profileExistenceObservable.accept(false)
                 }
             })
             .disposed(by: disposeBag)

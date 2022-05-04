@@ -6,7 +6,7 @@
 //
 import UIKit
 
-class TabbarCoordinator: NSObject, Coordinator {
+class TabBarCoordinator: NSObject, Coordinator {
     
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
@@ -16,7 +16,6 @@ class TabbarCoordinator: NSObject, Coordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-    
     
     func start() {
         let homeCoordinator = HomeCoordinator(navigationController: UINavigationController())

@@ -28,14 +28,14 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        guard let userDefaultsUid = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
 
-        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUid){ onboardingIsDone in
+        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID){ onboardingIsDone in
             if !onboardingIsDone {
                 self.startOnboarding()
             }
-            self.checkUID(userDefaultUID: userDefaultsUid)
-        }
+            self.checkUID(userDefaultUID: userDefaultsUID)
+        }        
     }
     
     func checkUID(userDefaultUID: String) {
@@ -50,7 +50,7 @@ class AppCoordinator: Coordinator {
     }
     
     func startTabbar() {
-        let tabbarCoordinator = TabbarCoordinator(navigationController: navigationController)
+        let tabbarCoordinator = TabBarCoordinator(navigationController: navigationController)
         childCoordinators.append(tabbarCoordinator)
         tabbarCoordinator.start()
     }

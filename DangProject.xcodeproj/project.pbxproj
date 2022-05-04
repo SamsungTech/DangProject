@@ -52,7 +52,7 @@
 		7CB2F923281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F922281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift */; };
 		7CB2F925281FCEE5005797C7 /* FireStoreManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F924281FCEE5005797C7 /* FireStoreManagerRepository.swift */; };
 		7CB2F92728210405005797C7 /* ProfileDomainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F92628210405005797C7 /* ProfileDomainModel.swift */; };
-		7CB2F9292822347B005797C7 /* TabbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F9282822347B005797C7 /* TabbarCoordinator.swift */; };
+		7CB2F9292822347B005797C7 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F9282822347B005797C7 /* TabBarCoordinator.swift */; };
 		7CD6C08C28196C5A001979D0 /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08B28196C5A001979D0 /* LoginCoordinator.swift */; };
 		7CD6C08E28196C8E001979D0 /* LoginDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08D28196C8E001979D0 /* LoginDIContainer.swift */; };
 		7CD6C09028196CD8001979D0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08F28196CD8001979D0 /* LoginViewController.swift */; };
@@ -75,6 +75,7 @@
 		7CF74A3728153CFA00510817 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF74A3628153CFA00510817 /* OnboardingCoordinator.swift */; };
 		7CF74A3A28165C8F00510817 /* OnboardingDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */; };
 		7CFADB172822650F0038E419 /* CoordinatorFinishDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */; };
+		7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */; };
 		7CFB399327FFF58800AE99E3 /* OnboardingMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */; };
 		7CFB399527FFF7E200AE99E3 /* UserInfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */; };
 		7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */; };
@@ -140,7 +141,7 @@
 		7CB2F922281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFireStoreManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F924281FCEE5005797C7 /* FireStoreManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F92628210405005797C7 /* ProfileDomainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDomainModel.swift; sourceTree = "<group>"; };
-		7CB2F9282822347B005797C7 /* TabbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarCoordinator.swift; sourceTree = "<group>"; };
+		7CB2F9282822347B005797C7 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
 		7CD6C08528191BB4001979D0 /* DangProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DangProject.entitlements; sourceTree = "<group>"; };
 		7CD6C08B28196C5A001979D0 /* LoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCoordinator.swift; sourceTree = "<group>"; };
 		7CD6C08D28196C8E001979D0 /* LoginDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDIContainer.swift; sourceTree = "<group>"; };
@@ -165,6 +166,7 @@
 		7CF74A3628153CFA00510817 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
 		7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDIContainer.swift; sourceTree = "<group>"; };
 		7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorFinishDelegate.swift; sourceTree = "<group>"; };
+		7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCurrentTimeUseCase.swift; sourceTree = "<group>"; };
 		7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OnboardingMasterViewController.swift; path = "DangProject/Presentation Layer/Onboarding/OnboardingMasterViewController.swift"; sourceTree = SOURCE_ROOT; };
 		7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoKey.swift; sourceTree = "<group>"; };
 		7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingContentViewController.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */,
 				7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */,
 				7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */,
+				7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -455,14 +458,13 @@
 		7C9B9D7B27A0DD7D0046F22C /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				7CFADB182822B2100038E419 /* TabBar */,
 				7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */,
 				7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */,
 				0B1F4A78277076FC0006B9CF /* AppDelegate.swift */,
 				0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */,
 				7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */,
 				7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */,
-				7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */,
-				7CB2F9282822347B005797C7 /* TabbarCoordinator.swift */,
 				7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */,
 			);
 			path = Application;
@@ -715,6 +717,15 @@
 			path = DIContainer;
 			sourceTree = "<group>";
 		};
+		7CFADB182822B2100038E419 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				7CB2F9282822347B005797C7 /* TabBarCoordinator.swift */,
+				7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		7CFB399027FFF55D00AE99E3 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -952,6 +963,7 @@
 				7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */,
 				7CE61DA427DC4074003341E7 /* EatenFoods+CoreDataClass.swift in Sources */,
 				7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */,
+				7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */,
 				7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */,
 				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				7CF058DA2813CA4A00540ACE /* Double+Calculate.swift in Sources */,
@@ -998,7 +1010,7 @@
 				7C9B9D7D27A0DDB10046F22C /* AppCoordinator.swift in Sources */,
 				7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */,
 				7CB2F91F281FC1B5005797C7 /* FirebaseAuthUseCase.swift in Sources */,
-				7CB2F9292822347B005797C7 /* TabbarCoordinator.swift in Sources */,
+				7CB2F9292822347B005797C7 /* TabBarCoordinator.swift in Sources */,
 				7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
