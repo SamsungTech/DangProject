@@ -9,7 +9,7 @@ import Foundation
 
 import RxSwift
 
-class FetchFoodRepository: FetchRepository {
+class DefaultFetchRepository: FetchRepository {
   
     let fetchDataService: FetchDataService
     var foodDomainModelObservable = PublishSubject<[FoodDomainModel]>() 

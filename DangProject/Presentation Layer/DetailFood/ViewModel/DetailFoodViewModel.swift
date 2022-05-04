@@ -64,13 +64,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     }
     // MARK: - Output
     
-    var pickerList: [String] = {
-        var arr: [String] = []
-        for i in 0...10 {
-            arr.append("\(i)")
-        }
-        return arr
-    }()
+    var pickerList: [String] = [Int](0...10).map{("\($0)")}
     
     func setSugarArrowAngle(amount: Double) -> CGFloat {
         guard let sugar = detailFood.sugar else { return 0 }

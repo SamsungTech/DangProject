@@ -10,6 +10,7 @@ target ‘DangProject’ do
   pod ‘RxGesture’
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
+
   # Pods for DangProject
   target ‘DangProjectTests’ do
     inherit! :search_paths

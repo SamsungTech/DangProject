@@ -13,8 +13,8 @@ enum CoreDataName: String {
     case eatenFoods = "EatenFoods"
 }
 
-class CoreDataManager {
-    static let shared: CoreDataManager = CoreDataManager()
+class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
+//    static let shared: CoreDataManager = CoreDataManager()
     
     private let appDelegate = UIApplication.shared.delegate as? AppDelegate
     private lazy var context = appDelegate?.persistentContainer.viewContext
@@ -106,7 +106,7 @@ class CoreDataManager {
         return false
     }
 
-
+    @discardableResult
     func deleteAll<T: NSManagedObject>(request: NSFetchRequest<T>) -> Bool {
         let request: NSFetchRequest<NSFetchRequestResult> = T.fetchRequest()
         let delete = NSBatchDeleteRequest(fetchRequest: request)
