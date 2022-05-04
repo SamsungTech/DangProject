@@ -8,7 +8,14 @@
 import Foundation
 
 class AddFoodsUseCase {
+    
+    let coreDataManagerRepository: CoreDataManagerRepository
+    
+    init(coreDataManagerRepository: CoreDataManagerRepository) {
+        self.coreDataManagerRepository = coreDataManagerRepository
+    }
+    
     func addEatenFoods(food: FoodDomainModel) {
-        CoreDataManager.shared.addFoods(food, at: CoreDataName.eatenFoods)
+        coreDataManagerRepository.addFoods(food, at: CoreDataName.eatenFoods)
     }
 }

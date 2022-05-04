@@ -8,14 +8,20 @@ import Foundation
 
 class ChangeFavoriteUseCase {
     
+    let coreDataManagerRepository: CoreDataManagerRepository
+    
+    init(coreDataManagerRepository: CoreDataManagerRepository) {
+        self.coreDataManagerRepository = coreDataManagerRepository
+    }
+    
     func changeFavorite(food: FoodDomainModel, completion: @escaping()->Void) {
         var tempFood = food
         tempFood.favorite = !food.favorite
         if food.favorite == false {
-            CoreDataManager.shared.addFoods(food, at: CoreDataName.favoriteFoods)
+            coreDataManagerRepository.addFoods(food, at: CoreDataName.favoriteFoods)
         }
         else {
-            CoreDataManager.shared.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())
+            coreDataManagerRepository.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())
         }
         completion()
     }

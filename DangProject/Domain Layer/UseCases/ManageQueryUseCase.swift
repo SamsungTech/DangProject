@@ -8,25 +8,32 @@
 import Foundation
 
 class ManageQueryUseCase {
+    
+    let coreDataManagerRepository: CoreDataManagerRepository
+    
+    init(coreDataManagerRepository: CoreDataManagerRepository) {
+        self.coreDataManagerRepository = coreDataManagerRepository
+    }
+    
     func addQueryOnCoreData(keyword: String, completion: @escaping ()-> Void) {
         checkQueryWithCoreData(keyword: keyword)
-        CoreDataManager.shared.addRecentQuery(keyword)
+        coreDataManagerRepository.addRecentQuery(keyword)
         completion()
     }
     
     func checkQueryWithCoreData(keyword: String) {
-        let savedQuery = CoreDataManager.shared.loadFromCoreData(request: RecentQuery.fetchRequest())
+        let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
         
         savedQuery.forEach{ query in
             if query.keyWord == keyword {
-                CoreDataManager.shared.deleteQuery(at: query.keyWord!, request: RecentQuery.fetchRequest())
+                coreDataManagerRepository.deleteQuery(at: query.keyWord!, request: RecentQuery.fetchRequest())
             }
         }
     }
     
     func loadQuery() -> [String]  {
         var resultQuery: [String] = []
-        let savedQuery = CoreDataManager.shared.loadFromCoreData(request: RecentQuery.fetchRequest())
+        let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
         savedQuery.forEach{ query in
             resultQuery.append(query.keyWord!)
         }
@@ -34,6 +41,6 @@ class ManageQueryUseCase {
     }
     
     func deleteAllQuery() {
-        CoreDataManager.shared.deleteAll(request: RecentQuery.fetchRequest())
+        coreDataManagerRepository.deleteAll(request: RecentQuery.fetchRequest())
     }
 }

@@ -23,6 +23,11 @@ class DetailFoodDIContainer {
     }
     
     func makeAddFoodsUseCase() -> AddFoodsUseCase {
-        return AddFoodsUseCase()
+        return AddFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
+    }
+
 }

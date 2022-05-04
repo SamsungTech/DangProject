@@ -11,10 +11,15 @@ import RxSwift
 
 class FetchFavoriteFoodsUseCase {
     
+    let coreDataManagerRepository: CoreDataManagerRepository
     let disposeBag = DisposeBag()
     
+    init(coreDataManagerRepository: CoreDataManagerRepository) {
+        self.coreDataManagerRepository = coreDataManagerRepository
+    }
+    
     func fetchFavoriteFoods() -> SearchFoodViewModel {
-        let favoriteFoods = CoreDataManager.shared.loadFromCoreData(request: FavoriteFoods.fetchRequest())
+        let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: FavoriteFoods.fetchRequest())
         var tempFoodViewModel: [FoodViewModel] = []
         
         favoriteFoods.forEach {
@@ -25,6 +30,6 @@ class FetchFavoriteFoodsUseCase {
     }
     
     func delete() {
-        CoreDataManager.shared.deleteAll(request: FavoriteFoods.fetchRequest())
+        coreDataManagerRepository.deleteAll(request: FavoriteFoods.fetchRequest())
     }
 }

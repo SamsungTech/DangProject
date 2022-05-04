@@ -12,6 +12,7 @@ import RxSwift
 class SearchUseCase {
     
     let fetchFoodRepository: FetchRepository
+    let coreDataManagerRepository: CoreDataManagerRepository
     
     var originalDomainFoodModels: [FoodDomainModel] = []
     var foodResultModelObservable = PublishSubject<SearchFoodViewModel>()
@@ -19,8 +20,10 @@ class SearchUseCase {
     
     let disposeBag = DisposeBag()
     
-    init(fetchFoodRepository: FetchRepository) {
+    init(fetchFoodRepository: FetchRepository,
+         coreDataManagerRepository: CoreDataManagerRepository) {
         self.fetchFoodRepository = fetchFoodRepository
+        self.coreDataManagerRepository = coreDataManagerRepository
         bindToFoodDomainModelObservable()
     }
     
@@ -29,7 +32,7 @@ class SearchUseCase {
         fetchFoodRepository.fetchToDomainModel(text: text)
     }
     
-    func bindToFoodDomainModelObservable() {
+    private func bindToFoodDomainModelObservable() {
         fetchFoodRepository.foodDomainModelObservable
             .subscribe(onNext: { [self] foods in
                 originalDomainFoodModels = foods
@@ -42,7 +45,7 @@ class SearchUseCase {
         var currentDomainFoodModels: [FoodDomainModel] = []
         currentDomainFoodModels = originalDomainFoodModels
         
-        let favoriteFoods = CoreDataManager.shared.loadFromCoreData(request: FavoriteFoods.fetchRequest())
+        let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: FavoriteFoods.fetchRequest())
         
         originalDomainFoodModels.forEach { food in
             favoriteFoods.forEach { favoriteFood in

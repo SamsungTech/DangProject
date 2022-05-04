@@ -267,7 +267,7 @@ class DetailFoodViewController: UIViewController {
     
     private func bindPickerView() {
         viewModel.pickerViewIsActivatedObservable
-//            .observe(on: MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] pickerIsActivated in
                 startPickerViewAnimation(pickerIsActivated)
             })
