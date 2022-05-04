@@ -10,12 +10,16 @@ import Foundation
 class AddFoodsUseCase {
     
     let coreDataManagerRepository: CoreDataManagerRepository
+    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
     
-    init(coreDataManagerRepository: CoreDataManagerRepository) {
+    init(coreDataManagerRepository: CoreDataManagerRepository,
+         firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
         self.coreDataManagerRepository = coreDataManagerRepository
+        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
     }
     
-    func addEatenFoods(food: FoodDomainModel) {
+    func addEatenFoods(food: FoodDomainModel, currentDate: DateComponents) {
         coreDataManagerRepository.addFoods(food, at: CoreDataName.eatenFoods)
+        firebaseFireStoreUseCase.upLoadEatenFood(eatenFood: food, currentDate: currentDate)
     }
 }

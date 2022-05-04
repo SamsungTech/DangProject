@@ -14,7 +14,7 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     func saveFirebaseUIDDocument(uid: String) {
         
-        let uidData = ["firebaeUID": uid]
+        let uidData = ["firebaseUID": uid]
         database.collection("users").document(uid).setData(uidData) { error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
@@ -45,8 +45,32 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                     return
                 }
             }
+    }
+    
+    func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+        let eatenFoodData = [
+            "name": eatenFood.name,
+            "sugar": eatenFood.sugar,
+            "foodCode": eatenFood.foodCode,
+            "favorite": eatenFood.favorite,
+            "amount": eatenFood.amount
+        ] as [String : Any]
         
-        
+        database.collection("app")
+            .document(userDefaultsUID)
+            .collection("foods")
+            .document("eatenFoods")
+            .collection("\(currentDate.year!)년")
+            .document("\(currentDate.month!)월")
+            .collection("\(currentDate.day!)일")
+            .document("\(eatenFood.name)")
+            .setData(eatenFoodData) { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+            }
     }
     
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void) {
@@ -75,8 +99,9 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 return
             }
             if let result = snapshot?.data() {
-                let string = result.values.map{ "\($0)"}
-                completion(string[0])
+                if let resultUID = result["firebaseUID"] {
+                    completion(resultUID as! String)
+                }
             }
         }
     }

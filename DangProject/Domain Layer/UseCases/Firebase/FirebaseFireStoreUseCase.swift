@@ -36,4 +36,8 @@ class FirebaseFireStoreUseCase {
             }
         }
     }
+    
+    func upLoadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
+        fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood, currentDate: currentDate)
+    }
 }

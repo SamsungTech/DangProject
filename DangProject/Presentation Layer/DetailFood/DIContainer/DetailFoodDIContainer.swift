@@ -19,15 +19,30 @@ class DetailFoodDIContainer {
     }
     
     func makeDetailFoodViewModel() -> DetailFoodViewModel {
-        return DetailFoodViewModel(detailFood: selectedFood, addFoodsUseCase: makeAddFoodsUseCase())
+        return DetailFoodViewModel(detailFood: selectedFood,
+                                   addFoodsUseCase: makeAddFoodsUseCase(),
+                                   checkCurrentTimeUseCase: makeCheckCurrentTimeUseCase())
     }
     
     func makeAddFoodsUseCase() -> AddFoodsUseCase {
-        return AddFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
+        return AddFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                               firebaseFireStoreUseCase: makeFireBaseFireStoreUseCase())
     }
     
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
+    }
+    
+    func makeFireBaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
+        return FirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    }
+    
+    func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
+    }
+    
+    func makeCheckCurrentTimeUseCase() -> CheckCurrentTimeUseCase {
+        return CheckCurrentTimeUseCase()
     }
 
 }

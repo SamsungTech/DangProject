@@ -10,11 +10,9 @@ import Foundation
 protocol FireStoreManagerRepository {
     
     func saveFirebaseUIDDocument(uid: String)
-    
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)
-    
     func saveProfileDocument(profile: ProfileDomainModel)
-    
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
+    func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents)
     
 }

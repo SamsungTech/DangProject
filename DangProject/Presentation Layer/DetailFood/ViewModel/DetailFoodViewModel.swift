@@ -32,11 +32,15 @@ protocol DetailFoodViewModelProtocol: DetailFoodViewModelInput, DetailFoodViewMo
 class DetailFoodViewModel: DetailFoodViewModelProtocol {
     
     // MARK: - Init
-    var addFoodsUseCase: AddFoodsUseCase
     var detailFood: FoodViewModel
-    init(detailFood: FoodViewModel, addFoodsUseCase: AddFoodsUseCase) {
+    let addFoodsUseCase: AddFoodsUseCase
+    let checkCurrentTimeUseCase: CheckCurrentTimeUseCase
+    init(detailFood: FoodViewModel,
+         addFoodsUseCase: AddFoodsUseCase,
+         checkCurrentTimeUseCase: CheckCurrentTimeUseCase) {
         self.detailFood = detailFood
         self.addFoodsUseCase = addFoodsUseCase
+        self.checkCurrentTimeUseCase = checkCurrentTimeUseCase
     }
     // MARK: - Input
     var amount: Int = 1
@@ -50,7 +54,9 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     }
     
     func addFoods(foods: AddFoodsViewModel) {
-        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
+        let date = checkCurrentTimeUseCase.dateTimeComponents
+        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods), currentDate: date)
+        
     }
     
     func changePickerViewWillActivated() {
