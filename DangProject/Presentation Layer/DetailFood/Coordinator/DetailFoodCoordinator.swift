@@ -23,4 +23,8 @@ class DetailFoodCoordinator: Coordinator {
         viewController.parentableViewController = parentableViewController
         navigationController.pushViewController(viewController, animated: true)
     }
+    
+    func popViewController() {
+        navigationController.popViewController(animated: true)
+    }
 }

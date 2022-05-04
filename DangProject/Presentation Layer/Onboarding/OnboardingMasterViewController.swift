@@ -128,8 +128,7 @@ class OnboardingMasterViewController: UIViewController {
     }
     
     @objc func startButtonTapped() {
-//        coordinator?.pushLoginView()
-        self.dismiss(animated: true)
+        coordinator?.dissmiss()
     }
     
     func bindCurrentPageIndexObservable() {

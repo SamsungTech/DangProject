@@ -225,9 +225,8 @@ class DetailFoodViewController: UIViewController {
         
         viewModel.addFoods(foods: .init(amount: amount,
                                         foodModel: viewModel.detailFood))
-        
-        self.navigationController?.popViewController(animated: true)
         parentableViewController?.addFoodsAfter(food: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))
+        coordinator?.popViewController()
     }
     
     private func startIndicatorAnimation(amount: Double) {
