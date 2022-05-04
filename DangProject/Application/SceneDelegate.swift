@@ -10,31 +10,19 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    var coordinator: MainCoordinator?
+    var coordinator: AppCoordinator?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let navigationController = UINavigationController()
         
-        coordinator = MainCoordinator(navigationController: navigationController)
-        
-        coordinator?.start()
-        guard let homeViewController = coordinator?.homeViewController,
-              let preferenceViewController = coordinator?.preferenceViewController,
-              let searchViewController = coordinator?.searchViewController
-        else { return }
-        
         window = UIWindow(windowScene: windowScene)
-        let initialViewController = TabBarController(homeTab: homeViewController,
-                                                     prefrenceTab: preferenceViewController,
-                                                     searchViewController: searchViewController)
-        initialViewController.coordinator = coordinator
-        window?.rootViewController = initialViewController
-        
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
-        coordinator?.checkFirstRun() // onboarding check
+        coordinator = AppCoordinator(navigationController: navigationController)
+        coordinator?.start()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

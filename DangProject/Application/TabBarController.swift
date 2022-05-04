@@ -63,7 +63,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         guard let currentViewController = viewControllers?[selectedIndex] else {
             return
         }
-        (coordinator as? MainCoordinator)?.presentSearchViewController(viewController: currentViewController)
+        (coordinator as? TabbarCoordinator)?.presentSearchViewController(viewController: currentViewController)
     }
 }
 
