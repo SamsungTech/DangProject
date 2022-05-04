@@ -20,14 +20,7 @@ class LoginCoordinator: NSObject, Coordinator {
         navigationController.delegate = self
         navigationController.viewControllers = [viewController]
     }
-    
-    
-//    func pushInputPersonalInformationView() {
-//        let child = InputPersonalInformationCoordinator(navigationController: navigationController)
-//        childCoordinators.append(child)
-//        child.start()
-//    }
-    
+
     func childDidFinish(_ child: Coordinator?) {
         for (index, coordinator) in childCoordinators.enumerated() {
             if coordinator === child {

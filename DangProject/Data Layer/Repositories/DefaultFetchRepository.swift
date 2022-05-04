@@ -28,7 +28,6 @@ class DefaultFetchRepository: FetchRepository {
     func bindToFoodInfoObservable() {
         fetchDataService.foodInfoObservable
             .subscribe(onNext: { [self] foods in
-                //여기서 entity -> domainModel - DTO
                 let foodDomainModel = foods.map({ FoodDomainModel.init($0)})
                 foodDomainModelObservable.onNext(foodDomainModel)
             })

@@ -313,12 +313,6 @@ extension SearchViewController: TableViewCellDelegate {
 extension SearchViewController: DetailFoodParentable {
     func addFoodsAfter(food: AddFoodsViewModel) {
         addCompleteLabelAnimation(name: (food.foodModel?.name)!, amount: String(food.amount))
-        
-        // next action
-//        let eatenFoods = CoreDataManager.shared.loadFromCoreData(request: EatenFoods.fetchRequest())
-//        eatenFoods.forEach {
-//            print($0.name, $0.amount)
-//        }
     }
     
     func favoriteTapped(foodModel: FoodViewModel) {
