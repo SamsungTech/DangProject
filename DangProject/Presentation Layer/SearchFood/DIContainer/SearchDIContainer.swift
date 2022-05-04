@@ -21,21 +21,26 @@ class SearchDIContainer {
     }
     
     func makeSearchUseCase() -> SearchUseCase {
-        return SearchUseCase(fetchFoodRepository: makeFetchRepository())
+        return SearchUseCase(fetchFoodRepository: makeFetchRepository(),
+                             coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     
     func makeFetchFoodsUseCase() -> FetchFavoriteFoodsUseCase {
-        return FetchFavoriteFoodsUseCase()
+        return FetchFavoriteFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     func makeChangeFavoriteUseCase() -> ChangeFavoriteUseCase {
-        return ChangeFavoriteUseCase()
+        return ChangeFavoriteUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     func makeManageQueryUseCase() -> ManageQueryUseCase {
-        return ManageQueryUseCase()
+        return ManageQueryUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     
     func makeFetchRepository() -> FetchRepository {
-        return FetchFoodRepository(fetchDataService: makeRemoteDataService())
+        return DefaultFetchRepository(fetchDataService: makeRemoteDataService())
+    }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
             
     func makeRemoteDataService() -> FetchDataService {

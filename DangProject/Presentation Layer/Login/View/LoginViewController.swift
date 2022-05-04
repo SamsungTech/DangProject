@@ -10,17 +10,19 @@ import CryptoKit
 import Foundation
 import UIKit
 
+import RxSwift
+
 class LoginViewController: UIViewController {
     
     weak var coordinator: LoginCoordinator?
     let viewModel: LoginViewModel
-    let firebaseAuthManager: FirebaseAuthManager
     fileprivate var currentNonce: String?
+    var coordinatorFinishDelegate: CoordinatorFinishDelegate?
     
+    let disposBag = DisposeBag()
     // MARK: - Init
-    init(viewModel: LoginViewModel, firebaseAuthManager: FirebaseAuthManager) {
+    init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
-        self.firebaseAuthManager = firebaseAuthManager
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,6 +35,7 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupAppleLoginButton()
+        bindSignInObservable()
     }
     
     private func setupAppleLoginButton() {
@@ -48,6 +51,18 @@ class LoginViewController: UIViewController {
             ])
             appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
         }
+    }
+    
+    private func bindSignInObservable() {
+        viewModel.profileExistenceObservable
+            .subscribe(onNext: { [unowned self] profileIsExist in
+                if profileIsExist {
+                    coordinatorFinishDelegate?.switchViewController(to: .tabBar)
+                } else {
+                    coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation)
+                }
+            })
+            .disposed(by: disposBag)
     }
     
     
@@ -130,22 +145,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
                 return
             }
-            
-            firebaseAuthManager.signInFirebaseAuth(providerID: "apple.com",
-                                                   idToken: idTokenString,
-                                                   rawNonce: nonce) { [weak self] (success, completionMessage) in
-                guard let `self` = self else { return }
-                
-                if (success) {
-                    print(completionMessage)
-                    self.dismiss(animated: false)
-                    
-                } else {
-                    print(completionMessage)
-                    return
-                }
-                
-            }
+            viewModel.signIn(providerID: "apple.com", idToken: idTokenString, rawNonce: nonce)
         }
     }
     

@@ -1,0 +1,87 @@
+//
+//  InputPersonalInformationViewModel.swift
+//  DangProject
+//
+//  Created by 김성원 on 2022/04/30.
+//
+import Foundation
+
+import RxSwift
+import RxRelay
+
+class InputPersonalInformationViewModel {
+    let heights: [String] = [Int](120...200).map{("\($0)")}
+    let weights: [String] = [Int](30...150).map{("\($0)")}
+    let sugars: [String] = ["10", "20", "30", "40", "50"]
+    
+    lazy var imageValue = UIImage()
+    lazy var heightValue = Int()
+    lazy var weightValue = Int()
+    lazy var sugarValue = Int()
+    
+    let numberOfComponents: [Int] = [2,2,1]
+    lazy var numberOfRowsInComponents: [[Int]] = [[heights.count, 1],[weights.count, 1],[sugars.count]]
+    lazy var pickerViewValues: [[[String]]] = [[heights,["cm"]],[weights,["kg"]], [sugars]]
+    
+    var heightObservable = PublishRelay<Int>()
+    var weightObservable = PublishRelay<Int>()
+    var sugarObservable = PublishRelay<Int>()
+    var profileImageObservable = PublishRelay<UIImage>()
+    var readyButtonIsValid = BehaviorRelay(value: false)
+    
+    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    
+    init(firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
+        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
+        checkReadyButtonIsValid()
+    }
+    
+    let disposeBag = DisposeBag()
+    
+    func pickerValueChanged(textFieldTag: Int, row: Int) {
+        
+        switch textFieldTag {
+        case 0:
+            heightValue = Int(heights[row])!
+            heightObservable.accept(heightValue)
+        case 1:
+            weightValue = Int(weights[row])!
+            weightObservable.accept(weightValue)
+        case 2:
+            sugarValue = Int(sugars[row])!
+            sugarObservable.accept(sugarValue)
+        default:
+            break
+        }
+    }
+    
+    func changeProfileImage(image: UIImage?) {
+        guard let image = image else { return }
+        imageValue = image
+        profileImageObservable.accept(imageValue)
+    }
+    
+    func checkReadyButtonIsValid() {
+        PublishRelay.combineLatest(heightObservable.asObservable(),
+                                                weightObservable.asObservable(),
+                                                sugarObservable.asObservable())
+        .bind(onNext: { [unowned self] (height, weight, sugar) in
+            readyButtonIsValid.accept(true)
+        })
+        .disposed(by: disposeBag)
+    }
+    
+    func submitButtonTapped(name: String) {
+        guard let userDefaultsUid = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+        let profile = ProfileDomainModel(uid: userDefaultsUid,
+                                         name: name,
+                                         height: heightValue,
+                                         weight: weightValue,
+                                         sugarLevel: sugarValue,
+                                         profileImage: imageValue,
+                                         onboarding: true,
+                                         profileExistence: true)
+        
+        firebaseFireStoreUseCase.upLoadProfile(profile: profile)
+    }
+}

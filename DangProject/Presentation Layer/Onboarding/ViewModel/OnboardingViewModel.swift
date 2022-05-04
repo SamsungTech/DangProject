@@ -20,12 +20,6 @@ class OnboardingViewModel {
         }
     }
     
-    func closeOnboardingView() {
-        let userDefaults = UserDefaults.standard
-        userDefaults.set(true, forKey: UserInfoKey.onboarding)
-        userDefaults.synchronize()
-    }
-    
     func changeIndex(to index: Int) {
         guard currentPage >= 0 && currentPage < viewControllers.count else { return }
         if currentPage < index {

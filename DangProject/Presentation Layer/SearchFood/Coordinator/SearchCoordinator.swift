@@ -16,6 +16,7 @@ class SearchCoordinator: NSObject, Coordinator {
         viewController.coordinator = self
         navigationController.delegate = self
         navigationController.pushViewController(viewController, animated: false)
+
     }
     
     func childDidFinish(_ child: Coordinator?) {

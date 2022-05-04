@@ -18,13 +18,12 @@ class OnboardingCoordinator: NSObject, Coordinator {
         navigationController.pushViewController(viewController, animated: false)
     }
     
-    func pushLoginView() {
-        let child = LoginCoordinator(navigationController: navigationController)
-        child.parentsCoordinator = self
-        childCoordinators.append(child)
-        child.start()
-    }
-    
+//    func pushLoginView() {
+//        let child = LoginCoordinator(navigationController: navigationController)
+//        childCoordinators.append(child)
+//        child.start()
+//    }
+        
     func childDidFinish(_ child: Coordinator?) {
         for (index, coordinator) in childCoordinators.enumerated() {
             if coordinator === child {
