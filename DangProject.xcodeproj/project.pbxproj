@@ -382,7 +382,6 @@
 		7C1BF77527B2A59F00BDAE70 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				7C86EB87281C1BF500936C1F /* FirebaseManager */,
 				7CF058D62813C9FC00540ACE /* Extensions */,
 			);
 			path = Utils;
@@ -394,21 +393,6 @@
 				7C540E9828097D6800BE279E /* OnboardingViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7C86EB87281C1BF500936C1F /* FirebaseManager */ = {
-			isa = PBXGroup;
-			children = (
-				7C86EB8B281C1E2500936C1F /* Protocol */,
-			);
-			path = FirebaseManager;
-			sourceTree = "<group>";
-		};
-		7C86EB8B281C1E2500936C1F /* Protocol */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Protocol;
 			sourceTree = "<group>";
 		};
 		7C94E85A27C39A58006F5574 /* CoreData */ = {

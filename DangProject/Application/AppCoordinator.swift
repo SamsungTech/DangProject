@@ -19,7 +19,7 @@ class AppCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     let fireStoreManager: FireStoreManagerRepository
-    // MARK: 재인 - 메인과 다른 코디네이터는 다른 거 같다.
+    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.fireStoreManager = DefaultFireStoreManagerRepository()
