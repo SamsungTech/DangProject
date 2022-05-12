@@ -35,4 +35,13 @@ extension SettingNavigationBar {
             settingLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20))
         ])
     }
+    
+    func setUpSettingScrollViewTop() {
+        self.layer.borderWidth = 0.2
+        self.layer.borderColor = UIColor.clear.cgColor
+    }
+    func setUpSettingScrollViewScrolling() {
+        self.layer.borderWidth = 0.2
+        self.layer.borderColor = UIColor.lightGray.cgColor
+    }
 }

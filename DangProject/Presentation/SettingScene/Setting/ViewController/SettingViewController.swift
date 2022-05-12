@@ -30,7 +30,8 @@ class SettingViewController: UIViewController {
         let scrollView = UIScrollView()
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
-        scrollView.contentSize = CGSize(width: calculateXMax(), height: overSizeYValueRatio(1000))
+        scrollView.contentSize = CGSize(width: calculateXMax(),
+                                        height: overSizeYValueRatio(1000))
         return scrollView
     }()
     
@@ -38,11 +39,13 @@ class SettingViewController: UIViewController {
         let button = SettingAccountButton()
         button.profileAccountLabel.text = "김동우"
         button.profileAccountLabel.textColor = .white
-        button.frame = CGRect(x: .zero, y: .zero, width: calculateXMax(), height: yValueRatio(80))
+        button.frame = CGRect(x: .zero,
+                              y: .zero,
+                              width: calculateXMax(),
+                              height: yValueRatio(80))
         button.backgroundColor = .homeBoxColor
         return button
     }()
-    
     private var settingFirstStackView = SettingFirstStackView()
     private var settingSecondStackView = SettingSecondStackView()
     private var settingTermsOfServiceView = SettingTermsOfServiceView()
@@ -57,7 +60,8 @@ class SettingViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setUpNavigationBar()
+        view.bringSubviewToFront(settingNavigationBar)
+        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -75,6 +79,7 @@ class SettingViewController: UIViewController {
     
     private func configureUI() {
         setUpSettingView()
+        setUpNavigationBar()
         setUpSettingScrollView()
         setUpAccountView()
         setUpSettingFirstStackView()
@@ -95,7 +100,7 @@ class SettingViewController: UIViewController {
             settingNavigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: -yValueRatio(5)),
             settingNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
             settingNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
-            settingNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(105))
+            settingNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(95))
         ])
     }
     
@@ -103,7 +108,7 @@ class SettingViewController: UIViewController {
         view.addSubview(settingScrollView)
         settingScrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            settingScrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: yValueRatio(100)),
+            settingScrollView.topAnchor.constraint(equalTo: settingNavigationBar.bottomAnchor),
             settingScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             settingScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             settingScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -170,11 +175,39 @@ class SettingViewController: UIViewController {
                 guard let self = self else { return }
                 switch $0 {
                 case .top:
-                    self.setUpSettingScrollViewTop()
+                    self.settingNavigationBar.setUpSettingScrollViewTop()
                 case .scrolling:
-                    self.setUpSettingScrollViewScrolling()
+                    self.settingNavigationBar.setUpSettingScrollViewScrolling()
                 }
             })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindUI() {
+        Observable.merge(
+            settingFirstStackView.myTargetView.rx.tap.map { SettingRouterPath.myTarget },
+            settingFirstStackView.themeView.rx.tap.map { SettingRouterPath.theme },
+            settingFirstStackView.alarmView.rx.tap.map { SettingRouterPath.alarm }
+        )
+            .bind { [weak self] in
+                guard let self = self else { return }
+                switch $0 {
+                case .myTarget:
+                    break
+                case .theme:
+                    break
+                case .alarm:
+                    self.coordinator?.pushAlarmViewController()
+                case .account:
+                    break
+                case .appIntroduce:
+                    break
+                case .version:
+                    break
+                case .termsOfService:
+                    break
+                }
+            }
             .disposed(by: disposeBag)
     }
 }
@@ -183,16 +216,5 @@ extension SettingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let yValue = scrollView.contentOffset.y
         viewModel?.checkScrollValue(yValue)
-    }
-}
-
-extension SettingViewController {
-    private func setUpSettingScrollViewTop() {
-        settingNavigationBar.layer.borderWidth = 0.2
-        settingNavigationBar.layer.borderColor = UIColor.clear.cgColor
-    }
-    private func setUpSettingScrollViewScrolling() {
-        settingNavigationBar.layer.borderWidth = 0.2
-        settingNavigationBar.layer.borderColor = UIColor.lightGray.cgColor
     }
 }

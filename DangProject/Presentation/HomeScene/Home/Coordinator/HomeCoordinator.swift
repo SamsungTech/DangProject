@@ -1,33 +1,23 @@
 //
-//  SettingCoordinator.swift
+//  HomeCoordinator.swift
 //  DangProject
 //
-//  Created by 김동우 on 2022/04/22.
+//  Created by 김동우 on 2022/01/19.
 //
 
 import UIKit
 
-enum SettingRouterPath {
-    case account
-    case myTarget
-    case theme
-    case alarm
-    case appIntroduce
-    case version
-    case termsOfService
-}
-
-class SettingCoordinator: Coordinator {
+class HomeCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
-    private var diContainer = SettingDIContainer()
+    var diContainer = HomeDIContainer()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
     func start() {
-        let viewController = diContainer.makeSettingViewController()
+        let viewController = diContainer.makeHomeViewController()
         viewController.coordinator = self
         self.navigationController.pushViewController(viewController, animated: false)
     }
@@ -41,10 +31,12 @@ class SettingCoordinator: Coordinator {
         }
     }
     
-    func pushAlarmViewController() {
-        let coordinator = AlarmCoordinator(navigationController: self.navigationController)
-        childCoordinators.append(coordinator)
-        coordinator.start()
+    func presentProfile(_ viewController: UIViewController) {
+        let coordinator = ProfileCoordinator(parentViewController: viewController)
+        let presentView = coordinator.diContainer.makeProfileNavigationViewController()
+        presentView.modalPresentationStyle = .fullScreen
+        presentView.modalTransitionStyle = .coverVertical
+        viewController.present(presentView, animated: true)
     }
 }
 
