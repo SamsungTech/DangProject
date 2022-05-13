@@ -6,7 +6,9 @@
 //
 
 import UIKit
+
 import RxSwift
+import RxCocoa
 
 class OnboardingMasterViewController: UIViewController {
     
@@ -63,7 +65,6 @@ class OnboardingMasterViewController: UIViewController {
         ])
         pageViewController.delegate = self
         pageViewController.dataSource = self
-        viewModel.makeViewControllers()
         pageViewController.setViewControllers([viewModel.viewControllers[0]], direction: .forward, animated: true)
     }
     
@@ -133,7 +134,7 @@ class OnboardingMasterViewController: UIViewController {
     
     func bindCurrentPageIndexObservable() {
         viewModel.currentPageIndexObservable
-            .subscribe(onNext: { [unowned self] pageIndex in
+            .bind(onNext: { [unowned self] pageIndex in
                 pageControl.currentPage = pageIndex
                 if pageIndex == viewModel.viewControllers.count-1 {
                     nextButton.isHidden = true

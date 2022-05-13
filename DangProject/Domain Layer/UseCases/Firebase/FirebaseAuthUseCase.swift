@@ -12,10 +12,9 @@ import RxSwift
 class FirebaseAuthUseCase {
     
     let authObservable = PublishSubject<(Bool, String)>()
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    
-    let firebaseAuthRepository: FirebaseAuthManagerRepository
+    private let firebaseAuthRepository: FirebaseAuthManagerRepository
     
     init(firebaseAuthRepository: FirebaseAuthManagerRepository) {
         self.firebaseAuthRepository = firebaseAuthRepository

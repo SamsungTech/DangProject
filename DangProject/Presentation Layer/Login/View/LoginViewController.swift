@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 
 import RxSwift
+import RxCocoa
 
 class LoginViewController: UIViewController {
     
@@ -24,6 +25,7 @@ class LoginViewController: UIViewController {
     init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        view.backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {
@@ -33,7 +35,6 @@ class LoginViewController: UIViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         setupAppleLoginButton()
         bindSignInObservable()
     }
@@ -55,7 +56,7 @@ class LoginViewController: UIViewController {
     
     private func bindSignInObservable() {
         viewModel.profileExistenceObservable
-            .subscribe(onNext: { [unowned self] profileIsExist in
+            .bind(onNext: { [unowned self] profileIsExist in
                 if profileIsExist {
                     coordinatorFinishDelegate?.switchViewController(to: .tabBar)
                 } else {

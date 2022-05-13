@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 import RxSwift
-import RxRelay
+import RxCocoa
 
 class InputPersonalInformationViewController: UIViewController {
     
