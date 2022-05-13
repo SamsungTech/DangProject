@@ -9,10 +9,11 @@ import Foundation
 import UIKit
 
 import RxSwift
+import RxCocoa
 
 protocol DetailFoodViewModelInput {
     var amount: Int { get }
-    var pickerViewIsActivatedObservable: BehaviorSubject<Bool> { get }
+    var pickerViewIsActivatedObservable: BehaviorRelay<Bool> { get }
     var pickerViewIsActivated: Bool { get }
     func changeDetailFoodFavorite()
     func addFoods(foods: AddFoodsViewModel)
@@ -44,9 +45,9 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     }
     // MARK: - Input
     var amount: Int = 1
-    var pickerViewIsActivatedObservable = BehaviorSubject(value: false)
+    var pickerViewIsActivatedObservable = BehaviorRelay(value: false)
     var pickerViewIsActivated = false
-    lazy var detailFoodObservable = BehaviorSubject(value: detailFood)
+    lazy var detailFoodObservable = BehaviorRelay(value: detailFood)
     
     func changeDetailFoodFavorite() {
         let willChangeImage = detailFood.image == UIImage(systemName: "star") ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
@@ -61,12 +62,12 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     
     func changePickerViewWillActivated() {
         pickerViewIsActivated = !pickerViewIsActivated
-        pickerViewIsActivatedObservable.onNext(pickerViewIsActivated)
+        pickerViewIsActivatedObservable.accept(pickerViewIsActivated)
     }
     
     func amountChanged(amount: Int) {
         self.amount = amount
-        detailFoodObservable.onNext(detailFood)
+        detailFoodObservable.accept(detailFood)
     }
     // MARK: - Output
     

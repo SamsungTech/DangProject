@@ -243,6 +243,7 @@ class DetailFoodViewController: UIViewController {
     
     private func bindPickerView() {
         viewModel.pickerViewIsActivatedObservable
+            .observe(on: MainScheduler.instance)
             .bind(onNext: { [unowned self] pickerIsActivated in
                 addButtonTopConstraint?.isActive = false
                 amountPickerHeightConstraint?.isActive = false
@@ -282,7 +283,7 @@ class DetailFoodViewController: UIViewController {
     private func bindDetailFood() {
         viewModel.detailFoodObservable
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] food in
+            .bind(onNext: { [unowned self] food in
                 totalSugarLabel.text = "\(viewModel.getTotalSugar())g"
                 amountTextField.text = "\(viewModel.amount)"
                 startIndicatorAnimation(amount: Double(viewModel.amount))
