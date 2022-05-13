@@ -235,29 +235,6 @@ class DetailFoodViewController: UIViewController {
         })
     }
     
-    private func startPickerViewAnimation(_ pickerIsActivated: Bool) {
-        addButtonTopConstraint?.isActive = false
-        amountPickerHeightConstraint?.isActive = false
-        
-        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
-        
-        if pickerIsActivated {
-            amountPerButton.setImage(UIImage(systemName: "chevron.up", withConfiguration: imageConfiguration), for: .normal)
-            addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 220)
-            amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 200)
-        } else {
-            amountPerButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: imageConfiguration), for: .normal)
-            addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 10)
-            amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 0)
-        }
-        addButtonTopConstraint?.isActive = true
-        amountPickerHeightConstraint?.isActive = true
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-            self.view.layoutIfNeeded()
-        }, completion: nil)
-        
-    }
-    
     // MARK: - Bindings
     private func setupBindings() {
         bindPickerView()
@@ -266,11 +243,40 @@ class DetailFoodViewController: UIViewController {
     
     private func bindPickerView() {
         viewModel.pickerViewIsActivatedObservable
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] pickerIsActivated in
-                startPickerViewAnimation(pickerIsActivated)
+            .bind(onNext: { [unowned self] pickerIsActivated in
+                addButtonTopConstraint?.isActive = false
+                amountPickerHeightConstraint?.isActive = false
+                if pickerIsActivated {
+                    increasePickerView()
+                } else {
+                    decreasePickerView()
+                }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func increasePickerView() {
+        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
+        amountPerButton.setImage(UIImage(systemName: "chevron.up", withConfiguration: imageConfiguration), for: .normal)
+        addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 220)
+        amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 200)
+        addButtonTopConstraint?.isActive = true
+        amountPickerHeightConstraint?.isActive = true
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+    }
+    
+    private func decreasePickerView() {
+        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
+        amountPerButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: imageConfiguration), for: .normal)
+        addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 10)
+        amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 0)
+        addButtonTopConstraint?.isActive = true
+        amountPickerHeightConstraint?.isActive = true
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
     }
     
     private func bindDetailFood() {
