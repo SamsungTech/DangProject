@@ -46,7 +46,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: "RecentQuery", in: context) else { return }
         guard let recentQuery = NSManagedObject(entity: entity, insertInto: context) as? RecentQuery else { return }
-        recentQuery.keyWord = keyWord
+        recentQuery.keyword = keyWord
         do {
             try context.save()
         } catch {

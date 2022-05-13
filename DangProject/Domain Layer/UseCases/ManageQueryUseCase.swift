@@ -25,8 +25,8 @@ class ManageQueryUseCase {
         let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
         
         savedQuery.forEach{ query in
-            if query.keyWord == keyword {
-                coreDataManagerRepository.deleteQuery(at: query.keyWord!, request: RecentQuery.fetchRequest())
+            if query.keyword == keyword {
+                coreDataManagerRepository.deleteQuery(at: query.keyword!, request: RecentQuery.fetchRequest())
             }
         }
     }
@@ -35,7 +35,9 @@ class ManageQueryUseCase {
         var resultQuery: [String] = []
         let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
         savedQuery.forEach{ query in
-            resultQuery.append(query.keyWord!)
+            if let keyWord = query.keyword {
+                resultQuery.append(keyWord)
+            }
         }
         return resultQuery
     }
