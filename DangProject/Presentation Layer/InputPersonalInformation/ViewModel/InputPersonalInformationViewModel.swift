@@ -9,7 +9,49 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class InputPersonalInformationViewModel {
+protocol InputPersonalInformationInput {
+    var heightObservable: PublishRelay<Int> { get }
+    var weightObservable: PublishRelay<Int> { get }
+    var sugarObservable: PublishRelay<Int> { get }
+    var profileImageObservable: PublishRelay<UIImage> { get }
+    var readyButtonIsValid: BehaviorRelay<Bool> { get }
+    
+    func pickerValueChanged(textFieldTag: Int, row: Int)
+    func submitButtonTapped(name: String)
+}
+
+protocol InputPersonalInformationOutput {
+    var heights: [String] { get }
+    var weights: [String] { get }
+    var sugars: [String] { get }
+    
+    var imageValue: UIImage { get }
+    var heightValue: Int { get }
+    var weightValue: Int { get }
+    var sugarValue: Int { get }
+    
+    var numberOfComponents: [Int]  { get }
+    var numberOfRowsInComponents: [[Int]] { get }
+    var pickerViewValues: [[[String]]] { get }
+    
+    func changeProfileImage(image: UIImage?)
+    func checkReadyButtonIsValid()
+}
+
+protocol InputPersonalInformationViewModelProtocol: InputPersonalInformationInput, InputPersonalInformationOutput { }
+
+class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtocol {
+    // MARK: - Init
+    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    
+    init(firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
+        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
+        checkReadyButtonIsValid()
+    }
+    
+    private let disposeBag = DisposeBag()
+    
+    // MARK: - Output
     let heights: [String] = [Int](120...200).map{("\($0)")}
     let weights: [String] = [Int](30...150).map{("\($0)")}
     let sugars: [String] = ["10", "20", "30", "40", "50"]
@@ -22,21 +64,28 @@ class InputPersonalInformationViewModel {
     let numberOfComponents: [Int] = [2,2,1]
     lazy var numberOfRowsInComponents: [[Int]] = [[heights.count, 1],[weights.count, 1],[sugars.count]]
     lazy var pickerViewValues: [[[String]]] = [[heights,["cm"]],[weights,["kg"]], [sugars]]
+   
+    func changeProfileImage(image: UIImage?) {
+        guard let image = image else { return }
+        imageValue = image
+        profileImageObservable.accept(imageValue)
+    }
     
+    func checkReadyButtonIsValid() {
+        PublishRelay.combineLatest(heightObservable.asObservable(),
+                                                weightObservable.asObservable(),
+                                                sugarObservable.asObservable())
+        .bind(onNext: { [unowned self] (height, weight, sugar) in
+            readyButtonIsValid.accept(true)
+        })
+        .disposed(by: disposeBag)
+    }
+    // MARK: - Input
     var heightObservable = PublishRelay<Int>()
     var weightObservable = PublishRelay<Int>()
     var sugarObservable = PublishRelay<Int>()
     var profileImageObservable = PublishRelay<UIImage>()
     var readyButtonIsValid = BehaviorRelay(value: false)
-    
-    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
-    
-    init(firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
-        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
-        checkReadyButtonIsValid()
-    }
-    
-    let disposeBag = DisposeBag()
     
     func pickerValueChanged(textFieldTag: Int, row: Int) {
         
@@ -53,22 +102,6 @@ class InputPersonalInformationViewModel {
         default:
             break
         }
-    }
-    
-    func changeProfileImage(image: UIImage?) {
-        guard let image = image else { return }
-        imageValue = image
-        profileImageObservable.accept(imageValue)
-    }
-    
-    func checkReadyButtonIsValid() {
-        PublishRelay.combineLatest(heightObservable.asObservable(),
-                                                weightObservable.asObservable(),
-                                                sugarObservable.asObservable())
-        .bind(onNext: { [unowned self] (height, weight, sugar) in
-            readyButtonIsValid.accept(true)
-        })
-        .disposed(by: disposeBag)
     }
     
     func submitButtonTapped(name: String) {
