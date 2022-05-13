@@ -289,17 +289,24 @@ class DetailFoodViewController: UIViewController {
                 startIndicatorAnimation(amount: Double(viewModel.amount))
                 
                 if viewModel.amount == 0 {
-                    addButton.backgroundColor = .systemGray4
-                    addButton.isEnabled = false
+                    changeAddButtonDeactivated()
                 } else {
-                    addButton.backgroundColor = .systemBlue
-                    addButton.isEnabled = true
+                    changeAddButtonActivated()
                 }
+                
             })
             .disposed(by: disposeBag)
     }
     
+    private func changeAddButtonActivated() {
+        addButton.backgroundColor = .systemBlue
+        addButton.isEnabled = true
+    }
     
+    private func changeAddButtonDeactivated() {
+        addButton.backgroundColor = .systemGray4
+        addButton.isEnabled = false
+    }
 }
 // MARK: - Extension
 extension DetailFoodViewController: UIPickerViewDelegate, UIPickerViewDataSource {
