@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxRelay
 
-protocol InputPersonalInformationInput {
+protocol InputPersonalInformationViewModelInput {
     var heightObservable: PublishRelay<Int> { get }
     var weightObservable: PublishRelay<Int> { get }
     var sugarObservable: PublishRelay<Int> { get }
@@ -20,7 +20,7 @@ protocol InputPersonalInformationInput {
     func submitButtonTapped(name: String)
 }
 
-protocol InputPersonalInformationOutput {
+protocol InputPersonalInformationViewModelOutput {
     var heights: [String] { get }
     var weights: [String] { get }
     var sugars: [String] { get }
@@ -35,14 +35,13 @@ protocol InputPersonalInformationOutput {
     var pickerViewValues: [[[String]]] { get }
     
     func changeProfileImage(image: UIImage?)
-    func checkReadyButtonIsValid()
 }
 
-protocol InputPersonalInformationViewModelProtocol: InputPersonalInformationInput, InputPersonalInformationOutput { }
+protocol InputPersonalInformationViewModelProtocol: InputPersonalInformationViewModelInput, InputPersonalInformationViewModelOutput { }
 
 class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtocol {
     // MARK: - Init
-    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
     
     init(firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
         self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
@@ -50,6 +49,16 @@ class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtoc
     }
     
     private let disposeBag = DisposeBag()
+    
+    private func checkReadyButtonIsValid() {
+        PublishRelay.combineLatest(heightObservable.asObservable(),
+                                                weightObservable.asObservable(),
+                                                sugarObservable.asObservable())
+        .bind(onNext: { [unowned self] (height, weight, sugar) in
+            readyButtonIsValid.accept(true)
+        })
+        .disposed(by: disposeBag)
+    }
     
     // MARK: - Output
     let heights: [String] = [Int](120...200).map{("\($0)")}
@@ -71,15 +80,6 @@ class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtoc
         profileImageObservable.accept(imageValue)
     }
     
-    func checkReadyButtonIsValid() {
-        PublishRelay.combineLatest(heightObservable.asObservable(),
-                                                weightObservable.asObservable(),
-                                                sugarObservable.asObservable())
-        .bind(onNext: { [unowned self] (height, weight, sugar) in
-            readyButtonIsValid.accept(true)
-        })
-        .disposed(by: disposeBag)
-    }
     // MARK: - Input
     var heightObservable = PublishRelay<Int>()
     var weightObservable = PublishRelay<Int>()

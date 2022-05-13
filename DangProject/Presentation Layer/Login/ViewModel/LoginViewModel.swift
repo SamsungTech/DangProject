@@ -10,13 +10,23 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class LoginViewModel {
+
+protocol LoginViewModelInput {
+    func signIn(providerID: String, idToken: String, rawNonce: String)
+}
+
+protocol LoginViewModelOutput {
+    var profileExistenceObservable: PublishRelay<Bool> { get }
+}
+
+protocol LoginViewModelProtocol: LoginViewModelInput, LoginViewModelOutput { }
+
+class LoginViewModel: LoginViewModelProtocol {
     
-    let profileExistenceObservable = PublishRelay<Bool>()
-    let disposeBag = DisposeBag()
-    
-    let firebaseAuthUseCase: FirebaseAuthUseCase
-    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    // MARK: - init
+    private let firebaseAuthUseCase: FirebaseAuthUseCase
+    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let disposeBag = DisposeBag()
     
     init(firebaseAuthUseCase: FirebaseAuthUseCase,
          firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
@@ -50,10 +60,7 @@ class LoginViewModel {
             .disposed(by: disposeBag)
     }
     
-    func signIn(providerID: String, idToken: String, rawNonce: String) {
-        firebaseAuthUseCase.requireFirebaseUID(providerID: providerID, idToken: idToken, rawNonce: rawNonce)
-    }
-    
+    //MARK: - Private Method
     private func checkProfileExistence(uid: String) {
         firebaseFireStoreUseCase.getProfileExistence(uid: uid)
     }
@@ -62,5 +69,15 @@ class LoginViewModel {
         let userDefaults = UserDefaults.standard
         userDefaults.set(uid, forKey: UserInfoKey.firebaseUID)
     }
-
+    
+    //MARK: - Input
+    func signIn(providerID: String, idToken: String, rawNonce: String) {
+        firebaseAuthUseCase.requireFirebaseUID(providerID: providerID, idToken: idToken, rawNonce: rawNonce)
+    }
+   
+    //MARK: - Output
+    let profileExistenceObservable = PublishRelay<Bool>()
+    
+    
+    
 }

@@ -112,7 +112,6 @@ class InputPersonalInformationViewController: UIViewController {
         configureToolbars()
         configureImagePicker()
         setupBindings()
-        viewModel.checkReadyButtonIsValid()
     }
     
     // MARK: - layoutViews
