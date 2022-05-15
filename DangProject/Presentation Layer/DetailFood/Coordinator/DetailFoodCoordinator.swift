@@ -8,6 +8,7 @@ class DetailFoodCoordinator: Coordinator {
     
     var selectedFood: FoodViewModel
     var parentableViewController: DetailFoodParentable
+    
     init(navigationController: UINavigationController,
          selectedFood: FoodViewModel,
          parentableViewController: DetailFoodParentable) {

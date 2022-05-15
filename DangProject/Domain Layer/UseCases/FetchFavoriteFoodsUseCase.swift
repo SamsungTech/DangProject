@@ -26,7 +26,7 @@ class FetchFavoriteFoodsUseCase {
             let favoriteFoodDomainModel = FoodDomainModel.init($0)
             tempFoodViewModel.append(FoodViewModel.init(favoriteFoodDomainModel))
         }
-        return SearchFoodViewModel.init(keyWord: "", foodModels: tempFoodViewModel)
+        return SearchFoodViewModel.init(keyword: "", foodModels: tempFoodViewModel)
     }
     
     func delete() {

@@ -145,7 +145,7 @@ class SearchViewModel: SearchViewModelProtocol {
         manageQueryUseCase.updateQuery()
     }
     
-    //MARK: - Private Method
+    //MARK: - Private
     private var currentFoodViewModels = SearchFoodViewModel.empty
     private var favoriteFoodViewModels = SearchFoodViewModel.empty
     private var scopeState: SearchBarScopeState = .searchResult
@@ -179,7 +179,7 @@ class SearchViewModel: SearchViewModelProtocol {
             let filteredViewModel = favoriteFoodViewModels.foodModels?.filter {(model: FoodViewModel) -> Bool in
                 return model.name!.contains(text)
             }
-            searchFoodViewModelObservable.onNext(SearchFoodViewModel.init(keyWord: text, foodModels: filteredViewModel ?? []))
+            searchFoodViewModelObservable.onNext(SearchFoodViewModel.init(keyword: text, foodModels: filteredViewModel ?? []))
     }
 }
 

@@ -9,12 +9,12 @@ import Foundation
 import UIKit
 
 struct SearchFoodViewModel {
-    static let empty: Self = .init(keyWord: "", foodModels: [])
-    let keyWord: String?
+    static let empty: Self = .init(keyword: "", foodModels: [])
+    let keyword: String?
     let foodModels: [FoodViewModel]?
     
-    init(keyWord: String, foodModels: [FoodViewModel]) {
-        self.keyWord = keyWord
+    init(keyword: String, foodModels: [FoodViewModel]) {
+        self.keyword = keyword
         self.foodModels = foodModels
     }
 }
