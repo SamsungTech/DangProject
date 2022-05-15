@@ -12,13 +12,6 @@ import RxSwift
 
 class SearchViewController: UIViewController {
     
-    // MARK: 하드코딩이 어쩔 수 없이 들어가는 부분 최대한 이런식으로 정리해도 좋을듯
-    enum Style {
-        enum QueryResultTableView {
-            
-        }
-    }
-    
     weak var coordinator: SearchCoordinator?
     
     let viewModel: SearchViewModel
@@ -35,6 +28,7 @@ class SearchViewController: UIViewController {
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        setUpBindings()
     }
     
     required init?(coder: NSCoder) {
@@ -45,7 +39,7 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setUpDefaultView()
         setUpSearchingPreferenceViews()
-        setUpBindings()
+        
     }
     // MARK: - Set Views
     private func setUpDefaultView() {
@@ -107,11 +101,10 @@ class SearchViewController: UIViewController {
     
     private func setUpSearchController() {
         navigationItem.searchController = searchController
-        navigationItem.title = viewModel.navigationItemTitle
+        navigationItem.title = "음식 추가"
         searchController.hidesNavigationBarDuringPresentation = false
-        // MARK: 재인 - placeholder 한단어 인지 보고 카멜케이스 제거
-        searchController.searchBar.placeholder = viewModel.searchBarPlaceHolder
-        searchController.searchBar.scopeButtonTitles = viewModel.searchBarScopeButtonTitles
+        searchController.searchBar.placeholder = "음식을 검색하세요."
+        searchController.searchBar.scopeButtonTitles = ["검색결과", "즐겨찾기"]
         searchController.searchBar.delegate = self
     }
     
@@ -218,8 +211,6 @@ class SearchViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        viewModel.updateRecentQuery()
-        
         queryResultTableView.rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
@@ -231,24 +222,24 @@ class SearchViewController: UIViewController {
             .modelSelected(String.self)
             .subscribe(onNext: { [weak self] keyword in
                 self?.searchController.searchBar.text = keyword
-                self?.viewModel.startSearching(searchBarText: keyword)
+                self?.viewModel.searchBarTextDidChanged(text: keyword)
             })
             .disposed(by: disposeBag)
+        
+        viewModel.updateRecentQuery()
     }
     
     private func bindSearchBar() {
-        // MARK: 얘가 검색결과에 쓸 텍스트인지, 즐겨찾기에 쓸 텍스트인지 알아야할 필요가 없이
         searchController.searchBar.rx.text
             .orEmpty
             .debounce(.seconds(1), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filter({ !$0.isEmpty })
             .subscribe(onNext: { [unowned self] text in
-                if searchController.searchBar.selectedScopeButtonIndex == 0 {
-                    viewModel.startSearching(searchBarText: text)
-                }
+                viewModel.searchBarTextDidChanged(text: text)
             })
             .disposed(by: disposeBag)
+        
     }
     
     private func bindLoading() {
@@ -288,19 +279,10 @@ extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         LoadingView.hideLoading()
-        if searchController.searchBar.selectedScopeButtonIndex == 1 {
-            viewModel.compareFavoriteResult(text: searchText)
-        }
     }
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        if selectedScope == 0 {
-            viewModel.updateSearchResult()
-            viewModel.startSearching(searchBarText: searchBar.text!)
-        } else if selectedScope == 1 {
-            viewModel.favoriteSearchBarScopeTapped()
-            viewModel.compareFavoriteResult(text: searchBar.text!)
-        }
+        viewModel.selectedScopeDidChanged(to: selectedScope)
     }
 }
 extension SearchViewController: TableViewCellDelegate {
