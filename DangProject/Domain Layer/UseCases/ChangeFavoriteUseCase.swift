@@ -6,6 +6,8 @@
 //
 import Foundation
 
+import RxSwift
+
 class ChangeFavoriteUseCase {
     
     let coreDataManagerRepository: CoreDataManagerRepository
