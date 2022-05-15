@@ -58,8 +58,6 @@
 		7CD6C09028196CD8001979D0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08F28196CD8001979D0 /* LoginViewController.swift */; };
 		7CD6C09328196D21001979D0 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C09228196D21001979D0 /* LoginViewModel.swift */; };
 		7CD96735281ACEC8003DDB69 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CD96734281ACEC8003DDB69 /* GoogleService-Info.plist */; };
-		7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */; };
-		7CF02AC727BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */; };
 		7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */; };
 		7CF02AD327BD04430090B594 /* DetailFoodCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD227BD04430090B594 /* DetailFoodCoordinator.swift */; };
 		7CF02AD527BD048F0090B594 /* DetailFoodDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD427BD048F0090B594 /* DetailFoodDIContainer.swift */; };
@@ -146,8 +144,6 @@
 		7CD6C08F28196CD8001979D0 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		7CD6C09228196D21001979D0 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		7CD96734281ACEC8003DDB69 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataClass.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataClass.swift"; sourceTree = "<absolute>"; };
-		7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataProperties.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFavoriteFoodsUseCase.swift; sourceTree = "<group>"; };
 		7CF02AD227BD04430090B594 /* DetailFoodCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodCoordinator.swift; sourceTree = "<group>"; };
 		7CF02AD427BD048F0090B594 /* DetailFoodDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodDIContainer.swift; sourceTree = "<group>"; };
@@ -218,7 +214,6 @@
 				7CD6C08528191BB4001979D0 /* DangProject.entitlements */,
 				7C1BF77527B2A59F00BDAE70 /* Utils */,
 				7CF058D52813C89C00540ACE /* Resource */,
-				7C94E85A27C39A58006F5574 /* CoreData */,
 				7C9B9D7B27A0DD7D0046F22C /* Application */,
 				7C9B9D7827A0DD3E0046F22C /* Presentation Layer */,
 				7C9B9D7927A0DD4F0046F22C /* Domain Layer */,
@@ -389,15 +384,6 @@
 				7C540E9828097D6800BE279E /* OnboardingViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		7C94E85A27C39A58006F5574 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */,
-				7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */,
-			);
-			path = CoreData;
 			sourceTree = "<group>";
 		};
 		7C9B9D7827A0DD3E0046F22C /* Presentation Layer */ = {
@@ -932,7 +918,6 @@
 				7C1BF76427B1149F00BDAE70 /* FetchRepository.swift in Sources */,
 				7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */,
 				7C4C78FF27C3E6F5000E0A09 /* ManageQueryUseCase.swift in Sources */,
-				7CF02AC727BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift in Sources */,
 				7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */,
 				7CB2F925281FCEE5005797C7 /* FireStoreManagerRepository.swift in Sources */,
 				7CD6C09328196D21001979D0 /* LoginViewModel.swift in Sources */,
@@ -984,7 +969,6 @@
 				7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */,
 				7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */,
 				7C9B9D7D27A0DDB10046F22C /* AppCoordinator.swift in Sources */,
-				7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */,
 				7CB2F91F281FC1B5005797C7 /* FirebaseAuthUseCase.swift in Sources */,
 				7CB2F9292822347B005797C7 /* TabBarCoordinator.swift in Sources */,
 				7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */,

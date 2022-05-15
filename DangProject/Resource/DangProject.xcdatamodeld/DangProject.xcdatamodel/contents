@@ -6,7 +6,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="sugar" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="FavoriteFoods" representedClassName="FavoriteFoods" syncable="YES">
+    <entity name="FavoriteFoods" representedClassName="FavoriteFoods" syncable="YES" codeGenerationType="class">
         <attribute name="foodCode" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="sugar" optional="YES" attributeType="String"/>
@@ -16,7 +16,7 @@
     </entity>
     <elements>
         <element name="EatenFoods" positionX="-45" positionY="27" width="128" height="89"/>
-        <element name="FavoriteFoods" positionX="-63" positionY="-18" width="128" height="74"/>
         <element name="RecentQuery" positionX="-54" positionY="36" width="128" height="44"/>
+        <element name="FavoriteFoods" positionX="-45" positionY="54" width="128" height="74"/>
     </elements>
 </model>
