@@ -15,10 +15,10 @@ struct FoodFromAPI: Codable {
     }
 }
 
-// MARK: 재인 - struct 대문자로 고치면조흘거같요
+
 struct ServiceType: Codable {
     var totalCount: String
-    let foodInfo: [foodInfo]?
+    let foodInfo: [FoodInfo]?
     let result: Result?
     
     struct Result: Codable {
@@ -39,7 +39,7 @@ struct ServiceType: Codable {
 }
 
 
-struct foodInfo: Codable {
+struct FoodInfo: Codable {
     let sugarContent: String?
     let nameContent: String?
     let foodCode: String?

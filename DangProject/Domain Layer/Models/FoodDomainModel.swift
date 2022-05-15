@@ -16,7 +16,7 @@ struct FoodDomainModel: Equatable {
         self.foodCode = foodCode
     }
         
-    init(_ foodInfoFromAPI: foodInfo) {
+    init(_ foodInfoFromAPI: FoodInfo) {
         self.name = foodInfoFromAPI.nameContent ?? ""
         self.sugar = foodInfoFromAPI.sugarContent ?? ""
         self.foodCode = foodInfoFromAPI.foodCode ?? ""
@@ -40,7 +40,7 @@ struct FoodDomainModel: Equatable {
     
     init(_ coreDataFood: FavoriteFoods) {
         self.name = coreDataFood.name ?? ""
-        self.sugar = coreDataFood.sugar ?? ""
+        self.sugar = String(coreDataFood.sugar) ?? ""
         self.foodCode = coreDataFood.foodCode ?? ""
         self.favorite = true
     }

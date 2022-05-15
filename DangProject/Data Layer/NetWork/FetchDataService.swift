@@ -15,7 +15,7 @@ import RxSwift
 // MARK: TASK 이런거
 class FetchDataService {
     
-    var foodInfoObservable = PublishSubject<[foodInfo]>()
+    var foodInfoObservable = PublishSubject<[FoodInfo]>()
         
     let disposeBag = DisposeBag()
     
