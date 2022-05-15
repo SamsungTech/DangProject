@@ -14,7 +14,6 @@ enum CoreDataName: String {
 }
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
-//    static let shared: CoreDataManager = CoreDataManager()
     
     private let appDelegate = UIApplication.shared.delegate as? AppDelegate
     private lazy var context = appDelegate?.persistentContainer.viewContext
@@ -42,11 +41,11 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func addRecentQuery(_ keyWord: String) {
+    func addRecentQuery(_ keyword: String) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: "RecentQuery", in: context) else { return }
         guard let recentQuery = NSManagedObject(entity: entity, insertInto: context) as? RecentQuery else { return }
-        recentQuery.keyword = keyWord
+        recentQuery.keyword = keyword
         do {
             try context.save()
         } catch {
@@ -89,7 +88,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     @discardableResult
     func deleteQuery<T: NSManagedObject>(at query: String, request: NSFetchRequest<T>) -> Bool {
 
-        request.predicate = NSPredicate(format: "keyWord == %@", query)
+        request.predicate = NSPredicate(format: "keyword == %@", query)
         
         do {
             if let recentQuery = try context?.fetch(request) {
