@@ -58,8 +58,6 @@
 		7CD6C09028196CD8001979D0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08F28196CD8001979D0 /* LoginViewController.swift */; };
 		7CD6C09328196D21001979D0 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C09228196D21001979D0 /* LoginViewModel.swift */; };
 		7CD96735281ACEC8003DDB69 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CD96734281ACEC8003DDB69 /* GoogleService-Info.plist */; };
-		7CE61DA427DC4074003341E7 /* EatenFoods+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */; };
-		7CE61DA527DC4074003341E7 /* EatenFoods+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */; };
 		7CF02AC527BA54860090B594 /* FavoriteFoods+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */; };
 		7CF02AC727BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */; };
 		7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */; };
@@ -148,8 +146,6 @@
 		7CD6C08F28196CD8001979D0 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		7CD6C09228196D21001979D0 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		7CD96734281ACEC8003DDB69 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "EatenFoods+CoreDataClass.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/EatenFoods+CoreDataClass.swift"; sourceTree = "<absolute>"; };
-		7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "EatenFoods+CoreDataProperties.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/EatenFoods+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		7CF02AC427BA54860090B594 /* FavoriteFoods+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataClass.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		7CF02AC627BA54890090B594 /* FavoriteFoods+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoriteFoods+CoreDataProperties.swift"; path = "/Users/a1234/Desktop/My Project/DangProject/DangProject/Application/FavoriteFoods+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFavoriteFoodsUseCase.swift; sourceTree = "<group>"; };
@@ -443,8 +439,6 @@
 			isa = PBXGroup;
 			children = (
 				7CFADB182822B2100038E419 /* TabBar */,
-				7CE61DA227DC4074003341E7 /* EatenFoods+CoreDataClass.swift */,
-				7CE61DA327DC4074003341E7 /* EatenFoods+CoreDataProperties.swift */,
 				0B1F4A78277076FC0006B9CF /* AppDelegate.swift */,
 				0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */,
 				7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */,
@@ -945,7 +939,6 @@
 				7CB2F92728210405005797C7 /* ProfileDomainModel.swift in Sources */,
 				7C1BF76D27B133A000BDAE70 /* SearchDIContainer.swift in Sources */,
 				7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */,
-				7CE61DA427DC4074003341E7 /* EatenFoods+CoreDataClass.swift in Sources */,
 				7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */,
 				7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */,
 				7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */,
@@ -958,7 +951,6 @@
 				7CA07CB5281CE47800597BC2 /* InputPersonalInformationViewModel.swift in Sources */,
 				7CFADB172822650F0038E419 /* CoordinatorFinishDelegate.swift in Sources */,
 				7CF74A3728153CFA00510817 /* OnboardingCoordinator.swift in Sources */,
-				7CE61DA527DC4074003341E7 /* EatenFoods+CoreDataProperties.swift in Sources */,
 				7CA07CB1281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift in Sources */,
 				7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */,
 				7C1BF76627B1172600BDAE70 /* SearchUseCase.swift in Sources */,
