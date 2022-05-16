@@ -23,6 +23,7 @@
 		7C12A086283257BE005CAB55 /* CheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A085283257BE005CAB55 /* CheckCurrentTimeUseCase.swift */; };
 		7C12A089283258AB005CAB55 /* FirebaseAuthUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A088283258AB005CAB55 /* FirebaseAuthUseCase.swift */; };
 		7C12A08B28325A36005CAB55 /* FirebaseFireStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A08A28325A36005CAB55 /* FirebaseFireStoreUseCase.swift */; };
+		7C12A08D2832778A005CAB55 /* UIView+Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A08C2832778A005CAB55 /* UIView+Ratio.swift */; };
 		7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF74E27AB695E00BDAE70 /* SearchCoordinator.swift */; };
 		7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75027AB759100BDAE70 /* SearchViewController.swift */; };
 		7C1BF75527AB75D700BDAE70 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75427AB75D700BDAE70 /* SearchViewModel.swift */; };
@@ -116,6 +117,7 @@
 		7C12A085283257BE005CAB55 /* CheckCurrentTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCurrentTimeUseCase.swift; sourceTree = "<group>"; };
 		7C12A088283258AB005CAB55 /* FirebaseAuthUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUseCase.swift; sourceTree = "<group>"; };
 		7C12A08A28325A36005CAB55 /* FirebaseFireStoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseFireStoreUseCase.swift; sourceTree = "<group>"; };
+		7C12A08C2832778A005CAB55 /* UIView+Ratio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ratio.swift"; sourceTree = "<group>"; };
 		7C1BF74E27AB695E00BDAE70 /* SearchCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinator.swift; sourceTree = "<group>"; };
 		7C1BF75027AB759100BDAE70 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		7C1BF75427AB75D700BDAE70 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
@@ -685,6 +687,7 @@
 				7CF058D92813CA4A00540ACE /* Double+Calculate.swift */,
 				7CF058DB2813CA8500540ACE /* UITextField.swift */,
 				7CF02ADA27C0DF7C0090B594 /* ReusableView+Identifier.swift */,
+				7C12A08C2832778A005CAB55 /* UIView+Ratio.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -989,6 +992,7 @@
 				7CA07CB3281CE42000597BC2 /* InputPersonalInformationViewController.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
 				7CD6C08C28196C5A001979D0 /* LoginCoordinator.swift in Sources */,
+				7C12A08D2832778A005CAB55 /* UIView+Ratio.swift in Sources */,
 				7C9B9D7727A0DBE30046F22C /* PreferenceViewController.swift in Sources */,
 				7C1BF77227B1584500BDAE70 /* FoodDomainModel.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,

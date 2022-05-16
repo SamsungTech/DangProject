@@ -128,10 +128,11 @@ class InputPersonalInformationViewController: UIViewController {
     private func layoutWelcomeLabel() {
         view.addSubview(welcomeLabel)
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: self.view.frame.height*0.08),
+            welcomeLabel.topAnchor.constraint(equalTo: self.view.topAnchor,
+                                              constant: self.view.yValueRatio(60)),
             welcomeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            welcomeLabel.heightAnchor.constraint(equalToConstant: 60),
-            welcomeLabel.widthAnchor.constraint(equalToConstant: self.view.frame.width*0.8)
+            welcomeLabel.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(60)),
+            welcomeLabel.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(320))
         ])
     }
     
@@ -139,10 +140,11 @@ class InputPersonalInformationViewController: UIViewController {
         view.addSubview(changeProfileButton)
         changeProfileButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            changeProfileButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: self.view.frame.height*0.01),
+            changeProfileButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor,
+                                                     constant: self.view.yValueRatio(10)),
             changeProfileButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            changeProfileButton.heightAnchor.constraint(equalToConstant: 110),
-            changeProfileButton.widthAnchor.constraint(equalToConstant: 110)
+            changeProfileButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(140)),
+            changeProfileButton.widthAnchor.constraint(equalToConstant: self.view.yValueRatio(140))
         ])
     }
     
@@ -150,10 +152,10 @@ class InputPersonalInformationViewController: UIViewController {
         view.addSubview(nameInputSection)
         nameInputSection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            nameInputSection.topAnchor.constraint(equalTo:changeProfileButton.bottomAnchor, constant: self.view.frame.height*0.02),
+            nameInputSection.topAnchor.constraint(equalTo:changeProfileButton.bottomAnchor),
             nameInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            nameInputSection.heightAnchor.constraint(equalToConstant: 80),
-            nameInputSection.widthAnchor.constraint(equalToConstant: self.view.frame.width*0.7)
+            nameInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
+            nameInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
         ])
     }
     
@@ -161,10 +163,10 @@ class InputPersonalInformationViewController: UIViewController {
         view.addSubview(heightInputSection)
         heightInputSection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            heightInputSection.topAnchor.constraint(equalTo: nameInputSection.bottomAnchor, constant: self.view.frame.height*0.02),
+            heightInputSection.topAnchor.constraint(equalTo: nameInputSection.bottomAnchor),
             heightInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            heightInputSection.heightAnchor.constraint(equalToConstant: 80),
-            heightInputSection.widthAnchor.constraint(equalToConstant: self.view.frame.width*0.7)
+            heightInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
+            heightInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
         ])
     }
     
@@ -172,10 +174,10 @@ class InputPersonalInformationViewController: UIViewController {
         view.addSubview(weightInputSection)
         weightInputSection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            weightInputSection.topAnchor.constraint(equalTo: heightInputSection.bottomAnchor, constant: self.view.frame.height*0.02),
+            weightInputSection.topAnchor.constraint(equalTo: heightInputSection.bottomAnchor),
             weightInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            weightInputSection.heightAnchor.constraint(equalToConstant: 80),
-            weightInputSection.widthAnchor.constraint(equalToConstant: self.view.frame.width*0.7)
+            weightInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
+            weightInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
         ])
     }
     
@@ -183,20 +185,21 @@ class InputPersonalInformationViewController: UIViewController {
         view.addSubview(sugarInputSection)
         sugarInputSection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            sugarInputSection.topAnchor.constraint(equalTo: weightInputSection.bottomAnchor, constant: self.view.frame.height*0.02),
+            sugarInputSection.topAnchor.constraint(equalTo: weightInputSection.bottomAnchor),
             sugarInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            sugarInputSection.heightAnchor.constraint(equalToConstant: 80),
-            sugarInputSection.widthAnchor.constraint(equalToConstant: self.view.frame.width*0.7)
+            sugarInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
+            sugarInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
         ])
     }
     
     private func layoutReadyButton() {
         view.addSubview(readyButton)
         NSLayoutConstraint.activate([
-            readyButton.topAnchor.constraint(equalTo: sugarInputSection.bottomAnchor, constant: self.view.frame.height*0.04),
+            readyButton.topAnchor.constraint(equalTo: sugarInputSection.bottomAnchor,
+                                             constant: self.view.yValueRatio(30)),
             readyButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            readyButton.heightAnchor.constraint(equalToConstant: 70),
-            readyButton.widthAnchor.constraint(equalToConstant: self.view.frame.width*0.6)
+            readyButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(70)),
+            readyButton.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(240))
         ])
         
     }
@@ -314,7 +317,7 @@ class InputPersonalInformationViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.spacing = 5
+        
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(textField)
         return stackView

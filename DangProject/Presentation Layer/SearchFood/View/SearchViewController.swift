@@ -135,7 +135,7 @@ class SearchViewController: UIViewController {
         addCompleteToastLabel.textColor = .white
         addCompleteToastLabel.roundCorners(cornerRadius: 15)
         addCompleteToastLabel.numberOfLines = 0
-        addCompleteToastLabel.alpha = 0.7
+        addCompleteToastLabel.alpha = 0.8
 
     }
     
@@ -158,7 +158,7 @@ class SearchViewController: UIViewController {
     
     private func popAddCompleteToastLabel() {
         UIView.animate(withDuration: 0.5,
-                       delay: 1.5,
+                       delay: 2.5,
                        usingSpringWithDamping: 0.5,
                        initialSpringVelocity: 0.5,
                        options: .curveEaseInOut, animations: { [unowned self] in

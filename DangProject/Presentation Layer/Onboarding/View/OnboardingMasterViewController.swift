@@ -60,8 +60,7 @@ class OnboardingMasterViewController: UIViewController {
             pageViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
             pageViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             pageViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            pageViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor,
-                                                            constant: -100)
+            pageViewController.view.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(750))
         ])
         pageViewController.delegate = self
         pageViewController.dataSource = self
@@ -73,10 +72,10 @@ class OnboardingMasterViewController: UIViewController {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             pageControl.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor,
-                                             constant: 20),
+                                             constant: self.view.yValueRatio(20)),
             pageControl.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             pageControl.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            pageControl.heightAnchor.constraint(equalToConstant: 30)
+            pageControl.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(30))
         ])
         pageControl.numberOfPages = viewModel.viewControllers.count
         pageControl.pageIndicatorTintColor = .gray
@@ -97,10 +96,11 @@ class OnboardingMasterViewController: UIViewController {
         view.addSubview(nextButton)
         nextButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            nextButton.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor, constant: 15),
-            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            nextButton.widthAnchor.constraint(equalToConstant: 25),
-            nextButton.heightAnchor.constraint(equalToConstant: 45)
+            nextButton.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor,
+                                            constant: self.view.yValueRatio(15)),
+            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: self.view.xValueRatio(-30)),
+            nextButton.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(35)),
+            nextButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(50))
         ])
         nextButton.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         nextButton.tintColor = .black
@@ -111,10 +111,12 @@ class OnboardingMasterViewController: UIViewController {
         view.addSubview(startButton)
         startButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            startButton.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor, constant: 20),
-            startButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            startButton.widthAnchor.constraint(equalToConstant: 60),
-            startButton.heightAnchor.constraint(equalToConstant: 30)
+            startButton.topAnchor.constraint(equalTo: pageViewController.view.bottomAnchor,
+                                             constant: self.view.yValueRatio(15)),
+            startButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                  constant: self.view.xValueRatio(-30)),
+            startButton.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(70)),
+            startButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(40))
         ])
         startButton.setTitle("Start!", for: .normal)
         startButton.setTitleColor(.black, for: .normal)
