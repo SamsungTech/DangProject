@@ -14,6 +14,7 @@
 		0B1F4A85277076FE0006B9CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A84277076FE0006B9CF /* Assets.xcassets */; };
 		0B1F4A88277076FE0006B9CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */; };
 		406DE831D86791792DAD62BD /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64F741B1CC607F30779F70B /* Pods_DangProject.framework */; };
+		7C12A07928322C40005CAB55 /* OnboardingMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A07828322C40005CAB55 /* OnboardingMasterViewController.swift */; };
 		7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF74E27AB695E00BDAE70 /* SearchCoordinator.swift */; };
 		7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75027AB759100BDAE70 /* SearchViewController.swift */; };
 		7C1BF75527AB75D700BDAE70 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75427AB75D700BDAE70 /* SearchViewModel.swift */; };
@@ -72,7 +73,6 @@
 		7CF74A3A28165C8F00510817 /* OnboardingDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */; };
 		7CFADB172822650F0038E419 /* CoordinatorFinishDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */; };
 		7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */; };
-		7CFB399327FFF58800AE99E3 /* OnboardingMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */; };
 		7CFB399527FFF7E200AE99E3 /* UserInfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */; };
 		7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */; };
 		C9C3E75AEF1B052BA8E461C0 /* Pods_DangProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A38B6C5A8D92D089E843A6CD /* Pods_DangProjectTests.framework */; };
@@ -99,6 +99,7 @@
 		0B1F4A89277076FE0006B9CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B3132E1C7D66AF3CCBF58B2 /* Pods-DangProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.debug.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.debug.xcconfig"; sourceTree = "<group>"; };
 		7315EFAD69AFA79BC9F5504B /* Pods-DangProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProjectTests.release.xcconfig"; path = "Target Support Files/Pods-DangProjectTests/Pods-DangProjectTests.release.xcconfig"; sourceTree = "<group>"; };
+		7C12A07828322C40005CAB55 /* OnboardingMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingMasterViewController.swift; sourceTree = "<group>"; };
 		7C1BF74E27AB695E00BDAE70 /* SearchCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinator.swift; sourceTree = "<group>"; };
 		7C1BF75027AB759100BDAE70 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		7C1BF75427AB75D700BDAE70 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
@@ -159,7 +160,6 @@
 		7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDIContainer.swift; sourceTree = "<group>"; };
 		7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorFinishDelegate.swift; sourceTree = "<group>"; };
 		7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCurrentTimeUseCase.swift; sourceTree = "<group>"; };
-		7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OnboardingMasterViewController.swift; path = "DangProject/Presentation Layer/Onboarding/OnboardingMasterViewController.swift"; sourceTree = SOURCE_ROOT; };
 		7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoKey.swift; sourceTree = "<group>"; };
 		7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingContentViewController.swift; sourceTree = "<group>"; };
 		A38B6C5A8D92D089E843A6CD /* Pods_DangProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -704,8 +704,8 @@
 		7CFB399127FFF56E00AE99E3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				7CFB399227FFF58800AE99E3 /* OnboardingMasterViewController.swift */,
 				7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */,
+				7C12A07828322C40005CAB55 /* OnboardingMasterViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -937,6 +937,7 @@
 				7CFADB172822650F0038E419 /* CoordinatorFinishDelegate.swift in Sources */,
 				7CF74A3728153CFA00510817 /* OnboardingCoordinator.swift in Sources */,
 				7CA07CB1281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift in Sources */,
+				7C12A07928322C40005CAB55 /* OnboardingMasterViewController.swift in Sources */,
 				7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */,
 				7C1BF76627B1172600BDAE70 /* SearchUseCase.swift in Sources */,
 				7CA07CB3281CE42000597BC2 /* InputPersonalInformationViewController.swift in Sources */,
@@ -956,7 +957,6 @@
 				7C1BF77027B147A500BDAE70 /* FetchDataService.swift in Sources */,
 				7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */,
 				7CF02AD327BD04430090B594 /* DetailFoodCoordinator.swift in Sources */,
-				7CFB399327FFF58800AE99E3 /* OnboardingMasterViewController.swift in Sources */,
 				7C9B9D7F27A0EB600046F22C /* HomeCoordinator.swift in Sources */,
 				7CF02ADB27C0DF7C0090B594 /* ReusableView+Identifier.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
