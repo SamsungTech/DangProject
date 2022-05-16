@@ -40,7 +40,7 @@ class SearchUseCase {
     }
     
     func updateViewModel() {
-        //check favorites
+        // check favorites
         let checkedDomainFoodModels = checkFavorites()
         // updateViewModel
         foodResultModelObservable.onNext(SearchFoodViewModel.init(keyword: currentKeyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))

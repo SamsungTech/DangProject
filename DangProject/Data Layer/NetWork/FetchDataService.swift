@@ -25,7 +25,7 @@ class FetchDataService {
 //                asd
 //           }
     // MARK: 알라모파이어 어드밴스드 유세이지 이런거 많음 NetworkManager
-    func fetchFood(text: String, onComplete: @escaping (Result<Data, Error>) -> Void) {
+    private func fetchFood(text: String, onComplete: @escaping (Result<Data, Error>) -> Void) {
         let baseURL = "http://openapi.foodsafetykorea.go.kr/api/402a53aa1ef448f3bc9b/I2790/json/1/100/DESC_KOR=\(text)"
         let encodedStr = baseURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         
