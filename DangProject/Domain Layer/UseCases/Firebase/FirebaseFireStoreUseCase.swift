@@ -10,20 +10,23 @@ import Foundation
 import RxSwift
 
 class FirebaseFireStoreUseCase {
+    private let disposeBag = DisposeBag()
     
-    let fireStoreManagerRepository: FireStoreManagerRepository
+    // MARK: - Init
+    private let fireStoreManagerRepository: FireStoreManagerRepository
     
     init(fireStoreManagerRepository: FireStoreManagerRepository) {
         self.fireStoreManagerRepository = fireStoreManagerRepository
     }
     
+    // MARK: - Internal
     let profileExistenceObservable = PublishSubject<Bool>()
     
-    func upLoadFirebaseUID(uid: String) {
+    func uploadFirebaseUID(uid: String) {
         fireStoreManagerRepository.saveFirebaseUIDDocument(uid: uid)
     }
     
-    func upLoadProfile(profile: ProfileDomainModel) {
+    func uploadProfile(profile: ProfileDomainModel) {
         fireStoreManagerRepository.saveProfileDocument(profile: profile)
     }
     
@@ -37,7 +40,7 @@ class FirebaseFireStoreUseCase {
         }
     }
     
-    func upLoadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
+    func uploadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
         fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood, currentDate: currentDate)
     }
 }

@@ -45,7 +45,7 @@ class SearchViewModel: SearchViewModelProtocol {
     
     private func bindFoodResultModelObservable() {
         searchFoodUseCase.foodResultModelObservable
-            .subscribe(onNext: { [self] searchFoodViewModel in
+            .subscribe(onNext: { [unowned self] searchFoodViewModel in
                 currentFoodViewModels = searchFoodViewModel
                 if scopeState == .searchResult {
                     updateSearchResult()
@@ -56,7 +56,7 @@ class SearchViewModel: SearchViewModelProtocol {
             })
             .disposed(by: disposeBag)
     }
-
+    
     private func bindQueryUseCase() {
         manageQueryUseCase.qeuryObservable
             .map({ $0.reversed() })
@@ -78,27 +78,23 @@ class SearchViewModel: SearchViewModelProtocol {
         
         if indexPath != nil {
             if scopeState == .searchResult {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(searchResultFoodModels[indexPath!.row])) {
-                    self.searchFoodUseCase.updateViewModel()
-                }
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(searchResultFoodModels[indexPath!.row]))
+                searchFoodUseCase.updateViewModel()
             } else {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodModels[indexPath!.row])) {
-                    self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                    self.searchFoodUseCase.updateViewModel()
-                    self.updateFavoriteResult()
-                }
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodModels[indexPath!.row]))
+                favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
+                searchFoodUseCase.updateViewModel()
+                updateFavoriteResult()
             }
         } else if foodModel != nil {
             if scopeState == .searchResult {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!)) {
-                    self.searchFoodUseCase.updateViewModel()
-                }
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
+                searchFoodUseCase.updateViewModel()
             } else {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!)) {
-                    self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                    self.searchFoodUseCase.updateViewModel()
-                    self.updateFavoriteResult()
-                }
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
+                favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
+                searchFoodUseCase.updateViewModel()
+                updateFavoriteResult()
             }
         }
         
@@ -149,15 +145,19 @@ class SearchViewModel: SearchViewModelProtocol {
     private var currentFoodViewModels = SearchFoodViewModel.empty
     private var favoriteFoodViewModels = SearchFoodViewModel.empty
     private var scopeState: SearchBarScopeState = .searchResult
+    private var currentKeyword = ""
+    
     enum SearchBarScopeState {
         case searchResult
         case favorites
         case query
     }
     private func startSearching(searchBarText: String) {
+        guard currentKeyword != searchBarText else { return }
         manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText)
         searchFoodUseCase.fetchFood(text: searchBarText)
         loading.onNext(.startLoading)
+        currentKeyword = searchBarText
     }
     
     private func changeToFavoriteFoods() {
@@ -176,10 +176,10 @@ class SearchViewModel: SearchViewModelProtocol {
     
     private func compareFavoriteResult(text: String) {
         guard text != "" else { return updateFavoriteResult() }
-            let filteredViewModel = favoriteFoodViewModels.foodModels?.filter {(model: FoodViewModel) -> Bool in
-                return model.name!.contains(text)
-            }
-            searchFoodViewModelObservable.onNext(SearchFoodViewModel.init(keyword: text, foodModels: filteredViewModel ?? []))
+        let filteredViewModel = favoriteFoodViewModels.foodModels?.filter {(model: FoodViewModel) -> Bool in
+            return model.name!.contains(text)
+        }
+        searchFoodViewModelObservable.onNext(SearchFoodViewModel.init(keyword: text, foodModels: filteredViewModel ?? []))
     }
 }
 

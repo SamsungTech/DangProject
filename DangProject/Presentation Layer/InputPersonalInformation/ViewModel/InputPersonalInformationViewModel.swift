@@ -115,6 +115,6 @@ class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtoc
                                          onboarding: true,
                                          profileExistence: true)
         
-        firebaseFireStoreUseCase.upLoadProfile(profile: profile)
+        firebaseFireStoreUseCase.uploadProfile(profile: profile)
     }
 }

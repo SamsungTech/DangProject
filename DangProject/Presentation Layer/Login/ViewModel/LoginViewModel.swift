@@ -40,7 +40,7 @@ class LoginViewModel: LoginViewModelProtocol {
         firebaseAuthUseCase.authObservable
             .subscribe(onNext: { [unowned self] isValid, id in
                 if isValid {
-                    firebaseFireStoreUseCase.upLoadFirebaseUID(uid: id)
+                    firebaseFireStoreUseCase.uploadFirebaseUID(uid: id)
                     updateUserDefaultsUid(uid: id)
                 }
                 checkProfileExistence(uid: id)

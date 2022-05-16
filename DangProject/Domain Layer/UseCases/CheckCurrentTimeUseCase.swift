@@ -8,7 +8,7 @@
 import Foundation
 
 class CheckCurrentTimeUseCase {
-
+    // MARK: - Private
     private let currentDateTime = Date()
     private let userCalendar = Calendar.current
     private let requestedComponents: Set<Calendar.Component> = [
@@ -19,7 +19,7 @@ class CheckCurrentTimeUseCase {
         .minute,
         .second
     ]
-
+    // MARK: - Internal
     lazy var dateTimeComponents = userCalendar.dateComponents(requestedComponents, from: currentDateTime)
 
 }

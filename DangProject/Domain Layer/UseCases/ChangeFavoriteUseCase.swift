@@ -6,17 +6,17 @@
 //
 import Foundation
 
-import RxSwift
-
 class ChangeFavoriteUseCase {
     
-    let coreDataManagerRepository: CoreDataManagerRepository
+    // MARK: - Init
+    private let coreDataManagerRepository: CoreDataManagerRepository
     
     init(coreDataManagerRepository: CoreDataManagerRepository) {
         self.coreDataManagerRepository = coreDataManagerRepository
     }
     
-    func changeFavorite(food: FoodDomainModel, completion: @escaping()->Void) {
+    // MARK: - Internal
+    func changeFavorite(food: FoodDomainModel) {
         var tempFood = food
         tempFood.favorite = !food.favorite
         if food.favorite == false {
@@ -25,6 +25,6 @@ class ChangeFavoriteUseCase {
         else {
             coreDataManagerRepository.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())
         }
-        completion()
     }
+    
 }

@@ -8,10 +8,11 @@
 import Foundation
 
 import FirebaseFirestore
+import RxSwift
 
 final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
-    let database = Firestore.firestore()
-    
+    private let database = Firestore.firestore()
+
     func saveFirebaseUIDDocument(uid: String) {
         
         let uidData = ["firebaseUID": uid]

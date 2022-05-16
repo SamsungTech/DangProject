@@ -10,10 +10,9 @@ import Foundation
 import RxSwift
 
 class FirebaseAuthUseCase {
-    
-    let authObservable = PublishSubject<(Bool, String)>()
     private let disposeBag = DisposeBag()
     
+    //MARK: - Init
     private let firebaseAuthRepository: FirebaseAuthManagerRepository
     
     init(firebaseAuthRepository: FirebaseAuthManagerRepository) {
@@ -28,6 +27,9 @@ class FirebaseAuthUseCase {
             })
             .disposed(by: disposeBag)
     }
+    
+    //MARK: - Internal
+    let authObservable = PublishSubject<(Bool, String)>()
     
     func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String) {
         firebaseAuthRepository.signInFirebaseAuth(providerID: providerID, idToken: idToken, rawNonce: rawNonce)

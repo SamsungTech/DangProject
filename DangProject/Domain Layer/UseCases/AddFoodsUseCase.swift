@@ -8,9 +8,9 @@
 import Foundation
 
 class AddFoodsUseCase {
-    
-    let coreDataManagerRepository: CoreDataManagerRepository
-    let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    // MARK: - Init
+    private let coreDataManagerRepository: CoreDataManagerRepository
+    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
     
     init(coreDataManagerRepository: CoreDataManagerRepository,
          firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
@@ -18,8 +18,9 @@ class AddFoodsUseCase {
         self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
     }
     
+    // MARK: - Internal
     func addEatenFoods(food: FoodDomainModel, currentDate: DateComponents) {
         coreDataManagerRepository.addFoods(food, at: CoreDataName.eatenFoods)
-        firebaseFireStoreUseCase.upLoadEatenFood(eatenFood: food, currentDate: currentDate)
+        firebaseFireStoreUseCase.uploadEatenFood(eatenFood: food, currentDate: currentDate)
     }
 }

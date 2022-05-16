@@ -10,26 +10,16 @@ import Foundation
 import RxSwift
 
 class SearchUseCase {
-    
-    let fetchFoodRepository: FetchRepository
-    let coreDataManagerRepository: CoreDataManagerRepository
-    
-    var originalDomainFoodModels: [FoodDomainModel] = []
-    var foodResultModelObservable = PublishSubject<SearchFoodViewModel>()
-    var currentKeyword = ""
-    
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
+    // MARK: - Init
+    private let fetchFoodRepository: FetchRepository
+    private let coreDataManagerRepository: CoreDataManagerRepository
     
     init(fetchFoodRepository: FetchRepository,
          coreDataManagerRepository: CoreDataManagerRepository) {
         self.fetchFoodRepository = fetchFoodRepository
         self.coreDataManagerRepository = coreDataManagerRepository
         bindToFoodDomainModelObservable()
-    }
-    
-    func fetchFood(text: String) {
-        currentKeyword = text
-        fetchFoodRepository.fetchToDomainModel(text: text)
     }
     
     private func bindToFoodDomainModelObservable() {
@@ -41,7 +31,26 @@ class SearchUseCase {
             .disposed(by: disposeBag)
     }
     
-    func checkFavorites() -> [FoodDomainModel] {
+    // MARK: - Internal
+    var foodResultModelObservable = PublishSubject<SearchFoodViewModel>()
+    
+    func fetchFood(text: String) {
+        currentKeyword = text
+        fetchFoodRepository.fetchToDomainModel(text: text)
+    }
+    
+    func updateViewModel() {
+        //check favorites
+        let checkedDomainFoodModels = checkFavorites()
+        // updateViewModel
+        foodResultModelObservable.onNext(SearchFoodViewModel.init(keyword: currentKeyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))
+    }
+    
+    // MARK: - Private
+    private var originalDomainFoodModels: [FoodDomainModel] = []
+    private var currentKeyword = ""
+    
+    private func checkFavorites() -> [FoodDomainModel] {
         var currentDomainFoodModels: [FoodDomainModel] = []
         currentDomainFoodModels = originalDomainFoodModels
         
@@ -62,12 +71,5 @@ class SearchUseCase {
             }
         }
         return currentDomainFoodModels
-    }
-    
-    func updateViewModel() {
-        //check favorites
-        let checkedDomainFoodModels = checkFavorites()
-        // updateViewModel
-        foodResultModelObservable.onNext(SearchFoodViewModel.init(keyword: currentKeyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))
     }
 }

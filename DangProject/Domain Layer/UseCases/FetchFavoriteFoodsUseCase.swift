@@ -10,14 +10,16 @@ import Foundation
 import RxSwift
 
 class FetchFavoriteFoodsUseCase {
+    private let disposeBag = DisposeBag()
     
-    let coreDataManagerRepository: CoreDataManagerRepository
-    let disposeBag = DisposeBag()
+    // MARK: - Init
+    private let coreDataManagerRepository: CoreDataManagerRepository
     
     init(coreDataManagerRepository: CoreDataManagerRepository) {
         self.coreDataManagerRepository = coreDataManagerRepository
     }
     
+    // MARK: - Internal
     func fetchFavoriteFoods() -> SearchFoodViewModel {
         let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: FavoriteFoods.fetchRequest())
         var tempFoodViewModel: [FoodViewModel] = []

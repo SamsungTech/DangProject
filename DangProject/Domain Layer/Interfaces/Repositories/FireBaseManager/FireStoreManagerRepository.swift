@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FireStoreManagerRepository {
-    
+        
     func saveFirebaseUIDDocument(uid: String)
     func saveProfileDocument(profile: ProfileDomainModel)
     func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents)

@@ -56,8 +56,8 @@ class LoginViewController: UIViewController {
     
     private func bindSignInObservable() {
         viewModel.profileExistenceObservable
-            .bind(onNext: { [unowned self] profileIsExist in
-                if profileIsExist {
+            .bind(onNext: { [unowned self] profileIsValid in
+                if profileIsValid {
                     coordinatorFinishDelegate?.switchViewController(to: .tabBar)
                 } else {
                     coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation)
