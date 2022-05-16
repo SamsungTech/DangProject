@@ -177,12 +177,12 @@ class DetailFoodViewController: UIViewController {
         amountPerButton.setTitle("1인분 (1회 제공량 당)", for: .normal)
         amountPerButton.setTitleColor(.black, for: .normal)
         
-        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
-        amountPerButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: imageConfiguration), for: .normal)
-        
+        amountPerButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        amountPerButton.tintColor = .black
+                                 
         amountPerButton.semanticContentAttribute = .forceRightToLeft
         amountPerButton.titleEdgeInsets = .init(top: 0, left: -40, bottom: 0, right: 0)
-        amountPerButton.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -80)
+        amountPerButton.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -60)
         
         amountPerButton.addTarget(self, action: #selector(amountPerButtonTapped), for: .touchUpInside)
     }
@@ -257,8 +257,8 @@ class DetailFoodViewController: UIViewController {
     }
     
     private func increasePickerView() {
-        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
-        amountPerButton.setImage(UIImage(systemName: "chevron.up", withConfiguration: imageConfiguration), for: .normal)
+        amountPerButton.setImage(UIImage(systemName: "chevron.up"), for: .normal)
+        amountPerButton.tintColor = .black
         addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 220)
         amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 200)
         addButtonTopConstraint?.isActive = true
@@ -269,8 +269,8 @@ class DetailFoodViewController: UIViewController {
     }
     
     private func decreasePickerView() {
-        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
-        amountPerButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: imageConfiguration), for: .normal)
+        amountPerButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        amountPerButton.tintColor = .black
         addButtonTopConstraint =  addButton.topAnchor.constraint(equalTo: amountPerButton.bottomAnchor, constant: 10)
         amountPickerHeightConstraint = amountPickerView.heightAnchor.constraint(equalToConstant: 0)
         addButtonTopConstraint?.isActive = true

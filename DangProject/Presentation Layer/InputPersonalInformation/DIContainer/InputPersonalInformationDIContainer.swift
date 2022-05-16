@@ -11,7 +11,7 @@ class InputPersonalInformationDIContainer {
     }
     
     func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
-        return FirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {

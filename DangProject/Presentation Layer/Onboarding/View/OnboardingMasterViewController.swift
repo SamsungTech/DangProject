@@ -102,8 +102,8 @@ class OnboardingMasterViewController: UIViewController {
             nextButton.widthAnchor.constraint(equalToConstant: 25),
             nextButton.heightAnchor.constraint(equalToConstant: 45)
         ])
-        let imageConfiguration = UIImage.SymbolConfiguration.init(hierarchicalColor: .black)
-        nextButton.setImage(UIImage(systemName: "chevron.right", withConfiguration: imageConfiguration), for: .normal)
+        nextButton.setImage(UIImage(systemName: "chevron.right"), for: .normal)
+        nextButton.tintColor = .black
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     

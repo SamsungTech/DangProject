@@ -12,11 +12,11 @@ class LoginDIContainer {
     }
     
     func makeFirebaseAuthUseCase() -> FirebaseAuthUseCase {
-        return FirebaseAuthUseCase(firebaseAuthRepository: makeFirebaseAuthRepository())
+        return DefaultFirebaseAuthUseCase(firebaseAuthRepository: makeFirebaseAuthRepository())
     }
     
     func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
-        return FirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {

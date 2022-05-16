@@ -6,7 +6,7 @@
 //
 import Foundation
 
-class ChangeFavoriteUseCase {
+class DefaultChangeFavoriteUseCase: ChangeFavoriteUseCase {
     
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository

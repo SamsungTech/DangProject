@@ -8,26 +8,27 @@ import Foundation
 
 import RxSwift
 
-class ManageQueryUseCase {
+class DefaultManageQueryUseCase: ManageQueryUseCase {
     
     // MARK: - Init
     let coreDataManagerRepository: CoreDataManagerRepository
     
     init(coreDataManagerRepository: CoreDataManagerRepository) {
         self.coreDataManagerRepository = coreDataManagerRepository
+        self.updateQuery()
     }
     
     // MARK: - Internal
-    lazy var qeuryObservable = BehaviorSubject(value: loadQuery())
+    var queryObservable = PublishSubject<[String]>()
     
     func updateQuery() {
-        qeuryObservable.onNext(loadQuery())
+        queryObservable.onNext(loadQuery())
     }
     
     func addQueryOnCoreData(keyword: String) {
         checkQueryWithCoreData(keyword: keyword)
         coreDataManagerRepository.addRecentQuery(keyword)
-        qeuryObservable.onNext(loadQuery())
+        queryObservable.onNext(loadQuery())
     }
     
     func loadQuery() -> [String]  {
@@ -43,7 +44,7 @@ class ManageQueryUseCase {
     
     func deleteAllQuery() {
         coreDataManagerRepository.deleteAll(request: RecentQuery.fetchRequest())
-        qeuryObservable.onNext(loadQuery())
+        queryObservable.onNext(loadQuery())
     }
     
     // MARK: - Private

@@ -58,7 +58,7 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     
     private func bindQueryUseCase() {
-        manageQueryUseCase.qeuryObservable
+        manageQueryUseCase.queryObservable
             .map({ $0.reversed() })
             .subscribe(onNext: { [unowned self] query in
                 searchQueryObservable.onNext(query)

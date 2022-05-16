@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AddFoodsUseCase {
+class DefaultAddFoodsUseCase: AddFoodsUseCase {
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository
     private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase

@@ -9,7 +9,7 @@ import Foundation
 
 import RxSwift
 
-class SearchUseCase {
+class DefaultSearchUseCase: SearchUseCase {
     private let disposeBag = DisposeBag()
     // MARK: - Init
     private let fetchFoodRepository: FetchRepository

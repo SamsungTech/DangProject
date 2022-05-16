@@ -9,7 +9,7 @@ import Foundation
 
 import RxSwift
 
-class FetchFavoriteFoodsUseCase {
+class DefaultFetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase {
     private let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -29,9 +29,5 @@ class FetchFavoriteFoodsUseCase {
             tempFoodViewModel.append(FoodViewModel.init(favoriteFoodDomainModel))
         }
         return SearchFoodViewModel.init(keyword: "", foodModels: tempFoodViewModel)
-    }
-    
-    func delete() {
-        coreDataManagerRepository.deleteAll(request: FavoriteFoods.fetchRequest())
     }
 }

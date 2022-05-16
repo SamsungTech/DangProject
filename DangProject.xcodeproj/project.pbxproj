@@ -15,6 +15,14 @@
 		0B1F4A88277076FE0006B9CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */; };
 		406DE831D86791792DAD62BD /* Pods_DangProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F64F741B1CC607F30779F70B /* Pods_DangProject.framework */; };
 		7C12A07928322C40005CAB55 /* OnboardingMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A07828322C40005CAB55 /* OnboardingMasterViewController.swift */; };
+		7C12A07C2832524A005CAB55 /* SearchUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A07B2832524A005CAB55 /* SearchUseCase.swift */; };
+		7C12A07E28325465005CAB55 /* ChangeFavoriteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A07D28325465005CAB55 /* ChangeFavoriteUseCase.swift */; };
+		7C12A0802832555A005CAB55 /* FetchFavoriteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A07F2832555A005CAB55 /* FetchFavoriteUseCase.swift */; };
+		7C12A082283255D7005CAB55 /* AddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A081283255D7005CAB55 /* AddFoodsUseCase.swift */; };
+		7C12A0842832570E005CAB55 /* ManageQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A0832832570E005CAB55 /* ManageQueryUseCase.swift */; };
+		7C12A086283257BE005CAB55 /* CheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A085283257BE005CAB55 /* CheckCurrentTimeUseCase.swift */; };
+		7C12A089283258AB005CAB55 /* FirebaseAuthUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A088283258AB005CAB55 /* FirebaseAuthUseCase.swift */; };
+		7C12A08B28325A36005CAB55 /* FirebaseFireStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C12A08A28325A36005CAB55 /* FirebaseFireStoreUseCase.swift */; };
 		7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF74E27AB695E00BDAE70 /* SearchCoordinator.swift */; };
 		7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75027AB759100BDAE70 /* SearchViewController.swift */; };
 		7C1BF75527AB75D700BDAE70 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75427AB75D700BDAE70 /* SearchViewModel.swift */; };
@@ -22,19 +30,19 @@
 		7C1BF75D27B0BED100BDAE70 /* FoodEntityFromAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75C27B0BED100BDAE70 /* FoodEntityFromAPI.swift */; };
 		7C1BF75F27B0BF0F00BDAE70 /* DefaultFetchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF75E27B0BF0F00BDAE70 /* DefaultFetchRepository.swift */; };
 		7C1BF76427B1149F00BDAE70 /* FetchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF76327B1149F00BDAE70 /* FetchRepository.swift */; };
-		7C1BF76627B1172600BDAE70 /* SearchUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF76527B1172600BDAE70 /* SearchUseCase.swift */; };
+		7C1BF76627B1172600BDAE70 /* DefaultSearchUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF76527B1172600BDAE70 /* DefaultSearchUseCase.swift */; };
 		7C1BF76D27B133A000BDAE70 /* SearchDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF76C27B133A000BDAE70 /* SearchDIContainer.swift */; };
 		7C1BF77027B147A500BDAE70 /* FetchDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF76F27B147A500BDAE70 /* FetchDataService.swift */; };
 		7C1BF77227B1584500BDAE70 /* FoodDomainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77127B1584500BDAE70 /* FoodDomainModel.swift */; };
 		7C1BF77427B2440200BDAE70 /* SearchFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77327B2440200BDAE70 /* SearchFoodViewModel.swift */; };
 		7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77627B2A5B200BDAE70 /* LoadingView.swift */; };
-		7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */; };
-		7C4C78FF27C3E6F5000E0A09 /* ManageQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */; };
+		7C1BF77927B3D16B00BDAE70 /* DefaultChangeFavoriteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1BF77827B3D16B00BDAE70 /* DefaultChangeFavoriteUseCase.swift */; };
+		7C4C78FF27C3E6F5000E0A09 /* DefaultManageQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C78FE27C3E6F5000E0A09 /* DefaultManageQueryUseCase.swift */; };
 		7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4C790027C3ED8D000E0A09 /* QueryTableViewCell.swift */; };
 		7C540E9928097D6800BE279E /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C540E9828097D6800BE279E /* OnboardingViewModel.swift */; };
 		7C86EB89281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C86EB88281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift */; };
 		7C86EB8D281C1E4D00936C1F /* FirebaseAuthManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C86EB8C281C1E4D00936C1F /* FirebaseAuthManagerRepository.swift */; };
-		7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */; };
+		7C94E85527C32675006F5574 /* DefaultAddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C94E85427C32675006F5574 /* DefaultAddFoodsUseCase.swift */; };
 		7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */; };
 		7C9B9D7727A0DBE30046F22C /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */; };
 		7C9B9D7D27A0DDB10046F22C /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */; };
@@ -48,8 +56,8 @@
 		7CA07CB5281CE47800597BC2 /* InputPersonalInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA07CB4281CE47800597BC2 /* InputPersonalInformationViewModel.swift */; };
 		7CB2F915281FBBDF005797C7 /* DefaultCoreDataManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F914281FBBDF005797C7 /* DefaultCoreDataManagerRepository.swift */; };
 		7CB2F917281FBBEF005797C7 /* CoreDataManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F916281FBBEF005797C7 /* CoreDataManagerRepository.swift */; };
-		7CB2F91F281FC1B5005797C7 /* FirebaseAuthUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F91E281FC1B5005797C7 /* FirebaseAuthUseCase.swift */; };
-		7CB2F921281FCE65005797C7 /* FirebaseFireStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F920281FCE65005797C7 /* FirebaseFireStoreUseCase.swift */; };
+		7CB2F91F281FC1B5005797C7 /* DefaultFirebaseAuthUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F91E281FC1B5005797C7 /* DefaultFirebaseAuthUseCase.swift */; };
+		7CB2F921281FCE65005797C7 /* DefaultFirebaseFireStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F920281FCE65005797C7 /* DefaultFirebaseFireStoreUseCase.swift */; };
 		7CB2F923281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F922281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift */; };
 		7CB2F925281FCEE5005797C7 /* FireStoreManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F924281FCEE5005797C7 /* FireStoreManagerRepository.swift */; };
 		7CB2F92728210405005797C7 /* ProfileDomainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F92628210405005797C7 /* ProfileDomainModel.swift */; };
@@ -59,7 +67,7 @@
 		7CD6C09028196CD8001979D0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08F28196CD8001979D0 /* LoginViewController.swift */; };
 		7CD6C09328196D21001979D0 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C09228196D21001979D0 /* LoginViewModel.swift */; };
 		7CD96735281ACEC8003DDB69 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CD96734281ACEC8003DDB69 /* GoogleService-Info.plist */; };
-		7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */; };
+		7CF02AC927BAB3970090B594 /* DefaultFetchFavoriteFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AC827BAB3970090B594 /* DefaultFetchFavoriteFoodsUseCase.swift */; };
 		7CF02AD327BD04430090B594 /* DetailFoodCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD227BD04430090B594 /* DetailFoodCoordinator.swift */; };
 		7CF02AD527BD048F0090B594 /* DetailFoodDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD427BD048F0090B594 /* DetailFoodDIContainer.swift */; };
 		7CF02AD727BD04A90090B594 /* DetailFoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF02AD627BD04A90090B594 /* DetailFoodViewController.swift */; };
@@ -72,7 +80,7 @@
 		7CF74A3728153CFA00510817 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF74A3628153CFA00510817 /* OnboardingCoordinator.swift */; };
 		7CF74A3A28165C8F00510817 /* OnboardingDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */; };
 		7CFADB172822650F0038E419 /* CoordinatorFinishDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */; };
-		7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */; };
+		7CFADB1A2822B7A60038E419 /* DefaultCheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFADB192822B7A60038E419 /* DefaultCheckCurrentTimeUseCase.swift */; };
 		7CFB399527FFF7E200AE99E3 /* UserInfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */; };
 		7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */; };
 		C9C3E75AEF1B052BA8E461C0 /* Pods_DangProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A38B6C5A8D92D089E843A6CD /* Pods_DangProjectTests.framework */; };
@@ -100,6 +108,14 @@
 		0B3132E1C7D66AF3CCBF58B2 /* Pods-DangProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProject.debug.xcconfig"; path = "Target Support Files/Pods-DangProject/Pods-DangProject.debug.xcconfig"; sourceTree = "<group>"; };
 		7315EFAD69AFA79BC9F5504B /* Pods-DangProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DangProjectTests.release.xcconfig"; path = "Target Support Files/Pods-DangProjectTests/Pods-DangProjectTests.release.xcconfig"; sourceTree = "<group>"; };
 		7C12A07828322C40005CAB55 /* OnboardingMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingMasterViewController.swift; sourceTree = "<group>"; };
+		7C12A07B2832524A005CAB55 /* SearchUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUseCase.swift; sourceTree = "<group>"; };
+		7C12A07D28325465005CAB55 /* ChangeFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFavoriteUseCase.swift; sourceTree = "<group>"; };
+		7C12A07F2832555A005CAB55 /* FetchFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFavoriteUseCase.swift; sourceTree = "<group>"; };
+		7C12A081283255D7005CAB55 /* AddFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodsUseCase.swift; sourceTree = "<group>"; };
+		7C12A0832832570E005CAB55 /* ManageQueryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQueryUseCase.swift; sourceTree = "<group>"; };
+		7C12A085283257BE005CAB55 /* CheckCurrentTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCurrentTimeUseCase.swift; sourceTree = "<group>"; };
+		7C12A088283258AB005CAB55 /* FirebaseAuthUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUseCase.swift; sourceTree = "<group>"; };
+		7C12A08A28325A36005CAB55 /* FirebaseFireStoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseFireStoreUseCase.swift; sourceTree = "<group>"; };
 		7C1BF74E27AB695E00BDAE70 /* SearchCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinator.swift; sourceTree = "<group>"; };
 		7C1BF75027AB759100BDAE70 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		7C1BF75427AB75D700BDAE70 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
@@ -107,19 +123,19 @@
 		7C1BF75C27B0BED100BDAE70 /* FoodEntityFromAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntityFromAPI.swift; sourceTree = "<group>"; };
 		7C1BF75E27B0BF0F00BDAE70 /* DefaultFetchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFetchRepository.swift; sourceTree = "<group>"; };
 		7C1BF76327B1149F00BDAE70 /* FetchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchRepository.swift; sourceTree = "<group>"; };
-		7C1BF76527B1172600BDAE70 /* SearchUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUseCase.swift; sourceTree = "<group>"; };
+		7C1BF76527B1172600BDAE70 /* DefaultSearchUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSearchUseCase.swift; sourceTree = "<group>"; };
 		7C1BF76C27B133A000BDAE70 /* SearchDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDIContainer.swift; sourceTree = "<group>"; };
 		7C1BF76F27B147A500BDAE70 /* FetchDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDataService.swift; sourceTree = "<group>"; };
 		7C1BF77127B1584500BDAE70 /* FoodDomainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDomainModel.swift; sourceTree = "<group>"; };
 		7C1BF77327B2440200BDAE70 /* SearchFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodViewModel.swift; sourceTree = "<group>"; };
 		7C1BF77627B2A5B200BDAE70 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
-		7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFavoriteUseCase.swift; sourceTree = "<group>"; };
-		7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQueryUseCase.swift; sourceTree = "<group>"; };
+		7C1BF77827B3D16B00BDAE70 /* DefaultChangeFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultChangeFavoriteUseCase.swift; sourceTree = "<group>"; };
+		7C4C78FE27C3E6F5000E0A09 /* DefaultManageQueryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultManageQueryUseCase.swift; sourceTree = "<group>"; };
 		7C4C790027C3ED8D000E0A09 /* QueryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryTableViewCell.swift; sourceTree = "<group>"; };
 		7C540E9828097D6800BE279E /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		7C86EB88281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFirebaseAuthManagerRepository.swift; sourceTree = "<group>"; };
 		7C86EB8C281C1E4D00936C1F /* FirebaseAuthManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthManagerRepository.swift; sourceTree = "<group>"; };
-		7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodsUseCase.swift; sourceTree = "<group>"; };
+		7C94E85427C32675006F5574 /* DefaultAddFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAddFoodsUseCase.swift; sourceTree = "<group>"; };
 		7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -133,8 +149,8 @@
 		7CA07CB4281CE47800597BC2 /* InputPersonalInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPersonalInformationViewModel.swift; sourceTree = "<group>"; };
 		7CB2F914281FBBDF005797C7 /* DefaultCoreDataManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCoreDataManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F916281FBBEF005797C7 /* CoreDataManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerRepository.swift; sourceTree = "<group>"; };
-		7CB2F91E281FC1B5005797C7 /* FirebaseAuthUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUseCase.swift; sourceTree = "<group>"; };
-		7CB2F920281FCE65005797C7 /* FirebaseFireStoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseFireStoreUseCase.swift; sourceTree = "<group>"; };
+		7CB2F91E281FC1B5005797C7 /* DefaultFirebaseAuthUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFirebaseAuthUseCase.swift; sourceTree = "<group>"; };
+		7CB2F920281FCE65005797C7 /* DefaultFirebaseFireStoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFirebaseFireStoreUseCase.swift; sourceTree = "<group>"; };
 		7CB2F922281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFireStoreManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F924281FCEE5005797C7 /* FireStoreManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F92628210405005797C7 /* ProfileDomainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDomainModel.swift; sourceTree = "<group>"; };
@@ -145,7 +161,7 @@
 		7CD6C08F28196CD8001979D0 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		7CD6C09228196D21001979D0 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		7CD96734281ACEC8003DDB69 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchFavoriteFoodsUseCase.swift; sourceTree = "<group>"; };
+		7CF02AC827BAB3970090B594 /* DefaultFetchFavoriteFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFetchFavoriteFoodsUseCase.swift; sourceTree = "<group>"; };
 		7CF02AD227BD04430090B594 /* DetailFoodCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodCoordinator.swift; sourceTree = "<group>"; };
 		7CF02AD427BD048F0090B594 /* DetailFoodDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodDIContainer.swift; sourceTree = "<group>"; };
 		7CF02AD627BD04A90090B594 /* DetailFoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodViewController.swift; sourceTree = "<group>"; };
@@ -159,7 +175,7 @@
 		7CF74A3628153CFA00510817 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
 		7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDIContainer.swift; sourceTree = "<group>"; };
 		7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorFinishDelegate.swift; sourceTree = "<group>"; };
-		7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckCurrentTimeUseCase.swift; sourceTree = "<group>"; };
+		7CFADB192822B7A60038E419 /* DefaultCheckCurrentTimeUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCheckCurrentTimeUseCase.swift; sourceTree = "<group>"; };
 		7CFB399427FFF7E200AE99E3 /* UserInfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoKey.swift; sourceTree = "<group>"; };
 		7CFB39962803EC0C00AE99E3 /* OnboardingContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingContentViewController.swift; sourceTree = "<group>"; };
 		A38B6C5A8D92D089E843A6CD /* Pods_DangProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DangProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -233,6 +249,29 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		7C12A07A2832521A005CAB55 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				7C12A08728325861005CAB55 /* Firebase */,
+				7C12A07B2832524A005CAB55 /* SearchUseCase.swift */,
+				7C12A07D28325465005CAB55 /* ChangeFavoriteUseCase.swift */,
+				7C12A07F2832555A005CAB55 /* FetchFavoriteUseCase.swift */,
+				7C12A081283255D7005CAB55 /* AddFoodsUseCase.swift */,
+				7C12A0832832570E005CAB55 /* ManageQueryUseCase.swift */,
+				7C12A085283257BE005CAB55 /* CheckCurrentTimeUseCase.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		7C12A08728325861005CAB55 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				7C12A088283258AB005CAB55 /* FirebaseAuthUseCase.swift */,
+				7C12A08A28325A36005CAB55 /* FirebaseFireStoreUseCase.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
 		7C1BF74C27AB687700BDAE70 /* SearchFood */ = {
 			isa = PBXGroup;
 			children = (
@@ -302,12 +341,12 @@
 			isa = PBXGroup;
 			children = (
 				7CB2F91D281FC185005797C7 /* Firebase */,
-				7C1BF76527B1172600BDAE70 /* SearchUseCase.swift */,
-				7C1BF77827B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift */,
-				7CF02AC827BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift */,
-				7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */,
-				7C4C78FE27C3E6F5000E0A09 /* ManageQueryUseCase.swift */,
-				7CFADB192822B7A60038E419 /* CheckCurrentTimeUseCase.swift */,
+				7C1BF76527B1172600BDAE70 /* DefaultSearchUseCase.swift */,
+				7C1BF77827B3D16B00BDAE70 /* DefaultChangeFavoriteUseCase.swift */,
+				7CF02AC827BAB3970090B594 /* DefaultFetchFavoriteFoodsUseCase.swift */,
+				7C94E85427C32675006F5574 /* DefaultAddFoodsUseCase.swift */,
+				7C4C78FE27C3E6F5000E0A09 /* DefaultManageQueryUseCase.swift */,
+				7CFADB192822B7A60038E419 /* DefaultCheckCurrentTimeUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -404,6 +443,7 @@
 		7C9B9D7927A0DD4F0046F22C /* Domain Layer */ = {
 			isa = PBXGroup;
 			children = (
+				7C12A07A2832521A005CAB55 /* Protocols */,
 				7C1BF76027B113DC00BDAE70 /* UseCases */,
 				7C1BF75827B0BE6100BDAE70 /* Models */,
 				7C1BF76127B113E300BDAE70 /* Interfaces */,
@@ -534,8 +574,8 @@
 		7CB2F91D281FC185005797C7 /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
-				7CB2F91E281FC1B5005797C7 /* FirebaseAuthUseCase.swift */,
-				7CB2F920281FCE65005797C7 /* FirebaseFireStoreUseCase.swift */,
+				7CB2F91E281FC1B5005797C7 /* DefaultFirebaseAuthUseCase.swift */,
+				7CB2F920281FCE65005797C7 /* DefaultFirebaseFireStoreUseCase.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -910,22 +950,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CB2F917281FBBEF005797C7 /* CoreDataManagerRepository.swift in Sources */,
+				7C12A08B28325A36005CAB55 /* FirebaseFireStoreUseCase.swift in Sources */,
 				7C1BF75F27B0BF0F00BDAE70 /* DefaultFetchRepository.swift in Sources */,
+				7C12A086283257BE005CAB55 /* CheckCurrentTimeUseCase.swift in Sources */,
 				7C1BF75527AB75D700BDAE70 /* SearchViewModel.swift in Sources */,
 				7CB2F923281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift in Sources */,
 				7CF058D82813CA1600540ACE /* UIView+Radius.swift in Sources */,
-				7CB2F921281FCE65005797C7 /* FirebaseFireStoreUseCase.swift in Sources */,
+				7CB2F921281FCE65005797C7 /* DefaultFirebaseFireStoreUseCase.swift in Sources */,
 				7C1BF76427B1149F00BDAE70 /* FetchRepository.swift in Sources */,
-				7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */,
-				7C4C78FF27C3E6F5000E0A09 /* ManageQueryUseCase.swift in Sources */,
+				7C94E85527C32675006F5574 /* DefaultAddFoodsUseCase.swift in Sources */,
+				7C4C78FF27C3E6F5000E0A09 /* DefaultManageQueryUseCase.swift in Sources */,
 				7C1BF74F27AB695E00BDAE70 /* SearchCoordinator.swift in Sources */,
 				7CB2F925281FCEE5005797C7 /* FireStoreManagerRepository.swift in Sources */,
 				7CD6C09328196D21001979D0 /* LoginViewModel.swift in Sources */,
 				7CB2F92728210405005797C7 /* ProfileDomainModel.swift in Sources */,
 				7C1BF76D27B133A000BDAE70 /* SearchDIContainer.swift in Sources */,
-				7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */,
+				7C12A0802832555A005CAB55 /* FetchFavoriteUseCase.swift in Sources */,
+				7C1BF77927B3D16B00BDAE70 /* DefaultChangeFavoriteUseCase.swift in Sources */,
 				7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */,
-				7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */,
+				7CFADB1A2822B7A60038E419 /* DefaultCheckCurrentTimeUseCase.swift in Sources */,
 				7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */,
 				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				7CF058DA2813CA4A00540ACE /* Double+Calculate.swift in Sources */,
@@ -939,7 +982,10 @@
 				7CA07CB1281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift in Sources */,
 				7C12A07928322C40005CAB55 /* OnboardingMasterViewController.swift in Sources */,
 				7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */,
-				7C1BF76627B1172600BDAE70 /* SearchUseCase.swift in Sources */,
+				7C12A089283258AB005CAB55 /* FirebaseAuthUseCase.swift in Sources */,
+				7C12A0842832570E005CAB55 /* ManageQueryUseCase.swift in Sources */,
+				7C1BF76627B1172600BDAE70 /* DefaultSearchUseCase.swift in Sources */,
+				7C12A082283255D7005CAB55 /* AddFoodsUseCase.swift in Sources */,
 				7CA07CB3281CE42000597BC2 /* InputPersonalInformationViewController.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
 				7CD6C08C28196C5A001979D0 /* LoginCoordinator.swift in Sources */,
@@ -954,8 +1000,10 @@
 				7C9B9D8527A0F3AE0046F22C /* HomeDIContainer.swift in Sources */,
 				7CF02AD727BD04A90090B594 /* DetailFoodViewController.swift in Sources */,
 				7C1BF77427B2440200BDAE70 /* SearchFoodViewModel.swift in Sources */,
+				7C12A07E28325465005CAB55 /* ChangeFavoriteUseCase.swift in Sources */,
+				7C12A07C2832524A005CAB55 /* SearchUseCase.swift in Sources */,
 				7C1BF77027B147A500BDAE70 /* FetchDataService.swift in Sources */,
-				7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */,
+				7CF02AC927BAB3970090B594 /* DefaultFetchFavoriteFoodsUseCase.swift in Sources */,
 				7CF02AD327BD04430090B594 /* DetailFoodCoordinator.swift in Sources */,
 				7C9B9D7F27A0EB600046F22C /* HomeCoordinator.swift in Sources */,
 				7CF02ADB27C0DF7C0090B594 /* ReusableView+Identifier.swift in Sources */,
@@ -969,7 +1017,7 @@
 				7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */,
 				7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */,
 				7C9B9D7D27A0DDB10046F22C /* AppCoordinator.swift in Sources */,
-				7CB2F91F281FC1B5005797C7 /* FirebaseAuthUseCase.swift in Sources */,
+				7CB2F91F281FC1B5005797C7 /* DefaultFirebaseAuthUseCase.swift in Sources */,
 				7CB2F9292822347B005797C7 /* TabBarCoordinator.swift in Sources */,
 				7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */,
 			);
@@ -1056,7 +1104,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1111,7 +1159,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
