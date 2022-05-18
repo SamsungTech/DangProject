@@ -77,7 +77,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
         guard let sugar = detailFood.sugar else { return 0 }
         guard let sugarDouble = Double(sugar) else { return 0 }
         if sugarDouble * amount > 30 {
-            return CGFloat.pi
+            return 3.141592653589792
         } else {
             return (sugarDouble * amount * 6)*CGFloat.pi / 180
         }
