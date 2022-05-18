@@ -179,7 +179,7 @@ class DetailFoodViewController: UIViewController {
         
         amountPerButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         amountPerButton.tintColor = .black
-                                 
+        
         amountPerButton.semanticContentAttribute = .forceRightToLeft
         amountPerButton.titleEdgeInsets = .init(top: 0, left: -40, bottom: 0, right: 0)
         amountPerButton.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: -60)
@@ -285,10 +285,11 @@ class DetailFoodViewController: UIViewController {
         viewModel.detailFoodObservable
             .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] food in
-                guard let strongSelf = self else { return }
-                self?.totalSugarLabel.text = "\(strongSelf.viewModel.getTotalSugar())g"
-                self?.amountTextField.text = "\(strongSelf.viewModel.amount)"
-                self?.startIndicatorAnimation(amount: Double(strongSelf.viewModel.amount))
+                guard let totalSugar = self?.viewModel.getTotalSugar(),
+                let amount = self?.viewModel.amount else { return }
+                self?.totalSugarLabel.text = "\(totalSugar)g"
+                self?.amountTextField.text = "\(amount)"
+                self?.startIndicatorAnimation(amount: Double(amount))
                 
                 if self?.viewModel.amount == 0 {
                     self?.changeAddButtonDeactivated()

@@ -146,11 +146,11 @@ class SearchViewController: UIViewController {
                        delay: 0.5,
                        usingSpringWithDamping: 0.5,
                        initialSpringVelocity: 0.5,
-                       options: .curveEaseInOut, animations: { [unowned self] in
-            addCompleteLabelTopConstraint.isActive = false
-            addCompleteLabelTopConstraint = addCompleteToastLabel.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -80)
-            addCompleteLabelTopConstraint.isActive = true
-            view.layoutIfNeeded()
+                       options: .curveEaseInOut, animations: {
+            self.addCompleteLabelTopConstraint.isActive = false
+            self.addCompleteLabelTopConstraint = self.addCompleteToastLabel.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80)
+            self.addCompleteLabelTopConstraint.isActive = true
+            self.view.layoutIfNeeded()
         }, completion: { _ in
             self.popAddCompleteToastLabel()
         })
@@ -161,9 +161,9 @@ class SearchViewController: UIViewController {
                        delay: 2.5,
                        usingSpringWithDamping: 0.5,
                        initialSpringVelocity: 0.5,
-                       options: .curveEaseInOut, animations: { [unowned self] in
+                       options: .curveEaseInOut, animations: {
             self.addCompleteLabelTopConstraint.isActive = false
-            self.addCompleteLabelTopConstraint = addCompleteToastLabel.topAnchor.constraint(equalTo: view.bottomAnchor)
+            self.addCompleteLabelTopConstraint = self.addCompleteToastLabel.topAnchor.constraint(equalTo: self.view.bottomAnchor)
             self.addCompleteLabelTopConstraint.isActive = true
             self.view.layoutIfNeeded()
         }, completion: nil)
@@ -235,8 +235,8 @@ class SearchViewController: UIViewController {
             .debounce(.seconds(1), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filter({ !$0.isEmpty })
-            .subscribe(onNext: { [unowned self] text in
-                viewModel.searchBarTextDidChanged(text: text)
+            .subscribe(onNext: { [weak self] text in
+                self?.viewModel.searchBarTextDidChanged(text: text)
             })
             .disposed(by: disposeBag)
         
@@ -245,13 +245,13 @@ class SearchViewController: UIViewController {
     private func bindLoading() {
         viewModel.loading
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] state in
+            .subscribe(onNext: { [weak self] state in
                 switch state {
                 case .startLoading:
-                    searchResultTableView.isHidden = true
+                    self?.searchResultTableView.isHidden = true
                     LoadingView.showLoading()
                 case .finishLoading:
-                    searchResultTableView.isHidden = false
+                    self?.searchResultTableView.isHidden = false
                     LoadingView.hideLoading()
                 }
             })
