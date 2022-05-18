@@ -31,11 +31,11 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     }
     
     func getProfileExistence(uid: String) {
-        fireStoreManagerRepository.checkProfileField(with: "profileExistence", uid: uid) { profileExist in
+        fireStoreManagerRepository.checkProfileField(with: "profileExistence", uid: uid) { [weak self] profileExist in
             if profileExist {
-                self.profileExistenceObservable.onNext(true)
+                self?.profileExistenceObservable.onNext(true)
             } else {
-                self.profileExistenceObservable.onNext(false)
+                self?.profileExistenceObservable.onNext(false)
             }
         }
     }

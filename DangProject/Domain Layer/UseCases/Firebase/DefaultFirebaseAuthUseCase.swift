@@ -22,8 +22,8 @@ class DefaultFirebaseAuthUseCase: FirebaseAuthUseCase {
     
     private func bindFirebaseAuthRepository() {
         firebaseAuthRepository.authResultObservable
-            .subscribe(onNext: { [unowned self] isVaild, id in
-                authObservable.onNext((isVaild, id))
+            .subscribe(onNext: { [weak self] isVaild, id in
+                self?.authObservable.onNext((isVaild, id))
             })
             .disposed(by: disposeBag)
     }

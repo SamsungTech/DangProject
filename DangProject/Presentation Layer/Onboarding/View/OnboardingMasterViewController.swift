@@ -136,14 +136,15 @@ class OnboardingMasterViewController: UIViewController {
     
     func bindCurrentPageIndexObservable() {
         viewModel.currentPageIndexObservable
-            .bind(onNext: { [unowned self] pageIndex in
-                pageControl.currentPage = pageIndex
-                if pageIndex == viewModel.viewControllers.count-1 {
-                    nextButton.isHidden = true
-                    startButton.isHidden = false
+            .bind(onNext: { [weak self] pageIndex in
+                guard let strongSelf = self else { return }
+                self?.pageControl.currentPage = pageIndex
+                if pageIndex == strongSelf.viewModel.viewControllers.count-1 {
+                    self?.nextButton.isHidden = true
+                    self?.startButton.isHidden = false
                 } else {
-                    startButton.isHidden = true
-                    nextButton.isHidden = false
+                    self?.startButton.isHidden = true
+                    self?.nextButton.isHidden = false
                 }
             })
             .disposed(by: disposeBag)

@@ -54,8 +54,8 @@ class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtoc
         PublishRelay.combineLatest(heightObservable.asObservable(),
                                                 weightObservable.asObservable(),
                                                 sugarObservable.asObservable())
-        .bind(onNext: { [unowned self] (height, weight, sugar) in
-            readyButtonIsValid.accept(true)
+        .bind(onNext: { [weak self] (height, weight, sugar) in
+            self?.readyButtonIsValid.accept(true)
         })
         .disposed(by: disposeBag)
     }

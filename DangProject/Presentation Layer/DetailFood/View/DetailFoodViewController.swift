@@ -230,8 +230,9 @@ class DetailFoodViewController: UIViewController {
     }
     
     private func startIndicatorAnimation(amount: Double) {
-        UIView.animate(withDuration: 2.0, animations: { [unowned self] in
-            arrowImageView.transform = CGAffineTransform(rotationAngle: viewModel.setSugarArrowAngle(amount: amount))
+        UIView.animate(withDuration: 2.0, animations: { [weak self] in
+            guard let strongSelf = self else { return }
+            self?.arrowImageView.transform = CGAffineTransform(rotationAngle: strongSelf.viewModel.setSugarArrowAngle(amount: amount))
         })
     }
     

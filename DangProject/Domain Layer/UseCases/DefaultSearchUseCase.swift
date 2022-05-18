@@ -24,9 +24,9 @@ class DefaultSearchUseCase: SearchUseCase {
     
     private func bindToFoodDomainModelObservable() {
         fetchFoodRepository.foodDomainModelObservable
-            .subscribe(onNext: { [self] foods in
-                originalDomainFoodModels = foods
-                updateViewModel()
+            .subscribe(onNext: { [weak self] foods in
+                self?.originalDomainFoodModels = foods
+                self?.updateViewModel()
             })
             .disposed(by: disposeBag)
     }

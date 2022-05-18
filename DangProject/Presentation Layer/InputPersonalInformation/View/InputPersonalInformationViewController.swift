@@ -230,20 +230,20 @@ class InputPersonalInformationViewController: UIViewController {
     private func bindPickerView() {
         
         viewModel.heightObservable
-            .bind(onNext: { [unowned self] height in
-                heightTextField.text = "\(height)cm"
+            .bind(onNext: { [weak self] height in
+                self?.heightTextField.text = "\(height)cm"
             })
             .disposed(by: disposeBag)
         
         viewModel.weightObservable
-            .bind(onNext: { [unowned self] weight in
-                weightTextField.text = "\(weight)kg"
+            .bind(onNext: { [weak self] weight in
+                self?.weightTextField.text = "\(weight)kg"
             })
             .disposed(by: disposeBag)
         
         viewModel.sugarObservable
-            .bind(onNext: { [unowned self] sugar in
-                sugarTextField.text = "\(sugar)g"
+            .bind(onNext: { [weak self] sugar in
+                self?.sugarTextField.text = "\(sugar)g"
             })
             .disposed(by: disposeBag)
     }

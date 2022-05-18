@@ -38,23 +38,23 @@ class LoginViewModel: LoginViewModelProtocol {
     
     private func bindAuthorizeFirebaseUseCase() {
         firebaseAuthUseCase.authObservable
-            .subscribe(onNext: { [unowned self] isValid, id in
+            .subscribe(onNext: { [weak self] isValid, id in
                 if isValid {
-                    firebaseFireStoreUseCase.uploadFirebaseUID(uid: id)
-                    updateUserDefaultsUid(uid: id)
+                    self?.firebaseFireStoreUseCase.uploadFirebaseUID(uid: id)
+                    self?.updateUserDefaultsUid(uid: id)
                 }
-                checkProfileExistence(uid: id)
+                self?.checkProfileExistence(uid: id)
             })
             .disposed(by: disposeBag)
     }
     
     private func bindProfileExistence() {
         firebaseFireStoreUseCase.profileExistenceObservable
-            .subscribe(onNext: { [unowned self] isExist in
+            .subscribe(onNext: { [weak self] isExist in
                 if isExist {
-                    profileExistenceObservable.accept(true)
+                    self?.profileExistenceObservable.accept(true)
                 } else {
-                    profileExistenceObservable.accept(false)
+                    self?.profileExistenceObservable.accept(false)
                 }
             })
             .disposed(by: disposeBag)
