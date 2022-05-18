@@ -244,13 +244,13 @@ class DetailFoodViewController: UIViewController {
     private func bindPickerView() {
         viewModel.pickerViewIsActivatedObservable
             .observe(on: MainScheduler.instance)
-            .bind(onNext: { [unowned self] pickerIsActivated in
-                addButtonTopConstraint?.isActive = false
-                amountPickerHeightConstraint?.isActive = false
+            .bind(onNext: { [weak self] pickerIsActivated in
+                self?.addButtonTopConstraint?.isActive = false
+                self?.amountPickerHeightConstraint?.isActive = false
                 if pickerIsActivated {
-                    increasePickerView()
+                    self?.increasePickerView()
                 } else {
-                    decreasePickerView()
+                    self?.decreasePickerView()
                 }
             })
             .disposed(by: disposeBag)
@@ -283,15 +283,16 @@ class DetailFoodViewController: UIViewController {
     private func bindDetailFood() {
         viewModel.detailFoodObservable
             .observe(on: MainScheduler.instance)
-            .bind(onNext: { [unowned self] food in
-                totalSugarLabel.text = "\(viewModel.getTotalSugar())g"
-                amountTextField.text = "\(viewModel.amount)"
-                startIndicatorAnimation(amount: Double(viewModel.amount))
+            .bind(onNext: { [weak self] food in
+                guard let strongSelf = self else { return }
+                self?.totalSugarLabel.text = "\(strongSelf.viewModel.getTotalSugar())g"
+                self?.amountTextField.text = "\(strongSelf.viewModel.amount)"
+                self?.startIndicatorAnimation(amount: Double(strongSelf.viewModel.amount))
                 
-                if viewModel.amount == 0 {
-                    changeAddButtonDeactivated()
+                if self?.viewModel.amount == 0 {
+                    self?.changeAddButtonDeactivated()
                 } else {
-                    changeAddButtonActivated()
+                    self?.changeAddButtonActivated()
                 }
                 
             })
