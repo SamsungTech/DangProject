@@ -15,7 +15,10 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
 
     func saveFirebaseUIDDocument(uid: String) {
         
-        let uidData = ["firebaseUID": uid]
+        let uidData = ["firebaseUID": uid,
+                       "onboarding": true,
+                       "profileExistence": false
+        ] as [String : Any]
         database.collection("users").document(uid).setData(uidData) { error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
@@ -25,15 +28,28 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
+        
+        let uidData = ["firebaseUID": profile.uid,
+                       "onboarding": true,
+                       "profileExistence": true
+        ] as [String : Any]
+        database.collection("users")
+            .document(profile.uid)
+            .setData(uidData) { error in
+            if let error = error {
+                print("DEBUG: \(error.localizedDescription)")
+                return
+            }
+        }
+
+        
         let profileData = [
             "uid": profile.uid,
             "name": profile.name,
             "height": profile.height,
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
-            "image": "\(profile.profileImage)",
-            "onboarding": profile.onboarding,
-            "profileExistence": profile.profileExistence
+            "image": "\(profile.profileImage)"
         ] as [String : Any]
         
         database.collection("app")
@@ -50,6 +66,10 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+
+        guard let year = currentDate.year,
+              let month = currentDate.month,
+              let day = currentDate.day else { return }
         let eatenFoodData = [
             "name": eatenFood.name,
             "sugar": eatenFood.sugar,
@@ -57,14 +77,14 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "favorite": eatenFood.favorite,
             "amount": eatenFood.amount
         ] as [String : Any]
-        
+
         database.collection("app")
             .document(userDefaultsUID)
             .collection("foods")
             .document("eatenFoods")
-            .collection("\(currentDate.year!)년")
-            .document("\(currentDate.month!)월")
-            .collection("\(currentDate.day!)일")
+            .collection("\(year)년")
+            .document("\(month)월")
+            .collection("\(day)일")
             .document("\(eatenFood.name)")
             .setData(eatenFoodData) { error in
                 if let error = error {
@@ -75,11 +95,7 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void) {
-        database.collection("app")
-            .document(uid)
-            .collection("personal")
-            .document("profile")
-            .getDocument{ snapshot, error in
+        database.collection("users").document(uid).getDocument { snapshot, error in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
                     return

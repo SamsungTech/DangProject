@@ -111,9 +111,7 @@ class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtoc
                                          height: heightValue,
                                          weight: weightValue,
                                          sugarLevel: sugarValue,
-                                         profileImage: imageValue,
-                                         onboarding: true,
-                                         profileExistence: true)
+                                         profileImage: imageValue)
         
         firebaseFireStoreUseCase.uploadProfile(profile: profile)
     }

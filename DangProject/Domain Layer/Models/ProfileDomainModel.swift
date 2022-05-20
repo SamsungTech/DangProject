@@ -15,18 +15,14 @@ struct ProfileDomainModel {
     let weight: Int
     let sugarLevel: Int
     var profileImage: UIImage
-    var onboarding: Bool = false
-    var profileExistence: Bool = false
     
-    init(uid: String, name: String, height: Int, weight: Int, sugarLevel: Int, profileImage: UIImage, onboarding: Bool, profileExistence: Bool) {
+    init(uid: String, name: String, height: Int, weight: Int, sugarLevel: Int, profileImage: UIImage) {
         self.uid = uid
         self.name = name
         self.height = height
         self.weight = weight
         self.sugarLevel = sugarLevel
         self.profileImage = profileImage
-        self.onboarding = onboarding
-        self.profileExistence = profileExistence
     }
 }
 
