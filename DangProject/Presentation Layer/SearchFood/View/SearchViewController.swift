@@ -294,6 +294,7 @@ extension SearchViewController: TableViewCellDelegate {
 
 extension SearchViewController: DetailFoodParentable {
     func addFoodsAfter(food: AddFoodsViewModel) {
+        searchController.searchBar.resignFirstResponder()
         addCompleteLabelAnimation(name: (food.foodModel?.name)!, amount: String(food.amount))
     }
     

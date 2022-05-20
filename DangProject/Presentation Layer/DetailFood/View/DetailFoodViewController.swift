@@ -360,4 +360,8 @@ extension DetailFoodViewController: UITextFieldDelegate {
         viewModel.amountChanged(amount: Int(amount))
         self.view.endEditing(true)
     }
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        print(textField.text)
+        return true
+    }
 }
