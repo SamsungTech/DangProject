@@ -10,7 +10,6 @@ import UIKit
 protocol Coordinator: AnyObject {
     var childCoordinators: [Coordinator] { get set }
     var navigationController: UINavigationController { get set }
-    
     func start()
 }
 
@@ -28,14 +27,19 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return firstStart() }
 
         fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID){ [weak self] onboardingIsDone in
             if !onboardingIsDone {
                 self?.startOnboarding()
             }
             self?.checkUID(userDefaultUID: userDefaultsUID)
-        }        
+        }
+    }
+    
+    func firstStart() {
+        startOnboarding()
+        startLogin()
     }
     
     func checkUID(userDefaultUID: String) {
@@ -65,7 +69,6 @@ class AppCoordinator: Coordinator {
         let inputPersonalInformationCoordinator = InputPersonalInformationCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
         childCoordinators.append(inputPersonalInformationCoordinator)
         inputPersonalInformationCoordinator.start()
-        
     }
     
     func startOnboarding() {
