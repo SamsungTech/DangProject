@@ -7,7 +7,6 @@ target ‘DangProject’ do
   pod ‘RxSwift’
   pod ‘RxCocoa’
   pod ‘RxRelay’
-  pod ‘RxGesture’
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
 
