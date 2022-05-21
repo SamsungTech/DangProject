@@ -272,23 +272,31 @@ class SearchViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-}
-// MARK: - Extension
-
-extension SearchViewController: UISearchBarDelegate {
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+    private func showSearchingView() {
         searchResultTableView.isHidden = false
         recentSearchLabel.isHidden = true
         queryResultTableView.isHidden = true
         eraseAllQueryButton.isHidden = true
         bindSearchBar()
     }
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    
+    private func showDefaultsView() {
         searchResultTableView.isHidden = true
         viewModel.cancelButtonTapped()
         recentSearchLabel.isHidden = false
         queryResultTableView.isHidden = false
         eraseAllQueryButton.isHidden = false
+    }
+    
+}
+// MARK: - Extension
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        showSearchingView()
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        showDefaultsView()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
