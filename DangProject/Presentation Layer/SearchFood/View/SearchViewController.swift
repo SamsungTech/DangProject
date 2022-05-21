@@ -11,18 +11,19 @@ import RxCocoa
 import RxSwift
 
 class SearchViewController: UIViewController {
+    private let disposeBag = DisposeBag()
     
     weak var coordinator: SearchCoordinator?
     
-    let viewModel: SearchViewModel
-    let searchController = UISearchController(searchResultsController: nil)
-    let queryResultTableView = UITableView()
-    let searchResultTableView = UITableView()
-    let recentSearchLabel = UILabel()
-    let eraseAllQueryButton = UIButton()
-    let addCompleteToastLabel = UILabel()
-    var addCompleteLabelTopConstraint = NSLayoutConstraint()
-    var disposeBag = DisposeBag()
+    private let viewModel: SearchViewModel
+    private let searchController = UISearchController(searchResultsController: nil)
+    private let queryResultTableView = UITableView()
+    private let searchResultTableView = UITableView()
+    private let recentSearchLabel = UILabel()
+    private let eraseAllQueryButton = UIButton()
+    private let addCompleteToastLabel = UILabel()
+    private var addCompleteLabelTopConstraint = NSLayoutConstraint()
+    
     
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -41,6 +42,7 @@ class SearchViewController: UIViewController {
         setUpSearchingPreferenceViews()
         
     }
+    
     // MARK: - Set Views
     private func setUpDefaultView() {
         setUpBackground()
@@ -139,7 +141,7 @@ class SearchViewController: UIViewController {
 
     }
     
-    func addCompleteLabelAnimation(name: String, amount: String) {
+    func addCompleteLabelAnimation(name: String, amount: String) {        
         addCompleteToastLabel.text = "\(name) \(amount)개가 추가됐습니다."
         
         UIView.animate(withDuration: 0.5,
@@ -197,6 +199,7 @@ class SearchViewController: UIViewController {
         searchResultTableView.rx
             .modelSelected(FoodViewModel.self)
             .subscribe(onNext: { [weak self] food in
+                self?.searchController.searchBar.resignFirstResponder()
                 self?.coordinator?.pushDetailFoodView(food: food, from: self!)
             })
             .disposed(by: disposeBag)
