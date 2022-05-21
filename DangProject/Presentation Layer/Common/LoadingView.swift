@@ -1,38 +1,41 @@
 import UIKit
 
-public class LoadingView {
+public class LoadingView: UIActivityIndicatorView {
     
-    let customFrame: CGRect
-    
-    init(customFrame: CGRect) {
-        self.customFrame = customFrame
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureLoadingView()
     }
-    static func showLoading() {
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureLoadingView() {
+        self.style = .large
+        self.color = .darkGray
+        self.stopAnimating()
+    }
+    
+    func showLoading() {
         DispatchQueue.main.async {
-            guard let window = UIApplication.shared.windows.last else { return }
-            
-            let loadingIndicatorView: UIActivityIndicatorView
-            if let existedView = window.subviews.first(where: { $0 is UIActivityIndicatorView } ) as? UIActivityIndicatorView {
-                loadingIndicatorView = existedView
-            } else {
-                loadingIndicatorView = UIActivityIndicatorView(style: .large)
-                
-                loadingIndicatorView.frame = window.safeAreaLayoutGuide.layoutFrame
+            self.startAnimating()
+        }
+        
+    }
+    
+    func hideLoading() {
+        DispatchQueue.main.async {
+            self.stopAnimating()
+        }
+    }
 
-                loadingIndicatorView.color = .darkGray
-                window.addSubview(loadingIndicatorView)
-            }
-            
-            loadingIndicatorView.startAnimating()
-        }
-    }
-    
-    static func hideLoading() {
-        DispatchQueue.main.async {
-            guard let window = UIApplication.shared.windows.last else { return }
-            window.subviews.filter({ $0 is UIActivityIndicatorView }).forEach { $0.removeFromSuperview() }
-        }
-    }
+//    func hideLoading() {
+//        DispatchQueue.main.async {
+//            guard let window = UIApplication.shared.windows.last else { return }
+//            window.subviews.filter({ $0 is UIActivityIndicatorView }).forEach { $0.removeFromSuperview() }
+//        }
+//    }
     
 }
 

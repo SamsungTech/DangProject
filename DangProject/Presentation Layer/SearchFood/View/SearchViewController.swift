@@ -23,7 +23,7 @@ class SearchViewController: UIViewController {
     private let eraseAllQueryButton = UIButton()
     private let addCompleteToastLabel = UILabel()
     private var addCompleteLabelTopConstraint = NSLayoutConstraint()
-    
+    private lazy var loadingView = LoadingView(frame: .zero)
     
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -99,6 +99,7 @@ class SearchViewController: UIViewController {
         setUpSearchController()
         setUpSearchResultTableView()
         setUpAddCompleteToastLabel()
+        setUpLoadingView()
     }
     
     private func setUpSearchController() {
@@ -121,6 +122,16 @@ class SearchViewController: UIViewController {
         searchResultTableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.identifier)
         searchResultTableView.isHidden = true
         searchResultTableView.keyboardDismissMode = .onDrag
+    }
+    
+    private func setUpLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        loadingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        loadingView.center = view.center
     }
     
     private func setUpAddCompleteToastLabel() {
@@ -252,10 +263,10 @@ class SearchViewController: UIViewController {
                 switch state {
                 case .startLoading:
                     self?.searchResultTableView.isHidden = true
-                    LoadingView.showLoading()
+                    self?.loadingView.showLoading()
                 case .finishLoading:
                     self?.searchResultTableView.isHidden = false
-                    LoadingView.hideLoading()
+                    self?.loadingView.hideLoading()
                 }
             })
             .disposed(by: disposeBag)
@@ -281,7 +292,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        LoadingView.hideLoading()
+        loadingView.hideLoading()
     }
     
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
