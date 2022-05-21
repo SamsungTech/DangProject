@@ -81,23 +81,29 @@ class SearchViewModel: SearchViewModelProtocol {
         
         if indexPath != nil {
             if scopeState == .searchResult {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(searchResultFoodModels[indexPath!.row]))
-                searchFoodUseCase.updateViewModel(keyword: nil)
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(searchResultFoodModels[indexPath!.row])) {
+                    self.searchFoodUseCase.updateViewModel(keyword: nil)
+                }
             } else {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodModels[indexPath!.row]))
-                favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                searchFoodUseCase.updateViewModel(keyword: nil)
-                updateFavoriteResult()
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodModels[indexPath!.row])) {
+                    self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
+                    self.searchFoodUseCase.updateViewModel(keyword: nil)
+                    self.updateFavoriteResult()
+                }
             }
         } else if foodModel != nil {
             if scopeState == .searchResult {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
-                searchFoodUseCase.updateViewModel(keyword: nil)
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!)) {
+                    self.searchFoodUseCase.updateViewModel(keyword: nil)
+                }
+                
             } else {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
-                favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                searchFoodUseCase.updateViewModel(keyword: nil)
-                updateFavoriteResult()
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!)) {
+                    self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
+                    self.searchFoodUseCase.updateViewModel(keyword: nil)
+                    self.updateFavoriteResult()
+                }
+                
             }
         }
         
@@ -148,7 +154,7 @@ class SearchViewModel: SearchViewModelProtocol {
     private var currentFoodViewModels = SearchFoodViewModel.empty
     private var favoriteFoodViewModels = SearchFoodViewModel.empty
     private var scopeState: SearchBarScopeState = .searchResult
-
+    
     
     enum SearchBarScopeState {
         case searchResult

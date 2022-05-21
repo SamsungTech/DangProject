@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ChangeFavoriteUseCase {
-    func changeFavorite(food: FoodDomainModel)
+    func changeFavorite(food: FoodDomainModel, completion: @escaping()->Void)
 }
