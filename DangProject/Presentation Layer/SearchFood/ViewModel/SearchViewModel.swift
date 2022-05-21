@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 
 protocol SearchViewModelInput {
+    var currentKeyword: String { get }
     func cancelButtonTapped()
     func changeFavorite(indexPath: IndexPath?, foodModel: FoodViewModel?)
     func eraseQueryResult()
@@ -46,8 +47,8 @@ class SearchViewModel: SearchViewModelProtocol {
     private func bindFoodResultModelObservable() {
         searchFoodUseCase.foodResultModelObservable
             .subscribe(onNext: { [unowned self] searchFoodViewModel in
-                currentFoodViewModels = searchFoodViewModel
-                if scopeState == .searchResult {
+                if scopeState == .searchResult && currentKeyword == searchFoodViewModel.keyword {
+                    currentFoodViewModels = searchFoodViewModel
                     updateSearchResult()
                 } else if scopeState == .favorites {
                     updateFavoriteResult()
@@ -67,6 +68,8 @@ class SearchViewModel: SearchViewModelProtocol {
         
     }
     // MARK: - Input
+    var currentKeyword: String = ""
+    
     func cancelButtonTapped() {
         currentFoodViewModels = SearchFoodViewModel.empty
         searchFoodViewModelObservable.onNext(currentFoodViewModels)
@@ -79,21 +82,21 @@ class SearchViewModel: SearchViewModelProtocol {
         if indexPath != nil {
             if scopeState == .searchResult {
                 changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(searchResultFoodModels[indexPath!.row]))
-                searchFoodUseCase.updateViewModel()
+                searchFoodUseCase.updateViewModel(keyword: nil)
             } else {
                 changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodModels[indexPath!.row]))
                 favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                searchFoodUseCase.updateViewModel()
+                searchFoodUseCase.updateViewModel(keyword: nil)
                 updateFavoriteResult()
             }
         } else if foodModel != nil {
             if scopeState == .searchResult {
                 changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
-                searchFoodUseCase.updateViewModel()
+                searchFoodUseCase.updateViewModel(keyword: nil)
             } else {
                 changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
                 favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                searchFoodUseCase.updateViewModel()
+                searchFoodUseCase.updateViewModel(keyword: nil)
                 updateFavoriteResult()
             }
         }
@@ -145,7 +148,7 @@ class SearchViewModel: SearchViewModelProtocol {
     private var currentFoodViewModels = SearchFoodViewModel.empty
     private var favoriteFoodViewModels = SearchFoodViewModel.empty
     private var scopeState: SearchBarScopeState = .searchResult
-    private var currentKeyword = ""
+
     
     enum SearchBarScopeState {
         case searchResult
@@ -153,11 +156,9 @@ class SearchViewModel: SearchViewModelProtocol {
         case query
     }
     private func startSearching(searchBarText: String) {
-        guard currentKeyword != searchBarText else { return }
         manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText)
         searchFoodUseCase.fetchFood(text: searchBarText)
         loading.onNext(.startLoading)
-        currentKeyword = searchBarText
     }
     
     private func changeToFavoriteFoods() {

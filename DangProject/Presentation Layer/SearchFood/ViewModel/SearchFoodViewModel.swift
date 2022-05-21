@@ -10,7 +10,7 @@ import UIKit
 
 struct SearchFoodViewModel {
     static let empty: Self = .init(keyword: "", foodModels: [])
-    let keyword: String?
+    let keyword: String
     let foodModels: [FoodViewModel]?
     
     init(keyword: String, foodModels: [FoodViewModel]) {

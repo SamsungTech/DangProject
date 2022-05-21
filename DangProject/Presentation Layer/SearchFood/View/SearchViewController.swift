@@ -292,6 +292,8 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let text = searchBar.text else { return }
+        viewModel.currentKeyword = text
         loadingView.hideLoading()
     }
     

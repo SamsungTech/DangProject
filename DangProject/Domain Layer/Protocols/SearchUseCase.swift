@@ -12,5 +12,5 @@ import RxSwift
 protocol SearchUseCase {
     var foodResultModelObservable: PublishSubject<SearchFoodViewModel> { get }
     func fetchFood(text: String)
-    func updateViewModel()
+    func updateViewModel(keyword: String?)
 }

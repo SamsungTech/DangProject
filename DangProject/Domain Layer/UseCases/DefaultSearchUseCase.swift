@@ -25,8 +25,8 @@ class DefaultSearchUseCase: SearchUseCase {
     private func bindToFoodDomainModelObservable() {
         fetchFoodRepository.foodDomainModelObservable
             .subscribe(onNext: { [weak self] foods in
-                self?.originalDomainFoodModels = foods
-                self?.updateViewModel()
+                self?.originalDomainFoodModels = foods.foodDomainModel
+                self?.updateViewModel(keyword: foods.keyword)
             })
             .disposed(by: disposeBag)
     }
@@ -39,11 +39,15 @@ class DefaultSearchUseCase: SearchUseCase {
         fetchFoodRepository.fetchToDomainModel(text: text)
     }
     
-    func updateViewModel() {
+    func updateViewModel(keyword: String?) {
         // check favorites
         let checkedDomainFoodModels = checkFavorites()
         // updateViewModel
-        foodResultModelObservable.onNext(SearchFoodViewModel.init(keyword: currentKeyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))
+        guard let keyword = keyword else {
+            return
+        }
+
+        foodResultModelObservable.onNext(SearchFoodViewModel.init(keyword: keyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))
     }
     
     // MARK: - Private

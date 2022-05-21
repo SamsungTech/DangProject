@@ -15,7 +15,7 @@ import RxSwift
 // MARK: TASK 이런거
 class FetchDataService {
     
-    var foodInfoObservable = PublishSubject<[FoodInfo]>()
+    var foodInfoObservable = PublishSubject<FoodEntity>()
         
     let disposeBag = DisposeBag()
     
@@ -68,9 +68,9 @@ class FetchDataService {
             .subscribe(onNext: { [self] in
                 if $0.serviceType?.totalCount != "0" {
                     guard let foodInfo = $0.serviceType?.foodInfo else { return }
-                    foodInfoObservable.onNext(foodInfo)
+                    foodInfoObservable.onNext(FoodEntity.init(foodInfo, keyword: text))
                 } else {
-                    foodInfoObservable.onNext([])
+                    foodInfoObservable.onNext(FoodEntity.empty)
                 }
             })
             .disposed(by: disposeBag)

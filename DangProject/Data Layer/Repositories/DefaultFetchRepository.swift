@@ -22,14 +22,13 @@ class DefaultFetchRepository: FetchRepository {
     
     private func bindToFoodInfoObservable() {
         fetchDataService.foodInfoObservable
-            .subscribe(onNext: { [self] foods in
-                let foodDomainModel = foods.map({ FoodDomainModel.init($0)})
-                foodDomainModelObservable.onNext(foodDomainModel)
+            .subscribe(onNext: { [self] foodEntity in
+                foodDomainModelObservable.onNext(SearchResultDomainModel.init(foodEntity))
             })
             .disposed(by: disposeBag)
     }
     // MARK: - Internal
-    var foodDomainModelObservable = PublishSubject<[FoodDomainModel]>()
+    var foodDomainModelObservable = PublishSubject<SearchResultDomainModel>()
     
     func fetchToDomainModel(text: String) {
         fetchDataService.fetchFoodEntity(text: text)

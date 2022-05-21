@@ -57,3 +57,15 @@ struct FoodInfo: Codable {
         case foodCode = "FOOD_CD"
     }
 }
+
+struct FoodEntity {
+    static let empty: Self = .init([], keyword: "")
+    
+    let foodInfo: [FoodInfo]
+    var keyword: String
+    
+    init(_ foodEntity: [FoodInfo], keyword: String) {
+        self.foodInfo = foodEntity
+        self.keyword = keyword
+    }
+}
