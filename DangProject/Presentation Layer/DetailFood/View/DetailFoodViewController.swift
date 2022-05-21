@@ -160,8 +160,13 @@ class DetailFoodViewController: UIViewController {
         amountTextField.textColor = UIColor.black
         amountTextField.textAlignment = .right
         amountTextField.addPadding(left: 0, right: 15)
-        amountTextField.delegate = self
         amountTextField.keyboardType = .numberPad
+        amountTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
+    
+    @objc func textFieldDidChange() {
+        guard let amount = amountTextField.text else { return }
+        viewModel.amountChanged(amount: Int(amount) ?? 0)
     }
     
     private func setUpAmountPerButton() {
@@ -234,6 +239,10 @@ class DetailFoodViewController: UIViewController {
             guard let strongSelf = self else { return }
             self?.arrowImageView.transform = CGAffineTransform(rotationAngle: strongSelf.viewModel.setSugarArrowAngle(amount: amount))
         })
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     // MARK: - Bindings
@@ -329,8 +338,8 @@ extension DetailFoodViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         switch component {
-        case 0: return view.frame.width*0.3
-        case 1: return view.frame.width*0.7
+        case 0: return view.frame.width*0.2
+        case 1: return view.frame.width*0.8
         default:
             return 0
         }
@@ -349,19 +358,5 @@ extension DetailFoodViewController: UIPickerViewDelegate, UIPickerViewDataSource
         let amount = viewModel.pickerList[row]
         
         viewModel.amountChanged(amount: Int(amount) ?? 0)
-    }
-}
-extension DetailFoodViewController: UITextFieldDelegate {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if amountTextField.text == "" {
-            amountTextField.text = "0"
-        }
-        guard let amount = Double(amountTextField.text!) else { return }
-        viewModel.amountChanged(amount: Int(amount))
-        self.view.endEditing(true)
-    }
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        print(textField.text)
-        return true
     }
 }
