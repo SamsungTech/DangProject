@@ -1,6 +1,6 @@
 import UIKit
 
-public class LoadingView: UIActivityIndicatorView {
+final class LoadingView: UIActivityIndicatorView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,13 +29,5 @@ public class LoadingView: UIActivityIndicatorView {
             self.stopAnimating()
         }
     }
-
-//    func hideLoading() {
-//        DispatchQueue.main.async {
-//            guard let window = UIApplication.shared.windows.last else { return }
-//            window.subviews.filter({ $0 is UIActivityIndicatorView }).forEach { $0.removeFromSuperview() }
-//        }
-//    }
-    
 }
 
