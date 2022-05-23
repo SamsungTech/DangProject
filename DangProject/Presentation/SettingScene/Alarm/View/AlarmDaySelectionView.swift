@@ -76,7 +76,6 @@ extension AlarmDaySelectionView {
             $0.frame = CGRect(x: .zero, y: .zero, width: xValueRatio(33), height: yValueRatio(33))
             $0.viewRadius(cornerRadius: xValueRatio(16.5))
             $0.backgroundColor = .blue
-            print(tagNumber)
             tagNumber += 1
             alarmStackView.addArrangedSubview($0)
         }

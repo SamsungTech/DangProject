@@ -60,16 +60,16 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private let disposeBag = DisposeBag()
     private var useCase: SettingUseCase?
     private var dateFormatter = DateFormatter()
-    private var searchRowPositionService: SearchRowPositionService
+    private var searchRowPositionFactory: SearchRowPositionFactory
     var selectedIndexRelay = BehaviorRelay<IndexPath>(value: IndexPath(row: -1, section: 0))
     var cellScaleStateRelay = BehaviorRelay<CellScaleState>(value: .none)
     var setUpCellStateRelay = BehaviorRelay<SetUpCellState>(value: .none)
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
     
     init(useCase: SettingUseCase,
-         searchRowPositionService: SearchRowPositionService) {
+         searchRowPositionFactory: SearchRowPositionFactory) {
         self.useCase = useCase
-        self.searchRowPositionService = searchRowPositionService
+        self.searchRowPositionFactory = searchRowPositionFactory
     }
     
     func viewDidLoad() {
@@ -146,7 +146,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
     func searchRowsPosition(alarmData: AlarmEntity) -> IndexPath {
         var result = IndexPath(row: 0, section: 0)
         if let data = useCase?.alarmArray {
-            result = searchRowPositionService.calculateRowPoint(alarmData, data)
+            result = searchRowPositionFactory.calculateRowPoint(alarmData, data)
         }
         return result
     }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SettingAccountButton: UIButton {
+class SettingAccountView: UIButton {
     private(set) lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.fill")
@@ -48,12 +48,18 @@ class SettingAccountButton: UIButton {
     }
 }
 
-extension SettingAccountButton {
+extension SettingAccountView {
     private func configureUI() {
+        setUpView()
         setUpProfileImageView()
         setUpProfileAccountLabel()
         setUpProfileCheckLabel()
         setUpProfileRightArrowImageView()
+    }
+    
+    private func setUpView() {
+        self.addTarget(self, action: #selector(touchDownEvent(_:)), for: .touchDown)
+        self.addTarget(self, action: #selector(touchUpEvent(_:)), for: [.touchUpInside, .touchUpOutside])
     }
     
     private func setUpProfileImageView() {
@@ -94,5 +100,13 @@ extension SettingAccountButton {
             profileRightArrowImageView.widthAnchor.constraint(equalToConstant: xValueRatio(10)),
             profileRightArrowImageView.heightAnchor.constraint(equalToConstant: yValueRatio(20))
         ])
+    }
+    
+    @objc private func touchDownEvent(_ sender: UIButton) {
+        self.backgroundColor = .init(white: 1, alpha: 0.1)
+    }
+    
+    @objc private func touchUpEvent(_ sender: UIButton) {
+        self.backgroundColor = .homeBoxColor
     }
 }

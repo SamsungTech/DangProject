@@ -19,6 +19,7 @@ class SettingNavigationBar: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUpLabel()
+        self.backgroundColor = .homeBoxColor
     }
     
     required init?(coder: NSCoder) {

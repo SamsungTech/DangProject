@@ -385,6 +385,7 @@ extension AlarmTableViewItem {
     }
     
     func setUpCellNormal() {
+        
         dayLabel.isHidden = false
         deleteButton.isHidden = true
         middleViewTopConstant?.constant = yValueRatio(60)
@@ -394,6 +395,7 @@ extension AlarmTableViewItem {
         UIView.animate(withDuration: 0.3, animations: {
             self.contentView.layoutIfNeeded()
         })
+        viewModel?.expandStateRelay.accept(.expand)
     }
     
     private func setUpDaysButtonExpand() {

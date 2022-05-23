@@ -34,6 +34,7 @@ extension CGColor {
         }
     }
     
+    // MARK: 
     static func calculateCirclePercentLineColor(dang: Double,
                                                 maxDang: Double) -> CGColor {
         let colorCalculateNumber: Double = (dang/maxDang)*100

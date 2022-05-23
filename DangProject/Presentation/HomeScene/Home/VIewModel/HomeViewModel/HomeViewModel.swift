@@ -130,7 +130,7 @@ protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputP
 
 class HomeViewModel: HomeViewModelProtocol {
     private var homeUseCase: HomeUseCaseProtocol
-    private var calendarUseCase: CalendarUseCaseProtocol
+    private var calendarService: CalendarService
     private var disposeBag = DisposeBag()
     private var currentPoint: CGFloat = 0
     
@@ -153,13 +153,13 @@ class HomeViewModel: HomeViewModelProtocol {
     var dangComprehensiveData = BehaviorRelay<DangComprehensive>(value: .empty)
     
     init(useCase: HomeUseCaseProtocol,
-         calendarUseCase: CalendarUseCaseProtocol) {
+         calendarService: CalendarService) {
         self.homeUseCase = useCase
-        self.calendarUseCase = calendarUseCase
+        self.calendarService = calendarService
     }
     
     func viewDidLoad() {
-        calendarUseCase.initCalculationDaysInMonth()
+        calendarService.initCalculationDaysInMonth()
         homeUseCase.execute()
         bindSelectedCellData()
         bindCalendarViewData()
@@ -209,12 +209,12 @@ class HomeViewModel: HomeViewModelProtocol {
         
         switch scrollDirection.value {
         case .left:
-            calendarUseCase.createPreviousCalendarData()
+            calendarService.createPreviousCalendarData()
             currentXPoint.accept(1)
         case .center:
             currentXPoint.accept(Int(result))
         case .right:
-            calendarUseCase.createNextCalendarData()
+            calendarService.createNextCalendarData()
             let number = batteryViewCalendarData.value.count
             currentXPoint.accept(Int(number-2))
         }
@@ -235,10 +235,10 @@ class HomeViewModel: HomeViewModelProtocol {
 
 extension HomeViewModel {
     private func bindCalendarViewData() {
-        calendarUseCase.calendarDataArraySubject
+        calendarService.calendarDataArraySubject
             .map { $0.map { BatteryEntity(calendar: $0)} }
             .subscribe(onNext: { [weak self] in
-                guard let currentCount = self?.calendarUseCase.currentDay.value else { return }
+                guard let currentCount = self?.calendarService.currentDay.value else { return }
                 self?.batteryViewCalendarData.accept($0)
                 self?.selectedCellData.accept(
                     SelectedCalendarCellEntity(
@@ -250,26 +250,26 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.currentLine
+        calendarService.currentLine
             .map { .calculateRevertAnimationYValue(value: $0) }
             .subscribe(onNext: { [weak self] in
                 self?.currentLineYValue.accept($0)
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.currentLine
+        calendarService.currentLine
             .subscribe(onNext: { [weak self] in
                 self?.currentLine.accept($0)
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.currentDateYearMonth
+        calendarService.currentDateYearMonth
             .subscribe(onNext: { [weak self] in
                 self?.currentYearMonth.accept($0)
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.currentDay
+        calendarService.currentDay
             .map { $0-1 }
             .subscribe(onNext: { [weak self] in
                 guard let currentDayDang = self?.batteryViewCalendarData.value[1].dangArray[$0],
@@ -283,7 +283,7 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.calendarPreviousMonthData
+        calendarService.calendarPreviousMonthData
             .map {
                 [BatteryEntity(calendar: $0)]+self.batteryViewCalendarData.value
             }
@@ -293,7 +293,7 @@ extension HomeViewModel {
             })
             .disposed(by: disposeBag)
         
-        calendarUseCase.calendarNextMonthData
+        calendarService.calendarNextMonthData
             .map {
                 self.batteryViewCalendarData.value+[BatteryEntity(calendar: $0)]
             }
@@ -319,7 +319,7 @@ extension HomeViewModel {
         selectedCellData
             .subscribe(onNext: { [weak self] in
                 guard let indexPathItem = $0.indexPath?.item else { return }
-                self?.calendarUseCase.calculateCurrentLine(currentDay: indexPathItem)
+                self?.calendarService.calculateCurrentLine(currentDay: indexPathItem)
             })
             .disposed(by: disposeBag)
     }

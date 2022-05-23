@@ -112,7 +112,6 @@ extension UIColor {
     }
     
     // MARK: ButtonColor
-    
     static var buttonColor: UIColor {
         return UIColor.init(red: 158/255, green: 168/255, blue: 180/255, alpha: 1.0)
     }

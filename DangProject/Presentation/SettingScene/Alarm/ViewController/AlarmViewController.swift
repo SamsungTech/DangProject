@@ -91,6 +91,7 @@ class AlarmViewController: UIViewController {
                 time: "10:00",
                 selectedDays: "매일"
             )
+            self?.resetAlarmTableViewCellScale()
             self?.insertAlarmTableViewCell(alarmData)
         }))
         alertController.addAction(UIAlertAction(title: "점심", style: .default, handler: nil))
@@ -140,7 +141,6 @@ class AlarmViewController: UIViewController {
 extension AlarmViewController: UITableViewDelegate, UITableViewDataSource, AlarmTableViewItemDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let count = viewModel?.alarmDataArrayRelay.value.count else { return 0 }
-        print("count",count)
         return count
     }
     
@@ -151,6 +151,7 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource, Alarm
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
         return viewModel?.branchOutHeightForRow(indexPath) ?? 0
     }
     
@@ -163,9 +164,13 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource, Alarm
         alarmTableViewCellDidTap(tableView, indexPath)
         viewModel?.branchOutSetUpCell(selectedIndexPath, indexPath, cell)
         selectedIndexPath = indexPath
+        guard let cell2 = tableView.cellForRow(at: self.deSelectedIndexPath) as? AlarmTableViewItem else { return }
+        cell2.setUpCellNormal()
+        self.deSelectedIndexPath = indexPath
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        print("deselectedIndexPath", indexPath.row)
         guard let cell = tableView.cellForRow(at: indexPath) as? AlarmTableViewItem else { return }
         cell.setUpCellNormal()
     }
@@ -182,16 +187,14 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource, Alarm
     func didTapDeleteButton(_ sender: UIButton) {
         let point = sender.convert(CGPoint.zero, to: alarmTableView)
         guard let indexPath = alarmTableView.indexPathForRow(at: point) else { return }
+        self.viewModel?.cellScaleStateRelay.accept(.normal)
+        self.viewModel?.selectedIndexRelay.accept(IndexPath(row: -1, section: 0))
         DispatchQueue.main.async {
             self.alarmTableView.beginUpdates()
-            self.viewModel?.cellScaleStateRelay.accept(.normal)
-            self.viewModel?.selectedIndexRelay.accept(IndexPath(row: -1, section: 0))
             self.alarmTableView.deleteRows(at: [indexPath], with: .fade)
-            
-            // MARK: 데이터 삭제할 타이밍
-            self.viewModel?.deleteAlarmData(indexPath)
             self.alarmTableView.endUpdates()
         }
+        self.viewModel?.deleteAlarmData(indexPath)
     }
 }
 
@@ -209,21 +212,40 @@ extension AlarmViewController {
     private func alarmTableViewCellDidTap(_ tableView: UITableView, _ indexPath: IndexPath) {
         DispatchQueue.main.async {
             tableView.beginUpdates()
+            tableView.scrollToRow(at: indexPath, at: .top, animated: true)
             self.viewModel?.branchOutSelectedIndex(indexPath)
             tableView.endUpdates()
-            tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
     }
     
     private func insertAlarmTableViewCell(_ alarmData: AlarmEntity) {
         guard let insertIndexPath = self.viewModel?.searchRowsPosition(alarmData: alarmData) else { return }
         self.viewModel?.insertAlarmData(insertIndexPath, alarmData)
-        self.alarmTableView.beginUpdates()
-        self.alarmTableView.insertRows(at: [insertIndexPath], with: .fade)
-        self.alarmTableView.endUpdates()
-        self.alarmTableView.scrollToRow(at: insertIndexPath, at: .top, animated: true)
-        self.alarmTableView.delegate?.tableView?(self.alarmTableView, didDeselectRowAt: self.deSelectedIndexPath)
-        self.alarmTableView.delegate?.tableView?(self.alarmTableView, didSelectRowAt: insertIndexPath)
-        self.deSelectedIndexPath = insertIndexPath
+        DispatchQueue.main.async {
+            self.alarmTableView.beginUpdates()
+            self.alarmTableView.insertRows(at: [insertIndexPath], with: .fade)
+            self.alarmTableView.endUpdates()
+            self.alarmTableView.scrollToRow(at: insertIndexPath, at: .top, animated: true)
+            self.alarmTableView.delegate?.tableView?(self.alarmTableView, didDeselectRowAt: self.deSelectedIndexPath)
+            self.alarmTableView.delegate?.tableView?(self.alarmTableView, didSelectRowAt: insertIndexPath)
+            
+            self.deSelectedIndexPath = insertIndexPath
+        }
+    }
+    
+    private func resetAlarmTableViewCellScale() {
+        guard let count = viewModel?.alarmDataArrayRelay.value.count else { return }
+
+        for i in 0..<count {
+            
+            guard let cell = alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else { return }
+            cell.setUpCellNormal()
+            viewModel?.cellScaleStateRelay.accept(.normal)
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.alarmTableView.beginUpdates()
+            self?.alarmTableView.endUpdates()
+        }
     }
 }

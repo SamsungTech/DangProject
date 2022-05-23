@@ -16,9 +16,10 @@ class SettingSecondStackView: UIStackView {
         return button
     }()
     
-    private(set) lazy var versionView: SettingStackViewItemsButton = {
-        let button = SettingStackViewItemsButton()
+    private(set) lazy var versionView: SettingAppVersionView = {
+        let button = SettingAppVersionView()
         button.itemLabel.text = "앱 버전"
+        button.versionLabel.text = "1.0.0"
         button.frame = CGRect(x: .zero, y: .zero, width: calculateXMax(), height: yValueRatio(60))
         button.backgroundColor = .homeBoxColor
         return button
@@ -32,7 +33,6 @@ class SettingSecondStackView: UIStackView {
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
 extension SettingSecondStackView {

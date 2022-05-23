@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeCoordinator: Coordinator {
+class HomeCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     var diContainer = HomeDIContainer()
@@ -32,12 +32,11 @@ class HomeCoordinator: Coordinator {
     }
     
     func presentProfile(_ viewController: UIViewController) {
-        let coordinator = ProfileCoordinator(parentViewController: viewController)
-        let presentView = coordinator.diContainer.makeProfileNavigationViewController()
-        presentView.modalPresentationStyle = .fullScreen
-        presentView.modalTransitionStyle = .coverVertical
-        viewController.present(presentView, animated: true)
+        let navigationController = UINavigationController()
+        let coordinator = ProfileCoordinator(navigationController: navigationController)
+        coordinator.start()
+        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.modalTransitionStyle = .coverVertical
+        viewController.present(navigationController, animated: true)
     }
 }
-
-

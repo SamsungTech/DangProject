@@ -9,7 +9,7 @@ import UIKit
 
 class AlarmCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    var navigationController: UINavigationController?
+    var navigationController: UINavigationController
     var diContainer = AlarmDIContainer()
     
     init(navigationController: UINavigationController) {
@@ -19,11 +19,10 @@ class AlarmCoordinator: Coordinator {
     func start() {
         let viewController = diContainer.makeAlarmViewController()
         viewController.coordinator = self
-        navigationController?.pushViewController(viewController, animated: true)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     func popAlarmViewController() {
-        self.navigationController?.popViewController(animated: true)
+        self.navigationController.popViewController(animated: true)
     }
-    
 }

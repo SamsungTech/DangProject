@@ -12,12 +12,7 @@ class SettingViewController: UIViewController {
     private var viewModel: SettingViewModelProtocol?
     var coordinator: SettingCoordinator?
     private let disposeBag = DisposeBag()
-    private lazy var settingNavigationBar: SettingNavigationBar = {
-        let bar = SettingNavigationBar()
-        bar.backgroundColor = .homeBoxColor
-        return bar
-    }()
-    
+    private var settingNavigationBar = SettingNavigationBar()
     private lazy var settingLabel: UILabel = {
         let label = UILabel()
         label.text = "설정"
@@ -31,12 +26,12 @@ class SettingViewController: UIViewController {
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.contentSize = CGSize(width: calculateXMax(),
-                                        height: overSizeYValueRatio(1000))
+                                        height: overSizeYValueRatio(800))
         return scrollView
     }()
     
-    private(set) lazy var accountView: SettingAccountButton = {
-        let button = SettingAccountButton()
+    private(set) lazy var accountView: SettingAccountView = {
+        let button = SettingAccountView()
         button.profileAccountLabel.text = "김동우"
         button.profileAccountLabel.textColor = .white
         button.frame = CGRect(x: .zero,
@@ -45,6 +40,12 @@ class SettingViewController: UIViewController {
                               height: yValueRatio(80))
         button.backgroundColor = .homeBoxColor
         return button
+    }()
+    
+    private lazy var secessionAlertController: UIAlertController = {
+        let alert = UIAlertController(title: "탈퇴하기", message: "진짜 탈퇴할거야?", preferredStyle: .alert)
+        
+        return alert
     }()
     private var settingFirstStackView = SettingFirstStackView()
     private var settingSecondStackView = SettingSecondStackView()
@@ -86,6 +87,7 @@ class SettingViewController: UIViewController {
         setUpSettingSecondStackView()
         setUpSettingTermsOfServiceView()
         setUpSettingSecessionView()
+        setUpSecessionAlert()
     }
     
     private func setUpSettingView() {
@@ -165,6 +167,15 @@ class SettingViewController: UIViewController {
         ])
     }
     
+    private func setUpSecessionAlert() {
+        secessionAlertController.addAction(UIAlertAction(title: "취소",
+                                                         style: .cancel,
+                                                         handler: nil))
+        secessionAlertController.addAction(UIAlertAction(title: "탈퇴하기",
+                                                         style: .destructive,
+                                                         handler: nil))
+    }
+    
     private func bind() {
         bindScrollStateValue()
     }
@@ -185,27 +196,30 @@ class SettingViewController: UIViewController {
     
     private func bindUI() {
         Observable.merge(
+            accountView.rx.tap.map { SettingRouterPath.account },
             settingFirstStackView.myTargetView.rx.tap.map { SettingRouterPath.myTarget },
             settingFirstStackView.themeView.rx.tap.map { SettingRouterPath.theme },
-            settingFirstStackView.alarmView.rx.tap.map { SettingRouterPath.alarm }
+            settingFirstStackView.alarmView.rx.tap.map { SettingRouterPath.alarm },
+            settingSecondStackView.introductionView.rx.tap.map { SettingRouterPath.appIntroduce },
+            settingTermsOfServiceView.rx.tap.map { SettingRouterPath.termsOfService },
+            settingSecessionView.rx.tap.map { SettingRouterPath.secession }
         )
             .bind { [weak self] in
-                guard let self = self else { return }
                 switch $0 {
-                case .myTarget:
-                    break
-                case .theme:
-                    break
-                case .alarm:
-                    self.coordinator?.pushAlarmViewController()
                 case .account:
-                    break
+                    self?.coordinator?.decideViewController(.account)
+                case .myTarget:
+                    self?.coordinator?.decideViewController(.myTarget)
+                case .theme:
+                    self?.coordinator?.decideViewController(.theme)
+                case .alarm:
+                    self?.coordinator?.decideViewController(.alarm)
                 case .appIntroduce:
-                    break
-                case .version:
-                    break
+                    self?.coordinator?.decideViewController(.appIntroduce)
                 case .termsOfService:
-                    break
+                    self?.coordinator?.decideViewController(.termsOfService)
+                case .secession:
+                    self?.coordinator?.decideViewController(.secession)
                 }
             }
             .disposed(by: disposeBag)

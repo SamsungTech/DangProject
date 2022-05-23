@@ -22,15 +22,11 @@ class HomeDIContainer {
     
     func makeHomeViewModel() -> HomeViewModelProtocol {
         return HomeViewModel(useCase: makeHomeUseCase(),
-                             calendarUseCase: makeCalendarUseCase())
+                             calendarService: CalendarService())
     }
     
     func makeHomeUseCase() -> HomeUseCaseProtocol {
         return HomeUseCase(repository: makeHomeRepository())
-    }
-    
-    func makeCalendarUseCase() -> CalendarUseCaseProtocol {
-        return CalendarUseCase(repository: makeHomeRepository())
     }
     
     func makeHomeRepository() -> HomeRepositoryProtocol {
