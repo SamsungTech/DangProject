@@ -8,16 +8,6 @@
 import Foundation
 import UIKit
 
-struct SearchFoodViewModel {
-    static let empty: Self = .init(keyword: "", foodModels: [])
-    let keyword: String
-    let foodModels: [FoodViewModel]?
-    
-    init(keyword: String, foodModels: [FoodViewModel]) {
-        self.keyword = keyword
-        self.foodModels = foodModels
-    }
-}
 struct AddFoodsViewModel {
     var amount = 1
     let foodModel: FoodViewModel?

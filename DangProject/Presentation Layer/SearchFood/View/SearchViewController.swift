@@ -192,7 +192,6 @@ class SearchViewController: UIViewController {
     private func bindSearchResultTableView() {
         viewModel.searchFoodViewModelObservable
             .observe(on: MainScheduler.instance)
-            .map({ $0.foodModels! })
             .bind(to: searchResultTableView.rx.items(cellIdentifier: SearchResultTableViewCell.identifier,
                                                      cellType: SearchResultTableViewCell.self)) {index, item, cell in
                 cell.cellDelegation = self

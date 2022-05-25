@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 protocol SearchUseCase {
-    var foodResultModelObservable: PublishSubject<SearchFoodViewModel> { get }
+    var foodResultModelObservable: PublishSubject<[FoodViewModel]> { get }
     func fetchFood(text: String)
     func updateViewModel(keyword: String?)
 }

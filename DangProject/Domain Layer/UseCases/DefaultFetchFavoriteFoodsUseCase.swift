@@ -20,14 +20,14 @@ class DefaultFetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase {
     }
     
     // MARK: - Internal
-    func fetchFavoriteFoods() -> SearchFoodViewModel {
+    func fetchFavoriteFoods() -> [FoodViewModel] {
         let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: FavoriteFoods.fetchRequest())
-        var tempFoodViewModel: [FoodViewModel] = []
+        var favoriteFoodViewModel: [FoodViewModel] = []
         
         favoriteFoods.forEach {
             let favoriteFoodDomainModel = FoodDomainModel.init($0)
-            tempFoodViewModel.append(FoodViewModel.init(favoriteFoodDomainModel))
+            favoriteFoodViewModel.append(FoodViewModel.init(favoriteFoodDomainModel))
         }
-        return SearchFoodViewModel.init(keyword: "", foodModels: tempFoodViewModel)
+        return favoriteFoodViewModel
     }
 }

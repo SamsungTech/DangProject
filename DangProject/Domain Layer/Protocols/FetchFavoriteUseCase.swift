@@ -10,5 +10,5 @@ import Foundation
 import RxSwift
 
 protocol FetchFavoriteFoodsUseCase {
-    func fetchFavoriteFoods() -> SearchFoodViewModel
+    func fetchFavoriteFoods() -> [FoodViewModel]
 }

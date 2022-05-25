@@ -59,12 +59,13 @@ struct FoodInfo: Codable {
 }
 
 struct FoodEntity {
-    static let empty: Self = .init([], keyword: "")
     
+    let code: String
     let foodInfo: [FoodInfo]
     var keyword: String
     
-    init(_ foodEntity: [FoodInfo], keyword: String) {
+    init(code: String, foodEntity: [FoodInfo], keyword: String) {
+        self.code = code
         self.foodInfo = foodEntity
         self.keyword = keyword
     }
