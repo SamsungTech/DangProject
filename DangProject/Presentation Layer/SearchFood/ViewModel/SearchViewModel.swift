@@ -7,6 +7,7 @@
 
 import Foundation
 
+import RxCocoa
 import RxSwift
 
 protocol SearchViewModelInput {
@@ -17,15 +18,15 @@ protocol SearchViewModelInput {
 }
 
 protocol SearchViewModelOutput {
-    var searchFoodViewModelObservable: PublishSubject<SearchFoodViewModel> { get }
-    var searchQueryObservable: PublishSubject<[String]> { get }
+    var searchFoodViewModelObservable: PublishRelay<[FoodViewModel]> { get }
+    var searchQueryObservable: PublishRelay<[String]> { get }
     func updateRecentQuery()
 }
 
 protocol SearchViewModelProtocol: SearchViewModelInput, SearchViewModelOutput {}
 
 class SearchViewModel: SearchViewModelProtocol {
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     // MARK: - Init
     private let searchFoodUseCase: SearchUseCase
@@ -46,14 +47,14 @@ class SearchViewModel: SearchViewModelProtocol {
     
     private func bindFoodResultModelObservable() {
         searchFoodUseCase.foodResultModelObservable
-            .subscribe(onNext: { [unowned self] searchFoodViewModel in
-                if scopeState == .searchResult && currentKeyword == searchFoodViewModel.keyword {
-                    currentFoodViewModels = searchFoodViewModel
-                    updateSearchResult()
-                } else if scopeState == .favorites {
-                    updateFavoriteResult()
+            .subscribe(onNext: { [weak self] searchFoodViewModel in
+                if self?.scopeState == .searchResult {
+                    self?.currentFoodViewModels = searchFoodViewModel
+                    self?.updateSearchResult()
+                } else if self?.scopeState == .favorites {
+                    self?.updateFavoriteResult()
                 }
-                loading.onNext(.finishLoading)
+                self?.loading.accept(.finishLoading)
             })
             .disposed(by: disposeBag)
     }
@@ -61,8 +62,8 @@ class SearchViewModel: SearchViewModelProtocol {
     private func bindQueryUseCase() {
         manageQueryUseCase.queryObservable
             .map({ $0.reversed() })
-            .subscribe(onNext: { [unowned self] query in
-                searchQueryObservable.onNext(query)
+            .subscribe(onNext: { [weak self] query in
+                self?.searchQueryObservable.accept(query)
             })
             .disposed(by: disposeBag)
         
@@ -71,39 +72,31 @@ class SearchViewModel: SearchViewModelProtocol {
     var currentKeyword: String = ""
     
     func cancelButtonTapped() {
-        currentFoodViewModels = SearchFoodViewModel.empty
-        searchFoodViewModelObservable.onNext(currentFoodViewModels)
+        currentFoodViewModels = []
+        searchFoodViewModelObservable.accept(currentFoodViewModels)
     }
     
     func changeFavorite(indexPath: IndexPath?, foodModel: FoodViewModel?) {
-        guard let searchResultFoodModels = currentFoodViewModels.foodModels,
-              let favoriteFoodModels = favoriteFoodViewModels.foodModels else { return }
-        
         if indexPath != nil {
             if scopeState == .searchResult {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(searchResultFoodModels[indexPath!.row])) {
-                    self.searchFoodUseCase.updateViewModel(keyword: nil)
-                }
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(currentFoodViewModels[indexPath!.row]))
+                self.searchFoodUseCase.updateViewModel(keyword: nil)
+                
             } else {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodModels[indexPath!.row])) {
-                    self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                    self.searchFoodUseCase.updateViewModel(keyword: nil)
-                    self.updateFavoriteResult()
-                }
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(favoriteFoodViewModels[indexPath!.row]))
+                self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
+                self.searchFoodUseCase.updateViewModel(keyword: nil)
+                self.updateFavoriteResult()
             }
         } else if foodModel != nil {
             if scopeState == .searchResult {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!)) {
-                    self.searchFoodUseCase.updateViewModel(keyword: nil)
-                }
-                
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
+                self.searchFoodUseCase.updateViewModel(keyword: nil)
             } else {
-                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!)) {
-                    self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-                    self.searchFoodUseCase.updateViewModel(keyword: nil)
-                    self.updateFavoriteResult()
-                }
-                
+                changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(foodModel!))
+                self.favoriteFoodViewModels = self.fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
+                self.searchFoodUseCase.updateViewModel(keyword: nil)
+                self.updateFavoriteResult()                
             }
         }
         
@@ -138,9 +131,9 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     
     // MARK: - Output
-    var searchFoodViewModelObservable = PublishSubject<SearchFoodViewModel>()
-    var searchQueryObservable = PublishSubject<[String]>()
-    let loading = PublishSubject<LoadingState>()
+    var searchFoodViewModelObservable = PublishRelay<[FoodViewModel]>()
+    var searchQueryObservable = PublishRelay<[String]>()
+    let loading = PublishRelay<LoadingState>()
     enum LoadingState {
         case startLoading
         case finishLoading
@@ -151,8 +144,8 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     
     //MARK: - Private
-    private var currentFoodViewModels = SearchFoodViewModel.empty
-    private var favoriteFoodViewModels = SearchFoodViewModel.empty
+    private var currentFoodViewModels: [FoodViewModel] = []
+    private var favoriteFoodViewModels: [FoodViewModel] = []
     private var scopeState: SearchBarScopeState = .searchResult
     
     
@@ -164,29 +157,29 @@ class SearchViewModel: SearchViewModelProtocol {
     private func startSearching(searchBarText: String) {
         manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText)
         searchFoodUseCase.fetchFood(text: searchBarText)
-        loading.onNext(.startLoading)
+        loading.accept(.startLoading)
     }
     
     private func changeToFavoriteFoods() {
         favoriteFoodViewModels = fetchFavoriteFoodsUseCase.fetchFavoriteFoods()
-        searchFoodViewModelObservable.onNext(favoriteFoodViewModels)
+        searchFoodViewModelObservable.accept(favoriteFoodViewModels)
     }
     
     private func updateSearchResult() {
         scopeState = .searchResult
-        searchFoodViewModelObservable.onNext(currentFoodViewModels)
+        searchFoodViewModelObservable.accept(currentFoodViewModels)
     }
     
     private func updateFavoriteResult() {
-        searchFoodViewModelObservable.onNext(favoriteFoodViewModels)
+        searchFoodViewModelObservable.accept(favoriteFoodViewModels)
     }
     
     private func compareFavoriteResult(text: String) {
         guard text != "" else { return updateFavoriteResult() }
-        let filteredViewModel = favoriteFoodViewModels.foodModels?.filter {(model: FoodViewModel) -> Bool in
+        let filteredViewModel = favoriteFoodViewModels.filter {(model: FoodViewModel) -> Bool in
             return model.name!.contains(text)
         }
-        searchFoodViewModelObservable.onNext(SearchFoodViewModel.init(keyword: text, foodModels: filteredViewModel ?? []))
+        searchFoodViewModelObservable.accept(filteredViewModel)
     }
 }
 

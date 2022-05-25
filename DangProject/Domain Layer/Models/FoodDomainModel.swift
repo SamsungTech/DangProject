@@ -47,10 +47,12 @@ struct FoodDomainModel: Equatable {
 }
 
 struct SearchResultDomainModel {
-    var keyword: String
+    let code: String
+    let keyword: String
     let foodDomainModel: [FoodDomainModel]
     
     init(_ foodEntity: FoodEntity) {
+        self.code = foodEntity.code
         self.keyword = foodEntity.keyword
         self.foodDomainModel = foodEntity.foodInfo.map { FoodDomainModel.init($0) }
     }

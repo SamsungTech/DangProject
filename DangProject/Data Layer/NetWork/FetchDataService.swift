@@ -66,12 +66,10 @@ class FetchDataService {
                 try JSONDecoder().decode(FoodFromAPI.self, from: data)
             }
             .subscribe(onNext: { [self] in
-                if $0.serviceType?.totalCount != "0" {
-                    guard let foodInfo = $0.serviceType?.foodInfo else { return }
-                    foodInfoObservable.onNext(FoodEntity.init(foodInfo, keyword: text))
-                } else {
-                    foodInfoObservable.onNext(FoodEntity.empty)
-                }
+                guard let result = $0.serviceType?.result else { return }
+                foodInfoObservable.onNext(FoodEntity.init(code: result.code,
+                                                          foodEntity: $0.serviceType?.foodInfo ?? [],
+                                                          keyword: text))
             })
             .disposed(by: disposeBag)
     }

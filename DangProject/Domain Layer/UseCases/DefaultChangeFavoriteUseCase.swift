@@ -16,17 +16,7 @@ class DefaultChangeFavoriteUseCase: ChangeFavoriteUseCase {
     }
     
     // MARK: - Internal
-//    func changeFavorite(food: FoodDomainModel) {
-//        var tempFood = food
-//        tempFood.favorite = !food.favorite
-//        if food.favorite == false {
-//            coreDataManagerRepository.addFoods(food, at: CoreDataName.favoriteFoods)
-//        }
-//        else {
-//            coreDataManagerRepository.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())
-//        }
-//    }
-    func changeFavorite(food: FoodDomainModel, completion: @escaping()->Void) {
+    func changeFavorite(food: FoodDomainModel) {
         var tempFood = food
         tempFood.favorite = !food.favorite
         if food.favorite == false {
@@ -35,6 +25,5 @@ class DefaultChangeFavoriteUseCase: ChangeFavoriteUseCase {
         else {
             coreDataManagerRepository.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())
         }
-        completion()
     }
 }

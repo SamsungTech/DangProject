@@ -25,14 +25,20 @@ class DefaultSearchUseCase: SearchUseCase {
     private func bindToFoodDomainModelObservable() {
         fetchFoodRepository.foodDomainModelObservable
             .subscribe(onNext: { [weak self] foods in
-                self?.originalDomainFoodModels = foods.foodDomainModel
+                guard let strongSelf = self else { return }
+                guard foods.code == "INFO-000" else {
+                    return strongSelf.foodResultModelObservable.onNext([])
+                }
+                if foods.keyword == self?.currentKeyword {
+                    self?.originalDomainFoodModels = foods.foodDomainModel
+                }
                 self?.updateViewModel(keyword: foods.keyword)
             })
             .disposed(by: disposeBag)
     }
     
     // MARK: - Internal
-    var foodResultModelObservable = PublishSubject<SearchFoodViewModel>()
+    var foodResultModelObservable = PublishSubject<[FoodViewModel]>()
     
     func fetchFood(text: String) {
         currentKeyword = text
@@ -43,11 +49,7 @@ class DefaultSearchUseCase: SearchUseCase {
         // check favorites
         let checkedDomainFoodModels = checkFavorites()
         // updateViewModel
-        guard let keyword = keyword else {
-            return
-        }
-
-        foodResultModelObservable.onNext(SearchFoodViewModel.init(keyword: keyword, foodModels: checkedDomainFoodModels.map{ FoodViewModel($0) }))
+        foodResultModelObservable.onNext(checkedDomainFoodModels.map{ FoodViewModel.init($0)})
     }
     
     // MARK: - Private
@@ -55,8 +57,7 @@ class DefaultSearchUseCase: SearchUseCase {
     private var currentKeyword = ""
     
     private func checkFavorites() -> [FoodDomainModel] {
-        var currentDomainFoodModels: [FoodDomainModel] = []
-        currentDomainFoodModels = originalDomainFoodModels
+        var currentDomainFoodModels = originalDomainFoodModels
         
         let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: FavoriteFoods.fetchRequest())
         
