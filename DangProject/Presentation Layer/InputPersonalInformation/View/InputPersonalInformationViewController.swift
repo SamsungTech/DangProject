@@ -5,12 +5,11 @@ import RxSwift
 import RxCocoa
 
 class InputPersonalInformationViewController: UIViewController {
+    private let disposeBag = DisposeBag()
     
     weak var coordinator: InputPersonalInformationCoordinator?
-    let viewModel: InputPersonalInformationViewModel
+    private let viewModel: InputPersonalInformationViewModel
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
-    
-    let disposeBag = DisposeBag()
     
     private lazy var welcomeLabel: UILabel = {
         let label = UILabel()

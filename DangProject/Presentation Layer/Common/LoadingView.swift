@@ -21,7 +21,6 @@ final class LoadingView: UIActivityIndicatorView {
         DispatchQueue.main.async {
             self.startAnimating()
         }
-        
     }
     
     func hideLoading() {
