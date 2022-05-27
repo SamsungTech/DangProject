@@ -28,11 +28,6 @@ class TabBarCoordinator: NSObject, Coordinator {
         let preferenceViewController = preferenceCoordinator.navigationController
         preferenceCoordinator.start()
         
-        let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
-        childCoordinators.append(searchCoordinator)
-        searchViewController = searchCoordinator.navigationController
-        searchCoordinator.start()
-        
         let initialViewController = TabBarController(homeTab: homeViewController,
                                                      prefrenceTab: preferenceViewController,
                                                      searchViewController: searchViewController)
@@ -42,6 +37,10 @@ class TabBarCoordinator: NSObject, Coordinator {
     }
     
     func presentSearchViewController(viewController: UIViewController) {
+        let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
+        searchViewController = searchCoordinator.navigationController
+        searchCoordinator.start()
+
         viewController.present(searchViewController, animated: true)
     }
 }
