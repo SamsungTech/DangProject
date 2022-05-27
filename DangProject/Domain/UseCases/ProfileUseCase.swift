@@ -3,7 +3,7 @@
 //  DangProject
 //
 //  Created by 김동우 on 2022/04/12.
-//
+// qusrud
 
 import Foundation
 
@@ -18,3 +18,4 @@ class ProfileUseCase: ProfileUseCaseProtocol {
         self.repository = repository
     }
 }
+
