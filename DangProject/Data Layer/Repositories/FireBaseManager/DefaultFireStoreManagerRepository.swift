@@ -123,6 +123,5 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    
 }
 

@@ -15,7 +15,6 @@ struct FoodFromAPI: Codable {
     }
 }
 
-
 struct ServiceType: Codable {
     var totalCount: String
     let foodInfo: [FoodInfo]?
@@ -37,7 +36,6 @@ struct ServiceType: Codable {
         case result = "RESULT"
     }
 }
-
 
 struct FoodInfo: Codable {
     let sugarContent: String?
