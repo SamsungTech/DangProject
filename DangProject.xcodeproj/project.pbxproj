@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A78277076FC0006B9CF /* AppDelegate.swift */; };
 		0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */; };
-		0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */; };
 		0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0B1F4A81277076FC0006B9CF /* DangProject.xcdatamodeld */; };
 		0B1F4A85277076FE0006B9CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A84277076FE0006B9CF /* Assets.xcassets */; };
 		0B1F4A88277076FE0006B9CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B1F4A86277076FE0006B9CF /* LaunchScreen.storyboard */; };
@@ -35,13 +34,7 @@
 		7C86EB89281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C86EB88281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift */; };
 		7C86EB8D281C1E4D00936C1F /* FirebaseAuthManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C86EB8C281C1E4D00936C1F /* FirebaseAuthManagerRepository.swift */; };
 		7C94E85527C32675006F5574 /* AddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */; };
-		7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */; };
-		7C9B9D7727A0DBE30046F22C /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */; };
 		7C9B9D7D27A0DDB10046F22C /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */; };
-		7C9B9D7F27A0EB600046F22C /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D7E27A0EB600046F22C /* HomeCoordinator.swift */; };
-		7C9B9D8327A0EBD50046F22C /* PreferenceCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D8227A0EBD50046F22C /* PreferenceCoordinator.swift */; };
-		7C9B9D8527A0F3AE0046F22C /* HomeDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D8427A0F3AD0046F22C /* HomeDIContainer.swift */; };
-		7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9B9D8627A0F4C10046F22C /* PreferenceDIContainer.swift */; };
 		7CA07CAF281CE39500597BC2 /* InputPersonalInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA07CAE281CE39500597BC2 /* InputPersonalInformation.swift */; };
 		7CA07CB1281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA07CB0281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift */; };
 		7CA07CB3281CE42000597BC2 /* InputPersonalInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA07CB2281CE42000597BC2 /* InputPersonalInformationViewController.swift */; };
@@ -53,7 +46,6 @@
 		7CB2F923281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F922281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift */; };
 		7CB2F925281FCEE5005797C7 /* FireStoreManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F924281FCEE5005797C7 /* FireStoreManagerRepository.swift */; };
 		7CB2F92728210405005797C7 /* ProfileDomainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F92628210405005797C7 /* ProfileDomainModel.swift */; };
-		7CB2F9292822347B005797C7 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB2F9282822347B005797C7 /* TabBarCoordinator.swift */; };
 		7CD6C08C28196C5A001979D0 /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08B28196C5A001979D0 /* LoginCoordinator.swift */; };
 		7CD6C08E28196C8E001979D0 /* LoginDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08D28196C8E001979D0 /* LoginDIContainer.swift */; };
 		7CD6C09028196CD8001979D0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6C08F28196CD8001979D0 /* LoginViewController.swift */; };
@@ -92,7 +84,6 @@
 		0B1F4A75277076FC0006B9CF /* DangProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DangProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1F4A78277076FC0006B9CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0B1F4A82277076FC0006B9CF /* DangProject.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DangProject.xcdatamodel; sourceTree = "<group>"; };
 		0B1F4A84277076FE0006B9CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0B1F4A87277076FE0006B9CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -120,13 +111,7 @@
 		7C86EB88281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFirebaseAuthManagerRepository.swift; sourceTree = "<group>"; };
 		7C86EB8C281C1E4D00936C1F /* FirebaseAuthManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthManagerRepository.swift; sourceTree = "<group>"; };
 		7C94E85427C32675006F5574 /* AddFoodsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodsUseCase.swift; sourceTree = "<group>"; };
-		7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
-		7C9B9D7E27A0EB600046F22C /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
-		7C9B9D8227A0EBD50046F22C /* PreferenceCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceCoordinator.swift; sourceTree = "<group>"; };
-		7C9B9D8427A0F3AD0046F22C /* HomeDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDIContainer.swift; sourceTree = "<group>"; };
-		7C9B9D8627A0F4C10046F22C /* PreferenceDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceDIContainer.swift; sourceTree = "<group>"; };
 		7CA07CAE281CE39500597BC2 /* InputPersonalInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPersonalInformation.swift; sourceTree = "<group>"; };
 		7CA07CB0281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPersonalInformationDIContainer.swift; sourceTree = "<group>"; };
 		7CA07CB2281CE42000597BC2 /* InputPersonalInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPersonalInformationViewController.swift; sourceTree = "<group>"; };
@@ -138,7 +123,6 @@
 		7CB2F922281FCEBF005797C7 /* DefaultFireStoreManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFireStoreManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F924281FCEE5005797C7 /* FireStoreManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireStoreManagerRepository.swift; sourceTree = "<group>"; };
 		7CB2F92628210405005797C7 /* ProfileDomainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDomainModel.swift; sourceTree = "<group>"; };
-		7CB2F9282822347B005797C7 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
 		7CD6C08528191BB4001979D0 /* DangProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DangProject.entitlements; sourceTree = "<group>"; };
 		7CD6C08B28196C5A001979D0 /* LoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCoordinator.swift; sourceTree = "<group>"; };
 		7CD6C08D28196C8E001979D0 /* LoginDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDIContainer.swift; sourceTree = "<group>"; };
@@ -330,30 +314,6 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
-		7C1BF76827B1206B00BDAE70 /* Coordinator */ = {
-			isa = PBXGroup;
-			children = (
-				7C9B9D7E27A0EB600046F22C /* HomeCoordinator.swift */,
-			);
-			path = Coordinator;
-			sourceTree = "<group>";
-		};
-		7C1BF76927B1207400BDAE70 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				0B1F4A7C277076FC0006B9CF /* HomeViewController.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		7C1BF76A27B1208200BDAE70 /* DIContainer */ = {
-			isa = PBXGroup;
-			children = (
-				7C9B9D8427A0F3AD0046F22C /* HomeDIContainer.swift */,
-			);
-			path = DIContainer;
-			sourceTree = "<group>";
-		};
 		7C1BF76B27B1338D00BDAE70 /* DIContainer */ = {
 			isa = PBXGroup;
 			children = (
@@ -395,8 +355,6 @@
 				7CFB399027FFF55D00AE99E3 /* Onboarding */,
 				7C1BF74C27AB687700BDAE70 /* SearchFood */,
 				7CF02ACC27BD03C10090B594 /* DetailFood */,
-				7C9B9D8027A0EB6C0046F22C /* Home */,
-				7C9B9D8127A0EB700046F22C /* Preference */,
 			);
 			path = "Presentation Layer";
 			sourceTree = "<group>";
@@ -424,7 +382,6 @@
 		7C9B9D7B27A0DD7D0046F22C /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				7CFADB182822B2100038E419 /* TabBar */,
 				0B1F4A78277076FC0006B9CF /* AppDelegate.swift */,
 				0B1F4A7A277076FC0006B9CF /* SceneDelegate.swift */,
 				7C9B9D7C27A0DDB10046F22C /* AppCoordinator.swift */,
@@ -432,26 +389,6 @@
 				7CFADB162822650F0038E419 /* CoordinatorFinishDelegate.swift */,
 			);
 			path = Application;
-			sourceTree = "<group>";
-		};
-		7C9B9D8027A0EB6C0046F22C /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				7C1BF76827B1206B00BDAE70 /* Coordinator */,
-				7C1BF76A27B1208200BDAE70 /* DIContainer */,
-				7C1BF76927B1207400BDAE70 /* View */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		7C9B9D8127A0EB700046F22C /* Preference */ = {
-			isa = PBXGroup;
-			children = (
-				7C9B9D8227A0EBD50046F22C /* PreferenceCoordinator.swift */,
-				7C9B9D7627A0DBE30046F22C /* PreferenceViewController.swift */,
-				7C9B9D8627A0F4C10046F22C /* PreferenceDIContainer.swift */,
-			);
-			path = Preference;
 			sourceTree = "<group>";
 		};
 		7CA07CA9281CE31200597BC2 /* InputPersonalInformation */ = {
@@ -679,15 +616,6 @@
 				7CF74A3928165C8F00510817 /* OnboardingDIContainer.swift */,
 			);
 			path = DIContainer;
-			sourceTree = "<group>";
-		};
-		7CFADB182822B2100038E419 /* TabBar */ = {
-			isa = PBXGroup;
-			children = (
-				7CB2F9282822347B005797C7 /* TabBarCoordinator.swift */,
-				7C9B9D7427A0DB7E0046F22C /* TabBarController.swift */,
-			);
-			path = TabBar;
 			sourceTree = "<group>";
 		};
 		7CFB399027FFF55D00AE99E3 /* Onboarding */ = {
@@ -926,8 +854,6 @@
 				7C1BF77927B3D16B00BDAE70 /* ChangeFavoriteUseCase.swift in Sources */,
 				7C1BF77727B2A5B200BDAE70 /* LoadingView.swift in Sources */,
 				7CFADB1A2822B7A60038E419 /* CheckCurrentTimeUseCase.swift in Sources */,
-				7C9B9D7527A0DB7E0046F22C /* TabBarController.swift in Sources */,
-				0B1F4A7D277076FC0006B9CF /* HomeViewController.swift in Sources */,
 				7CF058DA2813CA4A00540ACE /* Double+Calculate.swift in Sources */,
 				7C86EB89281C1C1900936C1F /* DefaultFirebaseAuthManagerRepository.swift in Sources */,
 				7C1BF75727B0BCE300BDAE70 /* SearchResultTableViewCell.swift in Sources */,
@@ -938,12 +864,10 @@
 				7CF74A3728153CFA00510817 /* OnboardingCoordinator.swift in Sources */,
 				7CA07CB1281CE3CC00597BC2 /* InputPersonalInformationDIContainer.swift in Sources */,
 				7C12A07928322C40005CAB55 /* OnboardingMasterViewController.swift in Sources */,
-				7C9B9D8727A0F4C10046F22C /* PreferenceDIContainer.swift in Sources */,
 				7C1BF76627B1172600BDAE70 /* SearchUseCase.swift in Sources */,
 				7CA07CB3281CE42000597BC2 /* InputPersonalInformationViewController.swift in Sources */,
 				0B1F4A83277076FC0006B9CF /* DangProject.xcdatamodeld in Sources */,
 				7CD6C08C28196C5A001979D0 /* LoginCoordinator.swift in Sources */,
-				7C9B9D7727A0DBE30046F22C /* PreferenceViewController.swift in Sources */,
 				7C1BF77227B1584500BDAE70 /* FoodDomainModel.swift in Sources */,
 				0B1F4A79277076FC0006B9CF /* AppDelegate.swift in Sources */,
 				7CF058DC2813CA8500540ACE /* UITextField.swift in Sources */,
@@ -951,13 +875,11 @@
 				7CD6C08E28196C8E001979D0 /* LoginDIContainer.swift in Sources */,
 				7CFB399527FFF7E200AE99E3 /* UserInfoKey.swift in Sources */,
 				7CD6C09028196CD8001979D0 /* LoginViewController.swift in Sources */,
-				7C9B9D8527A0F3AE0046F22C /* HomeDIContainer.swift in Sources */,
 				7CF02AD727BD04A90090B594 /* DetailFoodViewController.swift in Sources */,
 				7C1BF77427B2440200BDAE70 /* SearchFoodViewModel.swift in Sources */,
 				7C1BF77027B147A500BDAE70 /* FetchDataService.swift in Sources */,
 				7CF02AC927BAB3970090B594 /* FetchFavoriteFoodsUseCase.swift in Sources */,
 				7CF02AD327BD04430090B594 /* DetailFoodCoordinator.swift in Sources */,
-				7C9B9D7F27A0EB600046F22C /* HomeCoordinator.swift in Sources */,
 				7CF02ADB27C0DF7C0090B594 /* ReusableView+Identifier.swift in Sources */,
 				0B1F4A7B277076FC0006B9CF /* SceneDelegate.swift in Sources */,
 				7CF02AD527BD048F0090B594 /* DetailFoodDIContainer.swift in Sources */,
@@ -965,12 +887,10 @@
 				7CB2F915281FBBDF005797C7 /* DefaultCoreDataManagerRepository.swift in Sources */,
 				7C540E9928097D6800BE279E /* OnboardingViewModel.swift in Sources */,
 				7CF74A3A28165C8F00510817 /* OnboardingDIContainer.swift in Sources */,
-				7C9B9D8327A0EBD50046F22C /* PreferenceCoordinator.swift in Sources */,
 				7CFB39972803EC0C00AE99E3 /* OnboardingContentViewController.swift in Sources */,
 				7C4C790127C3ED8D000E0A09 /* QueryTableViewCell.swift in Sources */,
 				7C9B9D7D27A0DDB10046F22C /* AppCoordinator.swift in Sources */,
 				7CB2F91F281FC1B5005797C7 /* FirebaseAuthUseCase.swift in Sources */,
-				7CB2F9292822347B005797C7 /* TabBarCoordinator.swift in Sources */,
 				7C1BF75127AB759100BDAE70 /* SearchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
