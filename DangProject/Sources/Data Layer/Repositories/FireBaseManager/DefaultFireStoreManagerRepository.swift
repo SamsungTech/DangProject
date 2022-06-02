@@ -7,8 +7,9 @@
 
 import Foundation
 
+import Firebase
+import FirebaseFirestoreTarget
 import FirebaseFirestore
-
 import RxSwift
 
 final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
@@ -16,12 +17,12 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     private let database = Firestore.firestore()
 
     func saveFirebaseUIDDocument(uid: String) {
-        
+        let database1 = Firestore.firestore()
         let uidData = ["firebaseUID": uid,
                        "onboarding": true,
                        "profileExistence": false
         ] as [String : Any]
-        database.collection("users").document(uid).setData(uidData) { error in
+        database1.collection("users").document(uid).setData(uidData) { error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
                 return

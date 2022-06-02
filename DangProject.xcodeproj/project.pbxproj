@@ -109,7 +109,6 @@
 		DADD5471079219B466F9EC02 /* DefaultFirebaseAuthManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27A846AC1E1891058CD17CC /* DefaultFirebaseAuthManagerRepository.swift */; };
 		DD8D1E5861E572E53C60F3BD /* InputPersonalInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E196F52583703FEDB27BFE /* InputPersonalInformationViewController.swift */; };
 		E67E1876E111D936813BA34E /* DefaultCheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372E3A7A74E778C05A177C53 /* DefaultCheckCurrentTimeUseCase.swift */; };
-		E77BA5FB115B59BA04F442F7 /* DangProject.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 2DF9A77E5893723D7F472946 /* DangProject.entitlements */; };
 		E8B7E9943AAD8B5E6ED259D6 /* CheckCurrentTimeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207D5F67B8993808A97AF1CA /* CheckCurrentTimeUseCase.swift */; };
 		ED03182DA47A4443E43EB524 /* ManageQueryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0601AC37C03DB9A3AB3BCBB /* ManageQueryUseCase.swift */; };
 		ED93CE6350DC77B97BB79686 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D974EB365B89FB4F19D3767 /* LoginViewController.swift */; };
@@ -163,7 +162,6 @@
 		27A75FEA2A18A3E7B33BF1BB /* DefaultChangeFavoriteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultChangeFavoriteUseCase.swift; sourceTree = "<group>"; };
 		295B7636B1F4457EE3D24B5B /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
 		2D2F13A7E4A2DD60E170AAD6 /* RxSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2DF9A77E5893723D7F472946 /* DangProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DangProject.entitlements; sourceTree = "<group>"; };
 		3103690302B3B8CEC3926885 /* HomeDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDIContainer.swift; sourceTree = "<group>"; };
 		322AA1F43B9021F539D50C32 /* DetailFoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodViewController.swift; sourceTree = "<group>"; };
 		32B8C69AE55CF09B9CEF82E4 /* GoogleUtilities_Reachability.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GoogleUtilities_Reachability.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -716,7 +714,6 @@
 				9E87138D09B166DCCAFB0407 /* DangProject.xcdatamodeld */,
 				ED5828AF31048C8BB18F82B4 /* LaunchScreen.storyboard */,
 				2722CCCEB6A6D0AC58C1CA1E /* Assets.xcassets */,
-				2DF9A77E5893723D7F472946 /* DangProject.entitlements */,
 				B4FBFDD1D26811079B409BF9 /* GoogleService-Info.plist */,
 			);
 			path = Resources;
@@ -962,7 +959,6 @@
 			files = (
 				6B0EBA13897E6364F68E4DA5 /* Assets.xcassets in Resources */,
 				C238E4350A7C3AE9961BEF64 /* LaunchScreen.storyboard in Resources */,
-				E77BA5FB115B59BA04F442F7 /* DangProject.entitlements in Resources */,
 				1A2FCF3817F2596A07E93EAC /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1070,6 +1066,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DangProject/DangProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = BAC795627G;
 				ENABLE_PREVIEWS = YES;
@@ -1116,6 +1113,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DangProject/DangProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = BAC795627G;
 				ENABLE_PREVIEWS = YES;
@@ -1203,7 +1201,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
@@ -1262,7 +1259,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
