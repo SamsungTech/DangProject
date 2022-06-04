@@ -20,6 +20,9 @@
                   location = "group:checkouts"
                   name = "checkouts">
                   <FileRef
+                     location = "group:GoogleAppMeasurement/GoogleAppMeasurement.xcodeproj">
+                  </FileRef>
+                  <FileRef
                      location = "group:GoogleDataTransport/GoogleDataTransport.xcodeproj">
                   </FileRef>
                   <FileRef
@@ -38,7 +41,7 @@
                      location = "group:firebase-ios-sdk/Firebase.xcodeproj">
                   </FileRef>
                   <FileRef
-                     location = "group:grpc-SwiftPM/gRPC.xcodeproj">
+                     location = "group:grpc-ios/gRPC.xcodeproj">
                   </FileRef>
                   <FileRef
                      location = "group:gtm-session-fetcher/GTMSessionFetcher.xcodeproj">

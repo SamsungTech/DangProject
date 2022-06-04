@@ -7,12 +7,14 @@
 
 import Foundation
 
-import Firebase
-import FirebaseFirestoreTarget
+import FirebaseCore
 import FirebaseFirestore
+import FirebaseAnalytics
+import Firebase
+
 import RxSwift
 
-final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
+class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     private let database = Firestore.firestore()
 
@@ -68,6 +70,11 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
+        let settings = FirestoreSettings()
+        
+        let db = Firestore.firestore()
+        db.settings = settings
+        
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
 
         guard let year = currentDate.year,
@@ -81,7 +88,7 @@ final class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "amount": eatenFood.amount
         ] as [String : Any]
 
-        database.collection("app")
+        db.collection("app")
             .document(userDefaultsUID)
             .collection("foods")
             .document("eatenFoods")

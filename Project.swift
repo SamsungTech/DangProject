@@ -16,7 +16,9 @@ let target = Target(name: projectName,
                         .external(name: "RxCocoa"),
                         .external(name: "RxRelay"),
                         .external(name: "FirebaseAuth"),
-                        .external(name: "FirebaseFirestore")
+                        .external(name: "FirebaseFirestore"),
+                        .external(name: "FirebaseAnalytics"),
+                        .external(name: "GTMSessionFetcherFull")
                     ]
 )
 let project = Project(
