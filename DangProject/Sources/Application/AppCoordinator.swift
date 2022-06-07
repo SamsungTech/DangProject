@@ -35,7 +35,7 @@ class AppCoordinator: Coordinator {
             }
             self?.checkUID(userDefaultUID: userDefaultsUID)
         }
-        startLogin()
+        startTabbar()
     }
     
     func firstStart() {

@@ -149,7 +149,6 @@
 		729F7E973F9E953E93B18EF5 /* TuistAssets+DangProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+DangProject.swift"; sourceTree = "<group>"; };
 		7797F6EA09281CCF6B2D1B91 /* CoreDataManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerRepository.swift; sourceTree = "<group>"; };
 		78BBE7AD8AF0425E8AAFAF1D /* TuistBundle+DangProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+DangProject.swift"; sourceTree = "<group>"; };
-		7CA1ECDB284F414600A7A88F /* DangProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = DangProject.entitlements; path = DangProject/DangProject.entitlements; sourceTree = "<group>"; };
 		80688580409E3F04AE250F75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		815CF39F43BF082981725927 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		881203ABE2B70DB8DB05C4A8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -750,7 +749,6 @@
 		EDCA9C2E8F7C47CAA9D925FB = {
 			isa = PBXGroup;
 			children = (
-				7CA1ECDB284F414600A7A88F /* DangProject.entitlements */,
 				30F2EA61F515CDBAD667EBEC /* Project */,
 				500D871B6C39EC45B48D636F /* Frameworks */,
 				2E746C93A3107C139DF80BD5 /* Products */,
@@ -958,7 +956,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = DangProject/DangProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = BAC795627G;
 				ENABLE_PREVIEWS = YES;
@@ -984,7 +981,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = DangProject/DangProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = BAC795627G;
 				ENABLE_PREVIEWS = YES;
