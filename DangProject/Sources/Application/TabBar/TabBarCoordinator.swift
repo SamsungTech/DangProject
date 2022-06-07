@@ -23,13 +23,13 @@ class TabBarCoordinator: NSObject, Coordinator {
         let homeViewController = homeCoordinator.navigationController
         homeCoordinator.start()
         
-        let preferenceCoordinator = PreferenceCoordinator(navigationController: UINavigationController())
-        childCoordinators.append(preferenceCoordinator)
-        let preferenceViewController = preferenceCoordinator.navigationController
-        preferenceCoordinator.start()
+        let settingCoordinator = SettingCoordinator(navigationController: UINavigationController())
+        childCoordinators.append(settingCoordinator)
+        let settingViewController = settingCoordinator.navigationController
+        settingCoordinator.start()
         
         let initialViewController = TabBarController(homeTab: homeViewController,
-                                                     prefrenceTab: preferenceViewController,
+                                                     settingTab: settingViewController,
                                                      searchViewController: searchViewController)
         initialViewController.coordinator = self
 

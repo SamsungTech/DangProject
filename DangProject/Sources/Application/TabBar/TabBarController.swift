@@ -15,10 +15,10 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     let searchViewController: UINavigationController
     
     init(homeTab: UINavigationController,
-         prefrenceTab: UINavigationController,
+         settingTab: UINavigationController,
          searchViewController: UINavigationController) {
         self.homeTab = homeTab
-        self.preferenceTab = prefrenceTab
+        self.preferenceTab = settingTab
         self.searchViewController = searchViewController
         super.init(nibName: nil, bundle: nil)
     }
