@@ -35,7 +35,6 @@ class AppCoordinator: Coordinator {
             }
             self?.checkUID(userDefaultUID: userDefaultsUID)
         }
-//        startTabbar()
         startLogin()
     }
     

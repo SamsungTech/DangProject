@@ -70,10 +70,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
-        let settings = FirestoreSettings()
-        
-        let db = Firestore.firestore()
-        db.settings = settings
         
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
 
@@ -88,7 +84,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "amount": eatenFood.amount
         ] as [String : Any]
 
-        db.collection("app")
+        database.collection("app")
             .document(userDefaultsUID)
             .collection("foods")
             .document("eatenFoods")
