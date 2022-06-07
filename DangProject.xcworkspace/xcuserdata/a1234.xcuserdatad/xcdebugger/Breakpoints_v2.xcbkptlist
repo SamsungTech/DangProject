@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "8973FD02-A518-4B98-A28C-C0C89F5A8725"
+   uuid = "121E8D98-31B2-4A63-A4F2-6B0F05C77BAD"
    type = "0"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F3ADAE56-00DB-47A4-BEF3-1BA480DF6A72"
+            uuid = "A5BCD2A4-9793-41B2-89D3-D23FBB4F601B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Presentation Layer/Home/HomeViewController.swift"
+            filePath = "DangProject/Sources/Presentation Layer/Login/View/LoginViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14"
-            endingLineNumber = "14"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "presentationAnchor(for:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
