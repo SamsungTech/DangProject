@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+
 		005F8EA1CD61EAACBA12D3E0 /* DetailFoodCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB31D6B98D3E1C3AC9E8790F /* DetailFoodCoordinator.swift */; };
 		06AD8ABD797CC7ECFA60BF9C /* FirebaseFireStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6977E062700462B23460E2AC /* FirebaseFireStoreUseCase.swift */; };
 		110802DED57F5152443C081C /* AddFoodsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33CB1D5B5B0B48FCF0F0C9 /* AddFoodsUseCase.swift */; };
@@ -97,6 +98,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		C91A9C468204E7D9BB3171EA /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
+
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
@@ -334,6 +336,7 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+
 		35B5F98D9075E9B89F141DF2 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,9 +406,11 @@
 		48F3DF33B16B7FAEF6D1ED4A /* DangProject */ = {
 			isa = PBXGroup;
 			children = (
+
 				A33996AE19D4944F326D2300 /* Resources */,
 				3DBC44BA90D6F1645DCBCE8F /* Sources */,
 				4F387190D3A3125289CAD027 /* Supporting */,
+
 			);
 			path = DangProject;
 			sourceTree = "<group>";
@@ -429,11 +434,14 @@
 		4F387190D3A3125289CAD027 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
+
 				881203ABE2B70DB8DB05C4A8 /* Info.plist */,
+
 			);
 			path = Supporting;
 			sourceTree = "<group>";
 		};
+
 		500D871B6C39EC45B48D636F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -450,6 +458,7 @@
 			sourceTree = "<group>";
 		};
 		58FFC06A816B0D565E8324E9 /* CoreDataManager */ = {
+
 			isa = PBXGroup;
 			children = (
 				7797F6EA09281CCF6B2D1B91 /* CoreDataManagerRepository.swift */,
@@ -747,6 +756,7 @@
 			path = DIContainer;
 			sourceTree = "<group>";
 		};
+
 		EDCA9C2E8F7C47CAA9D925FB = {
 			isa = PBXGroup;
 			children = (
@@ -758,6 +768,7 @@
 			sourceTree = "<group>";
 		};
 		F681E1F49B5D32128E7A63A6 /* DetailFood */ = {
+
 			isa = PBXGroup;
 			children = (
 				FD8E5BA0A82834AD39CF709B /* Coordinator */,
@@ -858,7 +869,9 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+
 		37DA25651498A1318FDC2CAC /* Sources */ = {
+
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
