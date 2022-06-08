@@ -35,13 +35,10 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     // MARK: - Init
     var detailFood: FoodViewModel
     private let addFoodsUseCase: AddFoodsUseCase
-    private let checkCurrentTimeUseCase: CheckCurrentTimeUseCase
     init(detailFood: FoodViewModel,
-         addFoodsUseCase: AddFoodsUseCase,
-         checkCurrentTimeUseCase: CheckCurrentTimeUseCase) {
+         addFoodsUseCase: AddFoodsUseCase) {
         self.detailFood = detailFood
         self.addFoodsUseCase = addFoodsUseCase
-        self.checkCurrentTimeUseCase = checkCurrentTimeUseCase
     }
     // MARK: - Input
     var amount: Int = 1
@@ -55,8 +52,8 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     }
     
     func addFoods(foods: AddFoodsViewModel) {
-        let date = checkCurrentTimeUseCase.dateTimeComponents
-        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods), currentDate: date())
+        let date = DateComponents.currentDateTimeComponents()
+        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods), currentDate: date)
         
     }
     

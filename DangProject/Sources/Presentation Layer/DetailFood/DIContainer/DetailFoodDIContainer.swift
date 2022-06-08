@@ -20,8 +20,7 @@ class DetailFoodDIContainer {
     
     func makeDetailFoodViewModel() -> DetailFoodViewModel {
         return DetailFoodViewModel(detailFood: selectedFood,
-                                   addFoodsUseCase: makeAddFoodsUseCase(),
-                                   checkCurrentTimeUseCase: makeCheckCurrentTimeUseCase())
+                                   addFoodsUseCase: makeAddFoodsUseCase())
     }
     
     func makeAddFoodsUseCase() -> AddFoodsUseCase {
@@ -40,9 +39,4 @@ class DetailFoodDIContainer {
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
         return DefaultFireStoreManagerRepository()
     }
-    
-    func makeCheckCurrentTimeUseCase() -> CheckCurrentTimeUseCase {
-        return DefaultCheckCurrentTimeUseCase()
-    }
-
 }
