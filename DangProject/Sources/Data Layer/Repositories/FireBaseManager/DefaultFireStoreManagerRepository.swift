@@ -33,7 +33,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
-        
         let uidData = ["firebaseUID": profile.uid,
                        "onboarding": true,
                        "profileExistence": true
@@ -72,7 +71,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
         
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
-
+        
         guard let year = currentDate.year,
               let month = currentDate.month,
               let day = currentDate.day else { return }
@@ -83,7 +82,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "favorite": eatenFood.favorite,
             "amount": eatenFood.amount
         ] as [String : Any]
-
+        
         database.collection("app")
             .document(userDefaultsUID)
             .collection("foods")

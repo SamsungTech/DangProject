@@ -9,16 +9,16 @@ import UIKit
 
 import RxSwift
 
-protocol AlarmTableViewItemDelegate: AnyObject {
-    func didTapDaysButton()
-    func didTapDeleteButton(_ sender: UIButton)
+protocol AlarmTableViewCellDelegate: AnyObject {
+    func middleBottonButtonDidTapped(cell: UITableViewCell)
+    func everyDayButtonDidTapped(cell: UITableViewCell)
 }
 
 class AlarmTableViewItem: UITableViewCell {
     static let identifier = "AlarmTableViewItem"
     private let disposeBag = DisposeBag()
     var viewModel: AlarmTableViewItemViewModel?
-    var delegate: AlarmTableViewItemDelegate?
+    var delegate: AlarmTableViewCellDelegate?
     private var middleViewTopConstant: NSLayoutConstraint?
     private lazy var topView: UIView = {
         let view = UIView()
@@ -26,16 +26,18 @@ class AlarmTableViewItem: UITableViewCell {
         return view
     }()
     
-    private lazy var middleView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemRed
-        return view
+    private lazy var middleView: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(middleBottomButtonTaped), for: .touchUpInside)
+        button.backgroundColor = .systemRed
+        return button
     }()
     
-    private lazy var bottomView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBlue
-        return view
+    private lazy var bottomView: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(middleBottomButtonTaped), for: .touchUpInside)
+        button.backgroundColor = .systemBlue
+        return button
     }()
     
     private(set) lazy var titleLabel: UILabel = {
@@ -311,7 +313,6 @@ extension AlarmTableViewItem {
         alarmSelectedDaysButton.rx.tap
             .bind { [weak self] in
                 guard let self = self else { return }
-                self.delegate?.didTapDaysButton()
                 self.viewModel?.branchOutMoreExpandState()
             }
             .disposed(by: disposeBag)
@@ -352,7 +353,10 @@ extension AlarmTableViewItem {
     }
     
     @objc func deleteButtonDidTap(_ sender: UIButton) {
-        delegate?.didTapDeleteButton(sender)
+    }
+    
+    @objc func middleBottomButtonTaped() {
+        delegate?.middleBottonButtonDidTapped(cell: self)
     }
 }
 

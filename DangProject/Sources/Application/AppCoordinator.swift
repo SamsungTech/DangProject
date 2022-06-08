@@ -28,23 +28,26 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
-
-        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID){ [weak self] onboardingIsDone in
-            if !onboardingIsDone {
-                self?.startOnboarding()
-            }
-            self?.checkUID(userDefaultUID: userDefaultsUID)
-        }
-        startTabbar()
+        let alarmCoordinator = AlarmCoordinator(navigationController: self.navigationController)
+        alarmCoordinator.start()
+//        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+//            return
+//        }
+//
+//        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID){ [weak self] onboardingIsDone in
+//            if !onboardingIsDone {
+//                self?.startOnboarding()
+//            }
+//            self?.checkUID(userDefaultUID: userDefaultsUID)
+//        }
+//        startTabbar()
     }
     
     func checkUID(userDefaultUID: String) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultUID) { [weak self] uid in
             if uid == userDefaultUID {
                 self?.startTabbar()
-            }
-            else {
+            } else {
                 self?.startLogin()
             }
         }

@@ -31,11 +31,11 @@ protocol DetailFoodViewModelOutput {
 protocol DetailFoodViewModelProtocol: DetailFoodViewModelInput, DetailFoodViewModelOutput {}
 
 class DetailFoodViewModel: DetailFoodViewModelProtocol {
-    
     // MARK: - Init
     var detailFood: FoodViewModel
-    private let addFoodsUseCase: AddFoodsUseCase
+    private let addFoodsUseCase: AddFoodsUseCase // extensions으로
     private let checkCurrentTimeUseCase: CheckCurrentTimeUseCase
+    
     init(detailFood: FoodViewModel,
          addFoodsUseCase: AddFoodsUseCase,
          checkCurrentTimeUseCase: CheckCurrentTimeUseCase) {
@@ -43,6 +43,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
         self.addFoodsUseCase = addFoodsUseCase
         self.checkCurrentTimeUseCase = checkCurrentTimeUseCase
     }
+    
     // MARK: - Input
     var amount: Int = 1
     var pickerViewIsActivatedObservable = BehaviorRelay(value: false)
