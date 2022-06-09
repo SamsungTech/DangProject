@@ -11,9 +11,7 @@ import RxSwift
 
 protocol FirebaseAuthManagerRepository {
     
-    var authResultObservable: PublishSubject<(Bool, String)> { get }
-    
     func signInFirebaseAuth(providerID: String,
                             idToken: String,
-                            rawNonce: String?)
+                            rawNonce: String?) -> Observable<(Bool, String)>
 }
