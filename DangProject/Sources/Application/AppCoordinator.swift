@@ -36,12 +36,12 @@ class AppCoordinator: Coordinator {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
             return startLogin()
         }
-        checkFireStoreUID(userDefaultUID: userDefaultsUID)
+        compareFireStoreUID(with: userDefaultsUID)
         
     }
     // MARK: - Private
     
-    private func checkFireStoreUID(userDefaultUID: String) {
+    private func compareFireStoreUID(with userDefaultUID: String) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultUID) { [weak self] uid in
             if uid == userDefaultUID {
                 self?.startTabbar()
