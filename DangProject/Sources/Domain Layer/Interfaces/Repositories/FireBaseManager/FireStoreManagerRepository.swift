@@ -7,6 +7,8 @@
 
 import Foundation
 
+import RxSwift
+
 protocol FireStoreManagerRepository {
         
     func saveFirebaseUIDDocument(uid: String)
@@ -15,4 +17,5 @@ protocol FireStoreManagerRepository {
     
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
+    func getEatenFoodsInFirestore(uid: String, date: DateComponents) -> Observable<[[String: Any]]>
 }

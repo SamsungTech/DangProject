@@ -40,6 +40,35 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         }
     }
     
+    func getEatenFoods(uid: String, date: DateComponents) -> Observable<[FoodDomainModel]> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
+            self?.fireStoreManagerRepository.getEatenFoodsInFirestore(uid: uid, date: date)
+                .subscribe(onNext: { foodData in
+                    var addedFoodDomainModel = [FoodDomainModel]()
+                    foodData.forEach { foods in
+                        var foodModel = FoodDomainModel.empty
+                        for (key, value) in foods {
+                            switch key {
+                            case "name": foodModel.name = value as? String ?? ""
+                            case "sugar": foodModel.sugar = value as? String ?? ""
+                            case "foodCode": foodModel.foodCode = value as? String ?? ""
+                            case "amount": foodModel.amount = value as? Int ?? 0
+                            case "favorite": foodModel.favorite = value as? Bool ?? false
+                            default:
+                                break
+                            }
+                        }
+                        addedFoodDomainModel.append(foodModel)
+                    }
+                    emitter.onNext(addedFoodDomainModel)
+                })
+                .disposed(by: strongSelf.disposeBag)
+            return Disposables.create()
+        }
+        
+    }
+    
     func uploadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
         fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood, currentDate: currentDate)
     }

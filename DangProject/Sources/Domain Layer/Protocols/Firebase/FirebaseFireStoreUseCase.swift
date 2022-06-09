@@ -15,4 +15,5 @@ protocol FirebaseFireStoreUseCase {
     func uploadProfile(profile: ProfileDomainModel)
     func getProfileExistence(uid: String)
     func uploadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents)
+    func getEatenFoods(uid: String, date: DateComponents) -> Observable<[FoodDomainModel]>
 }
