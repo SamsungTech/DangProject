@@ -18,13 +18,13 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     private let database = Firestore.firestore()
 
-    func saveFirebaseUIDDocument(uid: String) {
-        let database1 = Firestore.firestore()
+    func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
         let uidData = ["firebaseUID": uid,
-                       "onboarding": true,
                        "profileExistence": false
         ] as [String : Any]
-        database1.collection("users").document(uid).setData(uidData) { error in
+        database.collection("users")
+            .document(uid)
+            .setData(uidData) { error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
                 return
@@ -33,20 +33,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
-        
-        let uidData = ["firebaseUID": profile.uid,
-                       "onboarding": true,
-                       "profileExistence": true
-        ] as [String : Any]
-        database.collection("users")
-            .document(profile.uid)
-            .setData(uidData) { error in
-            if let error = error {
-                print("DEBUG: \(error.localizedDescription)")
-                return
-            }
-        }
-
         
         let profileData = [
             "uid": profile.uid,
@@ -112,7 +98,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                         completion(resultBool as! Bool)
                     }
                 }
-            }
+        }
     }
     
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void) {

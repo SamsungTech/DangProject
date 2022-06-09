@@ -23,21 +23,26 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     let profileExistenceObservable = PublishSubject<Bool>()
     
     func uploadFirebaseUID(uid: String) {
-        fireStoreManagerRepository.saveFirebaseUIDDocument(uid: uid)
+        fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid, ProfileExistence: false)
     }
     
     func uploadProfile(profile: ProfileDomainModel) {
+        fireStoreManagerRepository.saveFirebaseUserDocument(uid: profile.uid, ProfileExistence: true)
         fireStoreManagerRepository.saveProfileDocument(profile: profile)
     }
     
-    func getProfileExistence(uid: String) {
-        fireStoreManagerRepository.checkProfileField(with: "profileExistence", uid: uid) { [weak self] profileExist in
-            if profileExist {
-                self?.profileExistenceObservable.onNext(true)
-            } else {
-                self?.profileExistenceObservable.onNext(false)
+    func getProfileExistence(uid: String) -> Observable<Bool> {
+        return Observable.create { [weak self] emitter in
+            self?.fireStoreManagerRepository.checkProfileField(with: "profileExistence", uid: uid) {  profileExist in
+                if profileExist {
+                    emitter.onNext(true)
+                } else {
+                    emitter.onNext(false)
+                }
             }
+            return Disposables.create()
         }
+        
     }
     
     func uploadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {

@@ -28,18 +28,20 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
-
-        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID){ [weak self] onboardingIsDone in
-            if !onboardingIsDone {
-                self?.startOnboarding()
-            }
-            self?.checkUID(userDefaultUID: userDefaultsUID)
+        /// check app is first time
+        guard UserDefaults.standard.bool(forKey: UserInfoKey.isFirstTime) else {
+            return startOnboarding()
         }
-        startTabbar()
+        /// check userUID
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+            return startLogin()
+        }
+        checkFireStoreUID(userDefaultUID: userDefaultsUID)
+        
     }
+    // MARK: - Private
     
-    func checkUID(userDefaultUID: String) {
+    private func checkFireStoreUID(userDefaultUID: String) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultUID) { [weak self] uid in
             if uid == userDefaultUID {
                 self?.startTabbar()
@@ -50,26 +52,26 @@ class AppCoordinator: Coordinator {
         }
     }
 
-    func startTabbar() {
+    private func startTabbar() {
         let tabbarCoordinator = TabBarCoordinator(navigationController: navigationController)
         childCoordinators.append(tabbarCoordinator)
         tabbarCoordinator.start()
     }
 
-    func startLogin() {
+    private func startLogin() {
         let loginCoordinator = LoginCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
         childCoordinators.append(loginCoordinator)
         loginCoordinator.start()
     }
 
-    func startInputPersonalInformation() {
-        let inputPersonalInformationCoordinator = InputPersonalInformationCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
-        childCoordinators.append(inputPersonalInformationCoordinator)
-        inputPersonalInformationCoordinator.start()
+    private func startInputProfile() {
+        let inputProfileCoordinator = InputProfileCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
+        childCoordinators.append(inputProfileCoordinator)
+        inputProfileCoordinator.start()
 
     }
 
-    func startOnboarding() {
+    private func startOnboarding() {
         let onboardingNavigationViewController = UINavigationController()
         onboardingNavigationViewController.modalPresentationStyle = .fullScreen
         let onboardingCoordinator = OnboardingCoordinator(navigationController: onboardingNavigationViewController)
@@ -83,7 +85,7 @@ extension AppCoordinator: CoordinatorFinishDelegate {
         self.navigationController.viewControllers.removeAll()
         switch viewController {
         case .inputPersonalInformation:
-            startInputPersonalInformation()
+            startInputProfile()
         case .tabBar:
             startTabbar()
         }
