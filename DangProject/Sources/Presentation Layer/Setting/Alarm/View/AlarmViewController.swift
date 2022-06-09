@@ -193,46 +193,6 @@ extension AlarmViewController {
         cell.selectionStyle = .none
         
     }
-    
-    private func alarmTableViewCellDidTap(_ tableView: UITableView, _ indexPath: IndexPath) {
-        DispatchQueue.main.async {
-            tableView.beginUpdates()
-            tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-            self.viewModel?.branchOutSelectedIndex(indexPath)
-            tableView.endUpdates()
-        }
-    }
-    
-    private func insertAlarmTableViewCell(_ alarmData: AlarmEntity) {
-        guard let insertIndexPath = self.viewModel?.searchRowsPosition(alarmData: alarmData) else { return }
-        self.viewModel?.insertAlarmData(insertIndexPath, alarmData)
-        DispatchQueue.main.async {
-            self.alarmTableView.beginUpdates()
-            self.alarmTableView.insertRows(at: [insertIndexPath], with: .fade)
-            self.alarmTableView.endUpdates()
-            self.alarmTableView.scrollToRow(at: insertIndexPath, at: .top, animated: true)
-            self.alarmTableView.delegate?.tableView?(self.alarmTableView, didDeselectRowAt: self.deSelectedIndexPath)
-            self.alarmTableView.delegate?.tableView?(self.alarmTableView, didSelectRowAt: insertIndexPath)
-            
-            self.deSelectedIndexPath = insertIndexPath
-        }
-    }
-    
-    private func resetAlarmTableViewCellScale() {
-        guard let count = viewModel?.alarmDataArrayRelay.value.count else { return }
-
-        for i in 0..<count {
-            
-            guard let cell = alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else { return }
-            cell.setUpCellNormal()
-            viewModel?.cellScaleStateRelay.accept(.normal)
-        }
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.alarmTableView.beginUpdates()
-            self?.alarmTableView.endUpdates()
-        }
-    }
 }
 
 extension AlarmViewController: AlarmTableViewCellDelegate {
