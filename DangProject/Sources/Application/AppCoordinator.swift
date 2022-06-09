@@ -30,13 +30,12 @@ class AppCoordinator: Coordinator {
     func start() {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
 
-        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID){ [weak self] onboardingIsDone in
+        fireStoreManager.checkProfileField(with: "onboarding", uid: userDefaultsUID) { [weak self] onboardingIsDone in
             if !onboardingIsDone {
                 self?.startOnboarding()
             }
             self?.checkUID(userDefaultUID: userDefaultsUID)
         }
-        startTabbar()
     }
     
     func checkUID(userDefaultUID: String) {

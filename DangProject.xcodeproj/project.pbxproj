@@ -13,6 +13,7 @@
 		025934F8A2BAACFFF78867FE /* ProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F0486644157CFC0608F8B0 /* ProfileUseCase.swift */; };
 		048F91538621CD610A0D2D93 /* String+PmAm.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F98AB8B3B731274BCEC21C /* String+PmAm.swift */; };
 		06AD8ABD797CC7ECFA60BF9C /* FirebaseFireStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6977E062700462B23460E2AC /* FirebaseFireStoreUseCase.swift */; };
+		0B14AD8E28521C79008BFF0C /* TabBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B14AD8D28521C79008BFF0C /* TabBarItem.swift */; };
 		0CFFB5A46AF0F76884253F3E /* MyTargetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1DEEA8E3656549F504F68A /* MyTargetViewModel.swift */; };
 		0DF6426251CDD4F1FEE68477 /* CalendarCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD39B6F94FD3A0248FCF8968 /* CalendarCollectionViewCell.swift */; };
 		0E8BD2A4C313F6D121FF1D5E /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941445BCC0BBCBA49DAA2C7B /* CalendarService.swift */; };
@@ -226,6 +227,7 @@
 		08520DE5F392646E26FBC20B /* OnboardingContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingContentViewController.swift; sourceTree = "<group>"; };
 		089F80937265FD28FF4A8592 /* AppIntroduceCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntroduceCoordinator.swift; sourceTree = "<group>"; };
 		0AE89AA1E90D15FAFF77DFD3 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
+		0B14AD8D28521C79008BFF0C /* TabBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarItem.swift; sourceTree = "<group>"; };
 		0B7EACF85609C7AEF2579EBA /* SettingSecondStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSecondStackView.swift; sourceTree = "<group>"; };
 		0DD3FA98F79ED3DAA03C5A9C /* NameTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTextField.swift; sourceTree = "<group>"; };
 		0ED3378A5CEAAEE88BAD737A /* SettingStackViewItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStackViewItems.swift; sourceTree = "<group>"; };
@@ -1197,6 +1199,7 @@
 			children = (
 				D3E2966BC8986D0357018785 /* TabBarController.swift */,
 				C28310BF3B095503E01572D7 /* TabBarCoordinator.swift */,
+				0B14AD8D28521C79008BFF0C /* TabBarItem.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -1910,6 +1913,7 @@
 				A6305EF5A08054FCF8536AEA /* TermDIContainer.swift in Sources */,
 				37996C0090B4A8592BB1ACD7 /* TermViewController.swift in Sources */,
 				9F51FD659CA42FDFE220FB00 /* TermViewModel.swift in Sources */,
+				0B14AD8E28521C79008BFF0C /* TabBarItem.swift in Sources */,
 				D79403655B8ED9799BB773CD /* ThemeCoordinator.swift in Sources */,
 				63E4B15C6B331D58CE83944E /* ThemeDIContainer.swift in Sources */,
 				DE0C137FD75A8F270C41E1CF /* ThemeItem.swift in Sources */,
