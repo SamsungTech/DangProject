@@ -1,6 +1,6 @@
 import UIKit
 
-class InputPersonalInformationCoordinator: NSObject, Coordinator {
+class InputProfileCoordinator: NSObject, Coordinator {
     
     weak var parentsCoordinator: Coordinator?
     var childCoordinators: [Coordinator] = []
@@ -14,8 +14,8 @@ class InputPersonalInformationCoordinator: NSObject, Coordinator {
     }
     
     func start() {
-        let diContainer = InputPersonalInformationDIContainer()
-        let viewController = diContainer.makeInputPersonalInformationViewController()
+        let diContainer = InputProfileDIContainer()
+        let viewController = diContainer.makeInputProfileViewController()
         viewController.coordinator = self
         viewController.coordinatorFinishDelegate = coordinatorFinishDelegate
         navigationController.viewControllers = [viewController]

@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxRelay
 
-protocol InputPersonalInformationViewModelInput {
+protocol InputProfileViewModelInput {
     var heightObservable: PublishRelay<Int> { get }
     var weightObservable: PublishRelay<Int> { get }
     var sugarObservable: PublishRelay<Int> { get }
@@ -21,7 +21,7 @@ protocol InputPersonalInformationViewModelInput {
     func submitButtonTapped(name: String)
 }
 
-protocol InputPersonalInformationViewModelOutput {
+protocol InputProfileViewModelOutput {
     var heights: [String] { get }
     var weights: [String] { get }
     var sugars: [String] { get }
@@ -38,9 +38,9 @@ protocol InputPersonalInformationViewModelOutput {
     func changeProfileImage(image: UIImage?)
 }
 
-protocol InputPersonalInformationViewModelProtocol: InputPersonalInformationViewModelInput, InputPersonalInformationViewModelOutput { }
+protocol InputProfileViewModelProtocol: InputProfileViewModelInput, InputProfileViewModelOutput { }
 
-class InputPersonalInformationViewModel: InputPersonalInformationViewModelProtocol {
+class InputProfileViewModel: InputProfileViewModelProtocol {
     // MARK: - Init
     private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
     

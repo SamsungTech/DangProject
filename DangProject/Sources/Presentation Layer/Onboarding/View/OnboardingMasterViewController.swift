@@ -131,6 +131,7 @@ class OnboardingMasterViewController: UIViewController {
     }
     
     @objc func startButtonTapped() {
+        viewModel.changeUserDefaultsOnboardingValue()
         coordinator?.dissmiss()
     }
     

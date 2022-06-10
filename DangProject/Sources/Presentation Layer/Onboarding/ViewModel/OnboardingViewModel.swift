@@ -48,6 +48,9 @@ class OnboardingViewModel {
         }
     }
 
+    func changeUserDefaultsOnboardingValue() {
+        UserDefaults.standard.set(true, forKey: UserInfoKey.isFirstTime)
+    }
     // MARK: - Output
     var viewControllers = [OnboardingContentViewController]()
     var contentImages = ["sugar.png", "hands.png", "bee.png", "arm.png"]
