@@ -4,11 +4,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class InputPersonalInformationViewController: UIViewController {
+class InputProfileViewController: UIViewController {
     private let disposeBag = DisposeBag()
     
-    weak var coordinator: InputPersonalInformationCoordinator?
-    private let viewModel: InputPersonalInformationViewModel
+    weak var coordinator: InputProfileCoordinator?
+    private let viewModel: InputProfileViewModel
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
     
     private lazy var welcomeLabel: UILabel = {
@@ -94,7 +94,7 @@ class InputPersonalInformationViewController: UIViewController {
     }()
     
     // MARK: - Init
-    init(viewModel: InputPersonalInformationViewModel) {
+    init(viewModel: InputProfileViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -323,7 +323,7 @@ class InputPersonalInformationViewController: UIViewController {
     }
 }
 
-extension InputPersonalInformationViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+extension InputProfileViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         switch pickerView.tag {
         case 0:
@@ -408,7 +408,7 @@ extension InputPersonalInformationViewController: UIPickerViewDelegate, UIPicker
         self.view.endEditing(true)
     }
 }
-extension InputPersonalInformationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension InputProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         

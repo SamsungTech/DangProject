@@ -11,5 +11,5 @@ import RxSwift
 
 protocol FirebaseAuthUseCase {
     var authObservable: PublishSubject<(Bool, String)> { get }
-    func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String)
+    func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String) -> Observable<(Bool, String)>
 }

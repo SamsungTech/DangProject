@@ -42,7 +42,7 @@ extension LoginCoordinator: UINavigationControllerDelegate {
             return
         }
 
-        if let inputPersonalInformationViewController = fromViewController as? InputPersonalInformationViewController {
+        if let inputPersonalInformationViewController = fromViewController as? InputProfileViewController {
             childDidFinish(inputPersonalInformationViewController.coordinator)
         }
     }
