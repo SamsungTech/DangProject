@@ -7,10 +7,10 @@
 
 import UIKit
 
-class TabBarController: UITabBarController, UITabBarControllerDelegate {
+class TabBarController: UITabBarController {
     var coordinator: Coordinator?
     let homeTab: UINavigationController
-    let preferenceTab: UINavigationController
+    let settingTab: UINavigationController
     let searchViewController: UINavigationController
     private lazy var homeItemButton: TabBarItem = {
         let button = TabBarItem()
@@ -36,8 +36,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         let view = UIView()
         view.layer.borderWidth = 0.2
         view.layer.borderColor = UIColor.gray.cgColor
-        view.layer.masksToBounds = true
-        view.layer.cornerRadius = xValueRatio(30)
         view.backgroundColor = .homeBoxColor
         return view
     }()
@@ -57,7 +55,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
          settingTab: UINavigationController,
          searchViewController: UINavigationController) {
         self.homeTab = homeTab
-        self.preferenceTab = settingTab
+        self.settingTab = settingTab
         self.searchViewController = searchViewController
         super.init(nibName: nil, bundle: nil)
     }
@@ -65,7 +63,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTabBar()
@@ -76,7 +74,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     private func setUpTabBar() {
-        self.viewControllers = [homeTab, UIViewController(), preferenceTab]
+        self.viewControllers = [homeTab, UIViewController(), settingTab]
         self.delegate = self
         self.tabBar.isHidden = true
     }
@@ -90,6 +88,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
             backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
             backgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(90))
         ])
+        backgroundView.roundCorners(cornerRadius: xValueRatio(30), maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
     }
     
     private func setUpHomeItemButton() {
@@ -149,7 +148,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     }
 }
 
-extension TabBarController {
+extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         guard let selectedIndex = tabBarController.viewControllers?.firstIndex(of: viewController) else {
             return true
