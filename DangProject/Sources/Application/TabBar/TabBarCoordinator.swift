@@ -7,7 +7,6 @@
 import UIKit
 
 class TabBarCoordinator: NSObject, Coordinator {
-    
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     

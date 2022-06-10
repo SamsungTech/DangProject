@@ -37,7 +37,6 @@ class AppCoordinator: Coordinator {
             return startLogin()
         }
         compareFireStoreUID(with: userDefaultsUID)
-        
     }
     // MARK: - Private
     
