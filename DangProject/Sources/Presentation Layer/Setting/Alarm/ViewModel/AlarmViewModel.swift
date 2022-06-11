@@ -20,13 +20,6 @@ enum CellScaleState {
     case expand
     case normal
     case moreExpand
-    case none
-}
-
-enum SetUpCellState {
-    case expand(AlarmTableViewItem)
-    case normal(AlarmTableViewItem)
-    case none
 }
 
 struct AlarmTableViewCellData {
@@ -36,6 +29,7 @@ struct AlarmTableViewCellData {
     var pmAm: String
     var time: String
     var selectedDays: String
+    var cellScale: CellScaleState = .normal
     
     init(alarmEntity: AlarmEntity) {
         self.isOn = alarmEntity.isOn
@@ -63,8 +57,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private var dateFormatter = DateFormatter()
     private var searchRowPositionFactory: SearchRowPositionFactory
     var selectedIndexRelay = BehaviorRelay<IndexPath>(value: IndexPath(row: -1, section: 0))
-    var cellScaleStateRelay = BehaviorRelay<CellScaleState>(value: .none)
-    var setUpCellStateRelay = BehaviorRelay<SetUpCellState>(value: .none)
+    var cellScaleStateRelay = BehaviorRelay<CellScaleState>(value: .normal)
+    
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
     
     init(useCase: SettingUseCase,
@@ -102,37 +96,33 @@ class AlarmViewModel: AlarmViewModelProtocol {
             cellScaleStateRelay.accept(.expand)
         }
     }
-    
-    func branchOutSetUpCell(_ selectedIndexPath: IndexPath,
-                            _ indexPath: IndexPath,
-                            _ cell: AlarmTableViewItem) {
-        if cellScaleStateRelay.value == .expand {
-            if selectedIndexPath == indexPath {
-                setUpCellStateRelay.accept(.normal(cell))
-            } else {
-                setUpCellStateRelay.accept(.expand(cell))
-            }
-        } else {
-            setUpCellStateRelay.accept(.expand(cell))
+        
+    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat {
+        let cellData = alarmDataArrayRelay.value[indexPath.row]
+        switch cellData.cellScale {
+        case .normal:
+            return UIScreen.main.bounds.maxY/5
+        case .expand:
+            return UIScreen.main.bounds.maxY/3
+        case .moreExpand:
+            return UIScreen.main.bounds.maxY/2.5
         }
     }
     
-    func branchOutHeightForRow(_ indexPath: IndexPath) -> CGFloat {
-        if cellScaleStateRelay.value == .expand {
-            if selectedIndexRelay.value == indexPath {
-                return UIScreen.main.bounds.maxY/3
+    func cellScaleWillChange(index: IndexPath) {
+        var tempDataArr = alarmDataArrayRelay.value
+        for i in 0 ..< tempDataArr.count {
+            if i == index.row {
+                if tempDataArr[i].cellScale == .normal {
+                    tempDataArr[i].cellScale = .expand
+                } else {
+                    tempDataArr[i].cellScale = .normal
+                }
             } else {
-                return UIScreen.main.bounds.maxY/5
-            }
-        } else if cellScaleStateRelay.value == .normal {
-            return UIScreen.main.bounds.maxY/5
-        } else {
-            if selectedIndexRelay.value == indexPath {
-                return UIScreen.main.bounds.maxY/2.5
-            } else {
-                return UIScreen.main.bounds.maxY/5
+                tempDataArr[i].cellScale = .normal
             }
         }
+        alarmDataArrayRelay.accept(tempDataArr)
     }
     
     func deleteAlarmData(_ indexPath: IndexPath) {

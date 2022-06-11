@@ -28,15 +28,17 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        /// check app is first time
-        guard UserDefaults.standard.bool(forKey: UserInfoKey.isFirstTime) else {
-            return startOnboarding()
-        }
-        /// check userUID
-        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
-            return startLogin()
-        }
-        compareFireStoreUID(with: userDefaultsUID)
+//        /// check app is first time
+//        guard UserDefaults.standard.bool(forKey: UserInfoKey.isFirstTime) else {
+//            return startOnboarding()
+//        }
+//        /// check userUID
+//        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+//            return startLogin()
+//        }
+//        compareFireStoreUID(with: userDefaultsUID)
+        let coordinator = AlarmCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
     // MARK: - Private
     

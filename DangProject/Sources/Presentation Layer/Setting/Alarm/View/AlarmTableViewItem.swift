@@ -9,16 +9,15 @@ import UIKit
 
 import RxSwift
 
-protocol AlarmTableViewItemDelegate: AnyObject {
-    func didTapDaysButton()
-    func didTapDeleteButton(_ sender: UIButton)
+
+protocol AlarmTableViewItemDelegate {
+    func middleBottomButtonDidTap(cell: UITableViewCell)
 }
 
 class AlarmTableViewItem: UITableViewCell {
     static let identifier = "AlarmTableViewItem"
     private let disposeBag = DisposeBag()
-    var viewModel: AlarmTableViewItemViewModel?
-    var delegate: AlarmTableViewItemDelegate?
+    var cellDelegate: AlarmTableViewItemDelegate?
     private var middleViewTopConstant: NSLayoutConstraint?
     private lazy var topView: UIView = {
         let view = UIView()
@@ -26,16 +25,18 @@ class AlarmTableViewItem: UITableViewCell {
         return view
     }()
     
-    private lazy var middleView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemRed
-        return view
+    private lazy var middleView: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .systemRed
+        button.addTarget(self, action: #selector(middleBottomButtonTapped), for: .touchUpInside)
+        return button
     }()
     
-    private lazy var bottomView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBlue
-        return view
+    private lazy var bottomView: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .systemBlue
+        button.addTarget(self, action: #selector(middleBottomButtonTapped), for: .touchUpInside)
+        return button
     }()
     
     private(set) lazy var titleLabel: UILabel = {
@@ -128,18 +129,18 @@ class AlarmTableViewItem: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(viewModel: AlarmTableViewItemViewModel) {
-        self.viewModel = viewModel
-        titleLabel.text = viewModel.alarmEntityRelay.value.message
-        pmAmLabel.text = viewModel.alarmEntityRelay.value.pmAm
-        timeButton.setTitle(
-            viewModel.alarmEntityRelay.value.selectedTime,
-            for: .normal
-        )
-        dayLabel.text = viewModel.alarmEntityRelay.value.selectedDays
-        alarmDaySelectionView.isHidden = true
-        bindCheckSwitchValue()
-    }
+//    func bind(viewModel: AlarmTableViewItemViewModel) {
+//        self.viewModel = viewModel
+//        titleLabel.text = viewModel.alarmEntityRelay.value.message
+//        pmAmLabel.text = viewModel.alarmEntityRelay.value.pmAm
+//        timeButton.setTitle(
+//            viewModel.alarmEntityRelay.value.selectedTime,
+//            for: .normal
+//        )
+//        dayLabel.text = viewModel.alarmEntityRelay.value.selectedDays
+//        alarmDaySelectionView.isHidden = true
+//        bindCheckSwitchValue()
+//    }
 }
 
 extension AlarmTableViewItem {
@@ -311,48 +312,52 @@ extension AlarmTableViewItem {
         alarmSelectedDaysButton.rx.tap
             .bind { [weak self] in
                 guard let self = self else { return }
-                self.delegate?.didTapDaysButton()
-                self.viewModel?.branchOutMoreExpandState()
+                
+                
             }
             .disposed(by: disposeBag)
     }
     
     private func bindCheckSwitchValue() {
-        viewModel?.switchValueRelay
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case true:
-                    self.setUpItemTextColorTrue()
-                case false:
-                    self.setUpItemTextColorFalse()
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.expandStateRelay
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .expand:
-                    self.setUpDaysButtonExpand()
-                case .moreExpand:
-                    self.setUpDaysButtonMoreExpand()
-                }
-            })
-            .disposed(by: disposeBag)
+//        viewModel?.switchValueRelay
+//            .observe(on: MainScheduler.instance)
+//            .subscribe(onNext: { [weak self] in
+//                guard let self = self else { return }
+//                switch $0 {
+//                case true:
+//                    self.setUpItemTextColorTrue()
+//                case false:
+//                    self.setUpItemTextColorFalse()
+//                }
+//            })
+//            .disposed(by: disposeBag)
+//
+//        viewModel?.expandStateRelay
+//            .observe(on: MainScheduler.instance)
+//            .subscribe(onNext: { [weak self] in
+//                guard let self = self else { return }
+//                switch $0 {
+//                case .expand:
+//                    self.setUpDaysButtonExpand()
+//                case .moreExpand:
+//                    self.setUpDaysButtonMoreExpand()
+//                }
+//            })
+//            .disposed(by: disposeBag)
     }
 }
 
 extension AlarmTableViewItem {
     @objc func checkSwitchDidTap(_ sender: UISwitch) {
-        viewModel?.branchOutSwitchValue(sender)
+        
     }
     
     @objc func deleteButtonDidTap(_ sender: UIButton) {
-        delegate?.didTapDeleteButton(sender)
+        
+    }
+    
+    @objc func middleBottomButtonTapped() {
+        cellDelegate?.middleBottomButtonDidTap(cell: self)
     }
 }
 
@@ -384,29 +389,28 @@ extension AlarmTableViewItem {
         })
     }
     
-    func setUpCellNormal() {
-        
-        dayLabel.isHidden = false
-        deleteButton.isHidden = true
-        middleViewTopConstant?.constant = yValueRatio(60)
-        alarmSelectedDaysButton.circleView.backgroundColor = .clear
-        alarmDaySelectionView.isHidden = true
-        self.contentView.backgroundColor = .clear
-        UIView.animate(withDuration: 0.3, animations: {
-            self.contentView.layoutIfNeeded()
-        })
-        viewModel?.expandStateRelay.accept(.expand)
-    }
-    
-    private func setUpDaysButtonExpand() {
-        alarmDaySelectionView.isHidden = true
-        alarmSelectedDaysButton.layer.borderColor = UIColor.lightGray.cgColor
-        alarmSelectedDaysButton.circleView.backgroundColor = .clear
-    }
-    
-    private func setUpDaysButtonMoreExpand() {
-        alarmDaySelectionView.isHidden = false
-        alarmSelectedDaysButton.layer.borderColor = UIColor.systemGreen.cgColor
-        alarmSelectedDaysButton.circleView.backgroundColor = .systemGreen
-    }
+//    func setUpCellNormal() {
+//        
+//        dayLabel.isHidden = false
+//        deleteButton.isHidden = true
+//        middleViewTopConstant?.constant = yValueRatio(60)
+//        alarmSelectedDaysButton.circleView.backgroundColor = .clear
+//        alarmDaySelectionView.isHidden = true
+//        self.contentView.backgroundColor = .clear
+//        UIView.animate(withDuration: 0.3, animations: {
+//            self.contentView.layoutIfNeeded()
+//        })
+//    }
+//    
+//    private func setUpDaysButtonExpand() {
+//        alarmDaySelectionView.isHidden = true
+//        alarmSelectedDaysButton.layer.borderColor = UIColor.lightGray.cgColor
+//        alarmSelectedDaysButton.circleView.backgroundColor = .clear
+//    }
+//    
+//    private func setUpDaysButtonMoreExpand() {
+//        alarmDaySelectionView.isHidden = false
+//        alarmSelectedDaysButton.layer.borderColor = UIColor.systemGreen.cgColor
+//        alarmSelectedDaysButton.circleView.backgroundColor = .systemGreen
+//    }
 }
