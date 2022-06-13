@@ -52,8 +52,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     }
     
     func addFoods(foods: AddFoodsViewModel) {
-        let currentDate = DateComponents.currentDateTimeComponents()
-        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods), currentDate: currentDate)
+        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
         
     }
     

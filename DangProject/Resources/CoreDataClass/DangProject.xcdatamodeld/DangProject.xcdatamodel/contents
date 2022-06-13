@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="EatenFoods" representedClassName="EatenFoods" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="eatenTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="foodCode" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="sugar" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="day" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EatenFoodsPerDay" inverseName="eatenFoods" inverseEntity="EatenFoodsPerDay"/>
+    </entity>
+    <entity name="EatenFoodsPerDay" representedClassName="EatenFoodsPerDay" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="eatenFoods" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EatenFoods" inverseName="day" inverseEntity="EatenFoods"/>
+    </entity>
+    <entity name="FavoriteFoods" representedClassName="FavoriteFoods" syncable="YES" codeGenerationType="class">
+        <attribute name="foodCode" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="sugar" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="RecentQuery" representedClassName="RecentQuery" syncable="YES" codeGenerationType="class">
+        <attribute name="keyword" optional="YES" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="EatenFoods" positionX="-10652.74450683594" positionY="-1245.929382324219" width="128" height="119"/>
+        <element name="EatenFoodsPerDay" positionX="-10944" positionY="-1197" width="128" height="59"/>
+        <element name="FavoriteFoods" positionX="-11295.39193725586" positionY="-1298.771240234375" width="128" height="74"/>
+        <element name="RecentQuery" positionX="-11138.21527099609" positionY="-1271.575317382812" width="128" height="44"/>
+    </elements>
+</model>
