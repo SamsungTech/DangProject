@@ -19,11 +19,6 @@ enum CoreDataName: String {
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     
-    private let disposeBag = DisposeBag()
-    private let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    private lazy var context = appDelegate?.persistentContainer.viewContext
-    
-    
     func checkEatenFoodsPerDay<T: NSManagedObject>(request: NSFetchRequest<T>) -> Observable<(Bool, T)> {
         return Observable.create { [weak self] emitter in
             
@@ -64,13 +59,12 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     
     func addEatenFood(food: FoodDomainModel,
                       eatenFoodsPerDayEntity: EatenFoodsPerDay?) {
-        
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoodsPerDay.rawValue, in: context) else { return }
         if eatenFoodsPerDayEntity == nil {
             guard let eatenFoodsPerDay = NSManagedObject(entity: entity, insertInto: context) as? EatenFoodsPerDay else { return }
             eatenFoodsPerDay.date = Date.currentDate()
-            updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay)
+            updateEatenFoodsPerDay(eatenFood: food, to: eatenFoodsPerDay)
         } else {
             guard let unwrappedEatenFoodsPerDayEntity = eatenFoodsPerDayEntity else { return }
             updateEatenFoodsPerDay(eatenFood: food, to: unwrappedEatenFoodsPerDayEntity)
@@ -106,11 +100,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return []
         }
     }
-    
-    func loadTodayEatenFoods(eatenFoodsPerDayEntity: EatenFoodsPerDay) -> [EatenFoods] {
-        return eatenFoodsPerDayEntity.eatenFoodsArray
-    }
-    
+  
     @discardableResult
     func deleteFavoriteFood<T: NSManagedObject>(at code: String, request: NSFetchRequest<T>) -> Bool {
         
@@ -163,8 +153,14 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func updateEatenFood(food: FoodDomainModel,
-                              parentEatenFoodsPerDay: EatenFoodsPerDay) {
+    //MARK: - Private
+    private let disposeBag = DisposeBag()
+    private let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    private lazy var context = appDelegate?.persistentContainer.viewContext
+    
+    private func updateEatenFood(food: FoodDomainModel,
+                         parentEatenFoodsPerDay: EatenFoodsPerDay,
+                                 eatenTime: Date?) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoods.rawValue,
                                                       in: context),
@@ -175,7 +171,11 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         eatenFoods.sugar = Double(food.sugar) ?? 0
         eatenFoods.foodCode = food.foodCode
         eatenFoods.amount = Double(food.amount)
-        eatenFoods.eatenTime = Date.currentTime()
+        if eatenTime == nil {
+            eatenFoods.eatenTime = Date.currentTime()
+        } else {
+            eatenFoods.eatenTime = eatenTime
+        }
     }
     
     private func updateEatenFoodsPerDay(eatenFood: FoodDomainModel,
@@ -186,9 +186,16 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         do {
             if let eatenFoods = try context?.fetch(request) {
                 if eatenFoods.count != 0 {
+                    let eatenTime = eatenFoods[0].wrappedEatenTime
                     context?.delete(eatenFoods[0])
+                    updateEatenFood(food: eatenFood,
+                                    parentEatenFoodsPerDay: eatenFoodsPerDay,
+                                    eatenTime: eatenTime)
+                } else {
+                    updateEatenFood(food: eatenFood,
+                                    parentEatenFoodsPerDay: eatenFoodsPerDay,
+                                    eatenTime: nil)
                 }
-                updateEatenFood(food: eatenFood, parentEatenFoodsPerDay: eatenFoodsPerDay)
             }
         } catch {
             print(error.localizedDescription)

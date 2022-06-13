@@ -12,12 +12,12 @@
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="eatenFoods" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EatenFoods" inverseName="day" inverseEntity="EatenFoods"/>
     </entity>
-    <entity name="FavoriteFoods" representedClassName="FavoriteFoods" syncable="YES" codeGenerationType="class">
+    <entity name="FavoriteFoods" representedClassName="FavoriteFoods" syncable="YES">
         <attribute name="foodCode" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="sugar" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="RecentQuery" representedClassName="RecentQuery" syncable="YES" codeGenerationType="class">
+    <entity name="RecentQuery" representedClassName="RecentQuery" syncable="YES">
         <attribute name="keyword" optional="YES" attributeType="String"/>
     </entity>
     <elements>

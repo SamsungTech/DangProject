@@ -17,7 +17,6 @@ protocol CoreDataManagerRepository {
                       eatenFoodsPerDayEntity: EatenFoodsPerDay?)
     func addRecentQuery(keyword: String)
     func loadFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T]
-    func loadTodayEatenFoods(eatenFoodsPerDayEntity: EatenFoodsPerDay) -> [EatenFoods]
     @discardableResult func deleteFavoriteFood<T: NSManagedObject>(at code: String, request: NSFetchRequest<T>) -> Bool
     @discardableResult func deleteQuery<T: NSManagedObject>(at query: String, request: NSFetchRequest<T>) -> Bool
     @discardableResult func deleteAll<T: NSManagedObject>(request: NSFetchRequest<T>) -> Bool
