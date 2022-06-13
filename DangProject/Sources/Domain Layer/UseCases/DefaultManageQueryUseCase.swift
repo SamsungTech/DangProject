@@ -27,7 +27,7 @@ class DefaultManageQueryUseCase: ManageQueryUseCase {
     
     func addQueryOnCoreData(keyword: String) {
         checkQueryWithCoreData(keyword: keyword)
-        coreDataManagerRepository.addRecentQuery(keyword)
+        coreDataManagerRepository.addRecentQuery(keyword: keyword)
         queryObservable.onNext(loadQuery())
     }
     

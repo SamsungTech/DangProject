@@ -18,7 +18,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     init(fireStoreManagerRepository: FireStoreManagerRepository) {
         self.fireStoreManagerRepository = fireStoreManagerRepository
     }
-    
+        
     // MARK: - Internal
     let profileExistenceObservable = PublishSubject<Bool>()
     
@@ -40,10 +40,11 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         }
     }
     
-    func getEatenFoods(uid: String, date: DateComponents) -> Observable<[FoodDomainModel]> {
+    func getEatenFoods() -> Observable<[FoodDomainModel]> {
+        
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            self?.fireStoreManagerRepository.getEatenFoodsInFirestore(uid: uid, date: date)
+            self?.fireStoreManagerRepository.getEatenFoodsInFirestore()
                 .subscribe(onNext: { foodData in
                     var addedFoodDomainModel = [FoodDomainModel]()
                     foodData.forEach { foods in
@@ -69,7 +70,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         
     }
     
-    func uploadEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
-        fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood, currentDate: currentDate)
+    func uploadEatenFood(eatenFood: FoodDomainModel) {
+        fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood)
     }
 }

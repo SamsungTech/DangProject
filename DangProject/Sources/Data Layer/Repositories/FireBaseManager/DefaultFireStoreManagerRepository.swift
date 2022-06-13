@@ -16,15 +16,17 @@ import RxSwift
 
 class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
+    // MARK: - Private
+    private lazy var uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
     
+    
     func saveFirebaseUIDDocument(uid: String) {
-        let database1 = Firestore.firestore()
         let uidData = ["firebaseUID": uid,
                        "onboarding": true,
                        "profileExistence": false
         ] as [String : Any]
-        database1.collection("users").document(uid).setData(uidData) { error in
+        database.collection("users").document(uid).setData(uidData) { error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
                 return
@@ -69,13 +71,12 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
-    func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
-        
+    func saveEatenFood(eatenFood: FoodDomainModel) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
-        
-        guard let year = currentDate.year,
-              let month = currentDate.month,
-              let day = currentDate.day else { return }
+        let today = DateComponents.currentDateTimeComponents()
+        guard let year = today.year,
+              let month = today.month,
+              let day = today.day else { return }
         let eatenFoodData = [
             "name": eatenFood.name,
             "sugar": eatenFood.sugar,
@@ -129,16 +130,18 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func getEatenFoodsInFirestore(uid: String, date: DateComponents) -> Observable<[[String: Any]]> {
+    func getEatenFoodsInFirestore() -> Observable<[[String: Any]]> {
         return Observable.create { [weak self] emitter in
-            guard let year = date.year,
-                  let month = date.month,
-                  let day = date.day else {
+            let today = DateComponents.currentDateTimeComponents()
+            guard let year = today.year,
+                  let month = today.month,
+                  let day = today.day,
+                  let strongSelf = self else {
                 return Disposables.create()
             }
             
             self?.database.collection("app")
-                .document(uid)
+                .document(strongSelf.uid)
                 .collection("foods")
                 .document("eatenFoods")
                 .collection("\(year)년")
