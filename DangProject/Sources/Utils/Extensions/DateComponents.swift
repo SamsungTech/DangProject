@@ -22,3 +22,43 @@ extension DateComponents {
         return userCalendar.dateComponents(requestedComponents, from: currentDateTime)
     }
 }
+
+extension Date {
+    static func currentDate() -> Date {
+        let currentDateComponents = DateComponents.currentDateTimeComponents()
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        guard let year = currentDateComponents.year,
+              let month = currentDateComponents.month,
+              let day = currentDateComponents.day
+        else {
+            return Date.init()
+        }
+        let myDateComponents = DateComponents(year: year , month: month, day: day)
+        return calendar.date(from: myDateComponents) ?? Date.init()
+    }
+    
+    static func currentTime() -> Date {
+        let currentDateComponents = DateComponents.currentDateTimeComponents()
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        guard let hour = currentDateComponents.hour,
+              let minute = currentDateComponents.minute,
+              let second = currentDateComponents.second
+        else {
+            return Date.init()
+        }
+        let myDateComponents = DateComponents(hour: hour,
+                                              minute: minute,
+                                              second: second)
+        return calendar.date(from: myDateComponents) ?? Date.init()
+    }
+    
+    static func makeDate(year: Int, month: Int, day: Int) -> Date {
+        let myDateComponents = DateComponents(year: year, month: month, day: day)
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let myDate = calendar.date(from: myDateComponents)
+        return myDate ?? Date.init()
+    }
+}
