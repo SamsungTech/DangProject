@@ -125,18 +125,20 @@ class AlarmViewController: UIViewController {
             .subscribe(onNext: { [weak self] data in
                 
                 
-                DispatchQueue.main.async { [weak self] in
-                    guard let strongSelf = self else { return }
-                    strongSelf.alarmTableView.beginUpdates()
+                //                DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                //                    strongSelf.alarmTableView.beginUpdates()
+                //
+                for i in 0 ..< data.count {
+                    guard let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else { return }
                     
-                    for i in 0 ..< data.count {
-                        guard let cell = self?.tableView(strongSelf.alarmTableView, cellForRowAt: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else { return }
-                        cell.setUpCell(viewModel: data[i])
-                        
-                    }
-                    strongSelf.alarmTableView.endUpdates()
+                    cell.setUpCell(viewModel: data[i])
                 }
-//                self?.updateCellUI()
+                self?.updateCellUI()
+                
+                //
+                //                    strongSelf.alarmTableView.endUpdates()
+                //                }
             })
             .disposed(by: disposeBag)
     }
@@ -211,6 +213,10 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel?.cellScaleWillChange(index: cellIndexPath)
         alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
+        guard let cell = alarmTableView.cellForRow(at: cellIndexPath) as? AlarmTableViewItem else { return }
+        guard let data = viewModel?.alarmDataArrayRelay[cellIndex]
+        cell.setUpCell(viewModel: viewModel?.alarmDataArrayRelay[cellIndexPath.row])
+        
     }
     
     func switchButtonDidTap(cell: UITableViewCell) {

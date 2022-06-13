@@ -361,7 +361,7 @@ extension AlarmTableViewItem {
 
 extension AlarmTableViewItem {
     private func setUpItemTextColorTrue() {
-//        self.alarmSwitch.isOn = true
+        self.alarmSwitch.isOn = true
         self.titleLabel.textColor = .white
         self.pmAmLabel.textColor = .white
         self.timeButton.setTitleColor(UIColor.white, for: .normal)
@@ -369,7 +369,7 @@ extension AlarmTableViewItem {
     }
     
     private func setUpItemTextColorFalse() {
-//        self.alarmSwitch.isOn = false
+        self.alarmSwitch.isOn = false
         self.titleLabel.textColor = .lightGray
         self.pmAmLabel.textColor = .lightGray
         self.timeButton.setTitleColor(UIColor.lightGray, for: .normal)
