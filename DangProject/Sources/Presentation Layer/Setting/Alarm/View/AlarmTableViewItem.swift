@@ -12,12 +12,12 @@ import RxSwift
 protocol AlarmTableViewCellDelegate: AnyObject {
     func middleBottonButtonDidTapped(cell: UITableViewCell)
     func everyDayButtonDidTapped(cell: UITableViewCell)
+    func switchButtonDidTap(cell: UITableViewCell)
 }
 
 class AlarmTableViewItem: UITableViewCell {
     static let identifier = "AlarmTableViewItem"
     private let disposeBag = DisposeBag()
-    var viewModel: AlarmTableViewItemViewModel?
     var delegate: AlarmTableViewCellDelegate?
     private var middleViewTopConstant: NSLayoutConstraint?
     private lazy var topView: UIView = {
@@ -114,7 +114,7 @@ class AlarmTableViewItem: UITableViewCell {
     
     private(set) lazy var alarmSelectedDaysButton: AlarmSelectedDaysButton = {
         let button = AlarmSelectedDaysButton()
-        
+        button.addTarget(self, action: #selector(everyDayButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -130,17 +130,17 @@ class AlarmTableViewItem: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(viewModel: AlarmTableViewItemViewModel) {
-        self.viewModel = viewModel
-        titleLabel.text = viewModel.alarmEntityRelay.value.message
-        pmAmLabel.text = viewModel.alarmEntityRelay.value.pmAm
+    func setUpCell(viewModel: AlarmTableViewCellData) {
+        titleLabel.text = viewModel.title
+        pmAmLabel.text = viewModel.pmAm
         timeButton.setTitle(
-            viewModel.alarmEntityRelay.value.selectedTime,
+            viewModel.time,
             for: .normal
         )
-        dayLabel.text = viewModel.alarmEntityRelay.value.selectedDays
+        dayLabel.text = viewModel.selectedDays
+        
         alarmDaySelectionView.isHidden = true
-        bindCheckSwitchValue()
+        bindCheckSwitchValue(viewModel.isOn)
     }
 }
 
@@ -313,43 +313,38 @@ extension AlarmTableViewItem {
         alarmSelectedDaysButton.rx.tap
             .bind { [weak self] in
                 guard let self = self else { return }
-                self.viewModel?.branchOutMoreExpandState()
             }
             .disposed(by: disposeBag)
     }
     
-    private func bindCheckSwitchValue() {
-        viewModel?.switchValueRelay
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case true:
-                    self.setUpItemTextColorTrue()
-                case false:
-                    self.setUpItemTextColorFalse()
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel?.expandStateRelay
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .expand:
-                    self.setUpDaysButtonExpand()
-                case .moreExpand:
-                    self.setUpDaysButtonMoreExpand()
-                }
-            })
-            .disposed(by: disposeBag)
+    private func bindCheckSwitchValue(_ value: Bool) {
+        switch value {
+        case true:
+            self.setUpItemTextColorTrue()
+        case false:
+            self.setUpItemTextColorFalse()
+        }
     }
+//
+//        viewModel?.expandStateRelay
+//            .observe(on: MainScheduler.instance)
+//            .subscribe(onNext: { [weak self] in
+//                guard let self = self else { return }
+//                switch $0 {
+//                case .expand:
+//                    self.setUpDaysButtonExpand()
+//                case .moreExpand:
+//                    self.setUpDaysButtonMoreExpand()
+//                }
+//            })
+//            .disposed(by: disposeBag)
+//    }
+    
 }
 
 extension AlarmTableViewItem {
     @objc func checkSwitchDidTap(_ sender: UISwitch) {
-        viewModel?.branchOutSwitchValue(sender)
+        delegate?.switchButtonDidTap(cell: self)
     }
     
     @objc func deleteButtonDidTap(_ sender: UIButton) {
@@ -358,11 +353,15 @@ extension AlarmTableViewItem {
     @objc func middleBottomButtonTaped() {
         delegate?.middleBottonButtonDidTapped(cell: self)
     }
+    
+    @objc func everyDayButtonTapped() {
+        delegate?.everyDayButtonDidTapped(cell: self)
+    }
 }
 
 extension AlarmTableViewItem {
     private func setUpItemTextColorTrue() {
-        self.alarmSwitch.isOn = true
+//        self.alarmSwitch.isOn = true
         self.titleLabel.textColor = .white
         self.pmAmLabel.textColor = .white
         self.timeButton.setTitleColor(UIColor.white, for: .normal)
@@ -370,7 +369,7 @@ extension AlarmTableViewItem {
     }
     
     private func setUpItemTextColorFalse() {
-        self.alarmSwitch.isOn = false
+//        self.alarmSwitch.isOn = false
         self.titleLabel.textColor = .lightGray
         self.pmAmLabel.textColor = .lightGray
         self.timeButton.setTitleColor(UIColor.lightGray, for: .normal)
@@ -389,7 +388,6 @@ extension AlarmTableViewItem {
     }
     
     func setUpCellNormal() {
-        
         dayLabel.isHidden = false
         deleteButton.isHidden = true
         middleViewTopConstant?.constant = yValueRatio(60)
@@ -399,7 +397,6 @@ extension AlarmTableViewItem {
         UIView.animate(withDuration: 0.3, animations: {
             self.contentView.layoutIfNeeded()
         })
-        viewModel?.expandStateRelay.accept(.expand)
     }
     
     private func setUpDaysButtonExpand() {

@@ -15,43 +15,12 @@ enum NavigationBarEvent {
     case add
 }
 
-enum CellScaleState {
-    case expand
-    case normal
-    case moreExpand
-    case none
-}
-
-enum SetUpCellState {
-    case expand(AlarmTableViewItem)
-    case normal(AlarmTableViewItem)
-    case none
-}
-
-struct AlarmTableViewCellData {
-    static let empty: Self = .init(alarmEntity: AlarmEntity.empty)
-    var isOn: Bool
-    var title: String
-    var pmAm: String
-    var time: String
-    var selectedDays: String
-    
-    init(alarmEntity: AlarmEntity) {
-        self.isOn = alarmEntity.isOn
-        self.title = alarmEntity.title
-        self.pmAm = .calculatePmAm(alarmEntity.time)
-        self.time = .calculateTime(alarmEntity.time)
-        self.selectedDays = alarmEntity.selectedDays
-    }
-}
-
 protocol AlarmViewModelInputProtocol: AnyObject {
     
 }
 
 protocol AlarmViewModelOutputProtocol: AnyObject {
-    var selectedIndexRelay: BehaviorRelay<IndexPath> { get }
-    var cellScaleStateRelay: BehaviorRelay<CellScaleState> { get }
+    
 }
 
 protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutputProtocol {}
@@ -61,10 +30,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private var useCase: SettingUseCase?
     private var dateFormatter = DateFormatter()
     private var searchRowPositionFactory: SearchRowPositionFactory
-    var selectedIndexRelay = BehaviorRelay<IndexPath>(value: IndexPath(row: -1, section: 0))
-    var cellScaleStateRelay = BehaviorRelay<CellScaleState>(value: .none)
-    var setUpCellStateRelay = BehaviorRelay<SetUpCellState>(value: .none)
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
+    var tempAlarmData = [AlarmTableViewCellData]()
     
     init(useCase: SettingUseCase,
          searchRowPositionFactory: SearchRowPositionFactory) {
@@ -77,80 +44,71 @@ class AlarmViewModel: AlarmViewModelProtocol {
         bindAlarmArraySubject()
     }
     
-    func branchOutSelectedIndex(_ indexPath: IndexPath) {
-        if selectedIndexRelay.value == indexPath {
-            branchOutIsSelected()
-        } else {
-            cellScaleStateRelay.accept(.expand)
-        }
-        selectedIndexRelay.accept(indexPath)
-    }
-    
-    func branchOutIsSelected() {
-        if cellScaleStateRelay.value == .expand {
-            cellScaleStateRelay.accept(.normal)
-        } else {
-            cellScaleStateRelay.accept(.expand)
-        }
-    }
-    
-    func branchOutMoreExpand() {
-        if cellScaleStateRelay.value == .expand {
-            cellScaleStateRelay.accept(.moreExpand)
-        } else {
-            cellScaleStateRelay.accept(.expand)
-        }
-    }
-    
-    func branchOutSetUpCell(_ selectedIndexPath: IndexPath,
-                            _ indexPath: IndexPath,
-                            _ cell: AlarmTableViewItem) {
-        if cellScaleStateRelay.value == .expand {
-            if selectedIndexPath == indexPath {
-                setUpCellStateRelay.accept(.normal(cell))
+    func cellScaleWillChange(index: IndexPath) {
+        var tempDataArray = alarmDataArrayRelay.value
+        for i in 0 ..< tempDataArray.count {
+            if i == index.row {
+                if tempDataArray[i].scale == .normal {
+                    tempDataArray[i].scale = .expand
+                } else {
+                    tempDataArray[i].scale = .normal
+                }
             } else {
-                setUpCellStateRelay.accept(.expand(cell))
+                tempDataArray[i].scale = .normal
             }
-        } else {
-            setUpCellStateRelay.accept(.expand(cell))
+        }
+        alarmDataArrayRelay.accept(tempDataArray)
+    }
+    
+    func changeMoreExpand(index: IndexPath) {
+        var tempDataArray = alarmDataArrayRelay.value
+        for i in 0..<tempDataArray.count {
+            if tempDataArray[i].scale == .expand {
+                tempDataArray[i].scale = .moreExpand
+            } else if tempDataArray[i].scale == .moreExpand {
+                tempDataArray[i].scale = .expand
+            } else {
+                tempDataArray[i].scale = .normal
+            }
+        }
+        alarmDataArrayRelay.accept(tempDataArray)
+    }
+    
+    func changeIsOnValue(index: IndexPath) {
+        var tempDataArray = alarmDataArrayRelay.value
+        for i in 0..<tempDataArray.count {
+            if i == index.row {
+                tempDataArray[i].isOn.toggle()
+            }
+        }
+        
+        alarmDataArrayRelay.accept(tempDataArray)
+    }
+    
+    func resetAllCellScale(indexPath: IndexPath) {
+        var alarmData = tempAlarmData
+        for index in 0 ..< alarmData.count {
+            if index != indexPath.row {
+                alarmData[index].scale = .normal
+            }
         }
     }
     
-    func branchOutHeightForRow(_ indexPath: IndexPath) -> CGFloat {
-        if cellScaleStateRelay.value == .expand {
-            if selectedIndexRelay.value == indexPath {
-                return UIScreen.main.bounds.maxY/3
-            } else {
-                return UIScreen.main.bounds.maxY/5
-            }
-        } else if cellScaleStateRelay.value == .normal {
+    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat {
+        let cellData = alarmDataArrayRelay.value[indexPath.row]
+        switch cellData.scale {
+        case .normal:
             return UIScreen.main.bounds.maxY/5
-        } else {
-            if selectedIndexRelay.value == indexPath {
-                return UIScreen.main.bounds.maxY/2.5
-            } else {
-                return UIScreen.main.bounds.maxY/5
-            }
+        case .expand:
+            return UIScreen.main.bounds.maxY/3.8
+        case .moreExpand:
+            return UIScreen.main.bounds.maxY/3
         }
     }
     
     func deleteAlarmData(_ indexPath: IndexPath) {
         useCase?.removeAlarmData(indexPath)
     }
-    
-    func insertAlarmData(_ indexPath: IndexPath,
-                         _ alarmEntity: AlarmEntity) {
-        useCase?.insertAlarmData(indexPath, alarmEntity)
-    }
-    
-    func searchRowsPosition(alarmData: AlarmEntity) -> IndexPath {
-        var result = IndexPath(row: 0, section: 0)
-        if let data = useCase?.alarmArray {
-            result = searchRowPositionFactory.calculateRowPoint(alarmData, data)
-        }
-        return result
-    }
-    
 }
 
 extension AlarmViewModel {
