@@ -17,14 +17,7 @@ class AlarmViewController: UIViewController {
     private var navigationBar = AlarmNavigationBar()
     private var selectedIndexPath = IndexPath(row: -1, section: 0)
     private var deSelectedIndexPath = IndexPath(row: -1, section: 0)
-    private lazy var alarmTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(AlarmTableViewItem.self,
-                           forCellReuseIdentifier: AlarmTableViewItem.identifier)
-        tableView.delegate = self
-        tableView.dataSource = self
-        return tableView
-    }()
+    var alarmTableView = UITableView()
     
     private lazy var alertController: UIAlertController = {
         let alert = UIAlertController(title: "기록되지 않았을 때 미리 알림받기", message: nil, preferredStyle: .actionSheet)
@@ -79,6 +72,11 @@ class AlarmViewController: UIViewController {
             alarmTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             alarmTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        alarmTableView.register(AlarmTableViewItem.self,
+                                forCellReuseIdentifier: AlarmTableViewItem.identifier)
+        alarmTableView.delegate = self
+        alarmTableView.dataSource = self
+        
     }
     
     private func setUpAlertController() {
@@ -123,22 +121,21 @@ class AlarmViewController: UIViewController {
     private func bindAlarmTableViewCellData() {
         viewModel?.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
-                
-                
-                //                DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
-                //                    strongSelf.alarmTableView.beginUpdates()
-                //
-                for i in 0 ..< data.count {
-                    guard let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else { return }
-                    
-                    cell.setUpCell(viewModel: data[i])
+                for i in 0 ... data.count-1 {
+                    //                    guard let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else {
+                    //                        print("returned")
+                    //                        return
+                    //                    }
+                    if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem {
+                        cell.setUpCell(viewModel: data[i])
+                        print(i)
+                    }
                 }
-                self?.updateCellUI()
-                
-                //
-                //                    strongSelf.alarmTableView.endUpdates()
-                //                }
+//                self?.updateCellUI()
+                strongSelf.alarmTableView.beginUpdates()
+                strongSelf.alarmTableView.endUpdates()
+                print("update")
             })
             .disposed(by: disposeBag)
     }
@@ -149,19 +146,9 @@ class AlarmViewController: UIViewController {
             strongSelf.alarmTableView.beginUpdates()
             
             strongSelf.alarmTableView.endUpdates()
-            
+            print("update")
         }
     }
-    
-    private func setUpCell(_ indexPath: IndexPath,
-                           _ cell: AlarmTableViewItem) {
-        guard let alarmItemEntity = viewModel?.alarmDataArrayRelay.value[indexPath.item] else { return }
-        
-        cell.setUpCell(viewModel: alarmItemEntity)
-        cell.delegate = self
-        cell.selectionStyle = .none
-    }
-
 }
 
 extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
@@ -172,8 +159,10 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmTableViewItem.identifier, for: indexPath) as? AlarmTableViewItem else { return UITableViewCell() }
+        guard let alarmItemEntity = viewModel?.alarmDataArrayRelay.value[indexPath.item] else { return UITableViewCell() }
+        cell.setUpCell(viewModel: alarmItemEntity)
         cell.delegate = self
-//        setUpCell(indexPath, cell)
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -185,14 +174,6 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
         return UITableView.automaticDimension
     }
     
-    func didTapDaysButton() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.alarmTableView.beginUpdates()
-            //            self.viewModel?.branchOutMoreExpand()
-            self.alarmTableView.endUpdates()
-        }
-    }
     
     func didTapDeleteButton(_ sender: UIButton) {
         let point = sender.convert(CGPoint.zero, to: alarmTableView)
@@ -213,9 +194,9 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel?.cellScaleWillChange(index: cellIndexPath)
         alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
-        guard let cell = alarmTableView.cellForRow(at: cellIndexPath) as? AlarmTableViewItem else { return }
-        guard let data = viewModel?.alarmDataArrayRelay[cellIndex]
-        cell.setUpCell(viewModel: viewModel?.alarmDataArrayRelay[cellIndexPath.row])
+        //        guard let cell = alarmTableView.cellForRow(at: cellIndexPath) as? AlarmTableViewItem else { return }
+        //        guard let data = viewModel?.alarmDataArrayRelay[cellIndex]
+        //        cell.setUpCell(viewModel: viewModel?.alarmDataArrayRelay[cellIndexPath.row])
         
     }
     
@@ -227,6 +208,6 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     func everyDayButtonDidTapped(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel?.changeMoreExpand(index: cellIndexPath)
-        alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
+        //        alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
     }
 }

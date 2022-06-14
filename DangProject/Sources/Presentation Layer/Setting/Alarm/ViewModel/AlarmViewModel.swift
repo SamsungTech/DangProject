@@ -30,66 +30,68 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private var useCase: SettingUseCase?
     private var dateFormatter = DateFormatter()
     private var searchRowPositionFactory: SearchRowPositionFactory
+    
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
-    var tempAlarmData = [AlarmTableViewCellData]()
+    lazy var tempAlarmData: [AlarmTableViewCellData] = {
+        alarmDataArrayRelay.value
+    }()
     
     init(useCase: SettingUseCase,
          searchRowPositionFactory: SearchRowPositionFactory) {
         self.useCase = useCase
         self.searchRowPositionFactory = searchRowPositionFactory
+        bindAlarmArraySubject()
     }
     
     func viewDidLoad() {
         useCase?.startAlarmData()
-        bindAlarmArraySubject()
     }
     
     func cellScaleWillChange(index: IndexPath) {
-        var tempDataArray = alarmDataArrayRelay.value
-        for i in 0 ..< tempDataArray.count {
+        resetAllCellScale(indexPath: index)
+        for i in 0 ..< tempAlarmData.count {
             if i == index.row {
-                if tempDataArray[i].scale == .normal {
-                    tempDataArray[i].scale = .expand
+                if tempAlarmData[i].scale == .normal {
+                    tempAlarmData[i].scale = .expand
                 } else {
-                    tempDataArray[i].scale = .normal
+                    tempAlarmData[i].scale = .normal
                 }
-            } else {
-                tempDataArray[i].scale = .normal
             }
+            print("\(i). cellScaleWillChange")
         }
-        alarmDataArrayRelay.accept(tempDataArray)
+        alarmDataArrayRelay.accept(tempAlarmData)
     }
     
     func changeMoreExpand(index: IndexPath) {
-        var tempDataArray = alarmDataArrayRelay.value
-        for i in 0..<tempDataArray.count {
-            if tempDataArray[i].scale == .expand {
-                tempDataArray[i].scale = .moreExpand
-            } else if tempDataArray[i].scale == .moreExpand {
-                tempDataArray[i].scale = .expand
+        for i in 0..<tempAlarmData.count {
+            if tempAlarmData[i].scale == .expand {
+                tempAlarmData[i].scale = .moreExpand
+            } else if tempAlarmData[i].scale == .moreExpand {
+                tempAlarmData[i].scale = .expand
             } else {
-                tempDataArray[i].scale = .normal
+                tempAlarmData[i].scale = .normal
             }
+            print("\(i). changeMoreExpand")
         }
-        alarmDataArrayRelay.accept(tempDataArray)
+        
+        alarmDataArrayRelay.accept(tempAlarmData)
     }
     
     func changeIsOnValue(index: IndexPath) {
-        var tempDataArray = alarmDataArrayRelay.value
-        for i in 0..<tempDataArray.count {
+//        var tempDataArray = alarmDataArrayRelay.value
+        for i in 0..<tempAlarmData.count {
             if i == index.row {
-                tempDataArray[i].isOn.toggle()
+                tempAlarmData[i].isOn.toggle()
             }
+            print("\(i). changeIsOnValue")
         }
-        
-        alarmDataArrayRelay.accept(tempDataArray)
+        alarmDataArrayRelay.accept(tempAlarmData)
     }
     
-    func resetAllCellScale(indexPath: IndexPath) {
-        var alarmData = tempAlarmData
-        for index in 0 ..< alarmData.count {
+    private func resetAllCellScale(indexPath: IndexPath) {
+        for index in 0 ..< tempAlarmData.count {
             if index != indexPath.row {
-                alarmData[index].scale = .normal
+                tempAlarmData[index].scale = .normal
             }
         }
     }
