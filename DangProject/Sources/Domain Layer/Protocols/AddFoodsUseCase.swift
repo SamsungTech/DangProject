@@ -8,5 +8,5 @@
 import Foundation
 
 protocol AddFoodsUseCase {
-    func addEatenFoods(food: FoodDomainModel, currentDate: DateComponents)
+    func addEatenFoods(food: FoodDomainModel)
 }

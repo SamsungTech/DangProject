@@ -8,12 +8,17 @@
 import Foundation
 import CoreData
 
+import RxSwift
+
 protocol CoreDataManagerRepository {
-   
-    func addFoods(_ food: FoodDomainModel, at coreDataName: CoreDataName)
-    func addRecentQuery(_ keyWord: String)
-    func loadFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T]
-    @discardableResult func deleteFavoriteFood<T: NSManagedObject>(at code: String, request: NSFetchRequest<T>) -> Bool
-    @discardableResult func deleteQuery<T: NSManagedObject>(at query: String, request: NSFetchRequest<T>) -> Bool
-    @discardableResult func deleteAll<T: NSManagedObject>(request: NSFetchRequest<T>) -> Bool
+    
+    func addFavoriteFood(food: FoodDomainModel)
+    func addEatenFood(food: FoodDomainModel,
+                      eatenFoodsPerDayEntity: EatenFoodsPerDay?)
+    func addRecentQuery(keyword: String)
+    func fetchCoreDataArray(from: CoreDataName) -> [NSManagedObject]
+    func deleteFavoriteFood(code: String)
+    func deleteQuery(at query: String)
+    func deleteAll(coreDataName: CoreDataName)
+    func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)>
 }

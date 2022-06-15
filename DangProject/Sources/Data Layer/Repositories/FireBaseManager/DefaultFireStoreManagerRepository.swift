@@ -16,15 +16,20 @@ import RxSwift
 
 class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
+    // MARK: - Private
+    private lazy var uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
 
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
+
         let uidData = ["firebaseUID": uid,
                        "profileExistence": false
         ] as [String : Any]
+
         database.collection("users")
             .document(uid)
             .setData(uidData) { error in
+
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
                 return
@@ -55,13 +60,12 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
-    func saveEatenFood(eatenFood: FoodDomainModel, currentDate: DateComponents) {
-        
+    func saveEatenFood(eatenFood: FoodDomainModel) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
-
-        guard let year = currentDate.year,
-              let month = currentDate.month,
-              let day = currentDate.day else { return }
+        let today = DateComponents.currentDateTimeComponents()
+        guard let year = today.year,
+              let month = today.month,
+              let day = today.day else { return }
         let eatenFoodData = [
             "name": eatenFood.name,
             "sugar": eatenFood.sugar,
@@ -69,7 +73,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "favorite": eatenFood.favorite,
             "amount": eatenFood.amount
         ] as [String : Any]
-
+        
         database.collection("app")
             .document(userDefaultsUID)
             .collection("foods")
@@ -88,16 +92,16 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void) {
         database.collection("users").document(uid).getDocument { snapshot, error in
-                if let error = error {
-                    print("DEBUG: \(error.localizedDescription)")
-                    return
+            if let error = error {
+                print("DEBUG: \(error.localizedDescription)")
+                return
+            }
+            
+            if let result = snapshot?.data() {
+                if let resultBool = result[fieldName] {
+                    completion(resultBool as! Bool)
                 }
-                
-                if let result = snapshot?.data() {
-                    if let resultBool = result[fieldName] {
-                        completion(resultBool as! Bool)
-                    }
-                }
+            }
         }
     }
     
@@ -115,5 +119,36 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
+    func getEatenFoodsInFirestore() -> Observable<[[String: Any]]> {
+        return Observable.create { [weak self] emitter in
+            let today = DateComponents.currentDateTimeComponents()
+            guard let year = today.year,
+                  let month = today.month,
+                  let day = today.day,
+                  let strongSelf = self else {
+                return Disposables.create()
+            }
+            
+            self?.database.collection("app")
+                .document(strongSelf.uid)
+                .collection("foods")
+                .document("eatenFoods")
+                .collection("\(year)년")
+                .document("\(month)월")
+                .collection("\(day)일")
+                .getDocuments() { snapshot, error in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        return
+                    }
+                    if let result = snapshot?.documents {
+                        emitter.onNext(result.map{ $0.data() })
+                    }
+                }
+            return Disposables.create()
+        }
+    }
+    
 }
+
 
