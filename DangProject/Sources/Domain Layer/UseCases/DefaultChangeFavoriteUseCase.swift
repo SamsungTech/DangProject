@@ -20,7 +20,7 @@ class DefaultChangeFavoriteUseCase: ChangeFavoriteUseCase {
         if food.favorite == false {
             coreDataManagerRepository.addFavoriteFood(food: food)
         } else {
-            coreDataManagerRepository.deleteFavoriteFood(at: food.foodCode, request: FavoriteFoods.fetchRequest())
+            coreDataManagerRepository.deleteFavoriteFood(code: food.foodCode)
         }
     }
 }

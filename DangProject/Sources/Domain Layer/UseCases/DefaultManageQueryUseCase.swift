@@ -33,7 +33,9 @@ class DefaultManageQueryUseCase: ManageQueryUseCase {
     
     func loadQuery() -> [String]  {
         var resultQuery: [String] = []
-        let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
+        let savedQuery = coreDataManagerRepository.fetchCoreDataArray(from: .recentQuery).map {
+            $0 as? RecentQuery ?? RecentQuery.init()
+        }
         savedQuery.forEach{ query in
             if let keyWord = query.keyword {
                 resultQuery.append(keyWord)
@@ -43,17 +45,17 @@ class DefaultManageQueryUseCase: ManageQueryUseCase {
     }
     
     func deleteAllQuery() {
-        coreDataManagerRepository.deleteAll(request: RecentQuery.fetchRequest())
+        coreDataManagerRepository.deleteAll(coreDataName: .recentQuery)
         queryObservable.onNext(loadQuery())
     }
     
     // MARK: - Private
     func checkQueryWithCoreData(keyword: String) {
-        let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
+        let savedQuery = coreDataManagerRepository.fetchCoreDataArray(from: .recentQuery).map { $0 as? RecentQuery ?? RecentQuery.init() }
         
         savedQuery.forEach{ query in
             if query.keyword == keyword {
-                coreDataManagerRepository.deleteQuery(at: query.keyword!, request: RecentQuery.fetchRequest())
+                coreDataManagerRepository.deleteQuery(at: query.keyword!)
             }
         }
     }

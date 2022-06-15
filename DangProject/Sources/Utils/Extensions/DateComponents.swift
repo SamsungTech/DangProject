@@ -54,7 +54,12 @@ extension Date {
         return calendar.date(from: myDateComponents) ?? Date.init()
     }
     
-    static func makeDate(year: Int, month: Int, day: Int) -> Date {
+    static func makeDate(year: Int?, month: Int?, day: Int?) -> Date {
+        guard let year = year,
+              let month = month,
+              let day = day else {
+            return Date.init()
+        }
         let myDateComponents = DateComponents(year: year, month: month, day: day)
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "UTC")!

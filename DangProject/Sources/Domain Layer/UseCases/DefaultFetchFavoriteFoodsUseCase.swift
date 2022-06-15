@@ -21,8 +21,7 @@ class DefaultFetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase {
     
     // MARK: - Internal
     func fetchFavoriteFoods() -> [FoodViewModel] {
-        let favoriteFoodsRequest = FavoriteFoods.fetchRequest()
-        let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: favoriteFoodsRequest)
+        let favoriteFoods = coreDataManagerRepository.fetchCoreDataArray(from: .favoriteFoods).map { $0 as? FavoriteFoods ?? FavoriteFoods.init() }
         var favoriteFoodViewModel: [FoodViewModel] = []
         
         favoriteFoods.forEach {

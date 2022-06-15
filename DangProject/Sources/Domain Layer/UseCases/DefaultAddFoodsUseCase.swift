@@ -44,7 +44,8 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
     }
     
     private func uploadInCoreData(eatenFood: FoodDomainModel) {
-        coreDataManagerRepository.checkEatenFoodsPerDay(request: EatenFoodsPerDay.fetchRequest())
+        let today = Date.currentDate()
+        coreDataManagerRepository.checkEatenFoodsPerDay(date: today)
             .subscribe(onNext: { [weak self] (isFirst, eatenFoodsPerDay) in
                 if isFirst {
                     self?.coreDataManagerRepository.addEatenFood(food: eatenFood,

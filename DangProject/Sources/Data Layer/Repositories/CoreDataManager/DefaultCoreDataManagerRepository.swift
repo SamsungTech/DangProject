@@ -19,18 +19,23 @@ enum CoreDataName: String {
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     
-    func checkEatenFoodsPerDay<T: NSManagedObject>(request: NSFetchRequest<T>) -> Observable<(Bool, T)> {
+    private let disposeBag = DisposeBag()
+    private let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    private lazy var context = appDelegate?.persistentContainer.viewContext
+    
+    func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)> {
         return Observable.create { [weak self] emitter in
             
-            let today = Date.currentDate()
-            request.predicate = NSPredicate(format: "date == %@", today as CVarArg)
+            guard let request = self?.getRequest(coreDataName: .eatenFoodsPerDay) else { return Disposables.create() }
+            
+            request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
             
             do {
                 if let checkedEatenFoodsPerDay = try self?.context?.fetch(request) {
                     if checkedEatenFoodsPerDay.count == 0 {
-                        emitter.onNext((true, T.init()))
+                        emitter.onNext((true, EatenFoodsPerDay.init()))
                     } else {
-                        emitter.onNext((false, checkedEatenFoodsPerDay[0]))
+                        emitter.onNext((false, checkedEatenFoodsPerDay[0] as! EatenFoodsPerDay))
                     }
                 }
             } catch {
@@ -75,7 +80,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         } catch {
             print(error.localizedDescription)
         }
-        
     }
     
     func addRecentQuery(keyword: String) {
@@ -90,73 +94,81 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func loadFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T] {
-        guard let context = self.context else { return [] }
-        do {
-            let results = try context.fetch(request)
-            return results
-        } catch {
-            print(error.localizedDescription)
-            return []
+    func fetchCoreDataArray(from coreDataName: CoreDataName) -> [NSManagedObject] {
+        switch coreDataName {
+        case .favoriteFoods:
+            return loadArrayFromCoreData(request: FavoriteFoods.fetchRequest())
+        case .recentQuery:
+            return loadArrayFromCoreData(request: RecentQuery.fetchRequest())
+        case .eatenFoods:
+            return loadArrayFromCoreData(request: EatenFoods.fetchRequest())
+        case .eatenFoodsPerDay:
+            return loadArrayFromCoreData(request: EatenFoodsPerDay.fetchRequest())
         }
     }
-  
-    @discardableResult
-    func deleteFavoriteFood<T: NSManagedObject>(at code: String, request: NSFetchRequest<T>) -> Bool {
+
+    func deleteFavoriteFood(code: String) {
+        let request = self.getRequest(coreDataName: .favoriteFoods)
         
         request.predicate = NSPredicate(format: "foodCode == %@", code)
         
         do {
             if let favoriteFoods = try context?.fetch(request) {
-                if favoriteFoods.count == 0 { return false }
-                context?.delete(favoriteFoods[0])
+                if favoriteFoods.count == 0 { return  }
+                context?.delete(favoriteFoods[0] as! FavoriteFoods)
                 try context?.save()
-                return true
+                return
             }
         } catch {
             print(error.localizedDescription)
-            return false
+            return
         }
         
-        return false
+        return
     }
     
-    @discardableResult
-    func deleteQuery<T: NSManagedObject>(at query: String, request: NSFetchRequest<T>) -> Bool {
-        
+    func deleteQuery(at query: String) {
+        let request = self.getRequest(coreDataName: .recentQuery)
         request.predicate = NSPredicate(format: "keyword == %@", query)
         
         do {
             if let recentQuery = try context?.fetch(request) {
-                if recentQuery.count == 0 { return false }
-                context?.delete(recentQuery[0])
+                if recentQuery.count == 0 { return }
+                context?.delete(recentQuery[0] as! RecentQuery)
                 try context?.save()
-                return true
+                return
             }
         } catch {
             print(error.localizedDescription)
-            return false
+            return
         }
-        
-        return false
+        return
     }
     
-    @discardableResult
-    func deleteAll<T: NSManagedObject>(request: NSFetchRequest<T>) -> Bool {
-        let request: NSFetchRequest<NSFetchRequestResult> = T.fetchRequest()
+    func deleteAll(coreDataName: CoreDataName) {
+        let request = self.getRequest(coreDataName: coreDataName)
         let delete = NSBatchDeleteRequest(fetchRequest: request)
         do {
             try context?.execute(delete)
-            return true
         } catch {
-            return false
+            print(error.localizedDescription)
         }
     }
     
     //MARK: - Private
-    private let disposeBag = DisposeBag()
-    private let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    private lazy var context = appDelegate?.persistentContainer.viewContext
+        
+    private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
+        switch coreDataName {
+        case .eatenFoods:
+            return EatenFoods.fetchRequest()
+        case .eatenFoodsPerDay:
+            return EatenFoodsPerDay.fetchRequest()
+        case .favoriteFoods:
+            return FavoriteFoods.fetchRequest()
+        case .recentQuery:
+            return RecentQuery.fetchRequest()
+        }
+    }
     
     private func updateEatenFood(food: FoodDomainModel,
                          parentEatenFoodsPerDay: EatenFoodsPerDay,
@@ -186,7 +198,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         do {
             if let eatenFoods = try context?.fetch(request) {
                 if eatenFoods.count != 0 {
-                    let eatenTime = eatenFoods[0].wrappedEatenTime
+                    let eatenTime = eatenFoods[0].unwrappedEatenTime
                     context?.delete(eatenFoods[0])
                     updateEatenFood(food: eatenFood,
                                     parentEatenFoodsPerDay: eatenFoodsPerDay,
@@ -201,5 +213,16 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
         }
     }
+    
+    private func loadArrayFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T] {
+           guard let context = self.context else { return [] }
+           do {
+               let results = try context.fetch(request)
+               return results
+           } catch {
+               print(error.localizedDescription)
+               return []
+           }
+       }
 }
 

@@ -2,7 +2,7 @@
 //  FavoriteFoods+CoreDataProperties.swift
 //  DangProject
 //
-//  Created by 김성원 on 2022/06/13.
+//  Created by 김성원 on 2022/06/15.
 //
 //
 

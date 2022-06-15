@@ -58,8 +58,7 @@ class DefaultSearchUseCase: SearchUseCase {
     
     private func checkFavorites() -> [FoodDomainModel] {
         var currentDomainFoodModels = originalDomainFoodModels
-        
-        let favoriteFoods = coreDataManagerRepository.loadFromCoreData(request: FavoriteFoods.fetchRequest())
+        let favoriteFoods = coreDataManagerRepository.fetchCoreDataArray(from: .favoriteFoods).map{ $0 as? FavoriteFoods ?? FavoriteFoods.init() }
         
         originalDomainFoodModels.forEach { food in
             favoriteFoods.forEach { favoriteFood in
