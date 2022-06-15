@@ -1,7 +1,6 @@
 import UIKit
 
 extension UIView {
-    
     func roundCorners(cornerRadius: CGFloat,
                       maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]) {
         clipsToBounds = true

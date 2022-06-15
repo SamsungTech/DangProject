@@ -19,14 +19,17 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     // MARK: - Private
     private lazy var uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
-    
-    
-    func saveFirebaseUIDDocument(uid: String) {
+
+    func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
+
         let uidData = ["firebaseUID": uid,
-                       "onboarding": true,
                        "profileExistence": false
         ] as [String : Any]
-        database.collection("users").document(uid).setData(uidData) { error in
+
+        database.collection("users")
+            .document(uid)
+            .setData(uidData) { error in
+
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
                 return
@@ -35,20 +38,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
-        
-        let uidData = ["firebaseUID": profile.uid,
-                       "onboarding": true,
-                       "profileExistence": true
-        ] as [String : Any]
-        database.collection("users")
-            .document(profile.uid)
-            .setData(uidData) { error in
-                if let error = error {
-                    print("DEBUG: \(error.localizedDescription)")
-                    return
-                }
-            }
-        
         
         let profileData = [
             "uid": profile.uid,

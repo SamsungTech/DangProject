@@ -17,22 +17,20 @@ class DefaultFirebaseAuthUseCase: FirebaseAuthUseCase {
     
     init(firebaseAuthRepository: FirebaseAuthManagerRepository) {
         self.firebaseAuthRepository = firebaseAuthRepository
-        bindFirebaseAuthRepository()
-    }
-    
-    private func bindFirebaseAuthRepository() {
-        firebaseAuthRepository.authResultObservable
-            .subscribe(onNext: { [weak self] isVaild, id in
-                self?.authObservable.onNext((isVaild, id))
-            })
-            .disposed(by: disposeBag)
     }
     
     //MARK: - Internal
     let authObservable = PublishSubject<(Bool, String)>()
     
-    func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String) {
-        firebaseAuthRepository.signInFirebaseAuth(providerID: providerID, idToken: idToken, rawNonce: rawNonce)
+    func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String) -> Observable<(Bool, String)> {
+        return Observable.create { [weak self] emitter in
+            self?.firebaseAuthRepository.signInFirebaseAuth(providerID: providerID, idToken: idToken, rawNonce: rawNonce)
+                .subscribe(onNext: {  isValid, message in
+                    emitter.onNext((isValid, message))
+                })
+                .disposed(by: self!.disposeBag)
+            return Disposables.create()
+        }
     }
     
 }

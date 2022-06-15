@@ -11,7 +11,7 @@ import RxSwift
 
 protocol FireStoreManagerRepository {
         
-    func saveFirebaseUIDDocument(uid: String)
+    func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool)
     func saveProfileDocument(profile: ProfileDomainModel)
     func saveEatenFood(eatenFood: FoodDomainModel)
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)

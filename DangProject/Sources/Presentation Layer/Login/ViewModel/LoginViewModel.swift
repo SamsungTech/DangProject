@@ -13,6 +13,7 @@ import RxRelay
 
 
 protocol LoginViewModelInput {
+    func loginButtonDidTap(with viewController: UIViewController)
     func signIn(authorization: ASAuthorization)
 }
 
@@ -33,24 +34,13 @@ class LoginViewModel: LoginViewModelProtocol {
          firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
         self.firebaseAuthUseCase = firebaseAuthUseCase
         self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
-        bindAuthorizeFirebaseUseCase()
-        bindProfileExistence()
     }
     
-    private func bindAuthorizeFirebaseUseCase() {
-        firebaseAuthUseCase.authObservable
-            .subscribe(onNext: { [weak self] isValid, id in
-                if isValid {
-                    self?.firebaseFireStoreUseCase.uploadFirebaseUID(uid: id)
-                    self?.updateUserDefaultsUid(uid: id)
-                }
-                self?.checkProfileExistence(uid: id)
-            })
-            .disposed(by: disposeBag)
-    }
+    //MARK: - Private Method
+    fileprivate var currentNonce: String?
     
-    private func bindProfileExistence() {
-        firebaseFireStoreUseCase.profileExistenceObservable
+    private func checkProfileExistence(uid: String) {
+        firebaseFireStoreUseCase.getProfileExistence(uid: uid)
             .subscribe(onNext: { [weak self] isExist in
                 if isExist {
                     self?.profileExistenceObservable.accept(true)
@@ -59,13 +49,6 @@ class LoginViewModel: LoginViewModelProtocol {
                 }
             })
             .disposed(by: disposeBag)
-    }
-    
-    //MARK: - Private Method
-    fileprivate var currentNonce: String?
-    
-    private func checkProfileExistence(uid: String) {
-        firebaseFireStoreUseCase.getProfileExistence(uid: uid)
     }
     
     private func updateUserDefaultsUid(uid: String) {
@@ -130,6 +113,7 @@ class LoginViewModel: LoginViewModelProtocol {
         authorizationController.presentationContextProvider = viewController as? ASAuthorizationControllerPresentationContextProviding
         authorizationController.performRequests()
     }
+    
     func signIn(authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             guard let nonce = currentNonce else {
@@ -143,9 +127,18 @@ class LoginViewModel: LoginViewModelProtocol {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
                 return
             }
+            
             firebaseAuthUseCase.requireFirebaseUID(providerID: "apple.com",
                                                    idToken: idTokenString,
                                                    rawNonce: nonce)
+            .subscribe(onNext: { [weak self] isValid, id in
+                if isValid {
+                    self?.firebaseFireStoreUseCase.uploadFirebaseUID(uid: id)
+                    self?.updateUserDefaultsUid(uid: id)
+                }
+                self?.checkProfileExistence(uid: id)
+            })
+            .disposed(by: disposeBag)
         }
     }
    
