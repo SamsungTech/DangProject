@@ -19,6 +19,9 @@ let target = Target(name: projectName,
                         .package(product: "FirebaseFirestore"),
                         .package(product: "FirebaseAnalytics"),
                         .package(product: "GTMSessionFetcherFull")
+                    ],
+                    coreDataModels: [
+                        .init(.relativeToCurrentFile("\(projectName)/Sources/Application/CoreDataClasses/DangProject.xcdatamodeld/"))
                     ]
 )
 let project = Project(name: projectName,

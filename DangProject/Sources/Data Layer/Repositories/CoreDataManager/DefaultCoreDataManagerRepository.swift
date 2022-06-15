@@ -171,7 +171,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     }
     
     private func updateEatenFood(food: FoodDomainModel,
-                         parentEatenFoodsPerDay: EatenFoodsPerDay,
+                                 parentEatenFoodsPerDay: EatenFoodsPerDay,
                                  eatenTime: Date?) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoods.rawValue,
