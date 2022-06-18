@@ -14,7 +14,6 @@ class SearchViewController: UIViewController {
     private let disposeBag = DisposeBag()
     
     var coordinator: SearchCoordinator?
-    
     private let viewModel: SearchViewModel
     private let searchController = UISearchController(searchResultsController: nil)
     private let queryResultTableView = UITableView()
@@ -46,6 +45,7 @@ class SearchViewController: UIViewController {
     // MARK: - Set Views
     private func setUpDefaultView() {
         setUpBackground()
+        setUpNavigationBarButton()
         setUpRecentLabel()
         setUpQueryResultTableView()
         setUpEraseAllQueryButton()
@@ -54,6 +54,14 @@ class SearchViewController: UIViewController {
     private func setUpBackground() {
         view.backgroundColor = .white
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
+    }
+    
+    private func setUpNavigationBarButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(dismissSearchViewController))
+    }
+    
+    @objc private func dismissSearchViewController() {
+        coordinator?.dismissViewController()
     }
     
     private func setUpRecentLabel() {

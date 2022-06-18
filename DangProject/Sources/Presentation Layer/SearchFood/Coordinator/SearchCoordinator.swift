@@ -16,7 +16,6 @@ class SearchCoordinator: NSObject, Coordinator {
         viewController.coordinator = self
         navigationController.delegate = self
         navigationController.pushViewController(viewController, animated: false)
-
     }
     
     func childDidFinish(_ child: Coordinator?) {
@@ -26,6 +25,10 @@ class SearchCoordinator: NSObject, Coordinator {
                 break
             }
         }
+    }
+    
+    func dismissViewController() {
+        navigationController.dismiss(animated: true)
     }
     
     func pushDetailFoodView(food: FoodViewModel,

@@ -38,8 +38,9 @@ class TabBarCoordinator: NSObject, Coordinator {
     func presentSearchViewController(viewController: UIViewController) {
         let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
         searchViewController = searchCoordinator.navigationController
+        searchViewController.modalPresentationStyle = .fullScreen
         searchCoordinator.start()
-
+        
         viewController.present(searchViewController, animated: true)
     }
 }
