@@ -89,7 +89,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     
     func getTotalSugar() -> Double {
         guard let sugar = detailFood.sugar else { return 0 }
-        let totalSugar = ((Double(sugar) ?? 0) * Double(amount)).roundDecimal(to: 2)
+        let totalSugar = (Double(sugar) ?? 0) * Double(amount)
         return totalSugar
     }
 }

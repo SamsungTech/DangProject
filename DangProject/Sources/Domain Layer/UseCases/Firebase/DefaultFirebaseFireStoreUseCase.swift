@@ -57,7 +57,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                         for (key, value) in foods {
                             switch key {
                             case "name": foodModel.name = value as? String ?? ""
-                            case "sugar": foodModel.sugar = value as? String ?? ""
+                            case "sugar": foodModel.sugar = value as? Double ?? 0
                             case "foodCode": foodModel.foodCode = value as? String ?? ""
                             case "amount": foodModel.amount = value as? Int ?? 0
                             case "favorite": foodModel.favorite = value as? Bool ?? false

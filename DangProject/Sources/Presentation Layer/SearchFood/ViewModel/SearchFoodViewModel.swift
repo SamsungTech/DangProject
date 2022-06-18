@@ -34,7 +34,7 @@ struct FoodViewModel {
     
     init(_ foodDomainModel: FoodDomainModel) {
         self.name = foodDomainModel.name
-        self.sugar = foodDomainModel.sugar
+        self.sugar = String(foodDomainModel.sugar)
         self.code = foodDomainModel.foodCode
         
         if foodDomainModel.favorite == true {

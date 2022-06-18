@@ -296,7 +296,7 @@ class DetailFoodViewController: UIViewController {
             .bind(onNext: { [weak self] food in
                 guard let totalSugar = self?.viewModel.getTotalSugar(),
                 let amount = self?.viewModel.amount else { return }
-                self?.totalSugarLabel.text = "\(totalSugar)g"
+                self?.totalSugarLabel.text = "\(totalSugar.roundDecimal(to: 2))g"
                 self?.amountTextField.text = "\(amount)"
                 self?.startIndicatorAnimation(amount: Double(amount))
                 
