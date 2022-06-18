@@ -42,7 +42,9 @@ class CustomNavigationBar: UIView {
     
     private func setUpProfileImageButton() {
         self.addSubview(profileImageButton)
+        /// fetch profile
         profileImageButton.setImage(UIImage(named: "231.png"), for: .normal)
+        
         profileImageButton.viewRadius(cornerRadius: xValueRatio(20))
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
@@ -55,7 +57,6 @@ class CustomNavigationBar: UIView {
         addSubview(dateLabel)
         dateLabel.textColor = .white
         dateLabel.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .bold)
-        dateLabel.text = "2020년 2월"
         dateLabel.textAlignment = .center
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
