@@ -13,7 +13,7 @@ class HomeGraphView: UIView {
     private var viewModel: GraphViewModel?
     private var disposeBag = DisposeBag()
     private var graphMainView = UIView()
-    private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Mouth", "Year"])
+    private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Month", "Year"])
     private var graphBackgroundStackView = UIStackView()
     private var graphStackView = UIStackView()
     private var graphNameStackView = UIStackView()
