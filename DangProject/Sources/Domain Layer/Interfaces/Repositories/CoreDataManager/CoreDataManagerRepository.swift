@@ -11,7 +11,7 @@ import CoreData
 import RxSwift
 
 protocol CoreDataManagerRepository {
-    
+        
     func addFavoriteFood(food: FoodDomainModel)
     func addEatenFood(food: FoodDomainModel,
                       eatenFoodsPerDayEntity: EatenFoodsPerDay?)
@@ -22,3 +22,4 @@ protocol CoreDataManagerRepository {
     func deleteAll(coreDataName: CoreDataName)
     func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)>
 }
+

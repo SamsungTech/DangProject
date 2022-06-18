@@ -26,7 +26,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)> {
         return Observable.create { [weak self] emitter in
             
-            guard let request = self?.getRequest(coreDataName: .eatenFoodsPerDay) else { return Disposables.create() }
+            let request = EatenFoodsPerDay.fetchRequest()
             
             request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
             
@@ -35,7 +35,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
                     if checkedEatenFoodsPerDay.count == 0 {
                         emitter.onNext((true, EatenFoodsPerDay.init()))
                     } else {
-                        emitter.onNext((false, checkedEatenFoodsPerDay[0] as! EatenFoodsPerDay))
+                        emitter.onNext((false, checkedEatenFoodsPerDay[0]))
                     }
                 }
             } catch {
@@ -52,7 +52,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.favoriteFoods.rawValue, in: context),
               let favoriteFoods = NSManagedObject(entity: entity, insertInto: context) as? FavoriteFoods else { return }
         favoriteFoods.name = food.name
-        favoriteFoods.sugar = food.sugar
+        favoriteFoods.sugar = String(food.sugar)
         favoriteFoods.foodCode = food.foodCode
         
         do {
@@ -180,7 +180,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         else { return }
         eatenFoods.day = parentEatenFoodsPerDay
         eatenFoods.name = food.name
-        eatenFoods.sugar = Double(food.sugar) ?? 0
+        eatenFoods.sugar = food.sugar
         eatenFoods.foodCode = food.foodCode
         eatenFoods.amount = Double(food.amount)
         if eatenTime == nil {
