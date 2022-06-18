@@ -9,19 +9,33 @@ import Foundation
 import UIKit
 
 class HomeDIContainer {
-    func makeHomeNavigationViewController() -> UINavigationController {
-        let navigationView = UINavigationController(
-            rootViewController: makeHomeViewController()
-        )
-        return navigationView
-    }
+    
+    lazy var fetchEatenFoodsUseCase = self.makeFetchEatenFoodsUseCase()
     
     func makeHomeViewController() -> HomeViewController {
-        return HomeViewController(viewModel: makeHomeViewModel())
+        return HomeViewController(viewModel: makeHomeViewModel(),
+                                  eatenFoodsView: makeEatenFoodsView())
+    }
+    
+    func makeEatenFoodsView() -> EatenFoodsView {
+        return EatenFoodsView(viewModel: makeEatenFoodsViewModel())
+    }
+    
+    func makeEatenFoodsViewModel() -> EatenFoodsViewModel {
+        return EatenFoodsViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+    }
+    
+    func makeFetchEatenFoodsUseCase() -> FetchEatenFoodsUseCase {
+        return DefaultFetchEatenFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
+    }
+
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
     
     func makeHomeViewModel() -> HomeViewModelProtocol {
         return HomeViewModel(useCase: makeHomeUseCase(),
+                             fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
                              calendarService: CalendarService())
     }
     
