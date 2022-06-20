@@ -26,12 +26,12 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     func fetchEatenFoods(date: Date) {
         coreDataManagerRepository.checkEatenFoodsPerDay(date: date)
             .subscribe(onNext: { [weak self] eatenFoodNotExist, eatenFoodsPerDay in
+                guard let strongSelf = self else { return }
                 if eatenFoodNotExist {
                     // go to firebase
                     self?.eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.empty) // 임시
                 } else {
-                    
-                    self!.eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(eatenFoodsPerDay))
+                    strongSelf.eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(eatenFoodsPerDay))
 
                 }
             })
