@@ -106,12 +106,11 @@ protocol HomeViewModelInputProtocol {
     func didTapCalendarViewCell(selectedDangData: Double,
                                 selectedMaxDangData: Double)
     func resetBatteryViewMainCircleProgressBar()
-    func getTodayEatenFoods()
+    func getEatenFoodsPerDay()
 }
 
 protocol HomeViewModelOutputProtocol {
     var dangComprehensiveData: BehaviorRelay<DangComprehensive> { get }
-    var batteryViewCalendarData: BehaviorRelay<[BatteryEntity]> { get }
     var reloadData: BehaviorRelay<Void> { get }
     var pagingState: BehaviorRelay<PagingState> { get }
     var scrollDirection: BehaviorRelay<ScrollDirection> { get }
@@ -134,7 +133,7 @@ class HomeViewModel: HomeViewModelProtocol {
     private let disposeBag = DisposeBag()
     private var currentPoint: CGFloat = 0
     
-    var homeViewController: HomeViewControllerProtocol?
+//    var homeViewController: HomeViewControllerProtocol?
     var scrollDirection = BehaviorRelay<ScrollDirection>(value: .center)
     var currentXPoint = BehaviorRelay<Int>(value: 1)
     var currentDateCGPoint = BehaviorRelay<CGPoint>(value: CGPoint())
@@ -148,7 +147,6 @@ class HomeViewModel: HomeViewModelProtocol {
     var currentLineYValue = BehaviorRelay<CGFloat>(value: 0)
     var reloadData = BehaviorRelay<Void>(value: ())
     var selectedCellData = BehaviorRelay<SelectedCalendarCellEntity>(value: .empty)
-    var batteryViewCalendarData = BehaviorRelay<[BatteryEntity]>(value: [])
     var pagingState = BehaviorRelay<PagingState>(value: .empty)
     var dangComprehensiveData = BehaviorRelay<DangComprehensive>(value: .empty)
     
@@ -168,7 +166,7 @@ class HomeViewModel: HomeViewModelProtocol {
         bindHomeViewData()
     }
 
-    func getTodayEatenFoods() {
+    func getEatenFoodsPerDay() {
         let today = Date.currentDate()
         fetchEatenFoodsUseCase.fetchEatenFoods(date: today)
     }
@@ -184,31 +182,31 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func calculateSelectedDayXPoint() {
-        let count = batteryViewCalendarData.value.count
-        
-        for i in 0..<count {
-            if batteryViewCalendarData.value[i].yearMonth == selectedCellData.value.yearMonth {
-                let point = CGPoint(x: UIScreen.main.bounds.maxX*CGFloat(i), y: .zero)
-                currentXPoint.accept(i)
-                currentDateCGPoint.accept(point)
-            } else {
-                continue
-            }
-        }
+//        let count = batteryViewCalendarData.value.count
+//
+//        for i in 0..<count {
+//            if batteryViewCalendarData.value[i].yearMonth == selectedCellData.value.yearMonth {
+//                let point = CGPoint(x: UIScreen.main.bounds.maxX*CGFloat(i), y: .zero)
+//                currentXPoint.accept(i)
+//                currentDateCGPoint.accept(point)
+//            } else {
+//                continue
+//            }
+//        }
     }
     
     func giveDirections(currentPoint: CGFloat) {
-        self.currentPoint = currentPoint
-        let count = batteryViewCalendarData.value.count
-        let currentPoint = currentPoint
-        
-        if currentPoint <= 0 {
-            scrollDirection.accept(.left)
-        } else if currentPoint >= UIScreen.main.bounds.maxX * CGFloat(count-1) {
-            scrollDirection.accept(.right)
-        } else {
-            scrollDirection.accept(.center)
-        }
+//        self.currentPoint = currentPoint
+//        let count = batteryViewCalendarData.value.count
+//        let currentPoint = currentPoint
+//
+//        if currentPoint <= 0 {
+//            scrollDirection.accept(.left)
+//        } else if currentPoint >= UIScreen.main.bounds.maxX * CGFloat(count-1) {
+//            scrollDirection.accept(.right)
+//        } else {
+//            scrollDirection.accept(.center)
+//        }
     }
     
     func calculateAfterSettingDirection() {
@@ -223,8 +221,8 @@ class HomeViewModel: HomeViewModelProtocol {
             currentXPoint.accept(Int(result))
         case .right:
             calendarService.createNextCalendarData()
-            let number = batteryViewCalendarData.value.count
-            currentXPoint.accept(Int(number-2))
+//            let number = batteryViewCalendarData.value.count
+//            currentXPoint.accept(Int(number-2))
         }
     }
     
@@ -237,80 +235,80 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func resetBatteryViewMainCircleProgressBar() {
-        homeViewController?.resetBatteryViewConfigure()
+//        homeViewController?.resetBatteryViewConfigure()
     }
 }
 
 extension HomeViewModel {
     private func bindCalendarViewData() {
-        calendarService.calendarDataArraySubject
-            .map { $0.map { BatteryEntity(calendar: $0)} }
-            .subscribe(onNext: { [weak self] in
-                guard let currentCount = self?.calendarService.currentDay.value else { return }
-                self?.batteryViewCalendarData.accept($0)
-                self?.selectedCellData.accept(
-                    SelectedCalendarCellEntity(
-                        yearMonth: $0[1].yearMonth,
-                        indexPath: IndexPath(item: currentCount-1, section: 0)
-                    )
-                )
-                self?.reloadData.accept(())
-            })
-            .disposed(by: disposeBag)
-        
-        calendarService.currentLine
-            .map { .calculateRevertAnimationYValue(value: $0) }
-            .subscribe(onNext: { [weak self] in
-                self?.currentLineYValue.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        calendarService.currentLine
-            .subscribe(onNext: { [weak self] in
-                self?.currentLine.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        calendarService.currentDateYearMonth
-            .subscribe(onNext: { [weak self] in
-                self?.currentYearMonth.accept($0)
-            })
-            .disposed(by: disposeBag)
-        
-        calendarService.currentDay
-            .map { $0-1 }
-            .subscribe(onNext: { [weak self] in
-                guard let currentDayDang = self?.batteryViewCalendarData.value[1].dangArray[$0],
-                      let currentMaxDang = self?.batteryViewCalendarData.value[1].maxDangArray[$0] else { return }
-                
-                self?.currentCount.accept($0)
-                self?.selectedCellViewData.accept(
-                    SelectedCellEntity(dang: currentDayDang,
-                                       maxDang: currentMaxDang)
-                )
-            })
-            .disposed(by: disposeBag)
-        
-        calendarService.calendarPreviousMonthData
-            .map {
-                [BatteryEntity(calendar: $0)]+self.batteryViewCalendarData.value
-            }
-            .subscribe(onNext: { [weak self] in
-                self?.batteryViewCalendarData.accept($0)
-                self?.pagingState.accept(.left)
-            })
-            .disposed(by: disposeBag)
-        
-        calendarService.calendarNextMonthData
-            .map {
-                self.batteryViewCalendarData.value+[BatteryEntity(calendar: $0)]
-            }
-            .subscribe(onNext: { [weak self] in
-                self?.batteryViewCalendarData.accept($0)
-                guard let count = self?.batteryViewCalendarData.value.count else { return }
-                self?.pagingState.accept(.right(count - 1))
-            })
-            .disposed(by: disposeBag)
+//        calendarService.calendarDataArraySubject
+//            .map { $0.map { BatteryEntity(calendar: $0)} }
+//            .subscribe(onNext: { [weak self] in
+//                guard let currentCount = self?.calendarService.currentDay.value else { return }
+//                self?.batteryViewCalendarData.accept($0)
+//                self?.selectedCellData.accept(
+//                    SelectedCalendarCellEntity(
+//                        yearMonth: $0[1].yearMonth,
+//                        indexPath: IndexPath(item: currentCount-1, section: 0)
+//                    )
+//                )
+//                self?.reloadData.accept(())
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        calendarService.currentLine
+//            .map { .calculateRevertAnimationYValue(value: $0) }
+//            .subscribe(onNext: { [weak self] in
+//                self?.currentLineYValue.accept($0)
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        calendarService.currentLine
+//            .subscribe(onNext: { [weak self] in
+//                self?.currentLine.accept($0)
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        calendarService.currentDateYearMonth
+//            .subscribe(onNext: { [weak self] in
+//                self?.currentYearMonth.accept($0)
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        calendarService.currentDay
+//            .map { $0-1 }
+//            .subscribe(onNext: { [weak self] in
+//                guard let currentDayDang = self?.batteryViewCalendarData.value[1].dangArray[$0],
+//                      let currentMaxDang = self?.batteryViewCalendarData.value[1].maxDangArray[$0] else { return }
+//                
+//                self?.currentCount.accept($0)
+//                self?.selectedCellViewData.accept(
+//                    SelectedCellEntity(dang: currentDayDang,
+//                                       maxDang: currentMaxDang)
+//                )
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        calendarService.calendarPreviousMonthData
+//            .map {_ in
+////                [BatteryEntity(calendar: $0)]+self.batteryViewCalendarData.value
+//            }
+//            .subscribe(onNext: { [weak self] in
+//                self?.batteryViewCalendarData.accept($0)
+//                self?.pagingState.accept(.left)
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        calendarService.calendarNextMonthData
+//            .map {_ in
+////                self.batteryViewCalendarData.value+[BatteryEntity(calendar: $0)]
+//            }
+//            .subscribe(onNext: { [weak self] in
+//                self?.batteryViewCalendarData.accept($0)
+//                guard let count = self?.batteryViewCalendarData.value.count else { return }
+//                self?.pagingState.accept(.right(count - 1))
+//            })
+//            .disposed(by: disposeBag)
     }
     
     private func bindHomeViewData() {

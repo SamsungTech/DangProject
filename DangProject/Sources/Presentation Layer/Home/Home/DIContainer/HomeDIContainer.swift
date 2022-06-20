@@ -14,15 +14,24 @@ class HomeDIContainer {
     
     func makeHomeViewController() -> HomeViewController {
         return HomeViewController(viewModel: makeHomeViewModel(),
-                                  eatenFoodsView: makeEatenFoodsView())
+                                  eatenFoodsView: makeEatenFoodsView(),
+                                  batteryView: makeBatteryView())
     }
     
     func makeEatenFoodsView() -> EatenFoodsView {
         return EatenFoodsView(viewModel: makeEatenFoodsViewModel())
     }
     
+    func makeBatteryView() -> BatteryView {
+        return BatteryView(viewModel: makeBatteryViewModel())
+    }
+    
     func makeEatenFoodsViewModel() -> EatenFoodsViewModel {
         return EatenFoodsViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+    }
+    
+    func makeBatteryViewModel() -> BatteryViewModel {
+        return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
     func makeFetchEatenFoodsUseCase() -> FetchEatenFoodsUseCase {
