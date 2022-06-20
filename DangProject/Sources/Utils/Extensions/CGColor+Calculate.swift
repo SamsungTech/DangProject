@@ -12,12 +12,14 @@ extension CGColor {
                                                 maxDang: Double) -> CGColor {
         let colorCalculateNumber: Double = (dang/maxDang)*100
         
-        if colorCalculateNumber > 63 {
+        if colorCalculateNumber > 66 {
             return UIColor.circleAnimationColorRed.cgColor
         } else if colorCalculateNumber > 33 {
             return UIColor.circleAnimationColorYellow.cgColor
-        } else {
+        } else if colorCalculateNumber > 0 {
             return UIColor.circleAnimationColorGreen.cgColor
+        } else {
+            return UIColor.circleAnimationColorGray.cgColor
         }
     }
     
@@ -25,12 +27,14 @@ extension CGColor {
                                                        maxDang: Double) -> CGColor {
         let colorCalculateNumber: Double = (dang/maxDang)*100
         
-        if colorCalculateNumber > 63 {
+        if colorCalculateNumber > 66 {
             return UIColor.circleBackgroundColorRed.cgColor
         } else if colorCalculateNumber > 33 {
             return UIColor.circleBackgroundColorYellow.cgColor
-        } else {
+        } else if colorCalculateNumber > 0{
             return UIColor.circleBackgroundColorGreen.cgColor
+        } else {
+            return UIColor.circleBackgroundColorGray.cgColor
         }
     }
     
@@ -39,12 +43,14 @@ extension CGColor {
                                                 maxDang: Double) -> CGColor {
         let colorCalculateNumber: Double = (dang/maxDang)*100
         
-        if colorCalculateNumber > 63 {
+        if colorCalculateNumber > 66 {
             return UIColor.circleColorRed.cgColor
         } else if colorCalculateNumber > 33 {
             return UIColor.circleColorYellow.cgColor
-        } else {
+        } else if colorCalculateNumber > 0 {
             return UIColor.circleColorGreen.cgColor
+        } else {
+            return UIColor.circleColorGray.cgColor
         }
     }
     
@@ -52,12 +58,14 @@ extension CGColor {
                                maxDang: Double) -> CGColor {
         let colorCalculateNumber: Double = (dang/maxDang)*100
         
-        if colorCalculateNumber > 63 {
+        if colorCalculateNumber > 66 {
             return UIColor.smallCircleColorRed.cgColor
         } else if colorCalculateNumber > 33 {
             return UIColor.smallCircleColorYellow.cgColor
-        } else {
+        } else if colorCalculateNumber > 0 {
             return UIColor.smallCircleColorGreen.cgColor
+        } else {
+            return UIColor.smallCircleColorGray.cgColor
         }
     }
 }

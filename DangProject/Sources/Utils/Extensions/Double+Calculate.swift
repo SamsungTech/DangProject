@@ -23,4 +23,8 @@ extension Double {
         
         return sum
     }
+    
+    static func calculateCircleLineAngle(percent: Int) -> Double {
+        return minimum(Double(percent) * 0.008, 0.8)
+    }
 }

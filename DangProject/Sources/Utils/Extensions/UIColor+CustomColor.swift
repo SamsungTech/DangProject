@@ -29,6 +29,9 @@ extension UIColor {
     static var circleColorRed: UIColor {
         return UIColor.init(red: 252/255, green: 70/255, blue: 70/255, alpha: 1)
     }
+    static var circleColorGray: UIColor {
+        return UIColor.init(red: 142/255, green: 142/255, blue: 147/255, alpha: 1)
+    }
     
     // MARK: CustomCircleAnimationColor
     static var circleAnimationColorGreen: UIColor {
@@ -39,6 +42,9 @@ extension UIColor {
     }
     static var circleAnimationColorRed: UIColor {
         return UIColor.init(red: 252/255, green: 70/255, blue: 70/255, alpha: 0.15)
+    }
+    static var circleAnimationColorGray: UIColor {
+        return UIColor.init(red: 142/255, green: 142/255, blue: 147/255, alpha: 0.15)
     }
     
     // MARK: CustomCircleBackgroundColor
@@ -51,6 +57,9 @@ extension UIColor {
     static var circleBackgroundColorRed: UIColor {
         return UIColor.init(red: 100/255, green: 40/255, blue: 40/255, alpha: 1)
     }
+    static var circleBackgroundColorGray: UIColor {
+        return UIColor.init(red: 174/255, green: 174/255, blue: 178/255, alpha: 1)
+    }
     
     // MARK: CustomSmallCircleColor
     static var smallCircleColorGreen: UIColor {
@@ -62,6 +71,9 @@ extension UIColor {
     static var smallCircleColorRed: UIColor {
         return UIColor.init(red: 252/255, green: 70/255, blue: 70/255, alpha: 1)
     }
+    static var smallCircleColorGray: UIColor {
+        return UIColor.init(red: 142/255, green: 142/255, blue: 147/255, alpha: 1)
+    }
      
     // MARK: CustomSmallCircleBackgroundColor
     static var smallCircleBackgroundColorGreen: UIColor {
@@ -72,6 +84,9 @@ extension UIColor {
     }
     static var smallCircleBackgroundColorRed: UIColor {
         return UIColor.init(red: 100/255, green: 40/255, blue: 40/255, alpha: 0.1)
+    }
+    static var smallCircleBackgroundColorGray: UIColor {
+        return UIColor.init(red: 174/255, green: 174/255, blue: 178/255, alpha: 0.1)
     }
     
     // MARK: SelectedCellViewColor
