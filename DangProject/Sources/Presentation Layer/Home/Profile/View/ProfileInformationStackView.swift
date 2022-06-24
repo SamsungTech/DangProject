@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol InformationViewDelegate: AnyObject {
+    func didTapView()
+}
+
 class ProfileInformationStackView: UIStackView {
     private let profileDummyData = ProfileDummy()
+    private var views: [UIView] = []
+    var delegate: InformationViewDelegate?
     lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.delegate = self
@@ -40,14 +46,21 @@ class ProfileInformationStackView: UIStackView {
     }()
     
     @available(iOS 13.4, *)
-    lazy var birthDateView: DateTextFieldView = {
+    lazy var birthDatePickerView: DateTextFieldView = {
         let view = DateTextFieldView()
         view.profileLabel.text = "생년월일"
         view.profileTextField.insertText("1996년 6월 9일")
         view.frame = CGRect(x: .zero,
-                                 y: .zero,
-                                 width: calculateXMax(),
-                                 height: yValueRatio(100))
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
+        return view
+    }()
+    
+    lazy var birthDateTextFieldView: DangTextFieldView = {
+        let view = DangTextFieldView()
+        view.profileLabel.text = "생년월일"
+        view.profileTextField.placeholder = "예) 19960609"
         return view
     }()
     
@@ -86,11 +99,7 @@ class ProfileInformationStackView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        if #available(iOS 13.4, *) {
-            configureUI()
-        } else {
-            // Fallback on earlier versions
-        }
+        configureUI()
     }
     
     required init(coder: NSCoder) {
@@ -99,14 +108,16 @@ class ProfileInformationStackView: UIStackView {
 }
 
 extension ProfileInformationStackView {
-    @available(iOS 13.4, *)
     private func configureUI() {
         setUpStackView()
     }
     
-    @available(iOS 13.4, *)
     private func setUpStackView() {
-        let views = [ nameView, birthDateView, genderView, heightView, weightView, targetSugarView ]
+        if #available(iOS 13.4, *) {
+            views = [ nameView, birthDatePickerView, genderView, heightView, weightView, targetSugarView ]
+        } else {
+            views = [ nameView, birthDateTextFieldView, genderView, heightView, weightView, targetSugarView ]
+        }
         
         self.axis = .vertical
         self.distribution = .fillEqually

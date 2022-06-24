@@ -22,7 +22,12 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     private let disposeBag = DisposeBag()
     private var profileImageButton = ProfileImageButton()
     private var profileNavigationBar = ProfileNavigationBar()
-    private var invisibleView = UIView()
+    private lazy var invisibleView: UIView = {
+        let view = UIView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundViewDidTap))
+        view.addGestureRecognizer(tapGesture)
+        return view
+    }()
     private var invisibleViewTopConstraint: NSLayoutConstraint?
     private var saveButtonBottomConstraint: NSLayoutConstraint?
     private lazy var profileScrollView: UIScrollView = {
@@ -92,7 +97,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
     @available(iOS 13.4, *)
     private func bind() {
-//        bindUI()
+        bindUI()
         bindAnimationValue()
     }
     
@@ -163,7 +168,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         ])
     }
     
-//    private func bindUI() {
+    private func bindUI() {
 //        profileImageButton.rx.tapGesture()
 //            .when(.recognized)
 //            .subscribe(onNext: { [weak self] _ in
@@ -172,13 +177,13 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 //            })
 //            .disposed(by: disposeBag)
 //
-//        profileNavigationBar.dismissButton.rx.tap
-//            .bind { [weak self] in
+        profileNavigationBar.dismissButton.rx.tap
+            .bind { [weak self] in
 //                if let coordinator = self?.coordinator as? ProfileCoordinator {
 //                    coordinator.dismissViewController()
 //                }
-//            }
-//            .disposed(by: disposeBag)
+            }
+            .disposed(by: disposeBag)
 //
 //        invisibleView.rx.tapGesture()
 //            .when(.recognized)
@@ -206,31 +211,42 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 //            })
 //            .disposed(by: disposeBag)
 //
-//        Observable.merge(
-//            profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
-//            profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
-//        )
-//            .bind(to: viewModel!.genderRelay)
-//            .disposed(by: disposeBag)
-//
-//        Observable.merge(
-//            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
-//            profileStackView.birthDateView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
-//            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-//            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
-//            profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
-//        )
-//            .bind(to: viewModel!.okButtonRelay)
-//            .disposed(by: disposeBag)
-//
-//        saveButton.saveButton.rx.tap
-//            .bind { [weak self] in
-//                print("저-장")
-//            }
-//            .disposed(by: disposeBag)
-//    }
+        Observable.merge(
+            profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
+            profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
+        )
+            .bind(to: viewModel!.genderRelay)
+            .disposed(by: disposeBag)
+
+        if #available(iOS 13.4, *) {
+            Observable.merge(
+                profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+                profileStackView.birthDatePickerView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+                profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
+                profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
+            )
+            .bind(to: viewModel!.okButtonRelay)
+            .disposed(by: disposeBag)
+        } else {
+            Observable.merge(
+                profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+                profileStackView.birthDateTextFieldView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+                profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
+                profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
+            )
+            .bind(to: viewModel!.okButtonRelay)
+            .disposed(by: disposeBag)
+        }
+
+        saveButton.saveButton.rx.tap
+            .bind { [weak self] in
+                print("저-장")
+            }
+            .disposed(by: disposeBag)
+    }
     
-    @available(iOS 13.4, *)
     private func bindAnimationValue() {
         viewModel?.scrollValue
             .subscribe(onNext: { [weak self] in
@@ -283,7 +299,11 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                     self.profileStackView.nameView.profileTextField.resignFirstResponder()
                 case .birthDate:
                     self.viewModel?.saveButtonDidTap()
-                    self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
+                    if #available(iOS 13.4, *) {
+                        self.profileStackView.birthDatePickerView.profileTextField.resignFirstResponder()
+                    } else {
+                        self.profileStackView.birthDateTextFieldView.profileTextField.resignFirstResponder()
+                    }
                 case .height:
                     self.viewModel?.saveButtonDidTap()
                     self.profileStackView.heightView.profileTextField.resignFirstResponder()
@@ -296,6 +316,21 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    @objc private func backgroundViewDidTap() {
+        print("탭됨 ㅇㅋ?")
+        
+        self.viewModel?.saveButtonDidTap()
+        self.profileStackView.nameView.profileTextField.resignFirstResponder()
+        if #available(iOS 13.4, *) {
+            self.profileStackView.birthDatePickerView.profileTextField.resignFirstResponder()
+        } else {
+            self.profileStackView.birthDateTextFieldView.profileTextField.resignFirstResponder()
+        }
+        self.profileStackView.heightView.profileTextField.resignFirstResponder()
+        self.profileStackView.weightView.profileTextField.resignFirstResponder()
+        self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
     }
 }
 

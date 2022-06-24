@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 @available(iOS 13.4, *)
 class DateTextFieldView: UIView {
     private lazy var downArrowImageView: UIImageView = {
@@ -15,6 +16,7 @@ class DateTextFieldView: UIView {
         imageView.tintColor = .white
         return imageView
     }()
+
     
     private(set) var pickerView: UIDatePicker = {
         let picker = UIDatePicker()
@@ -22,6 +24,7 @@ class DateTextFieldView: UIView {
         picker.preferredDatePickerStyle = .wheels
         return picker
     }()
+    
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
