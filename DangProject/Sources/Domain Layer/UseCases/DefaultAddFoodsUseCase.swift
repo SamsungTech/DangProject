@@ -55,11 +55,6 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
                                                                   in: eatenFoodsPerDay.eatenFoodsArray) else { return }
                     self?.coreDataManagerRepository.addEatenFood(food: checkedFood,
                                                                  eatenFoodsPerDayEntity: eatenFoodsPerDay)
-                    // Test
-                    print(eatenFoodsPerDay.date)
-                    eatenFoodsPerDay.eatenFoodsArray.forEach{
-                        print($0.name, $0.amount)
-                    }
                 }
             })
             .disposed(by: disposeBag)
