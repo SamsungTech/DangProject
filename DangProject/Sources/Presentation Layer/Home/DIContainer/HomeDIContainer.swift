@@ -14,8 +14,17 @@ class HomeDIContainer {
     
     func makeHomeViewController() -> HomeViewController {
         return HomeViewController(viewModel: makeHomeViewModel(),
+                                  calendarView: makeCalendarView(),
                                   eatenFoodsView: makeEatenFoodsView(),
                                   batteryView: makeBatteryView())
+    }
+    
+    func makeHomeViewModel() -> HomeViewModelProtocol{
+        return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+    }
+    
+    func makeCalendarView() -> CalendarView {
+        return CalendarView(viewModel: makeCalendarViewModel())
     }
     
     func makeEatenFoodsView() -> EatenFoodsView {
@@ -24,6 +33,15 @@ class HomeDIContainer {
     
     func makeBatteryView() -> BatteryView {
         return BatteryView(viewModel: makeBatteryViewModel())
+    }
+    
+    func makeCalendarViewModel() -> CalendarViewModel {
+        return CalendarViewModel(calendarService: makeCalendarService(),
+                                 fetchEatenFoodsUsecase: fetchEatenFoodsUseCase)
+    }
+    
+    func makeCalendarService() -> CalendarService {
+        return DefaultCalendarService()
     }
     
     func makeEatenFoodsViewModel() -> EatenFoodsViewModel {
@@ -40,16 +58,6 @@ class HomeDIContainer {
 
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
-    }
-    
-    func makeHomeViewModel() -> HomeViewModelProtocol {
-        return HomeViewModel(useCase: makeHomeUseCase(),
-                             fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
-                             calendarService: CalendarService())
-    }
-    
-    func makeHomeUseCase() -> HomeUseCaseProtocol {
-        return HomeUseCase(repository: makeHomeRepository())
     }
     
     func makeHomeRepository() -> HomeRepositoryProtocol {

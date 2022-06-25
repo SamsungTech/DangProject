@@ -17,11 +17,13 @@ class HomeViewController: UIViewController {
     private var customNavigationBar = CustomNavigationBar()
     
     private let eatenFoodsTitleView = EatenFoodsTitleView()
-    private var eatenFoodsView: EatenFoodsView
-    private var batteryView: BatteryView
+    private let eatenFoodsView: EatenFoodsView
+    private let batteryView: BatteryView
+    private let calendarView: CalendarView
     
     private let graphTitleView = GraphTitleView()
     private var homeGraphView = HomeGraphView()
+
     
     private var batteryViewHeightAnchor: NSLayoutConstraint?
     private var firstContentY: CGFloat = 0
@@ -34,10 +36,11 @@ class HomeViewController: UIViewController {
     private var selectedCellEntity: SelectedCellEntity = .empty
     var viewModel: HomeViewModelProtocol
     
-    
     init(viewModel: HomeViewModelProtocol,
+         calendarView: CalendarView,
          eatenFoodsView: EatenFoodsView,
          batteryView: BatteryView) {
+        self.calendarView = calendarView
         self.eatenFoodsView = eatenFoodsView
         self.batteryView = batteryView
         self.viewModel = viewModel
@@ -49,25 +52,16 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        // 여기서 불러오면될것같음
-        // 현재 + 전 후 달 eatenFoods
-        
-        viewModel.getEatenFoodsPerDay()
+        viewModel.refreshHomeViewController()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .homeBackgroundColor
-        viewModel.viewDidLoad()
-        bindCurrentLineNumber()
         configure()
         layout()
         subscribe()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     private func configure() {
@@ -87,7 +81,7 @@ class HomeViewController: UIViewController {
     }
     
     private func layout() {
-        [ customNavigationBar, homeScrollView ].forEach() { view.addSubview($0) }
+        [ customNavigationBar, calendarView, homeScrollView ].forEach() { view.addSubview($0) }
         [ homeStackView ].forEach() { homeScrollView.addSubview($0) }
         [ batteryView, eatenFoodsTitleView, eatenFoodsView,
           graphTitleView, homeGraphView ].forEach() { viewsInStackView.append($0) }
@@ -99,8 +93,15 @@ class HomeViewController: UIViewController {
         customNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         customNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(110)).isActive = true
         
+        calendarView.translatesAutoresizingMaskIntoConstraints = false
+        calendarView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor).isActive = true
+        calendarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        calendarView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        calendarView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
+        calendarView.parentableViewController = self
+        
         homeScrollView.translatesAutoresizingMaskIntoConstraints = false
-        homeScrollView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor).isActive = true
+        homeScrollView.topAnchor.constraint(equalTo: calendarView.bottomAnchor).isActive = true
         homeScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         homeScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         homeScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
@@ -137,9 +138,6 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     private func subscribe() {
         bindHomeGraphViewModel()
-        bindCurrentDayPointData()
-        bindCalendarScaleAnimation()
-        bindSelectedCellViewData()
         bindNavigationImageButton()
     }
     
@@ -159,22 +157,6 @@ extension HomeViewController {
             .disposed(by: disposeBag)
     }
     
-    private func bindCurrentDayPointData() {
-        viewModel.currentXPoint
-            .subscribe(onNext: { [weak self] _ in
-//                if let text = self?.viewModel.batteryViewCalendarData.value[$0].yearMonth {
-//                    self?.customNavigationBar.dateLabel.text = text
-//                }
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel.currentDateCGPoint
-            .subscribe(onNext: { [weak self] in
-                self?.currentCGPoint = $0
-            })
-            .disposed(by: disposeBag)
-    }
-    
     private func bindNavigationImageButton() {
         customNavigationBar.profileImageButton.rx.tap
             .bind { [weak self] in
@@ -183,48 +165,15 @@ extension HomeViewController {
             }
             .disposed(by: disposeBag)
     }
-    
-    private func bindCalendarScaleAnimation() {
-        customNavigationBar.yearMonthButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.calculateCalendarScaleState()
-            }
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindSelectedCellViewData() {
-        viewModel.selectedCellViewData
-            .subscribe(onNext: { [weak self] in
-                self?.selectedCellEntity = $0
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindCurrentLineNumber() {
-        viewModel.currentLineYValue
-            .subscribe(onNext: { [weak self] in
-                self?.selectedDayYValue = $0
-            })
-            .disposed(by: disposeBag)
-    }
 }
-
-//extension HomeViewController {
-//    func resetBatteryViewConfigure() {
-//        batteryView.animateShapeLayer(selectedCellEntity.circleDangValue,
-//                                      selectedCellEntity.circleAnimationDuration)
-//        batteryView.countAnimation(selectedCellEntity.circlePercentValue)
-//        
-//        
-//        batteryView.targetSugar.text = "목표: " + selectedCellEntity.selectedDangValue + "/" + selectedCellEntity.selectedMaxDangValue
-//        
-//        
-//        batteryView.animationLineLayer.strokeColor = selectedCellEntity.selectedCircleColor
-//        batteryView.percentLineBackgroundLayer.strokeColor = selectedCellEntity.selectedCircleBackgroundColor
-//        batteryView.percentLineLayer.strokeColor = selectedCellEntity.selectedAnimationLineColor
-//        batteryView.animatePulsatingLayer()
-//    }
-//    
+extension HomeViewController: CalendarViewDelegate {
+    func fetchEatenFoodsPerMonths(_ dateComponents: DateComponents) {
+        customNavigationBar.configureLabelText(date: dateComponents)
+        viewModel.fetchEatenFoodsInTotalMonths(dateComponents)
+    }
+    
+    
+}
 //    private func expandAnimation() {
 //        batteryView.calendarCollectionView.isScrollEnabled = true
 //        batteryView.calendarViewTopAnchor?.constant = yValueRatio(110)

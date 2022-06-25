@@ -7,205 +7,94 @@
 import Foundation
 import UIKit
 
+import RxSwift
 import RxRelay
 
-enum CurrentDayLineState: Equatable {
-    case normal(DaysCollectionViewCell)
-    case hidden(DaysCollectionViewCell)
-    case empty
-}
-
-enum SelectedItemFillViewState: Equatable {
-    case normal(UICollectionView,
-                DaysCollectionViewCell,
-                IndexPath)
-    case hidden(DaysCollectionViewCell)
-    case empty
-}
-
-enum SelectedItemIsHiddenState: Equatable {
-    case selectedTrue(UICollectionView)
-    case selectedFalse(UICollectionView,
-                       IndexPath)
-    case empty
-}
-
-enum DeSelectedItemIsHiddenState: Equatable {
-    case DeSelectedTrue
-    case DeSelectedFalse(UICollectionView,
-                         IndexPath)
-}
-
-enum YearMonthState: Equatable {
-    case match(UICollectionView,
-               IndexPath,
-               DaysCollectionViewCell)
-    case differ
-}
-
-struct SelectedCalendarCellEntity: Equatable {
-    static let empty: Self = .init(yearMonth: "",
-                                   indexPath: IndexPath(item: 0, section: 0))
-    
-    var yearMonth: String?
-    var indexPath: IndexPath?
-    
-    init(yearMonth: String, indexPath: IndexPath) {
-        self.yearMonth = yearMonth
-        self.indexPath = indexPath
-    }
-}
-
-struct CalendarMonthDangEntity {
-    static let empty: Self = .init(calendarMonthDang: [])
-    
-    var calendarMonthDang: [MonthDangEntity]
-    
-    init(calendarMonthDang: [MonthDangEntity]) {
-        self.calendarMonthDang = calendarMonthDang
-    }
-}
-
-struct CalendarStackViewEntity: Equatable {
-    
-    var yearMonth: String
-    var daysArray: [String]
-    var isHiddenArray: [Bool]
-    var dangArray: [Double]
-    var maxDangArray: [Double]
-    var isCurrentDayArray: [Bool]
-}
-
-extension CalendarStackViewEntity {
+enum ScrollDirection {
+    case right
+    case left
+    case center
 }
 
 protocol CalendarViewModelInputProtocol: AnyObject {
-    func compareCurrentDayCellData(indexPath: IndexPath,
-                                   yearMonth: String,
-                                   cell: DaysCollectionViewCell,
-                                   currentCount: Int,
-                                   currentYearMonth: String)
-    func compareSelectedDayCellData(indexPath: IndexPath,
-                                    yearMonth: String,
-                                    cell: DaysCollectionViewCell,
-                                    collectionView: UICollectionView,
-                                    selectedCellIndexPath: Int,
-                                    selectedCellYearMonth: String)
-    func calculateSelectedItemIsHiddenValue(collectionView: UICollectionView,
-                                            indexPath: IndexPath)
-    func calculateDeSelectedItemIsHiddenValue(collectionView: UICollectionView,
-                                              indexPath: IndexPath)
-    func compareSelectedYearMonthData(collectionView: UICollectionView,
-                                      selectedYearMonth: String,
-                                      indexPath: IndexPath,
-                                      cell: DaysCollectionViewCell)
+    var scrollDirection: ScrollDirection { get set }
+    func checkScrollViewDirection()
 }
 
 protocol CalendarViewModelOutputProtocol: AnyObject {
-//    var calendarData: BehaviorRelay<CalendarStackViewEntity> { get }
-    var currentDayCellLineViewState: BehaviorRelay<CurrentDayLineState> { get }
-    var selectedCellFillViewState: BehaviorRelay<SelectedItemFillViewState> { get }
-    var selectedYearMonthState: BehaviorRelay<YearMonthState> { get }
-    var selectedCalendarCellIsHidden: BehaviorRelay<SelectedItemIsHiddenState> { get }
-    var deSelectedCalendarCellIsHidden: BehaviorRelay<DeSelectedItemIsHiddenState> { get }
+    var previousDataObservable: BehaviorRelay<[CalendarCellViewModelEntity]> { get }
+    var currentDataObservable: BehaviorRelay<[CalendarCellViewModelEntity]> { get }
+    var nextDataObservable: BehaviorRelay<[CalendarCellViewModelEntity]> { get }
+    var currentDateComponents: DateComponents { get }
 }
 
 protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarViewModelOutputProtocol {}
 
 class CalendarViewModel: CalendarViewModelProtocol {
-//    var calendarData = BehaviorRelay<CalendarStackViewEntity>(value: .empty)
-    var currentDayCellLineViewState = BehaviorRelay<CurrentDayLineState>(value: .empty)
-    var selectedCellFillViewState = BehaviorRelay<SelectedItemFillViewState>(value: .empty)
-    var selectedYearMonthState = BehaviorRelay<YearMonthState>(value: .differ)
-    var selectedCalendarCellIsHidden = BehaviorRelay<SelectedItemIsHiddenState>(value: .empty)
-    var deSelectedCalendarCellIsHidden = BehaviorRelay<DeSelectedItemIsHiddenState>(value: .DeSelectedTrue)
+    private let disposeBag = DisposeBag()
+    var previousDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: [])
+    var currentDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: [])
+    var nextDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: [])
     
-//    init(calendarData: BatteryEntity) {
-//        self.calendarData.accept(
-//            CalendarStackViewEntity(
-//                batteryEntity: calendarData
-//            )
-//        )
-//    }
-}
-
-extension CalendarViewModel {
-    func compareCurrentDayCellData(indexPath: IndexPath,
-                                   yearMonth: String,
-                                   cell: DaysCollectionViewCell,
-                                   currentCount: Int,
-                                   currentYearMonth: String) {
-        if indexPath.item == currentCount && currentYearMonth == yearMonth {
-            currentDayCellLineViewState.accept(
-                .normal(cell)
-            )
-        } else {
-            currentDayCellLineViewState.accept(
-                .hidden(cell)
-            )
+    var scrollDirection: ScrollDirection = .center
+    
+    lazy var currentDateComponents = calendarService.dateComponents
+    private lazy var selectedMonth = calendarService.currentMonthData()
+    // MARK: - Init
+    let calendarService: CalendarService
+    let fetchEatenFoodsUsecase: FetchEatenFoodsUseCase
+    
+    init(calendarService: CalendarService,
+         fetchEatenFoodsUsecase: FetchEatenFoodsUseCase) {
+        self.calendarService = calendarService
+        self.fetchEatenFoodsUsecase = fetchEatenFoodsUsecase
+        bindTotalMonthEatenFoods()
+    }
+    
+    private func bindTotalMonthEatenFoods() {
+        fetchEatenFoodsUsecase.previousCurrentNextMonthsDataObservable
+            .subscribe(onNext: { [weak self] totalMonths in
+                guard let previous = self?.mergeCalendarAndEatenFoods(origin: (self?.calendarService.previousMonthData())!,
+                                                                      eatenFoods: totalMonths[0]),
+                      let current = self?.mergeCalendarAndEatenFoods(origin: (self?.calendarService.currentMonthData())!,
+                                                                     eatenFoods: totalMonths[1]),
+                      let next = self?.mergeCalendarAndEatenFoods(origin: (self?.calendarService.nextMonthData())!,
+                                                                  eatenFoods: totalMonths[2])
+                else { return }
+                self?.previousDataObservable.accept(previous)
+                self?.currentDataObservable.accept(current)
+                self?.nextDataObservable.accept(next)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func mergeCalendarAndEatenFoods(origin: CalendarMonthEntity, eatenFoods: [EatenFoodsPerDayDomainModel]) -> [CalendarCellViewModelEntity] {
+        let calendarDayEntity = origin.days
+        var result: [CalendarCellViewModelEntity] = []
+        var index = 0
+        for i in 0 ..< 42 {
+            if calendarDayEntity[i].isHidden {
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i], eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
+            } else {
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
+                                                               eatenFoodsPerDayEntity: eatenFoods[index]))
+                index += 1
+            }
         }
+        
+        return result
     }
     
-    func compareSelectedDayCellData(indexPath: IndexPath,
-                                    yearMonth: String,
-                                    cell: DaysCollectionViewCell,
-                                    collectionView: UICollectionView,
-                                    selectedCellIndexPath: Int,
-                                    selectedCellYearMonth: String) {
-        if indexPath.item == selectedCellIndexPath && selectedCellYearMonth == yearMonth {
-            selectedCellFillViewState.accept(
-                .normal(collectionView, cell,
-                        indexPath)
-            )
-        } else {
-            selectedCellFillViewState.accept(
-                .hidden(cell)
-            )
+    // MARK: - Internal
+    func checkScrollViewDirection() {
+        switch scrollDirection {
+        case .right:
+            calendarService.plusMonth()
+        case .center:
+            return
+        case .left:
+            calendarService.minusMonth()
         }
-    }
-    
-    func calculateSelectedItemIsHiddenValue(collectionView: UICollectionView,
-                                            indexPath: IndexPath) {
-//        let isHidden = calendarData.value.isHiddenArray[indexPath.item]
-//
-//        switch isHidden {
-//        case true:
-//            selectedCalendarCellIsHidden.accept(
-//                .selectedTrue(collectionView)
-//            )
-//        case false:
-//            selectedCalendarCellIsHidden.accept(
-//                .selectedFalse(collectionView,
-//                               indexPath)
-//            )
-//        }
-    }
-    
-    func calculateDeSelectedItemIsHiddenValue(collectionView: UICollectionView,
-                                              indexPath: IndexPath) {
-//        let isHidden = calendarData.value.isHiddenArray[indexPath.item]
-//        
-//        switch isHidden {
-//        case true:
-//            deSelectedCalendarCellIsHidden.accept(
-//                .DeSelectedTrue
-//            )
-//        case false:
-//            deSelectedCalendarCellIsHidden.accept(
-//                .DeSelectedFalse(collectionView,
-//                                 indexPath)
-//            )
-//        }
-    }
-    
-    func compareSelectedYearMonthData(collectionView: UICollectionView,
-                                      selectedYearMonth: String,
-                                      indexPath: IndexPath,
-                                      cell: DaysCollectionViewCell) {
-//        if selectedYearMonth == calendarData.value.yearMonth {
-//            selectedYearMonthState.accept(.match(collectionView, indexPath, cell))
-//        } else {
-//            selectedYearMonthState.accept(.differ)
-//        }
+        self.currentDateComponents = calendarService.dateComponents
     }
 }

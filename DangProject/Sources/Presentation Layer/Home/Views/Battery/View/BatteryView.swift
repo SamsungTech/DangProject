@@ -8,7 +8,6 @@ class BatteryView: UIView {
     
     private var viewModel: BatteryViewModel
     
-    private var gradient = CAGradientLayer()
     private var circleProgressBarView = UIView()
     
     private var endCount: Int = 0

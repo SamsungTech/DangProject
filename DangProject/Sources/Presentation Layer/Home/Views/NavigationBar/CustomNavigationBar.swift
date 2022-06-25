@@ -26,6 +26,7 @@ class CustomNavigationBar: UIView {
         super.init(frame: frame)
         self.backgroundColor = .homeBoxColor
         configureUI()
+        configureLabelText(date: DateComponents.currentDateTimeComponents())
     }
     
     required init?(coder: NSCoder) {
@@ -61,6 +62,13 @@ class CustomNavigationBar: UIView {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
         dateLabel.centerYAnchor.constraint(equalTo: profileImageButton.centerYAnchor).isActive = true
+    }
+    
+    func configureLabelText(date: DateComponents) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 M월"
+        let dateToString = dateFormatter.string(from: Calendar.current.date(from: date)!)
+        dateLabel.text = dateToString
     }
     
     private func setUpYearMonthButton() {
