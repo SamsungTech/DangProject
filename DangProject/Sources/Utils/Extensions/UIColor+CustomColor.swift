@@ -98,11 +98,11 @@ extension UIColor {
     }
     
     // MARK: CurrentCellLineViewColor
-    static var currentDayCellLineViewColor: CGColor {
-        return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 1.0).cgColor
+    static var currentDayCellLineViewColor: UIColor {
+        return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.5)
     }
-    static var currentDayCellLineViewHiddenColor: CGColor {
-        return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0).cgColor
+    static var currentDayCellLineViewHiddenColor: UIColor {
+        return UIColor.init(red: 47/255, green: 45/255, blue: 62/255, alpha: 0.0)
     }
     
     // MARK: ProfileTextField

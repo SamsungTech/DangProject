@@ -14,6 +14,7 @@ protocol CalendarService {
     func previousMonthData() -> CalendarMonthEntity
     func currentMonthData() -> CalendarMonthEntity
     func nextMonthData() -> CalendarMonthEntity
+    func changeSelectedDate(year: Int, month: Int, day: Int)
 }
 class DefaultCalendarService: CalendarService {
     var dateComponents = DateComponents()
@@ -23,6 +24,7 @@ class DefaultCalendarService: CalendarService {
         return calendar
     }()
     private let currentDate = Date.currentDate()
+    private var selectedDate = Date.currentDate()
     
     init() {
         initDateFormatter()
@@ -57,29 +59,38 @@ class DefaultCalendarService: CalendarService {
         return calculation(dateComponents: nextDateComponents)
     }
     
+    func changeSelectedDate(year: Int, month: Int, day: Int) {
+        let newDate = Date.makeDate(year: year, month: month, day: day)
+        self.selectedDate = newDate
+    }
+    
     private func calculation(dateComponents: DateComponents) -> CalendarMonthEntity {
         
-        let firstDayOfMonth = calendar.date(from: dateComponents)
+        guard let firstDayOfMonth = calendar.date(from: dateComponents) else { return CalendarMonthEntity.empty }
         /// 0: Sunday ~ 7: Saturday
-        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth!)
+        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
         /// For indexing
         let weekdayAdding: Int = 2 - firstWeekday
         let daysCountInMonth: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!)
         var days: [CalendarDayEntity] = []
         let beforeMonthsDay: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!-1)
         var nextMonthsDay = 1
+        
         for day in weekdayAdding..<42+weekdayAdding {
             var dayEntity: CalendarDayEntity
             if day < 1 { // 이전달
-                dayEntity = CalendarDayEntity.init(month: dateComponents.month!-1, day: beforeMonthsDay + day)
+                dayEntity = CalendarDayEntity.init(year: dateComponents.year!, month: dateComponents.month!-1, day: beforeMonthsDay + day)
                 dayEntity.isHidden = true
             } else if day <= daysCountInMonth { // 현재달
-                dayEntity = CalendarDayEntity.init(month: dateComponents.month!, day: day)
+                dayEntity = CalendarDayEntity.init(year: dateComponents.year!, month: dateComponents.month!, day: day)
                 if isToday(yearMonth: dateComponents, day: day) {
                     dayEntity.isToday = true
                 }
+                if isSelectedDay(yearMonth: dateComponents, day: day) {
+                    dayEntity.isSelected = true
+                }
             } else { // 이후달
-                dayEntity = CalendarDayEntity.init(month: dateComponents.month! + 1, day: nextMonthsDay)
+                dayEntity = CalendarDayEntity.init(year: dateComponents.year!, month: dateComponents.month! + 1, day: nextMonthsDay)
                 dayEntity.isHidden = true
                 nextMonthsDay += 1
             }
@@ -97,6 +108,16 @@ class DefaultCalendarService: CalendarService {
                                             day: day)
         let currentDate = Date.currentDate()
         if comparingDate == currentDate {
+            return true
+        }
+        return false
+    }
+    
+    private func isSelectedDay(yearMonth: DateComponents, day: Int) -> Bool {
+        let comparingDate: Date = .makeDate(year: yearMonth.year,
+                                            month: yearMonth.month,
+                                            day: day)
+        if comparingDate == selectedDate {
             return true
         }
         return false

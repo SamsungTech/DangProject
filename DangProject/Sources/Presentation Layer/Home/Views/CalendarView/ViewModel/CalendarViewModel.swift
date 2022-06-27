@@ -18,7 +18,9 @@ enum ScrollDirection {
 
 protocol CalendarViewModelInputProtocol: AnyObject {
     var scrollDirection: ScrollDirection { get set }
+//    var layerAnimationIsDone: Bool { get set }
     func checkScrollViewDirection()
+    func changeCurrentCell(index: Int)
 }
 
 protocol CalendarViewModelOutputProtocol: AnyObject {
@@ -26,9 +28,11 @@ protocol CalendarViewModelOutputProtocol: AnyObject {
     var currentDataObservable: BehaviorRelay<[CalendarCellViewModelEntity]> { get }
     var nextDataObservable: BehaviorRelay<[CalendarCellViewModelEntity]> { get }
     var currentDateComponents: DateComponents { get }
+    var selectedDateComponents: DateComponents { get }
+    func checkTodayCellColumn() -> Int
 }
 
-protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarViewModelOutputProtocol {}
+protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarViewModelOutputProtocol { }
 
 class CalendarViewModel: CalendarViewModelProtocol {
     private let disposeBag = DisposeBag()
@@ -39,7 +43,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
     var scrollDirection: ScrollDirection = .center
     
     lazy var currentDateComponents = calendarService.dateComponents
-    private lazy var selectedMonth = calendarService.currentMonthData()
+    var selectedDateComponents: DateComponents = .currentDateTimeComponents()
     // MARK: - Init
     let calendarService: CalendarService
     let fetchEatenFoodsUsecase: FetchEatenFoodsUseCase
@@ -64,6 +68,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
                 self?.previousDataObservable.accept(previous)
                 self?.currentDataObservable.accept(current)
                 self?.nextDataObservable.accept(next)
+                
             })
             .disposed(by: disposeBag)
     }
@@ -84,7 +89,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
         
         return result
     }
-    
+        
     // MARK: - Internal
     func checkScrollViewDirection() {
         switch scrollDirection {
@@ -97,4 +102,24 @@ class CalendarViewModel: CalendarViewModelProtocol {
         }
         self.currentDateComponents = calendarService.dateComponents
     }
+    
+    func changeCurrentCell(index: Int) {
+        let selectedCell = currentDataObservable.value[index]
+        calendarService.changeSelectedDate(year: selectedCell.year,
+                                           month: selectedCell.month,
+                                           day: selectedCell.day)
+        self.selectedDateComponents = DateComponents(year: selectedCell.year,
+                                                     month: selectedCell.month,
+                                                     day: selectedCell.day)
+    }
+    
+    func checkTodayCellColumn() -> Int {
+        for i in 0 ..< calendarService.currentMonthData().days.count {
+            if calendarService.currentMonthData().days[i].isToday {
+                return i
+            }
+        }
+        return 0
+    }
+
 }

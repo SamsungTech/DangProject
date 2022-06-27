@@ -59,8 +59,4 @@ class HomeDIContainer {
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
     }
-    
-    func makeHomeRepository() -> HomeRepositoryProtocol {
-        return HomeRepository()
-    }
 }

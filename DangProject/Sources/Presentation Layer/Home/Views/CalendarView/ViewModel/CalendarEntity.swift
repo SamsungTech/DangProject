@@ -10,6 +10,7 @@ import UIKit
 struct CalendarCellViewModelEntity {
     static let empty: Self = .init(calendarDayEntity: CalendarDayEntity.empty,
                             eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty)
+    let year: Int
     let month: Int
     let day: Int
     var isHidden: Bool
@@ -21,6 +22,7 @@ struct CalendarCellViewModelEntity {
     
     init(calendarDayEntity: CalendarDayEntity,
          eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel) {
+        self.year = calendarDayEntity.year
         self.month = calendarDayEntity.month
         self.day = calendarDayEntity.day
         self.isHidden = calendarDayEntity.isHidden
@@ -39,14 +41,16 @@ struct CalendarCellViewModelEntity {
 }
 
 struct CalendarDayEntity {
-    static let empty: Self = .init(month: 1, day: 1)
+    static let empty: Self = .init(year: 0, month: 0, day: 0)
+    let year: Int
     let month: Int
     let day: Int
     var isHidden: Bool = false
     var isToday: Bool = false
     var isSelected: Bool = false
     
-    init(month: Int, day: Int) {
+    init(year: Int, month: Int, day: Int) {
+        self.year = year
         self.month = month
         self.day = day
     }

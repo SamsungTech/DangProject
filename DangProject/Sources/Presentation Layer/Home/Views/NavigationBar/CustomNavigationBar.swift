@@ -6,21 +6,32 @@
 //
 
 import UIKit
+
 import RxSwift
 import RxCocoa
 
+protocol NavigationBarDelegate {
+    func changeViewControllerExpandation(state: ChevronButtonState)
+}
+
+enum ChevronButtonState {
+    case expand
+    case revert
+}
+
 class CustomNavigationBar: UIView {
-    fileprivate var barHeightAnchor: NSLayoutConstraint?
     private let disposeBag = DisposeBag()
     private let gradient = CAGradientLayer()
     private let week = ["일", "월", "화", "수", "목", "금", "토"]
-    private var weekStackView = UIStackView()
-    private var weekLabels: [UILabel] = []
-    var dateLabel = UILabel()
-    var yearMonthButton = UIButton()
-    var profileImageView = UIImageView()
+    private let weekStackView = UIStackView()
+    private let weekLabels: [UILabel] = []
+    private let dateLabel = UILabel()
+    private let chevronButton = UIButton()
+    private var chevronButtonState: ChevronButtonState = .revert
+    private let profileImageView = UIImageView()
+    private let profileImageButton = UIButton()
     
-    var profileImageButton = UIButton()
+    var parentableViewController: NavigationBarDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,13 +46,13 @@ class CustomNavigationBar: UIView {
     
     private func configureUI() {
         createWeekLabel()
-        setUpProfileImageButton()
-        setUpDateLabel()
-        setUpYearMonthButton()
-        setUpWeekStackView()
+        setupProfileImageButton()
+        setupDateLabel()
+        setupChevronButton()
+        setupWeekStackView()
     }
     
-    private func setUpProfileImageButton() {
+    private func setupProfileImageButton() {
         self.addSubview(profileImageButton)
         /// fetch profile
         profileImageButton.setImage(UIImage(named: "231.png"), for: .normal)
@@ -54,7 +65,7 @@ class CustomNavigationBar: UIView {
         profileImageButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: xValueRatio(-30)).isActive = true
     }
     
-    private func setUpDateLabel() {
+    private func setupDateLabel() {
         addSubview(dateLabel)
         dateLabel.textColor = .white
         dateLabel.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .bold)
@@ -67,22 +78,29 @@ class CustomNavigationBar: UIView {
     func configureLabelText(date: DateComponents) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy년 M월"
-        let dateToString = dateFormatter.string(from: Calendar.current.date(from: date)!)
+        guard let unwrappedDate = Calendar.current.date(from: date) else { return }
+        let dateToString = dateFormatter.string(from: unwrappedDate)
         dateLabel.text = dateToString
     }
     
-    private func setUpYearMonthButton() {
-        addSubview(yearMonthButton)
-        yearMonthButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-        yearMonthButton.tintColor = .white
-        yearMonthButton.translatesAutoresizingMaskIntoConstraints = false
-        yearMonthButton.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: xValueRatio(5)).isActive = true
-        yearMonthButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
-        yearMonthButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
-        yearMonthButton.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+    private func setupChevronButton() {
+        addSubview(chevronButton)
+        chevronButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        chevronButton.tintColor = .white
+        chevronButton.translatesAutoresizingMaskIntoConstraints = false
+        chevronButton.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: xValueRatio(5)).isActive = true
+        chevronButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
+        chevronButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+        chevronButton.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
+        chevronButton.addTarget(self, action: #selector(chevronButtonDidTapped), for: .touchUpInside)
     }
     
-    private func setUpWeekStackView() {
+    @objc private func chevronButtonDidTapped() {
+        changeChevronButton()
+        parentableViewController?.changeViewControllerExpandation(state: chevronButtonState)
+    }
+    
+    private func setupWeekStackView() {
         addSubview(weekStackView)
         weekStackView.distribution = .fillEqually
         weekStackView.alignment = .fill
@@ -103,6 +121,17 @@ class CustomNavigationBar: UIView {
             label.text = "\(item)"
             
             weekStackView.addArrangedSubview(label)
+        }
+    }
+    
+    private func changeChevronButton() {
+        switch chevronButtonState {
+        case .expand:
+            chevronButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+            chevronButtonState = .revert
+        case .revert:
+            chevronButton.setImage(UIImage(systemName: "chevron.up"), for: .normal)
+            chevronButtonState = .expand
         }
     }
 }

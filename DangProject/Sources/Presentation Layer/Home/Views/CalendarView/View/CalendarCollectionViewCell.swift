@@ -34,12 +34,11 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        self.isUserInteractionEnabled = true
         dayLabel.attributedText = nil
         smallPercentLineLayer.removeFromSuperlayer()
         smallPercentLineBackgroundLayer.removeFromSuperlayer()
-//        smallPercentLineLayer.isHidden = true
-//        smallPercentLineBackgroundLayer.isHidden = true
-
+        selectedView.isHidden = true
         currentLineView.isHidden = true
     }
     
@@ -55,7 +54,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         smallPercentLineLayer.lineCap = .round
         smallPercentLineLayer.position = CGPoint(x: 28, y: 40)
         smallPercentLineLayer.strokeStart = 0.0
-        smallPercentLineLayer.strokeEnd = 0.1
+        smallPercentLineLayer.strokeEnd = 0.0
         
         smallPercentLineBackgroundLayer.path = circularPath.cgPath
         smallPercentLineBackgroundLayer.fillColor = UIColor.clear.cgColor
@@ -65,23 +64,16 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         smallPercentLineBackgroundLayer.lineWidth = 4
         
         selectedView.viewRadius(cornerRadius: 11)
+        selectedView.backgroundColor = UIColor.currentDayCellLineViewColor
         
-        currentLineView.layer.borderColor = UIColor.currentDayCellLineViewColor
+        currentLineView.layer.borderColor = UIColor.currentDayCellLineViewColor.cgColor
         currentLineView.backgroundColor = .clear
         currentLineView.layer.borderWidth = 3
         currentLineView.viewRadius(cornerRadius: 15)
     }
     
-    private func configureLayer() {
-        [ smallPercentLineBackgroundLayer, smallPercentLineLayer ].forEach() { contentView.layer.addSublayer($0) }
-    }
     private func layout() {
         [ currentLineView, selectedView, dayLabel ].forEach() { contentView.addSubview($0) }
-        
-//        [ smallPercentLineBackgroundLayer, smallPercentLineLayer ].forEach() { contentView.layer.addSublayer($0) }
-//        smallPercentLineLayer.isHidden = true
-//        smallPercentLineBackgroundLayer.isHidden = true
-        
         dayLabel.translatesAutoresizingMaskIntoConstraints = false
         dayLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         dayLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -106,33 +98,28 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         
         if data.isHidden {
             dayLabel.alpha = 0.2
+            self.isUserInteractionEnabled = false
         } else {
             dayLabel.alpha = 1.0
-//            smallPercentLineLayer.isHidden = false
-//            smallPercentLineBackgroundLayer.isHidden = false
-            configureLayer()
             layer.insertSublayer(smallPercentLineLayer, at: 0)
             layer.insertSublayer(smallPercentLineBackgroundLayer, at: 0)
         }
         
         if data.isToday {
-//            layer.insertSublayer(smallPercentLineLayer, at: 0)
             currentLineView.isHidden = false
         }
         if data.isSelected {
-            
+            selectedView.isHidden = false
         }
     }
     
     func configureShapeLayer(data: CalendarCellViewModelEntity) {
         let circleAngleValue = Double.calculateCircleLineAngle(percent: data.percentValue)
-        if data.percentValue == 0 {
-            smallPercentLineLayer.lineWidth = 0
-        } else {
+        if data.percentValue != 0 {
             smallPercentLineLayer.lineWidth = 4
             smallPercentLineLayer.strokeColor = data.layerColor
         }
-        
+
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = circleAngleValue
         if circleAngleValue < 0.4 {

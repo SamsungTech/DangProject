@@ -13,6 +13,7 @@ import RxRelay
 
 protocol CalendarViewDelegate {
     func fetchEatenFoodsPerMonths(_ dateComponents: DateComponents )
+    func cellDidSelected(dateComponents: DateComponents, cellIndexColumn: Int)
 }
 
 class CalendarView: UIView {
@@ -73,7 +74,7 @@ class CalendarView: UIView {
                 cell.configureShapeLayer(data: data)
             }
             .disposed(by: disposeBag)
-                
+        
         viewModel.previousDataObservable
             .bind(to: previousCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
@@ -85,13 +86,25 @@ class CalendarView: UIView {
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
+        
+        currentCalendarCollectionView.rx
+            .itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                self?.viewModel.changeCurrentCell(index: indexPath.item)
+                
+                guard let dateComponents = self?.viewModel.selectedDateComponents else { return }
+                self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
+                                                                cellIndexColumn: indexPath.item/7)
+            })
+            .disposed(by: disposeBag)
+        
     }
     
     private func makeCollectionView() -> UICollectionView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
-        layout.itemSize = CGSize(width: (UIScreen.main.bounds.maxX/7), height: yValueRatio(360)/6)
+        layout.itemSize = CGSize(width: (UIScreen.main.bounds.maxX/7), height: yValueRatio(60))
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .homeBackgroundColor
         collectionView.isPagingEnabled = true
@@ -112,7 +125,7 @@ class CalendarView: UIView {
         collectionView.register(CalendarCollectionViewCell.self, forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
         collectionView.delegate = self
     }
-
+    
     private func makeContentOffsetCentered() {
         calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
         self.layoutIfNeeded()

@@ -22,4 +22,5 @@ extension Int {
         guard let calendarRange = Calendar.current.range(of: .day, in: .month, for: date)?.count else { return 0 } // 해당 월의 일수 계산
         return calendarRange
     }
+    
 }
