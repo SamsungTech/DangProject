@@ -319,15 +319,12 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
-        
         self.profileImageButton.profileImageView.image = image
-        
-        // Coordinator로 옮기기
-        profileImagePicker.dismiss(animated: true)
+        coordinator?.dismissPickerController()
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        profileImagePicker.dismiss(animated: true)
+        coordinator?.dismissPickerController()
     }
 }
 
@@ -381,7 +378,8 @@ extension ProfileViewController {
 
 extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
     func profileImageButtonTapped() {
-        present(profileImagePicker, animated: true)
+        
+        coordinator?.presentPickerController(self)
     }
     
     func viewTapped() {
