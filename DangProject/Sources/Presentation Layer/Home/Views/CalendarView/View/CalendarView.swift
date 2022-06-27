@@ -37,6 +37,9 @@ class CalendarView: UIView {
     lazy var selectedLeadingCalendarCollectionView = makeCollectionView()
     lazy var selectedTrailingCalendarCollectionView = makeCollectionView()
     
+    lazy var todayCellColumn: Int = {
+        viewModel.checkTodayCellColumn()/7
+    }()
     init(viewModel: CalendarViewModelProtocol) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)

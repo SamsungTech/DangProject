@@ -31,9 +31,8 @@ class HomeViewController: UIViewController {
     private lazy var homeScrollViewTopAnchor: NSLayoutConstraint = {
         homeScrollView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: yValueRatio(60))
     }()
-    private lazy var calendarViewTopAnchor: NSLayoutConstraint = {
-        calendarView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor)
-    }()
+    private lazy var calendarViewTopAnchor = NSLayoutConstraint()
+    
     var viewModel: HomeViewModelProtocol
     
     init(viewModel: HomeViewModelProtocol,
@@ -61,6 +60,7 @@ class HomeViewController: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .homeBackgroundColor
         configure()
+        configureTodayCalendarColumn()
         layout()
     }
     
@@ -78,6 +78,13 @@ class HomeViewController: UIViewController {
         homeStackView.backgroundColor = .homeBackgroundColor
         homeStackView.distribution = .fill
         homeStackView.alignment = .center
+    }
+    
+    private func configureTodayCalendarColumn() {
+        let column = calendarView.todayCellColumn
+        calendarViewTopAnchor = calendarView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: -yValueRatio(60)*CGFloat(column))
+        // 애매
+        viewModel.calendarViewColumn = column
     }
     
     private func layout() {
