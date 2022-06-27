@@ -8,6 +8,7 @@
 import UIKit
 
 class DangTextFieldView: UIView {
+    var delegate: InputViewDelegate?
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
@@ -64,10 +65,16 @@ class DangTextFieldView: UIView {
 
 extension DangTextFieldView {
     private func configureUI() {
+        setUpView()
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
         setUpDownArrowImageView()
         setUpProfileTextField()
+    }
+    
+    private func setUpView() {
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dangTextFieldViewDidTap))
+//        self.addGestureRecognizer(tapGesture)
     }
     
     private func setUpProfileLabel() {
@@ -109,4 +116,6 @@ extension DangTextFieldView {
             profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
         ])
     }
+    
 }
+

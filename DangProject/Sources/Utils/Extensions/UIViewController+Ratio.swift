@@ -27,4 +27,8 @@ extension UIViewController {
     func calculateXMax() -> CGFloat {
         return UIScreen.main.bounds.maxX
     }
+    
+    func calculateYMax() -> CGFloat {
+        return UIScreen.main.bounds.maxY
+    }
 }

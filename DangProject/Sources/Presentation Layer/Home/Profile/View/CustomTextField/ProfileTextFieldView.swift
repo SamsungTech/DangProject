@@ -8,6 +8,7 @@
 import UIKit
 
 class ProfileTextFieldView: UIView {
+    var delegate: InputViewDelegate?
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
@@ -64,10 +65,16 @@ class ProfileTextFieldView: UIView {
 
 extension ProfileTextFieldView {
     private func configureUI() {
+        setUpView()
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
         setUpDownArrowImageView()
         setUpProfileTextField()
+    }
+    
+    private func setUpView() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileTextFieldViewDidTap))
+        self.addGestureRecognizer(tapGesture)
     }
     
     private func setUpProfileLabel() {
@@ -108,5 +115,9 @@ extension ProfileTextFieldView {
             profileTextField.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
             profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
         ])
+    }
+    
+    @objc private func profileTextFieldViewDidTap() {
+        delegate?.didTapView()
     }
 }

@@ -7,21 +7,23 @@
 
 import UIKit
 
-
-@available(iOS 13.4, *)
 class DateTextFieldView: UIView {
+    var delegate: InputViewDelegate?
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
         imageView.tintColor = .white
         return imageView
     }()
-
     
     private(set) var pickerView: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .wheels
+        if #available(iOS 13.4, *) {
+            picker.preferredDatePickerStyle = .wheels
+        } else {
+            // Fallback on earlier versions
+        }
         return picker
     }()
     
@@ -73,13 +75,18 @@ class DateTextFieldView: UIView {
     }
 }
 
-@available(iOS 13.4, *)
 extension DateTextFieldView {
     private func configureUI() {
+        setUpView()
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
         setUpDownArrowImageView()
         setUpProfileTextField()
+    }
+    
+    private func setUpView() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dateTextFieldViewDidTap))
+        self.addGestureRecognizer(tapGesture)
     }
     
     private func setUpProfileLabel() {
@@ -120,5 +127,9 @@ extension DateTextFieldView {
             profileTextField.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
             profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
         ])
+    }
+    
+    @objc private func dateTextFieldViewDidTap() {
+        delegate?.didTapView()
     }
 }

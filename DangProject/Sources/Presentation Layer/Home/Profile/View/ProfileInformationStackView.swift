@@ -7,14 +7,13 @@
 
 import UIKit
 
-protocol InformationViewDelegate: AnyObject {
+protocol InputViewDelegate: AnyObject {
     func didTapView()
 }
 
 class ProfileInformationStackView: UIStackView {
     private let profileDummyData = ProfileDummy()
     private var views: [UIView] = []
-    var delegate: InformationViewDelegate?
     lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.delegate = self
@@ -34,17 +33,6 @@ class ProfileInformationStackView: UIStackView {
         return pickerView
     }()
     
-    lazy var nameView: NameTextField = {
-        let view = NameTextField()
-        view.profileLabel.text = "이름"
-        view.profileTextField.insertText("김동우")
-        view.frame = CGRect(x: .zero,
-                                 y: .zero,
-                                 width: calculateXMax(),
-                                 height: yValueRatio(100))
-        return view
-    }()
-    
     @available(iOS 13.4, *)
     lazy var birthDatePickerView: DateTextFieldView = {
         let view = DateTextFieldView()
@@ -54,6 +42,17 @@ class ProfileInformationStackView: UIStackView {
                             y: .zero,
                             width: calculateXMax(),
                             height: yValueRatio(100))
+        return view
+    }()
+    
+    lazy var nameView: NameTextField = {
+        let view = NameTextField()
+        view.profileLabel.text = "이름"
+        view.profileTextField.insertText("김동우")
+        view.frame = CGRect(x: .zero,
+                                 y: .zero,
+                                 width: calculateXMax(),
+                                 height: yValueRatio(100))
         return view
     }()
     
