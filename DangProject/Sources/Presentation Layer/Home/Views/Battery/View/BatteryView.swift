@@ -163,11 +163,20 @@ extension BatteryView {
         self.timer.invalidate()
         self.endCount = endCount
         self.currentCount = 0
-        self.timer = Timer.scheduledTimer(timeInterval: 3/100,
-                                          target: self,
-                                          selector: #selector(self.updateNumber),
-                                          userInfo: nil,
-                                          repeats: true)
+        if endCount > 50 {
+            self.timer = Timer.scheduledTimer(timeInterval: 2/100,
+                                              target: self,
+                                              selector: #selector(self.updateNumber),
+                                              userInfo: nil,
+                                              repeats: true)
+        } else {
+            self.timer = Timer.scheduledTimer(timeInterval: 3/100,
+                                              target: self,
+                                              selector: #selector(self.updateNumber),
+                                              userInfo: nil,
+                                              repeats: true)
+        }
+        
     }
     
     @objc private func updateNumber() {
