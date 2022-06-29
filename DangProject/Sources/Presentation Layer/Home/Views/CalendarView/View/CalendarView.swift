@@ -75,7 +75,12 @@ class CalendarView: UIView {
         viewModel.currentDataObservable
             .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
-                cell.configureShapeLayer(data: data)
+                
+                if self.viewModel.animationIsNeeded {
+                    cell.configureLayerWithAnimation(data: data)
+                } else {
+                    cell.configureLayer(data: data)
+                }
             }
             .disposed(by: disposeBag)
         
@@ -94,14 +99,14 @@ class CalendarView: UIView {
         viewModel.selectedDataObservable
             .bind(to: selectedLeadingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
-                cell.configureShapeLayer(data: data)
+                cell.configureLayerWithAnimation(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
             .bind(to: selectedTrailingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
-                cell.configureShapeLayer(data: data)
+                cell.configureLayerWithAnimation(data: data)
             }
             .disposed(by: disposeBag)
         

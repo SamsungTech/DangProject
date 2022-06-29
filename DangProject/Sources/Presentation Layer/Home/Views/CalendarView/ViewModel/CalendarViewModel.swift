@@ -18,6 +18,7 @@ enum ScrollDirection {
 
 protocol CalendarViewModelInputProtocol: AnyObject {
     var scrollDirection: ScrollDirection { get set }
+    var animationIsNeeded: Bool { get }
     func scrollViewDirectionIsVaild() -> Bool
     func changeCurrentCell(index: Int)
     func calculateCalendarViewIndex() -> Int
@@ -48,6 +49,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
     lazy var currentDateComponents = calendarService.dateComponents
     var selectedDateComponents: DateComponents = .currentDateTimeComponents()
     
+    var animationIsNeeded: Bool = true
     private var selectedCellChanged: Bool = false
     private var willReturnSelectedView: Bool = false
     private var willReturnCurrentView: Bool = false
@@ -121,12 +123,15 @@ class CalendarViewModel: CalendarViewModelProtocol {
     func scrollViewDirectionIsVaild() -> Bool {
         switch scrollDirection {
         case .right:
+            self.animationIsNeeded = true
             calendarService.plusMonth()
             self.currentDateComponents = calendarService.dateComponents
             return true
         case .center:
+            self.animationIsNeeded = false
             return false
         case .left:
+            self.animationIsNeeded = true
             calendarService.minusMonth()
             self.currentDateComponents = calendarService.dateComponents
             return true
@@ -134,6 +139,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
     }
     
     func changeCurrentCell(index: Int) {
+        self.animationIsNeeded = false
         let selectedCell = currentDataObservable.value[index]
         calendarService.changeSelectedDate(year: selectedCell.year,
                                            month: selectedCell.month,
