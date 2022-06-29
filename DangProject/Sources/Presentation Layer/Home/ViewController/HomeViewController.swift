@@ -51,8 +51,8 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        calendarView.returnCurrentCalendarView()
         viewModel.refreshHomeViewController(dateComponents: .currentDateTimeComponents())
-        // 캘린더뷰도 현재 시간으로
     }
     
     override func viewDidLoad() {
@@ -65,6 +65,12 @@ class HomeViewController: UIViewController {
     }
     
     private func configure() {
+        let navigationTitle = viewModel.checkNavigationBarTitleText(dateComponents: .currentDateComponents())
+        customNavigationBar.changeNavigationBarTitleLabel(text: navigationTitle)
+        customNavigationBar.parentableViewController = self
+        
+        calendarView.parentableViewController = self
+        
         homeScrollView.backgroundColor = .clear
         homeScrollView.showsVerticalScrollIndicator = true
         homeScrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
@@ -72,6 +78,7 @@ class HomeViewController: UIViewController {
         homeScrollView.contentInsetAdjustmentBehavior = .automatic
         homeScrollView.bounces = false
         homeScrollView.contentInsetAdjustmentBehavior = .never
+        homeScrollView.delegate = self
         
         homeStackView.axis = .vertical
         homeStackView.spacing = 10
@@ -83,8 +90,7 @@ class HomeViewController: UIViewController {
     private func configureTodayCalendarColumn() {
         let column = calendarView.todayCellColumn
         calendarViewTopAnchor = calendarView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: -yValueRatio(60)*CGFloat(column))
-        // 애매
-        viewModel.calendarViewColumn = column
+        viewModel.changeCellIndexColumn(cellIndexColumn: column)
     }
     
     private func layout() {
@@ -99,7 +105,6 @@ class HomeViewController: UIViewController {
         customNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         customNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         customNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(110)).isActive = true
-        customNavigationBar.parentableViewController = self
         
         calendarView.translatesAutoresizingMaskIntoConstraints = false
         calendarViewTopAnchor.isActive = true
@@ -107,7 +112,6 @@ class HomeViewController: UIViewController {
         calendarView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         calendarView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
         self.view.sendSubviewToBack(calendarView)
-        calendarView.parentableViewController = self
         
         homeScrollView.translatesAutoresizingMaskIntoConstraints = false
         homeScrollViewTopAnchor.isActive = true
@@ -147,19 +151,30 @@ extension HomeViewController: CalendarViewDelegate {
     func cellDidSelected(dateComponents: DateComponents, cellIndexColumn: Int) {
         viewModel.refreshHomeViewController(dateComponents: dateComponents)
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
+        changeEatenFoodsTitleViewText(dateComponents: dateComponents)
     }
-        
+    
     func fetchEatenFoodsPerMonths(_ dateComponents: DateComponents) {
-        customNavigationBar.configureLabelText(date: dateComponents)
+        changeNavigationBarTitleText(dateComponents: dateComponents)
         viewModel.fetchEatenFoodsInTotalMonths(dateComponents)
     }
     
     private func changeCalendarViewTopAnchor() {
         calendarViewTopAnchor = calendarView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: -yValueRatio(60)*CGFloat(viewModel.calendarViewColumn))
     }
-
+    
     private func resetCalendarViewTopAnchor() {
         calendarViewTopAnchor = calendarView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor)
+    }
+    
+    private func changeEatenFoodsTitleViewText(dateComponents: DateComponents) {
+        let eatenFoodsTitleText = viewModel.checkEatenFoodsTitleText(dateComponents: dateComponents)
+        eatenFoodsTitleView.changeEatenFoodsTitleLabel(text: eatenFoodsTitleText)
+    }
+    
+    private func changeNavigationBarTitleText(dateComponents: DateComponents) {
+        let navigationBarTitleText = viewModel.checkNavigationBarTitleText(dateComponents: dateComponents)
+        customNavigationBar.changeNavigationBarTitleLabel(text: navigationBarTitleText)
     }
 }
 
@@ -174,23 +189,47 @@ extension HomeViewController: NavigationBarDelegate {
         case .revert:
             changeCalendarViewTopAnchor()
             revertAnimation()
+            calendarView.returnSelectedCalendarView()
         }
         self.calendarViewTopAnchor.isActive = true
         self.homeScrollViewTopAnchor.isActive = true
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
-
+        // 다시중앙으로만 오면됨
+//        calendarView.makeContentOffsetCentered()
     }
     
     private func revertAnimation() {
         self.homeScrollViewTopAnchor = homeScrollView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: yValueRatio(60))
-        self.homeScrollView.isScrollEnabled = true
-            }
+        self.homeScrollView.isScrollEnabled = true   
+    }
     
     private func expandAnimation() {
         self.homeScrollViewTopAnchor = homeScrollView.topAnchor.constraint(equalTo: calendarView.bottomAnchor)
         self.homeScrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         self.homeScrollView.isScrollEnabled = false
     }
+}
+
+extension HomeViewController: UIScrollViewDelegate {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+    }
+    
+    //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    //        print(scrollView.contentOffset.y)
+    //        let targetVerticalPointee = scrollView.contentOffset.y
+    //        let navigationBarCalendarViewHeight = customNavigationBar.frame.height + yValueRatio(60)
+    //        UIView.animate(withDuration: 0.5) { [weak self] in
+    //            guard let strongSelf = self else { return }
+    //
+    //            self?.homeScrollViewTopAnchor.isActive = false
+    //            if targetVerticalPointee > 0 {
+    //                self?.homeScrollViewTopAnchor = scrollView.topAnchor.constraint(equalTo: strongSelf.view.topAnchor, constant: navigationBarCalendarViewHeight-targetVerticalPointee)
+    //                self?.homeScrollViewTopAnchor.isActive = true
+    //            }
+    //        }
+    //    }
+    
 }

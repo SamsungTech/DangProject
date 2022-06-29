@@ -21,6 +21,18 @@ extension DateComponents {
         ]
         return userCalendar.dateComponents(requestedComponents, from: currentDateTime)
     }
+    
+    static func currentDateComponents() -> DateComponents {
+        let currentDateTime = Date()
+        let userCalendar = Calendar.current
+        let requestedComponents: Set<Calendar.Component> = [
+            .year,
+            .month,
+            .day
+        ]
+        return userCalendar.dateComponents(requestedComponents, from: currentDateTime)
+
+    }
 }
 
 extension Date {

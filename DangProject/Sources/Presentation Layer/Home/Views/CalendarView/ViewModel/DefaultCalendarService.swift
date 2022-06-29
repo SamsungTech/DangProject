@@ -15,23 +15,25 @@ protocol CalendarService {
     func currentMonthData() -> CalendarMonthEntity
     func nextMonthData() -> CalendarMonthEntity
     func changeSelectedDate(year: Int, month: Int, day: Int)
+    func changeDateComponentsToSelected()
+    func changeDateComponentsToCurrent()
 }
 class DefaultCalendarService: CalendarService {
     var dateComponents = DateComponents()
+    private lazy var selectedDateComponents = dateComponents
     private lazy var calendar: Calendar = {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "UTC")!
         return calendar
     }()
-    private let currentDate = Date.currentDate()
     private var selectedDate = Date.currentDate()
     
     init() {
         initDateFormatter()
     }
     private func initDateFormatter() {
-        dateComponents.year = calendar.component(.year, from: currentDate)
-        dateComponents.month = calendar.component(.month, from: currentDate)
+        dateComponents.year = calendar.component(.year, from: Date.currentDate())
+        dateComponents.month = calendar.component(.month, from: Date.currentDate())
         dateComponents.day = 1
     }
     
@@ -62,10 +64,19 @@ class DefaultCalendarService: CalendarService {
     func changeSelectedDate(year: Int, month: Int, day: Int) {
         let newDate = Date.makeDate(year: year, month: month, day: day)
         self.selectedDate = newDate
+        self.selectedDateComponents = DateComponents(year: year, month: month, day: 1)
+    }
+    
+    func changeDateComponentsToSelected() {
+        self.dateComponents = self.selectedDateComponents
+    }
+    
+    func changeDateComponentsToCurrent() {
+        self.dateComponents = .currentDateComponents()
     }
     
     private func calculation(dateComponents: DateComponents) -> CalendarMonthEntity {
-        
+
         guard let firstDayOfMonth = calendar.date(from: dateComponents) else { return CalendarMonthEntity.empty }
         /// 0: Sunday ~ 7: Saturday
         let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)

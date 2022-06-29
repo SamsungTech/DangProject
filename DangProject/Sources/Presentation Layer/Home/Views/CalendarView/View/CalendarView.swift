@@ -38,6 +38,7 @@ class CalendarView: UIView {
     lazy var selectedTrailingCalendarCollectionView = makeCollectionView()
     
     lazy var todayCellColumn: Int = {
+        // 애매한부분
         viewModel.checkTodayCellColumn()/7
     }()
     init(viewModel: CalendarViewModelProtocol) {
@@ -90,6 +91,20 @@ class CalendarView: UIView {
             }
             .disposed(by: disposeBag)
         
+        viewModel.selectedDataObservable
+            .bind(to: selectedLeadingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+                cell.configureCell(data: data)
+                cell.configureShapeLayer(data: data)
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.selectedDataObservable
+            .bind(to: selectedTrailingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+                cell.configureCell(data: data)
+                cell.configureShapeLayer(data: data)
+            }
+            .disposed(by: disposeBag)
+        
         currentCalendarCollectionView.rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
@@ -129,9 +144,24 @@ class CalendarView: UIView {
         collectionView.delegate = self
     }
     
-    private func makeContentOffsetCentered() {
+    func makeContentOffsetCentered() {
         calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
         self.layoutIfNeeded()
+    }
+    
+    func returnCurrentCalendarView() {
+        viewModel.prepareToReturnCurrentView()
+    }
+    
+    func returnSelectedCalendarView() {
+        let scrollViewEstimatingSection = viewModel.calculateCalendarViewIndex()
+        guard scrollViewEstimatingSection != 2 else { return }
+        viewModel.prepareToReturnSelectedView()
+        calendarScrollView.setContentOffset(CGPoint(x: Int(screenWidthSize)*scrollViewEstimatingSection, y: 0), animated: true)
+        parentableViewController?.fetchEatenFoodsPerMonths(viewModel.selectedDateComponents)
+        
+// 위에서 setContentOffset후 중앙으로 와야됨
+//        makeContentOffsetCentered()
     }
 }
 
@@ -168,8 +198,9 @@ extension CalendarView: UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        viewModel.checkScrollViewDirection()
-        parentableViewController?.fetchEatenFoodsPerMonths(viewModel.currentDateComponents)
-        calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
+        if viewModel.scrollViewDirectionIsVaild() {
+            parentableViewController?.fetchEatenFoodsPerMonths(viewModel.currentDateComponents)
+            calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
+        }
     }
 }
