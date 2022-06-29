@@ -37,7 +37,6 @@ class CustomNavigationBar: UIView {
         super.init(frame: frame)
         self.backgroundColor = .homeBoxColor
         configureUI()
-        configureLabelText(date: DateComponents.currentDateTimeComponents())
     }
     
     required init?(coder: NSCoder) {
@@ -75,12 +74,8 @@ class CustomNavigationBar: UIView {
         dateLabel.centerYAnchor.constraint(equalTo: profileImageButton.centerYAnchor).isActive = true
     }
     
-    func configureLabelText(date: DateComponents) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 M월"
-        guard let unwrappedDate = Calendar.current.date(from: date) else { return }
-        let dateToString = dateFormatter.string(from: unwrappedDate)
-        dateLabel.text = dateToString
+    func changeNavigationBarTitleLabel(text: String) {
+        dateLabel.text = text
     }
     
     private func setupChevronButton() {
