@@ -13,8 +13,8 @@ extension Int {
         let dangValueNumber: Double = (dang/maxDang)*Double(100)
         let division: Double = 100*(dangValueNumber/100)
         let result = abs(division)
-        
-        return Int(result)
+        let num = Swift.min(result, 100.0)
+        return Int(num)
     }
 
     static func calculateDaysCount(year: Int, month: Int) -> Int {
