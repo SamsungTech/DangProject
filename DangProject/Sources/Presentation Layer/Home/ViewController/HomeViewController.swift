@@ -191,15 +191,12 @@ extension HomeViewController: NavigationBarDelegate {
             changeCalendarViewTopAnchor()
             revertAnimation()
             calendarView.returnSelectedCalendarView()
-            calendarView.makeContentOffsetCentered()
         }
         self.calendarViewTopAnchor.isActive = true
         self.homeScrollViewTopAnchor.isActive = true
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
-        // 다시중앙으로만 오면됨
-//        calendarView.makeContentOffsetCentered()
     }
     
     private func revertAnimation() {

@@ -20,7 +20,7 @@ protocol CalendarService {
 }
 class DefaultCalendarService: CalendarService {
     var dateComponents = DateComponents()
-    private lazy var selectedDateComponents = dateComponents
+    private lazy var selectedDateComponents: DateComponents = .currentDateComponents()
     private lazy var calendar: Calendar = {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "UTC")!

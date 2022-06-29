@@ -119,12 +119,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func getEatenFoodsInFirestore() -> Observable<[[String: Any]]> {
+    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]> {
         return Observable.create { [weak self] emitter in
-            let today = DateComponents.currentDateTimeComponents()
-            guard let year = today.year,
-                  let month = today.month,
-                  let day = today.day,
+            guard let year = dateComponents.year,
+                  let month = dateComponents.month,
+                  let day = dateComponents.day,
                   let strongSelf = self else {
                 return Disposables.create()
             }
