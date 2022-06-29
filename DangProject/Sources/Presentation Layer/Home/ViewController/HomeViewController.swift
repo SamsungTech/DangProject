@@ -53,6 +53,7 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         calendarView.returnCurrentCalendarView()
         viewModel.refreshHomeViewController(dateComponents: .currentDateTimeComponents())
+        changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
     }
     
     override func viewDidLoad() {
@@ -190,6 +191,7 @@ extension HomeViewController: NavigationBarDelegate {
             changeCalendarViewTopAnchor()
             revertAnimation()
             calendarView.returnSelectedCalendarView()
+            calendarView.makeContentOffsetCentered()
         }
         self.calendarViewTopAnchor.isActive = true
         self.homeScrollViewTopAnchor.isActive = true
