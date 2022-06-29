@@ -21,12 +21,14 @@ class EatenFoodsTitleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func changeEatenFoodsTitleLabel(text: String) {
+        eatenFoodsTitleLabel.text = text
+    }
     // MARK: - Private
     private func configure() {
         eatenFoodsTitleLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
         eatenFoodsTitleLabel.textColor = .white
         eatenFoodsTitleLabel.text = "🍲 오늘 먹은것들"
-        
     }
     
     private func layout() {
@@ -35,5 +37,4 @@ class EatenFoodsTitleView: UIView {
         eatenFoodsTitleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         eatenFoodsTitleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
     }
-    
 }
