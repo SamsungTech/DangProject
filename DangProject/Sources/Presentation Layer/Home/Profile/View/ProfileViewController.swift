@@ -189,9 +189,8 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     private func bindUI() {
         profileNavigationBar.dismissButton.rx.tap
             .bind { [weak self] in
-//                if let coordinator = self?.coordinator as? ProfileCoordinator {
-//                    coordinator.dismissViewController()
-//                }
+                guard let strongSelf = self else { return }
+                self?.coordinator?.dismissViewController(strongSelf)
             }
             .disposed(by: disposeBag)
         
@@ -378,7 +377,6 @@ extension ProfileViewController {
 
 extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
     func profileImageButtonTapped() {
-        
         coordinator?.presentPickerController(self)
     }
     

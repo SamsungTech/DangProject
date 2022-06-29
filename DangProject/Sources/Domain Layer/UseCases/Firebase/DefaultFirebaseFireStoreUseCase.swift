@@ -8,6 +8,7 @@
 import Foundation
 
 import RxSwift
+import UIKit
 
 class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     private let disposeBag = DisposeBag()
@@ -42,11 +43,33 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
             }
             return Disposables.create()
         }
-        
+    }
+    
+    func getProfileData() -> Observable<ProfileDomainModel> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
+            self?.fireStoreManagerRepository.getProfileDataInFireStore()
+                .subscribe(onNext: { profileData in
+                    var domainProfileData = ProfileDomainModel.empty
+                    for (key, value) in profileData {
+                        switch key {
+                        case "name": domainProfileData.name = value as? String ?? ""
+                        case "gender": domainProfileData.gender = value as? String ?? ""
+                        case "image": domainProfileData.profileImage = value as? UIImage ?? UIImage()
+                        case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
+                        case "uid": domainProfileData.uid = value as? String ?? ""
+                        case "weight": domainProfileData.weight = value as? Int ?? 0
+                        default: break
+                        }
+                    }
+                    emitter.onNext(domainProfileData)
+                })
+                .disposed(by: strongSelf.disposeBag)
+            return Disposables.create()
+        }
     }
     
     func getEatenFoods() -> Observable<[FoodDomainModel]> {
-        
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
             self?.fireStoreManagerRepository.getEatenFoodsInFirestore()
@@ -61,8 +84,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                             case "foodCode": foodModel.foodCode = value as? String ?? ""
                             case "amount": foodModel.amount = value as? Int ?? 0
                             case "favorite": foodModel.favorite = value as? Bool ?? false
-                            default:
-                                break
+                            default: break
                             }
                         }
                         addedFoodDomainModel.append(foodModel)

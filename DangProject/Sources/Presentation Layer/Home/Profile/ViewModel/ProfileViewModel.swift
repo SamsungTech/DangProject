@@ -54,17 +54,25 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 }
 
 class ProfileViewModel: ProfileViewModelProtocol {
-    private var profileUseCase: ProfileUseCaseProtocol?
+    private var firebaseStoreUseCase: FirebaseFireStoreUseCase?
+    private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     
-    init(useCase: ProfileUseCaseProtocol) {
-        self.profileUseCase = useCase
+    init(useCase: FirebaseFireStoreUseCase) {
+        self.firebaseStoreUseCase = useCase
     }
     
     func viewDidLoad() {
+        
+        firebaseStoreUseCase?.getProfileData()
+            .subscribe(onNext: { [weak self] profileData in
+                print(profileData)
+                
+            })
+            .disposed(by: disposeBag)
         
     }
     

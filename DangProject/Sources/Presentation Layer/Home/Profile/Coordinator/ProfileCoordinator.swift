@@ -36,6 +36,10 @@ class ProfileCoordinator: Coordinator {
         }
     }
     
+    func dismissViewController(_ viewController: UIViewController) {
+        viewController.dismiss(animated: true)
+    }
+    
     func presentPickerController(_ viewController: UIViewController) {
         guard let viewController = viewController as? ProfileViewController else { return }
         pickerController = diContainer.makeProfileImagePickerController(viewController)

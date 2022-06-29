@@ -38,14 +38,14 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
-        
         let profileData = [
             "uid": profile.uid,
             "name": profile.name,
             "height": profile.height,
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
-            "image": "\(profile.profileImage)"
+            "image": "\(profile.profileImage)",
+            "gender": "\(profile.gender)"
         ] as [String : Any]
         
         database.collection("app")
@@ -58,6 +58,29 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                     return
                 }
             }
+    }
+    
+    func getProfileDataInFireStore() -> Observable<[String: Any]> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else {
+                return Disposables.create()
+            }
+            
+            self?.database.collection("app")
+                .document(strongSelf.uid)
+                .collection("personal")
+                .document("profile")
+                .getDocument() { snapshot, error  in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        return
+                    }
+                    if let result = snapshot?.data() {
+                        emitter.onNext(result)
+                    }
+                }
+            return Disposables.create()
+        }
     }
     
     func saveEatenFood(eatenFood: FoodDomainModel) {
@@ -148,7 +171,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             return Disposables.create()
         }
     }
-    
 }
 
 

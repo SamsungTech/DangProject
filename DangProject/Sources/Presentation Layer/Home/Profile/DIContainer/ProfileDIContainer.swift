@@ -21,15 +21,15 @@ class ProfileDIContainer {
     }
     
     func makeProfileViewModel() -> ProfileViewModel {
-        return ProfileViewModel(useCase: makeProfileUseCase())
+        return ProfileViewModel(useCase: makeFirebaseStoreUseCase())
     }
     
-    func makeProfileUseCase() -> ProfileUseCaseProtocol {
-        return ProfileUseCase(repository: makeProfileRepository())
+    func makeFirebaseStoreUseCase() -> FirebaseFireStoreUseCase {
+        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFirebaseManagerRepository())
     }
     
-    func makeProfileRepository() -> ProfileRepositoryProtocol {
-        return ProfileRepository()
+    func makeFirebaseManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
     }
     
     func makeProfileImagePickerController(_ viewController: ProfileViewController) -> UIImagePickerController {

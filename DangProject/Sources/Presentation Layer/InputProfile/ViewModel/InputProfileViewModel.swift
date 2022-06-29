@@ -112,7 +112,8 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          height: heightValue,
                                          weight: weightValue,
                                          sugarLevel: sugarValue,
-                                         profileImage: imageValue)
+                                         profileImage: imageValue,
+                                         gender: "")
         
         firebaseFireStoreUseCase.uploadProfile(profile: profile)
     }
