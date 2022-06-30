@@ -48,7 +48,7 @@ class ProfileTextFieldView: UIView {
     private(set) lazy var profileTextField: UITextField = {
         let textField = UITextField()
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
-        textField.textColor = .init(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.5)
+        textField.textColor = .white
         textField.inputAccessoryView = toolBarButton
         return textField
     }()

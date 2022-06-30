@@ -23,6 +23,12 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     private var saveButtonBottomConstraint: NSLayoutConstraint?
     private var invisibleViewBottomConstraint: NSLayoutConstraint?
     private var selectedTextField: UITextField?
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+
+        return formatter
+    }()
     
     private lazy var invisibleView: InvisibleView = {
         let view = InvisibleView()
@@ -109,6 +115,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         } else {
             // Fallback on earlier versions
         }
+        bindProfileData()
         bindAnimationValue()
     }
     
@@ -225,8 +232,41 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
-                print("저-장")
+                guard let nameData = self?.profileStackView.nameView.profileTextField.text,
+                      let profileImage = self?.profileImageButton.profileImageView.image,
+                      let heightData = self?.profileStackView.heightView.profileTextField.text,
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text,
+                      let uid = self?.viewModel?.profileDataRelay.value.uid else { return }
+                
+                self?.viewModel?.passProfileData(
+                    ProfileDomainModel(uid: uid,
+                                       name: nameData,
+                                       height: Int(heightData) ?? 0,
+                                       weight: Int(weightData) ?? 0,
+                                       sugarLevel: 0,
+                                       profileImage: profileImage,
+                                       gender: self?.viewModel?.convertGenderTypeToString() ?? "",
+                                       birthDay: birthData)
+                )
             }
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindProfileData() {
+        viewModel?.profileDataRelay
+            .subscribe(onNext: { [weak self] in
+                print($0.height)
+                self?.profileStackView.nameView.profileTextField.text = $0.name
+                self?.profileImageButton.profileImageView.image = $0.profileImage
+                self?.profileStackView.heightView.profileTextField.text = String($0.height)
+                self?.profileStackView.weightView.profileTextField.text = String($0.weight)
+                if #available(iOS 13.4, *) {
+                    self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthDay
+                } else {
+                    // Fallback on earlier versions
+                }
+            })
             .disposed(by: disposeBag)
     }
     
@@ -278,25 +318,23 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                 switch $0 {
                 case .none: break
                 case .name:
-                    self.viewModel?.saveButtonAnimationRelay.accept(.up)
                     self.profileStackView.nameView.profileTextField.resignFirstResponder()
                 case .birthDate:
-                    self.viewModel?.saveButtonAnimationRelay.accept(.up)
                     if #available(iOS 13.4, *) {
+//                        let datePickerData = self.profileStackView.birthDatePickerView.pickerView.date
+//                        self.profileStackView.birthDatePickerView.profileTextField.insertText(self.dateFormatter.string(from: datePickerData))
                         self.profileStackView.birthDatePickerView.profileTextField.resignFirstResponder()
                     } else {
                         self.profileStackView.birthDateTextFieldView.profileTextField.resignFirstResponder()
                     }
                 case .height:
-                    self.viewModel?.saveButtonAnimationRelay.accept(.up)
                     self.profileStackView.heightView.profileTextField.resignFirstResponder()
                 case .weight:
-                    self.viewModel?.saveButtonAnimationRelay.accept(.up)
                     self.profileStackView.weightView.profileTextField.resignFirstResponder()
                 case .targetSugar:
-                    self.viewModel?.saveButtonAnimationRelay.accept(.up)
                     self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
                 }
+                self.viewModel?.saveButtonAnimationRelay.accept(.up)
             })
             .disposed(by: disposeBag)
     }

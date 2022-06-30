@@ -40,6 +40,7 @@ protocol ProfileViewModelInputProtocol {
     func viewDidLoad()
     func calculateScrollViewState(yPosition: CGFloat)
     func saveButtonDidTap()
+    func passProfileData(_ data: ProfileDomainModel)
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -47,6 +48,8 @@ protocol ProfileViewModelOutputProtocol {
     var genderRelay: BehaviorRelay<GenderType> { get }
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
+    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
+    func convertGenderTypeToString() -> String
 }
 
 protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewModelOutputProtocol {
@@ -60,20 +63,34 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
+    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
     init(useCase: FirebaseFireStoreUseCase) {
         self.firebaseStoreUseCase = useCase
     }
     
     func viewDidLoad() {
-        
         firebaseStoreUseCase?.getProfileData()
             .subscribe(onNext: { [weak self] profileData in
-                print(profileData)
-                
+                self?.convertStringToGenderType(profileData.gender)
+                self?.profileDataRelay.accept(profileData)
             })
             .disposed(by: disposeBag)
-        
+    }
+    
+    func convertGenderTypeToString() -> String {
+        switch genderRelay.value {
+        case .none:
+            return ""
+        case .male:
+            return "남자"
+        case .female:
+            return "여자"
+        }
+    }
+    
+    func passProfileData(_ data: ProfileDomainModel) {
+        firebaseStoreUseCase?.updateProfileData(data)
     }
     
     func calculateScrollViewState(yPosition: CGFloat) {
@@ -92,5 +109,14 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    
+    private func convertStringToGenderType(_ data: String) {
+        switch data {
+        case "남자":
+            genderRelay.accept(.male)
+        case "여자":
+            genderRelay.accept(.female)
+        default:
+            break
+        }
+    }
 }

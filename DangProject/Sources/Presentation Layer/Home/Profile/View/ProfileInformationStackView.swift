@@ -36,8 +36,7 @@ class ProfileInformationStackView: UIStackView {
     @available(iOS 13.4, *)
     lazy var birthDatePickerView: DateTextFieldView = {
         let view = DateTextFieldView()
-        view.profileLabel.text = "생년월일"
-        view.profileTextField.insertText("1996년 6월 9일")
+//        view.profileLabel.text = "생년월일"
         view.frame = CGRect(x: .zero,
                             y: .zero,
                             width: calculateXMax(),
@@ -48,7 +47,6 @@ class ProfileInformationStackView: UIStackView {
     lazy var nameView: NameTextField = {
         let view = NameTextField()
         view.profileLabel.text = "이름"
-        view.profileTextField.insertText("김동우")
         view.frame = CGRect(x: .zero,
                                  y: .zero,
                                  width: calculateXMax(),
@@ -75,7 +73,6 @@ class ProfileInformationStackView: UIStackView {
     lazy var heightView: ProfileTextFieldView = {
         let view = ProfileTextFieldView()
         view.profileLabel.text = "키"
-        view.profileTextField.insertText("184 cm")
         view.profileTextField.inputView = heightPickerView
         return view
     }()
@@ -83,7 +80,6 @@ class ProfileInformationStackView: UIStackView {
     lazy var weightView: ProfileTextFieldView = {
         let view = ProfileTextFieldView()
         view.profileLabel.text = "몸무게"
-        view.profileTextField.insertText("76 kg")
         view.profileTextField.inputView = weightPickerView
         return view
     }()
@@ -91,7 +87,6 @@ class ProfileInformationStackView: UIStackView {
     private(set) lazy var targetSugarView: DangTextFieldView = {
         let view = DangTextFieldView()
         view.profileLabel.text = "목표 당"
-        view.profileTextField.insertText("20.0")
         view.profileTextField.inputView = targetDangPickerView
         return view
     }()

@@ -9,6 +9,11 @@ import UIKit
 
 class DateTextFieldView: UIView {
     var delegate: InputViewDelegate?
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        return formatter
+    }()
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
@@ -19,11 +24,13 @@ class DateTextFieldView: UIView {
     private(set) var pickerView: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
+        picker.locale = Locale(identifier: "ko-KR")
         if #available(iOS 13.4, *) {
             picker.preferredDatePickerStyle = .wheels
         } else {
             // Fallback on earlier versions
         }
+        picker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
         return picker
     }()
     
@@ -87,6 +94,7 @@ extension DateTextFieldView {
     private func setUpView() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dateTextFieldViewDidTap))
         self.addGestureRecognizer(tapGesture)
+        
     }
     
     private func setUpProfileLabel() {
@@ -131,5 +139,10 @@ extension DateTextFieldView {
     
     @objc private func dateTextFieldViewDidTap() {
         delegate?.didTapView()
+    }
+    
+    @objc private func datePickerValueChanged() {
+        let birthText = dateFormatter.string(from: pickerView.date)
+        profileTextField.text = birthText
     }
 }

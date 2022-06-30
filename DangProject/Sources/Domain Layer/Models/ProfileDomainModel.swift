@@ -14,7 +14,8 @@ struct ProfileDomainModel {
                                    weight: 0,
                                    sugarLevel: 0,
                                    profileImage: UIImage(),
-                                   gender: "")
+                                   gender: "",
+                                   birthDay: "")
     var uid: String
     var name: String
     var height: Int
@@ -22,6 +23,7 @@ struct ProfileDomainModel {
     var sugarLevel: Int
     var profileImage: UIImage
     var gender: String
+    var birthDay: String
     
     init(uid: String,
          name: String,
@@ -29,7 +31,8 @@ struct ProfileDomainModel {
          weight: Int,
          sugarLevel: Int,
          profileImage: UIImage,
-         gender: String) {
+         gender: String,
+         birthDay: String) {
         self.uid = uid
         self.name = name
         self.height = height
@@ -37,6 +40,7 @@ struct ProfileDomainModel {
         self.sugarLevel = sugarLevel
         self.profileImage = profileImage
         self.gender = gender
+        self.birthDay = birthDay
     }
 }
 

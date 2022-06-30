@@ -59,6 +59,8 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                         case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
                         case "uid": domainProfileData.uid = value as? String ?? ""
                         case "weight": domainProfileData.weight = value as? Int ?? 0
+                        case "height": domainProfileData.height = value as? Int ?? 0
+                        case "birthDay": domainProfileData.birthDay = value as? String ?? ""
                         default: break
                         }
                     }
@@ -67,6 +69,10 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                 .disposed(by: strongSelf.disposeBag)
             return Disposables.create()
         }
+    }
+    
+    func updateProfileData(_ data: ProfileDomainModel) {
+        fireStoreManagerRepository.saveProfileDocument(profile: data)
     }
     
     func getEatenFoods() -> Observable<[FoodDomainModel]> {

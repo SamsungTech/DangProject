@@ -45,7 +45,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
             "image": "\(profile.profileImage)",
-            "gender": "\(profile.gender)"
+            "gender": "\(profile.gender)",
+            "birthDay": "\(profile.birthDay)"
         ] as [String : Any]
         
         database.collection("app")
