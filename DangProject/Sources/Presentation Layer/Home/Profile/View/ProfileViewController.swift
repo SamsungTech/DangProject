@@ -256,7 +256,6 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
             .subscribe(onNext: { [weak self] in
                 print($0.height)
                 self?.profileStackView.nameView.profileTextField.text = $0.name
-                self?.profileImageButton.profileImageView.image = $0.profileImage
                 self?.profileStackView.heightView.profileTextField.text = String($0.height)
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
                 if #available(iOS 13.4, *) {
@@ -264,6 +263,13 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                 } else {
                     // Fallback on earlier versions
                 }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel?.profileImageDataSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                self?.profileImageButton.profileImageView.image = $0
             })
             .disposed(by: disposeBag)
     }
