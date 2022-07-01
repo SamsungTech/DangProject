@@ -163,7 +163,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         NSLayoutConstraint.activate([
             profileStackView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: yValueRatio(70)),
             profileStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
-            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(700))
+            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(600))
         ])
     }
     
@@ -213,8 +213,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                 profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
                 profileStackView.birthDatePickerView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
                 profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
-                profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
+                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
             )
             .bind(to: viewModel!.okButtonRelay)
             .disposed(by: disposeBag)
@@ -223,8 +222,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                 profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
                 profileStackView.birthDateTextFieldView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
                 profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
-                profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
+                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
             )
             .bind(to: viewModel!.okButtonRelay)
             .disposed(by: disposeBag)
@@ -238,7 +236,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text,
                       let uid = self?.viewModel?.profileDataRelay.value.uid else { return }
-                
+                self?.viewModel?.passProfileImageData(profileImage)
                 self?.viewModel?.passProfileData(
                     ProfileDomainModel(uid: uid,
                                        name: nameData,
@@ -321,8 +319,6 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                     self.profileStackView.nameView.profileTextField.resignFirstResponder()
                 case .birthDate:
                     if #available(iOS 13.4, *) {
-//                        let datePickerData = self.profileStackView.birthDatePickerView.pickerView.date
-//                        self.profileStackView.birthDatePickerView.profileTextField.insertText(self.dateFormatter.string(from: datePickerData))
                         self.profileStackView.birthDatePickerView.profileTextField.resignFirstResponder()
                     } else {
                         self.profileStackView.birthDateTextFieldView.profileTextField.resignFirstResponder()
@@ -331,8 +327,6 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
                     self.profileStackView.heightView.profileTextField.resignFirstResponder()
                 case .weight:
                     self.profileStackView.weightView.profileTextField.resignFirstResponder()
-                case .targetSugar:
-                    self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
                 }
                 self.viewModel?.saveButtonAnimationRelay.accept(.up)
             })
@@ -356,6 +350,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
+        
         self.profileImageButton.profileImageView.image = image
         coordinator?.dismissPickerController()
     }

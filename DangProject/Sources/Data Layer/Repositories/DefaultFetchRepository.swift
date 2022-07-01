@@ -11,7 +11,7 @@ import RxSwift
 
 class DefaultFetchRepository: FetchRepository {
     private let disposeBag = DisposeBag()
-  
+    
     // MARK: - Init
     private let fetchDataService: FetchDataService
     

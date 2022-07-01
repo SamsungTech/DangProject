@@ -17,7 +17,7 @@ import RxSwift
 class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     // MARK: - Private
-    private lazy var uid = UserInfoKey.getUserDefaultsUID
+    private let uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
 
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {

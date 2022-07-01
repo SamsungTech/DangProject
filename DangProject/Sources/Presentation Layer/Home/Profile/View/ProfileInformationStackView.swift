@@ -36,7 +36,7 @@ class ProfileInformationStackView: UIStackView {
     @available(iOS 13.4, *)
     lazy var birthDatePickerView: DateTextFieldView = {
         let view = DateTextFieldView()
-//        view.profileLabel.text = "생년월일"
+        view.profileLabel.text = "생년월일"
         view.frame = CGRect(x: .zero,
                             y: .zero,
                             width: calculateXMax(),
@@ -83,13 +83,6 @@ class ProfileInformationStackView: UIStackView {
         view.profileTextField.inputView = weightPickerView
         return view
     }()
-    
-    private(set) lazy var targetSugarView: DangTextFieldView = {
-        let view = DangTextFieldView()
-        view.profileLabel.text = "목표 당"
-        view.profileTextField.inputView = targetDangPickerView
-        return view
-    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -108,9 +101,9 @@ extension ProfileInformationStackView {
     
     private func setUpStackView() {
         if #available(iOS 13.4, *) {
-            views = [ nameView, birthDatePickerView, genderView, heightView, weightView, targetSugarView ]
+            views = [ nameView, birthDatePickerView, genderView, heightView, weightView ]
         } else {
-            views = [ nameView, birthDateTextFieldView, genderView, heightView, weightView, targetSugarView ]
+            views = [ nameView, birthDateTextFieldView, genderView, heightView, weightView ]
         }
         
         self.axis = .vertical
