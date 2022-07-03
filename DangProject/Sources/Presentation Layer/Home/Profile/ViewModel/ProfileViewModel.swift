@@ -35,6 +35,29 @@ enum GenderType {
     case female
 }
 
+struct ProfileData {
+    var profileImage: UIImage
+    var uid: String
+    var name: String
+    var height: Int
+    var weight: Int
+    var sugarLevel: Int
+    var gender: String
+    var birthDay: String
+
+    init(_ image: UIImage,
+         _ profileDomainModel: ProfileDomainModel) {
+        self.profileImage = image
+        self.uid = profileDomainModel.uid
+        self.name = profileDomainModel.name
+        self.height = profileDomainModel.height
+        self.weight = profileDomainModel.weight
+        self.sugarLevel = profileDomainModel.sugarLevel
+        self.gender = profileDomainModel.gender
+        self.birthDay = profileDomainModel.birthDay
+    }
+}
+
 protocol ProfileViewModelInputProtocol {
     func viewDidLoad()
     func calculateScrollViewState(yPosition: CGFloat)
@@ -48,8 +71,7 @@ protocol ProfileViewModelOutputProtocol {
     var genderRelay: BehaviorRelay<GenderType> { get }
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
-    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
-    var profileImageDataSubject: PublishSubject<UIImage> { get }
+    var profileDataSubject: PublishSubject<ProfileData> { get }
     func convertGenderTypeToString() -> String
 }
 
@@ -65,8 +87,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
-    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
-    var profileImageDataSubject = PublishSubject<UIImage>()
+    var profileDataSubject = PublishSubject<ProfileData>()
     
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
          firebaseStorageUseCase: FirebaseStorageUseCase) {
@@ -75,13 +96,19 @@ class ProfileViewModel: ProfileViewModelProtocol {
     }
     
     func viewDidLoad() {
-        getProfileImageData()
-        firebaseStoreUseCase?.getProfileData()
-            .subscribe(onNext: { [weak self] profileData in
+        guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
+        guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
+        
+        Observable.combineLatest(profileImage, profileData)
+            .subscribe(onNext: { [weak self] imageData, profileData in
+                guard let image = UIImage(data: imageData as Data) else { return }
+                let profile = ProfileData(image,
+                                          profileData)
                 self?.convertStringToGenderType(profileData.gender)
-                self?.profileDataRelay.accept(profileData)
+                self?.profileDataSubject.onNext(profile)
             })
             .disposed(by: disposeBag)
+        
     }
     
     func convertGenderTypeToString() -> String {
@@ -118,15 +145,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
     func passProfileImageData(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
         firebaseStorageUseCase?.upDateProfileImage(data)
-    }
-    
-    private func getProfileImageData() {
-        firebaseStorageUseCase?.getProfileImage()
-            .subscribe(onNext: { [weak self] in
-                guard let image = UIImage(data: $0 as Data) else { return }
-                self?.profileImageDataSubject.onNext(image)
-            })
-            .disposed(by: disposeBag)
     }
 
     private func convertStringToGenderType(_ data: String) {

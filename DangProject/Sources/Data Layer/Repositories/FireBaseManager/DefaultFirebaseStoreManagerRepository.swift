@@ -39,7 +39,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     func saveProfileDocument(profile: ProfileDomainModel) {
         let profileData = [
-            "uid": profile.uid,
+            "uid": self.uid,
             "name": profile.name,
             "height": profile.height,
             "weight": profile.weight,
