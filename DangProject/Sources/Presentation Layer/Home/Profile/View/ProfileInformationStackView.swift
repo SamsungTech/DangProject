@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol InputViewDelegate: AnyObject {
-    func didTapView()
-}
-
 class ProfileInformationStackView: UIStackView {
     private let profileDummyData = ProfileDummy()
     private var views: [UIView] = []

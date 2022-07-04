@@ -11,10 +11,6 @@ import RxSwift
 import RxRelay
 import RxCocoa
 
-protocol ProfileViewControllerProtocol: AnyObject {
-    
-}
-
 class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     var coordinator: ProfileCoordinator?
     var viewModel: ProfileViewModelProtocol?

@@ -30,7 +30,7 @@ class DateTextFieldView: UIView {
         } else {
             // Fallback on earlier versions
         }
-        picker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        picker.addTarget(DateTextFieldView.self, action: #selector(datePickerValueChanged), for: .valueChanged)
         return picker
     }()
     
