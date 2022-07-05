@@ -172,6 +172,26 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             return Disposables.create()
         }
     }
+    
+    func getTodayGraphDataInFireStore() -> Observable<[[String: Any]]> {
+        
+        return Observable.create { [weak self] emitter in
+            let today = DateComponents.currentDateTimeComponents()
+            
+            
+            return Disposables.create()
+        }
+    }
+    
+    func getSelectedGraphDataInFireStore() -> Observable<[[String: Any]]> {
+        
+        return Observable.create { [weak self] emitter in
+            let today = DateComponents.currentDateTimeComponents()
+            
+            
+            return Disposables.create()
+        }
+    }
 }
 
 
