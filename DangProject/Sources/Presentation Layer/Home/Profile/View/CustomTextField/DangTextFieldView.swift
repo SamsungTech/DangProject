@@ -8,7 +8,6 @@
 import UIKit
 
 class DangTextFieldView: UIView {
-    var delegate: InputViewDelegate?
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")

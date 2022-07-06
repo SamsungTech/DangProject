@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 import RxCocoa
 
-class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+class ProfileViewController: UIViewController {
     var coordinator: ProfileCoordinator?
     var viewModel: ProfileViewModelProtocol?
     private let disposeBag = DisposeBag()

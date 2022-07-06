@@ -98,7 +98,11 @@ class ProfileViewModel: ProfileViewModelProtocol {
     func viewDidLoad() {
         guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
         guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
-        
+        self.firebaseStoreUseCase?.getGraphYearData()
+            .subscribe(onNext: { _ in 
+                
+            })
+            .disposed(by: disposeBag)
         Observable.combineLatest(profileImage, profileData)
             .subscribe(onNext: { [weak self] imageData, profileData in
                 guard let image = UIImage(data: imageData as Data) else { return }

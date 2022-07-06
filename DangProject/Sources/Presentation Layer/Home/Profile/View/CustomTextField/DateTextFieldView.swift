@@ -8,7 +8,6 @@
 import UIKit
 
 class DateTextFieldView: UIView {
-    var delegate: InputViewDelegate?
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 MM월 dd일"
@@ -84,17 +83,10 @@ class DateTextFieldView: UIView {
 
 extension DateTextFieldView {
     private func configureUI() {
-        setUpView()
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
         setUpDownArrowImageView()
         setUpProfileTextField()
-    }
-    
-    private func setUpView() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dateTextFieldViewDidTap))
-        self.addGestureRecognizer(tapGesture)
-        
     }
     
     private func setUpProfileLabel() {
@@ -137,9 +129,6 @@ extension DateTextFieldView {
         ])
     }
     
-    @objc private func dateTextFieldViewDidTap() {
-        delegate?.didTapView()
-    }
     
     @objc private func datePickerValueChanged() {
         let birthText = dateFormatter.string(from: pickerView.date)

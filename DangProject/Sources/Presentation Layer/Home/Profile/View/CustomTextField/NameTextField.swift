@@ -8,7 +8,6 @@
 import UIKit
 
 class NameTextField: UIView {
-    var delegate: InputViewDelegate?
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
@@ -57,15 +56,9 @@ class NameTextField: UIView {
 
 extension NameTextField {
     private func configureUI() {
-        setUpView()
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
         setUpProfileTextField()
-    }
-    
-    private func setUpView() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(textFieldDidTap))
-        self.addGestureRecognizer(tapGesture)
     }
     
     private func setUpProfileLabel() {
@@ -95,9 +88,5 @@ extension NameTextField {
             profileTextField.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
             profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
         ])
-    }
-    
-    @objc private func textFieldDidTap() {
-        delegate?.didTapView()
     }
 }

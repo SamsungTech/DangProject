@@ -106,4 +106,33 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     func uploadEatenFood(eatenFood: FoodDomainModel) {
         fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood)
     }
+    
+    func getGraphYearData() -> Observable<[String]> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
+            
+            let today = DateComponents.currentDateTimeComponents()
+            let thisYear = today.year
+            var yearArray: [String] = []
+            
+            for i in 0...6 {
+                let result = thisYear! - i
+                yearArray.append(String(result))
+            }
+            
+            var array: [String] = []
+            self?.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
+                .subscribe(onNext: { yearData in
+                    yearData.forEach { year in
+                        for (key, value) in year {
+                            print(key, value)
+                        }
+                        
+                    }
+                    
+                })
+            
+            return Disposables.create()
+        }
+    }
 }

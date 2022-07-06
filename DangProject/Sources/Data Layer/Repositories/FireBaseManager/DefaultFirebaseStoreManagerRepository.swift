@@ -173,25 +173,26 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func getTodayGraphDataInFireStore() -> Observable<[[String: Any]]> {
+    func getGraphAllYearDataInFireStore() -> Observable<[[String: Any]]> {
         
         return Observable.create { [weak self] emitter in
-            let today = DateComponents.currentDateTimeComponents()
-            
-            
+            guard let strongSelf = self else { return Disposables.create() }
+            self?.database.collection("app")
+                .document(strongSelf.uid)
+                .collection("graph")
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        return
+                    }
+                    if let result = snapshot?.documents {
+                        emitter.onNext(result.map { $0.data() })
+                    }
+                }
             return Disposables.create()
         }
     }
     
-    func getSelectedGraphDataInFireStore() -> Observable<[[String: Any]]> {
-        
-        return Observable.create { [weak self] emitter in
-            let today = DateComponents.currentDateTimeComponents()
-            
-            
-            return Disposables.create()
-        }
-    }
 }
 
 

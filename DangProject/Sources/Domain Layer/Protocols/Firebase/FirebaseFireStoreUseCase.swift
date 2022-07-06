@@ -18,4 +18,7 @@ protocol FirebaseFireStoreUseCase {
     func getEatenFoods() -> Observable<[FoodDomainModel]>
     func getProfileData() -> Observable<ProfileDomainModel>
     func updateProfileData(_ data: ProfileDomainModel)
+    
+    
+    func getGraphYearData() -> Observable<[String]>
 }
