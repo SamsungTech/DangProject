@@ -173,8 +173,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func getGraphAllYearDataInFireStore() -> Observable<[[String: Any]]> {
-        
+    func getGraphAllYearDataInFireStore() -> Observable<[[String:Any]]> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
             self?.database.collection("app")
@@ -193,6 +192,61 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
+    func getGraphAllThisMonthDataInFireStore() -> Observable<[[String:Any]]> {
+        return Observable.create { [weak self] emitter in
+            let today = DateComponents.currentDateTimeComponents()
+            guard let strongSelf = self,
+                  let year = today.year else {
+                return Disposables.create()
+            }
+            self?.database.collection("app")
+                .document(strongSelf.uid)
+                .collection("graph")
+                .document("year")
+                .collection("\(year)")
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        return
+                    }
+                    if let result = snapshot?.documents {
+                        emitter.onNext(result.map { $0.data() })
+                    }
+                }
+            return Disposables.create()
+        }
+    }
+    
+    func getGraphAllThisDaysDataInFireStore() -> Observable<[[String:Any]]> {
+        return Observable.create { [weak self] emitter in
+            let today = DateComponents.currentDateTimeComponents()
+            guard let strongSelf = self,
+                  let year = today.year,
+                  let month = today.month else {
+                return Disposables.create()
+            }
+            
+            self?.database.collection("app")
+                .document(strongSelf.uid)
+                .collection("graph")
+                .document("year")
+                .collection("\(year)")
+                .document("month")
+                .collection("\(month)월")
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        return
+                    }
+                    if let result = snapshot?.documents {
+                        
+                        emitter.onNext(result.map { $0.data() })
+                        
+                    }
+                }
+            return Disposables.create()
+        }
+    }
 }
 
 

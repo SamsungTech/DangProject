@@ -21,4 +21,6 @@ protocol FireStoreManagerRepository {
     
     
     func getGraphAllYearDataInFireStore() -> Observable<[[String: Any]]>
+    func getGraphAllThisMonthDataInFireStore() -> Observable<[[String:Any]]>
+    func getGraphAllThisDaysDataInFireStore() -> Observable<[[String:Any]]>
 }

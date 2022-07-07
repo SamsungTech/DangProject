@@ -114,9 +114,20 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
             self?.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
                 .subscribe(onNext: { yearData in
                     yearData.forEach { year in
-                        let yearArray = strongSelf.createGraphYearArray(year)
+                        let yearArray = strongSelf.createGraphArray(year, "year")
                         array = yearArray
                     }
+                })
+                .disposed(by: strongSelf.disposeBag)
+            self?.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore()
+                .subscribe(onNext: { monthData in
+                    
+                })
+                .disposed(by: strongSelf.disposeBag)
+            
+            self?.fireStoreManagerRepository.getGraphAllThisDaysDataInFireStore()
+                .subscribe(onNext: { dayData in
+                    
                 })
                 .disposed(by: strongSelf.disposeBag)
             emitter.onNext(array)
@@ -124,14 +135,24 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         }
     }
     
-    private func createGraphYearArray(_ year: [String:Any]) -> [String] {
-        let today = DateComponents.currentDateTimeComponents()
-        let thisYear = today.year
+    func createGraphMonthData() -> Observable<[[String:Any]]> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
+            
+            self?.fireStoreManagerRepository
+            
+            return Disposables.create()
+        }
+    }
+    
+    private func createGraphArray(_ year: [String:Any],
+                                  _ type: String) -> [String] {
+        let thisData = createThisData(type)
         var yearArray: [String] = []
         var array: [String] = []
         
         for i in 0...6 {
-            let result = thisYear! - i
+            let result = thisData - i
             yearArray.append(String(result))
         }
         
@@ -149,8 +170,23 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                 array.append("0")
             }
         }
+        
         array = array.reversed()
         
         return array
+    }
+    
+    private func createThisData(_ type: String) -> Int {
+        let today = DateComponents.currentDateTimeComponents()
+        switch type {
+        case "year":
+            return today.year ?? 0
+        case "month":
+            return today.month ?? 0
+        case "day":
+            return today.day ?? 0
+        default:
+            return 0
+        }
     }
 }
