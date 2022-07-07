@@ -110,29 +110,47 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     func getGraphYearData() -> Observable<[String]> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            
-            let today = DateComponents.currentDateTimeComponents()
-            let thisYear = today.year
-            var yearArray: [String] = []
-            
-            for i in 0...6 {
-                let result = thisYear! - i
-                yearArray.append(String(result))
-            }
-            
             var array: [String] = []
             self?.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
                 .subscribe(onNext: { yearData in
                     yearData.forEach { year in
-                        for (key, value) in year {
-                            print(key, value)
-                        }
-                        
+                        let yearArray = strongSelf.createGraphYearArray(year)
+                        array = yearArray
                     }
-                    
                 })
-            
+                .disposed(by: strongSelf.disposeBag)
+            emitter.onNext(array)
             return Disposables.create()
         }
+    }
+    
+    private func createGraphYearArray(_ year: [String:Any]) -> [String] {
+        let today = DateComponents.currentDateTimeComponents()
+        let thisYear = today.year
+        var yearArray: [String] = []
+        var array: [String] = []
+        
+        for i in 0...6 {
+            let result = thisYear! - i
+            yearArray.append(String(result))
+        }
+        
+        for j in yearArray {
+            year.forEach { (key, value) in
+                if j == key {
+                    guard let value = value as? String else { return }
+                    array.append(value)
+                }
+            }
+        }
+        
+        if array.count != 7 {
+            for _ in 0..<7-array.count {
+                array.append("0")
+            }
+        }
+        array = array.reversed()
+        
+        return array
     }
 }
