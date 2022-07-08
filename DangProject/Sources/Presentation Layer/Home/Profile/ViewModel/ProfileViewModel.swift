@@ -72,6 +72,7 @@ protocol ProfileViewModelOutputProtocol {
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
     var profileDataSubject: PublishSubject<ProfileData> { get }
+    var graphDataSubject: PublishSubject<GraphData> { get }
     func convertGenderTypeToString() -> String
 }
 
@@ -89,6 +90,8 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     var profileDataSubject = PublishSubject<ProfileData>()
     
+    var graphDataSubject = PublishSubject<GraphData>()
+    
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
          firebaseStorageUseCase: FirebaseStorageUseCase) {
         self.firebaseStoreUseCase = firebaseStoreUseCase
@@ -98,11 +101,15 @@ class ProfileViewModel: ProfileViewModelProtocol {
     func viewDidLoad() {
         guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
         guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
-        self.firebaseStoreUseCase?.getGraphYearData()
-            .subscribe(onNext: { _ in 
-                
+        
+        self.firebaseStoreUseCase?.createGraphThisYearMonthDayData()
+        
+        self.firebaseStoreUseCase?.yearMonthDayDataSubject
+            .subscribe(onNext: { [weak self] graphData in
+                self?.graphDataSubject.onNext(graphData)
             })
             .disposed(by: disposeBag)
+        
         Observable.combineLatest(profileImage, profileData)
             .subscribe(onNext: { [weak self] imageData, profileData in
                 guard let image = UIImage(data: imageData as Data) else { return }
@@ -112,7 +119,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
                 self?.profileDataSubject.onNext(profile)
             })
             .disposed(by: disposeBag)
-        
     }
     
     func convertGenderTypeToString() -> String {

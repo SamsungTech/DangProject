@@ -232,14 +232,13 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 .document("year")
                 .collection("\(year)")
                 .document("month")
-                .collection("\(month)월")
+                .collection("\(month)")
                 .getDocuments { snapshot, error in
                     if let error = error {
                         print("DEBUG: \(error.localizedDescription)")
                         return
                     }
                     if let result = snapshot?.documents {
-                        
                         emitter.onNext(result.map { $0.data() })
                         
                     }

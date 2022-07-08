@@ -11,6 +11,7 @@ import RxSwift
 
 protocol FirebaseFireStoreUseCase {
     var profileExistenceObservable: PublishSubject<Bool> { get }
+    var yearMonthDayDataSubject: PublishSubject<GraphData> { get }
     func uploadFirebaseUID(uid: String)
     func uploadProfile(profile: ProfileDomainModel)
     func getProfileExistence(uid: String) -> Observable<Bool>
@@ -20,5 +21,5 @@ protocol FirebaseFireStoreUseCase {
     func updateProfileData(_ data: ProfileDomainModel)
     
     
-    func getGraphYearData() -> Observable<[String]>
+    func createGraphThisYearMonthDayData()
 }

@@ -15,6 +15,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     
     // MARK: - Init
     private let fireStoreManagerRepository: FireStoreManagerRepository
+    var yearMonthDayDataSubject = PublishSubject<GraphData>()
     
     init(fireStoreManagerRepository: FireStoreManagerRepository) {
         self.fireStoreManagerRepository = fireStoreManagerRepository
@@ -107,45 +108,41 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood)
     }
     
-    func getGraphYearData() -> Observable<[String]> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            var array: [String] = []
-            self?.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
-                .subscribe(onNext: { yearData in
-                    yearData.forEach { year in
-                        let yearArray = strongSelf.createGraphArray(year, "year")
-                        array = yearArray
-                    }
-                })
-                .disposed(by: strongSelf.disposeBag)
-            self?.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore()
-                .subscribe(onNext: { monthData in
-                    
-                })
-                .disposed(by: strongSelf.disposeBag)
-            
-            self?.fireStoreManagerRepository.getGraphAllThisDaysDataInFireStore()
-                .subscribe(onNext: { dayData in
-                    
-                })
-                .disposed(by: strongSelf.disposeBag)
-            emitter.onNext(array)
-            return Disposables.create()
-        }
+    func createGraphThisYearMonthDayData() {
+        var yearArray: [String] = []
+        var monthArray: [String] = []
+        var daysArray: [String] = []
+        
+        let yearData = self.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
+        let monthData = self.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore()
+        let dayData = self.fireStoreManagerRepository.getGraphAllThisDaysDataInFireStore()
+        
+        
+        Observable.combineLatest(yearData, monthData, dayData)
+            .subscribe(onNext: { [weak self] yearMonthDayData in
+                guard let strongSelf = self else { return }
+                yearMonthDayData.0.forEach { yearData in
+                    let year = strongSelf.createGraphArray(yearData, "year")
+                    yearArray = year
+                }
+                yearMonthDayData.1.forEach { monthData in
+                    let month = strongSelf.createGraphArray(monthData, "month")
+                    monthArray = month
+                }
+                yearMonthDayData.2.forEach { dayData in
+                    let day = strongSelf.createGraphArray(dayData, "day")
+                    daysArray = day
+                }
+                self?.yearMonthDayDataSubject.onNext(
+                    GraphData(yearArray: yearArray,
+                              monthArray: monthArray,
+                              dayArray: daysArray)
+                )
+            })
+            .disposed(by: disposeBag)
     }
     
-    func createGraphMonthData() -> Observable<[[String:Any]]> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            
-            self?.fireStoreManagerRepository
-            
-            return Disposables.create()
-        }
-    }
-    
-    private func createGraphArray(_ year: [String:Any],
+    private func createGraphArray(_ data: [String:Any],
                                   _ type: String) -> [String] {
         let thisData = createThisData(type)
         var yearArray: [String] = []
@@ -157,7 +154,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         }
         
         for j in yearArray {
-            year.forEach { (key, value) in
+            data.forEach { (key, value) in
                 if j == key {
                     guard let value = value as? String else { return }
                     array.append(value)
