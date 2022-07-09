@@ -246,6 +246,43 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             return Disposables.create()
         }
     }
+    
+    func setGraphDaysDataInFireStore(_ selectedDate: DateEntity) {
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+        let year = selectedDate.year
+        let month = selectedDate.month
+        let day = selectedDate.day
+        let int = 30
+        
+        lazy var data: [String : Any] = {
+            var data: [String : Any] = ["":""]
+            
+            for i in 1...int {
+                if i == day {
+                    
+                } else {
+                    
+                }
+            }
+            
+            return ["":""]
+        }()
+        
+        database.collection("app")
+            .document(userDefaultsUID)
+            .collection("graph")
+            .document("year")
+            .collection("\(year)")
+            .document("month")
+            .collection("\(month)")
+            .document("day")
+            .setData(data) { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+            }
+    }
 }
 
 

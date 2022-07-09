@@ -117,7 +117,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         let monthData = self.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore()
         let dayData = self.fireStoreManagerRepository.getGraphAllThisDaysDataInFireStore()
         
-        
         Observable.combineLatest(yearData, monthData, dayData)
             .subscribe(onNext: { [weak self] yearMonthDayData in
                 guard let strongSelf = self else { return }
