@@ -51,8 +51,8 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        calendarView.returnCurrentCalendarView()
-        viewModel.refreshHomeViewController(dateComponents: .currentDateTimeComponents())
+        calendarView.showCurrentCalendarView()
+        viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
         changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
     }
     
@@ -150,14 +150,18 @@ class HomeViewController: UIViewController {
 }
 extension HomeViewController: CalendarViewDelegate {
     func cellDidSelected(dateComponents: DateComponents, cellIndexColumn: Int) {
-        viewModel.refreshHomeViewController(dateComponents: dateComponents)
+        viewModel.fetchCurrentMonthData(dateComponents: dateComponents)
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
         changeEatenFoodsTitleViewText(dateComponents: dateComponents)
     }
     
-    func fetchEatenFoodsPerMonths(_ dateComponents: DateComponents) {
+    func changeCalendarView(_ dateComponents: DateComponents, fetchIsNeeded: Bool) {
         changeNavigationBarTitleText(dateComponents: dateComponents)
-        viewModel.fetchEatenFoodsInTotalMonths(dateComponents)
+        if fetchIsNeeded {
+            viewModel.fetchEatenFoodsInTotalMonths(dateComponents)
+        } else {
+            viewModel.fetchOnlyCalendar(dateComponents)
+        }
     }
     
     private func changeCalendarViewTopAnchor() {

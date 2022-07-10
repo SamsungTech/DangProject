@@ -45,11 +45,10 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         
     }
     
-    func getEatenFoods() -> Observable<[FoodDomainModel]> {
-        
+    func getEatenFoods(dateComponents: DateComponents) -> Observable<[FoodDomainModel]> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            self?.fireStoreManagerRepository.getEatenFoodsInFirestore()
+            self?.fireStoreManagerRepository.getEatenFoodsInFirestore(dateComponents: dateComponents)
                 .subscribe(onNext: { foodData in
                     var addedFoodDomainModel = [FoodDomainModel]()
                     foodData.forEach { foods in

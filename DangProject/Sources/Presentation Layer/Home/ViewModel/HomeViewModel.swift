@@ -15,8 +15,9 @@ enum CalendarScaleState {
     case revert
 }
 protocol HomeViewModelInputProtocol {
-    func refreshHomeViewController(dateComponents: DateComponents)
+    func fetchCurrentMonthData(dateComponents: DateComponents)
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents)
+    func fetchOnlyCalendar(_ dateComponents: DateComponents)
     func changeCellIndexColumn(cellIndexColumn: Int)
 }
 
@@ -38,16 +39,20 @@ class HomeViewModel: HomeViewModelProtocol {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
     }
     
-    func refreshHomeViewController(dateComponents: DateComponents) {
+    func fetchCurrentMonthData(dateComponents: DateComponents) {
         let date: Date = .makeDate(year: dateComponents.year,
                                    month: dateComponents.month!,
                                    day: dateComponents.day)
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
-        fetchEatenFoodsUseCase.fetchTotalMonthsData(dateComponents: dateComponents)
+        fetchEatenFoodsUseCase.fetchCurrentMonthsData()
     }
     
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents) {
-        fetchEatenFoodsUseCase.fetchTotalMonthsData(dateComponents: dateComponents)
+        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
+    }
+    
+    func fetchOnlyCalendar(_ dateComponents: DateComponents) {
+        fetchEatenFoodsUseCase.fetchNextMonthData(month: dateComponents)
     }
     
     func changeCellIndexColumn(cellIndexColumn: Int) {

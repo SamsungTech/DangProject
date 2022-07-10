@@ -13,13 +13,18 @@ import RxSwift
 protocol CoreDataManagerRepository {
         
     func addFavoriteFood(food: FoodDomainModel)
-    func addEatenFood(food: FoodDomainModel,
-                      eatenFoodsPerDayEntity: EatenFoodsPerDay?)
     func addRecentQuery(keyword: String)
+    func createEatenFoodPerDay(date: Date)
+    func fetchEatenFoodsPerDay(date: Date) -> EatenFoodsPerDay
     func fetchCoreDataArray(from: CoreDataName) -> [NSManagedObject]
     func deleteFavoriteFood(code: String)
     func deleteQuery(at query: String)
     func deleteAll(coreDataName: CoreDataName)
+    func deleteEatenFoodsPerDay(date: Date)
     func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)>
+    func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
+                                      date: Date)
+    func updateLocal(data: EatenFoodsPerDayDomainModel,
+                     date: Date)
 }
 

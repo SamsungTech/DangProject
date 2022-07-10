@@ -16,5 +16,5 @@ protocol FireStoreManagerRepository {
     func saveEatenFood(eatenFood: FoodDomainModel)
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
-    func getEatenFoodsInFirestore() -> Observable<[[String: Any]]>
+    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]> 
 }
