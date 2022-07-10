@@ -150,7 +150,7 @@ class HomeViewController: UIViewController {
 }
 extension HomeViewController: CalendarViewDelegate {
     func cellDidSelected(dateComponents: DateComponents, cellIndexColumn: Int) {
-        viewModel.fetchCurrentMonthData(dateComponents: dateComponents)
+        viewModel.fetchSelectedEatenFoods(dateComponents)
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
         changeEatenFoodsTitleViewText(dateComponents: dateComponents)
     }

@@ -124,7 +124,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             guard let year = dateComponents.year,
                   let month = dateComponents.month,
                   let day = dateComponents.day,
-            else {
+                  let strongSelf = self else {
                 return Disposables.create()
             }
             self?.database.collection("app")

@@ -184,7 +184,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
     
     func changeCurrentCell(index: Int) {
         self.animationIsNeeded = false
-        let selectedCell = previousDataObservable.value[index]
+        let selectedCell = currentDataObservable.value[index]
         calendarService.changeSelectedDate(year: selectedCell.year,
                                            month: selectedCell.month,
                                            day: selectedCell.day)

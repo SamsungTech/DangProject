@@ -30,7 +30,9 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     // MARK: - Internal
     
     func fetchMonthsData(month: DateComponents) {
-        guard let monthIndex = cachedMonth.firstIndex(of: month) else {
+        var tempMonth = month
+        tempMonth.day! = 1
+        guard let monthIndex = cachedMonth.firstIndex(of: tempMonth) else {
             return
         }
         if monthIndex == 0 {
@@ -169,24 +171,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     }
         
     func fetchEatenFoods(date: Date = Date.currentDate()) {
-        let dateCoponents: DateComponents = .makeDateCompontents(from: date)
-        
-        coreDataManagerRepository.checkEatenFoodsPerDay(date: date)
-            .subscribe(onNext: { [weak self] eatenFoodNotExist, eatenFoodsPerDay in
-                guard let strongSelf = self else { return }
-                if eatenFoodNotExist {
-                    // go to firebase
-                    self?.fetchEatenFoodsPerDayFromFireBase(dateComponents: dateCoponents)
-                        .subscribe(onNext: { [weak self] foods in
-                            self?.eatenFoodsObservable.onNext(foods)
-                            // save in CoreData
-                        })
-                        .disposed(by: strongSelf.disposeBag)
-                } else {
-                    strongSelf.eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(eatenFoodsPerDay))
-                }
-            })
-            .disposed(by: disposeBag)
+        let eatenFoods = coreDataManagerRepository.fetchEatenFoodsPerDay(date: date)
+        eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(eatenFoods))
     }
     
     // MARK: - Private
