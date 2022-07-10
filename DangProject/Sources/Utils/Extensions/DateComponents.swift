@@ -33,6 +33,16 @@ extension DateComponents {
         return userCalendar.dateComponents(requestedComponents, from: currentDateTime)
     }
     
+    static func currentYearMonth() -> DateComponents {
+        let currentDateTime = Date()
+        let userCalendar = Calendar.current
+        let requestedComponents: Set<Calendar.Component> = [
+            .year,
+            .month
+        ]
+        return userCalendar.dateComponents(requestedComponents, from: currentDateTime)
+    }
+    
     static func makeDateCompontents(from date: Date) -> DateComponents {
         let userCalendar = Calendar.current
         let requestedComponents: Set<Calendar.Component> = [
@@ -74,6 +84,28 @@ extension Date {
                                               second: second)
         return calendar.date(from: myDateComponents) ?? Date.init()
     }
+    
+    static func currentDateTime() -> Date {
+        let currentDateComponents = DateComponents.currentDateTimeComponents()
+        let calendar = Calendar.current
+        guard let year = currentDateComponents.year,
+              let month = currentDateComponents.month,
+              let day = currentDateComponents.day,
+              let hour = currentDateComponents.hour,
+              let minute = currentDateComponents.minute,
+              let second = currentDateComponents.second
+        else {
+            return Date.init()
+        }
+        let myDateComponents = DateComponents(year: year ,
+                                              month: month,
+                                              day: day,
+                                              hour: hour,
+                                              minute: minute,
+                                              second: second)
+        return calendar.date(from: myDateComponents) ?? Date.init()
+    }
+    
     
     static func makeDate(year: Int?, month: Int?, day: Int?) -> Date {
         guard let year = year,
