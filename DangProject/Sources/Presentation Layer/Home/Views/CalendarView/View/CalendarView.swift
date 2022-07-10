@@ -168,7 +168,7 @@ class CalendarView: UIView {
         UIView.animate(withDuration: 0.2) {
             self.calendarScrollView.setContentOffset(CGPoint(x: Int(self.screenWidthSize)*scrollViewEstimatingSection, y: 0), animated: false)
         } completion: { isFinished in
-            self.parentableViewController?.changeCalendarView(self.viewModel.selectedDateComponents, fetchIsNeeded: false)
+            self.parentableViewController?.changeCalendarView(self.viewModel.selectedDateComponents, fetchIsNeeded: true)
             self.makeContentOffsetCentered()
         }
     }

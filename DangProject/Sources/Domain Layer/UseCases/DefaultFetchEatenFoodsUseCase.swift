@@ -52,6 +52,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 })
                 .disposed(by: disposeBag)
         }
+        
         totalMonthsDataObservable.onNext([
             fetchMonthDataFromCoreData(yearMonth: cachedMonth[monthIndex+1]),
             fetchMonthDataFromCoreData(yearMonth: cachedMonth[monthIndex]),

@@ -205,7 +205,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
     }
     
     func calculateCalendarViewIndex() -> Int {
-        let tempCurrentData = previousDataObservable.value[20]
+        let tempCurrentData = currentDataObservable.value[20]
         let tempSelectedData = selectedDataObservable.value[20]
         let result = tempCurrentData.month - tempSelectedData.month
         // result > 0 : calendarViewSetContentOffset section 0
