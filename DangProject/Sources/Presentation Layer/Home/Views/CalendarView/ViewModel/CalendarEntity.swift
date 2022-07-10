@@ -16,9 +16,9 @@ struct CalendarCellViewModelEntity {
     var isHidden: Bool
     var isToday: Bool
     var isSelected: Bool
-    var totalSugar: Double
-    var percentValue: Int
-    var layerColor: CGColor
+    var totalSugar: Double = 0
+    var percentValue: Int = 0
+    var layerColor: CGColor = UIColor.circleColorGray.cgColor
     
     init(calendarDayEntity: CalendarDayEntity,
          eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel) {
@@ -37,6 +37,15 @@ struct CalendarCellViewModelEntity {
         }()
         self.percentValue = .calculatePercentValue(dang: self.totalSugar, maxDang: 50)
         self.layerColor = CGColor.calculateCirclePercentLineColor(dang: self.totalSugar, maxDang: 50)
+    }
+    
+    init(calendarDayEntity: CalendarDayEntity) {
+        self.year = calendarDayEntity.year
+        self.month = calendarDayEntity.month
+        self.day = calendarDayEntity.day
+        self.isHidden = calendarDayEntity.isHidden
+        self.isToday = calendarDayEntity.isToday
+        self.isSelected = calendarDayEntity.isSelected
     }
 }
 

@@ -11,6 +11,7 @@ protocol CalendarService {
     var dateComponents: DateComponents { get }
     func minusMonth()
     func plusMonth()
+    func twoMonthBeforeData() -> CalendarMonthEntity
     func previousMonthData() -> CalendarMonthEntity
     func currentMonthData() -> CalendarMonthEntity
     func nextMonthData() -> CalendarMonthEntity
@@ -51,6 +52,12 @@ class DefaultCalendarService: CalendarService {
         return calculation(dateComponents: previousDateComponents)
     }
     
+    func twoMonthBeforeData() -> CalendarMonthEntity {
+        var twoMonthBeforeDateComponents = dateComponents
+        twoMonthBeforeDateComponents.month! = twoMonthBeforeDateComponents.month! - 2
+        return calculation(dateComponents: twoMonthBeforeDateComponents)
+    }
+    
     func currentMonthData() -> CalendarMonthEntity {
         return calculation(dateComponents: self.dateComponents)
     }
@@ -72,11 +79,10 @@ class DefaultCalendarService: CalendarService {
     }
     
     func changeDateComponentsToCurrent() {
-        self.dateComponents = .currentDateComponents()
+        initDateFormatter()
     }
     
     private func calculation(dateComponents: DateComponents) -> CalendarMonthEntity {
-
         guard let firstDayOfMonth = calendar.date(from: dateComponents) else { return CalendarMonthEntity.empty }
         /// 0: Sunday ~ 7: Saturday
         let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)

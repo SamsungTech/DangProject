@@ -53,10 +53,18 @@ class HomeDIContainer {
     }
     
     func makeFetchEatenFoodsUseCase() -> FetchEatenFoodsUseCase {
-        return DefaultFetchEatenFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
+        return DefaultFetchEatenFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(), firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase())
     }
 
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
+    }
+    
+    func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
+        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    }
+    
+    func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
     }
 }

@@ -23,14 +23,13 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
     // MARK: - Internal
     func addEatenFoods(food: FoodDomainModel) {
         uploadInFirebase(eatenFood: food)
-        uploadInCoreData(eatenFood: food)
     }
     
     // MARK: - Private
     private let disposeBag = DisposeBag()
     
     private func uploadInFirebase(eatenFood: FoodDomainModel) {
-        firebaseFireStoreUseCase.getEatenFoods()
+        firebaseFireStoreUseCase.getEatenFoods(dateComponents: .currentDateTimeComponents())
             .subscribe(onNext: { [weak self] addedFoodArr in
                 var tempEatenFood = eatenFood
                 addedFoodArr.forEach { addedFood in
@@ -39,23 +38,6 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
                     }
                 }
                 self?.firebaseFireStoreUseCase.uploadEatenFood(eatenFood: tempEatenFood)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func uploadInCoreData(eatenFood: FoodDomainModel) {
-        let today = Date.currentDate()
-        coreDataManagerRepository.checkEatenFoodsPerDay(date: today)
-            .subscribe(onNext: { [weak self] (isFirst, eatenFoodsPerDay) in
-                if isFirst {
-                    self?.coreDataManagerRepository.addEatenFood(food: eatenFood,
-                                                                 eatenFoodsPerDayEntity: nil)
-                } else {
-                    guard let checkedFood = self?.checkEatenFoods(food: eatenFood,
-                                                                  in: eatenFoodsPerDay.eatenFoodsArray) else { return }
-                    self?.coreDataManagerRepository.addEatenFood(food: checkedFood,
-                                                                 eatenFoodsPerDayEntity: eatenFoodsPerDay)
-                }
             })
             .disposed(by: disposeBag)
     }

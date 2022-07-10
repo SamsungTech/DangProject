@@ -12,7 +12,7 @@ import RxSwift
 import RxRelay
 
 protocol CalendarViewDelegate {
-    func fetchEatenFoodsPerMonths(_ dateComponents: DateComponents )
+    func changeCalendarView(_ dateComponents: DateComponents, fetchIsNeeded: Bool)
     func cellDidSelected(dateComponents: DateComponents, cellIndexColumn: Int)
 }
 
@@ -38,8 +38,7 @@ class CalendarView: UIView {
     lazy var selectedTrailingCalendarCollectionView = makeCollectionView()
     
     lazy var todayCellColumn: Int = {
-        // 애매한부분
-        viewModel.checkTodayCellColumn()/7
+        viewModel.checkTodayCellColumn()
     }()
     init(viewModel: CalendarViewModelProtocol) {
         self.viewModel = viewModel
@@ -73,6 +72,7 @@ class CalendarView: UIView {
     private func binding() {
         
         viewModel.currentDataObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
                 
@@ -81,33 +81,34 @@ class CalendarView: UIView {
                 } else {
                     cell.configureLayer(data: data)
                 }
-                
             }
             .disposed(by: disposeBag)
         
         viewModel.previousDataObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: previousCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.nextDataObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: nextCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: selectedLeadingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
-                cell.configureLayerWithAnimation(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
+            .observe(on: MainScheduler.instance)
             .bind(to: selectedTrailingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
-                cell.configureLayerWithAnimation(data: data)
             }
             .disposed(by: disposeBag)
         
@@ -155,19 +156,19 @@ class CalendarView: UIView {
         self.layoutIfNeeded()
     }
     
-    func returnCurrentCalendarView() {
-        viewModel.prepareToReturnCurrentView()
+    func showCurrentCalendarView() {
+        viewModel.prepareToShowCurrentView()
     }
     
     func returnSelectedCalendarView() {
         let scrollViewEstimatingSection = viewModel.calculateCalendarViewIndex()
         guard scrollViewEstimatingSection != 2 else { return }
-        viewModel.prepareToReturnSelectedView()
+        viewModel.prepareToShowSelectedView()
         
         UIView.animate(withDuration: 0.2) {
             self.calendarScrollView.setContentOffset(CGPoint(x: Int(self.screenWidthSize)*scrollViewEstimatingSection, y: 0), animated: false)
         } completion: { isFinished in
-            self.parentableViewController?.fetchEatenFoodsPerMonths(self.viewModel.selectedDateComponents)
+            self.parentableViewController?.changeCalendarView(self.viewModel.selectedDateComponents, fetchIsNeeded: false)
             self.makeContentOffsetCentered()
         }
     }
@@ -207,8 +208,12 @@ extension CalendarView: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if viewModel.scrollViewDirectionIsVaild() {
-            parentableViewController?.fetchEatenFoodsPerMonths(viewModel.currentDateComponents)
-            calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
+            if viewModel.nextMonthIsBiggerThanNow() {
+                parentableViewController?.changeCalendarView(viewModel.currentDateComponents, fetchIsNeeded: false)
+            } else {
+                parentableViewController?.changeCalendarView(viewModel.currentDateComponents, fetchIsNeeded: true)
+            }
         }
+        calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
     }
 }
