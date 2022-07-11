@@ -22,4 +22,6 @@ protocol FirebaseFireStoreUseCase {
     
     
     func createGraphThisYearMonthDayData()
+    func uploadDangAverage(_ data: Int) 
+
 }

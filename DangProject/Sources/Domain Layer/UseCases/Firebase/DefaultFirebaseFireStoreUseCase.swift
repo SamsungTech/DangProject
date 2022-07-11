@@ -5,10 +5,9 @@
 //  Created by 김성원 on 2022/05/02.
 //
 
-import Foundation
-
 import RxSwift
 import UIKit
+import RxRelay
 
 class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     private let disposeBag = DisposeBag()
@@ -16,6 +15,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     // MARK: - Init
     private let fireStoreManagerRepository: FireStoreManagerRepository
     var yearMonthDayDataSubject = PublishSubject<GraphData>()
+    var yearMonthDayDataRelay = BehaviorRelay<[[String : Any]]>(value: [])
     
     init(fireStoreManagerRepository: FireStoreManagerRepository) {
         self.fireStoreManagerRepository = fireStoreManagerRepository
@@ -112,6 +112,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         var yearArray: [String] = []
         var monthArray: [String] = []
         var daysArray: [String] = []
+        var yearMonthDaysArray: [[String:Any]] = []
         
         let yearData = self.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
         let monthData = self.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore()
@@ -123,26 +124,54 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                 yearMonthDayData.0.forEach { yearData in
                     let year = strongSelf.createGraphArray(yearData, "year")
                     yearArray = year
+                    yearMonthDaysArray.append(yearData)
                 }
                 yearMonthDayData.1.forEach { monthData in
                     let month = strongSelf.createGraphArray(monthData, "month")
                     monthArray = month
+                    yearMonthDaysArray.append(monthData)
+
                 }
                 yearMonthDayData.2.forEach { dayData in
                     let day = strongSelf.createGraphArray(dayData, "day")
                     daysArray = day
+                    yearMonthDaysArray.append(dayData)
                 }
                 self?.yearMonthDayDataSubject.onNext(
                     GraphData(yearArray: yearArray,
                               monthArray: monthArray,
                               dayArray: daysArray)
                 )
+                self?.yearMonthDayDataRelay.accept(yearMonthDaysArray)
             })
             .disposed(by: disposeBag)
     }
     
+    func uploadDangAverage(_ data: Int) {
+        let today = DateComponents.currentDateTimeComponents()
+        guard let year = today.year,
+              let month = today.month,
+              let day = today.day else { return }
+        let yearMonthDayValue = yearMonthDayDataRelay.value
+        
+        var dayData: [[String:Any]] = []
+        yearMonthDayValue[2].forEach {(key, value) in
+            if key == String(day) {
+                dayData.append([key:String(data)])
+            } else {
+                
+            }
+        }
+        
+        self.fireStoreManagerRepository.setGraphDaysDataInFireStore(<#T##data: [String : Any]##[String : Any]#>)
+        self.fireStoreManagerRepository.setGraphMonthDataInFireStore(<#T##data: [String : Any]##[String : Any]#>)
+        self.fireStoreManagerRepository.setGraphYearDataInFireStore(<#T##data: [String : Any]##[String : Any]#>)
+    }
+    
+    
     private func createGraphArray(_ data: [String:Any],
                                   _ type: String) -> [String] {
+        
         let thisData = createThisData(type)
         var yearArray: [String] = []
         var array: [String] = []
