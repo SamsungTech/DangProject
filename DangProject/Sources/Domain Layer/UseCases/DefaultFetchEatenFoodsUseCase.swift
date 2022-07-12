@@ -187,7 +187,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                     let date: Date = .makeDate(year: dateComponents.year!,
                                                month: dateComponents.month!,
                                                day: dateComponents.day!)
-                    tempData = .init(date: date, eatenFoods: eatenFoods)
+                    let sortedData = eatenFoods.sorted(by: { $0.eatenTime.seconds < $1.eatenTime.seconds })
+                    tempData = .init(date: date, eatenFoods: sortedData)
                     emitter.onNext(tempData)
                 })
                 .disposed(by: strongSelf.disposeBag)

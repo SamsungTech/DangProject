@@ -71,7 +71,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "sugar": eatenFood.sugar,
             "foodCode": eatenFood.foodCode,
             "favorite": eatenFood.favorite,
-            "amount": eatenFood.amount
+            "amount": eatenFood.amount,
+            "eatenTime": eatenFood.eatenTime
         ] as [String : Any]
         
         database.collection("app")

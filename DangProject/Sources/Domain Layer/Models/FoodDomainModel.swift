@@ -1,25 +1,31 @@
 import UIKit
 
+import FirebaseFirestore
+
 struct FoodDomainModel: Equatable {
-    static let empty: Self = .init(name: "", sugar: 0, foodCode: "")
+    static let empty: Self = .init(name: "", sugar: 0, foodCode: "", eatenTime: Timestamp.init())
     var name: String
     var sugar: Double
     var foodCode: String
     var favorite: Bool = false
     var amount: Int = 1
+    var eatenTime: Timestamp
     
     init(name: String,
          sugar: Double,
-         foodCode: String) {
+         foodCode: String,
+         eatenTime: Timestamp) {
         self.name = name
         self.sugar = sugar.roundDecimal(to: 2)
         self.foodCode = foodCode
+        self.eatenTime = eatenTime
     }
         
     init(_ foodInfoFromAPI: FoodInfo) {
         self.name = foodInfoFromAPI.nameContent ?? ""
         self.sugar = Double(foodInfoFromAPI.sugarContent ?? "0") ?? 0
         self.foodCode = foodInfoFromAPI.foodCode ?? ""
+        self.eatenTime = Timestamp.init()
     }
     
     init(_ foodViewModel: FoodViewModel) {
@@ -29,6 +35,7 @@ struct FoodDomainModel: Equatable {
         if foodViewModel.image == UIImage(systemName: "star.fill") {
             self.favorite = true
         }
+        self.eatenTime = Timestamp.init()
     }
     
     init(_ addFoodsViewModel: AddFoodsViewModel) {
@@ -36,6 +43,7 @@ struct FoodDomainModel: Equatable {
         self.sugar = Double(addFoodsViewModel.foodModel?.sugar ?? "0") ?? 0
         self.foodCode = addFoodsViewModel.foodModel?.code ?? ""
         self.amount = addFoodsViewModel.amount
+        self.eatenTime = Timestamp.init()
     }
     
     init(_ coreDataFood: FavoriteFoods) {
@@ -43,6 +51,7 @@ struct FoodDomainModel: Equatable {
         self.sugar = Double(coreDataFood.sugar ?? "0") ?? 0
         self.foodCode = coreDataFood.foodCode ?? ""
         self.favorite = true
+        self.eatenTime = Timestamp.init()
     }
     
     init(_ eatenFoods: EatenFoods) {
@@ -50,6 +59,7 @@ struct FoodDomainModel: Equatable {
         self.sugar = eatenFoods.sugar
         self.foodCode = eatenFoods.foodCode ?? ""
         self.amount = Int(eatenFoods.amount)
+        self.eatenTime = Timestamp.init()
     }
 }
 

@@ -31,10 +31,11 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
     private func uploadInFirebase(eatenFood: FoodDomainModel) {
         firebaseFireStoreUseCase.getEatenFoods(dateComponents: .currentDateTimeComponents())
             .subscribe(onNext: { [weak self] addedFoodArr in
-                var tempEatenFood = eatenFood
+                var tempEatenFood = eatenFood 
                 addedFoodArr.forEach { addedFood in
                     if tempEatenFood.foodCode == addedFood.foodCode {
                         tempEatenFood.amount = tempEatenFood.amount + addedFood.amount
+                        tempEatenFood.eatenTime = addedFood.eatenTime
                     }
                 }
                 self?.firebaseFireStoreUseCase.uploadEatenFood(eatenFood: tempEatenFood)

@@ -9,6 +9,8 @@ import Foundation
 
 import RxSwift
 
+import FirebaseFirestore
+
 class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     private let disposeBag = DisposeBag()
     
@@ -60,6 +62,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                             case "foodCode": foodModel.foodCode = value as? String ?? ""
                             case "amount": foodModel.amount = value as? Int ?? 0
                             case "favorite": foodModel.favorite = value as? Bool ?? false
+                            case "eatenTime": foodModel.eatenTime = value as? Timestamp ?? Timestamp.init()
                             default:
                                 break
                             }

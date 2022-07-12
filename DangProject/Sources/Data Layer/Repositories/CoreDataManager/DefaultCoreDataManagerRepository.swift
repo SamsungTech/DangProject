@@ -108,7 +108,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         createEatenFoodPerDay(date: date)
         data.eatenFoods.forEach { food in
         let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
-        updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: date)
+            updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: food.eatenTime.dateValue())
         }
     }
     
