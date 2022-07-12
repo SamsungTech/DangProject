@@ -117,12 +117,10 @@ class CalendarView: UIView {
         currentCalendarCollectionView.rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                self?.viewModel.changeCurrentCell(index: indexPath.item)
-                
                 guard let strongSelf = self,
                       let dateComponents = self?.viewModel.selectedDateComponents else { return }
-                
                 if strongSelf.viewModel.selectedCellNeedFetch(date: dateComponents) {
+                    self?.viewModel.changeCurrentCell(index: indexPath.item)
                     self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
                                                                     cellIndexColumn: indexPath.item/7)
                 }
