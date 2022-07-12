@@ -142,6 +142,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                               monthArray: monthArray,
                               dayArray: daysArray)
                 )
+                
                 self?.yearMonthDayDataRelay.accept(yearMonthDaysArray)
             })
             .disposed(by: disposeBag)
@@ -154,20 +155,60 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
               let day = today.day else { return }
         let yearMonthDayValue = yearMonthDayDataRelay.value
         
-        var dayData: [[String:Any]] = []
-        yearMonthDayValue[2].forEach {(key, value) in
-            if key == String(day) {
-                dayData.append([key:String(data)])
-            } else {
-                
+        // MARK: days
+        let uploadDayValue = calculateCalendarDictionary(yearMonthDayValue[2], day, data)
+        self.fireStoreManagerRepository.setGraphDaysDataInFireStore(uploadDayValue)
+        
+        
+        // MARK: month
+        let monthAverageData = calculateCalendarAverage(yearMonthDayValue[2])
+        let uploadMonthValue = calculateCalendarDictionary(yearMonthDayValue[1], month, monthAverageData)
+        self.fireStoreManagerRepository.setGraphMonthDataInFireStore(uploadMonthValue)
+        
+        // MARK: year
+        let yearAverageData = calculateCalendarAverage(yearMonthDayValue[1])
+        let uploadYearValue = calculateCalendarDictionary(yearMonthDayValue[0], year, yearAverageData)
+        
+        self.fireStoreManagerRepository.setGraphYearDataInFireStore(uploadYearValue)
+    }
+    
+    private func calculateCalendarAverage(_ dictionaryValue: [String:Any]) -> Int {
+        var dangTotal = 0
+        let dataCount = dictionaryValue.count
+        
+        for (_, value) in dictionaryValue {
+            if let value = value as? String {
+                dangTotal+=Int(value)!
             }
         }
         
-        self.fireStoreManagerRepository.setGraphDaysDataInFireStore(<#T##data: [String : Any]##[String : Any]#>)
-        self.fireStoreManagerRepository.setGraphMonthDataInFireStore(<#T##data: [String : Any]##[String : Any]#>)
-        self.fireStoreManagerRepository.setGraphYearDataInFireStore(<#T##data: [String : Any]##[String : Any]#>)
+        let result = dangTotal/dataCount
+        
+        return result
     }
     
+    private func calculateCalendarDictionary(_ data: [String:Any],
+                                             _ date: Int,
+                                             _ uploadValue: Int) -> [String:Any] {
+        var dateData: [String:Any] = [:]
+        var dateExistence: Bool = false
+        
+        data.forEach { (key, value) in
+            if key == String(date) {
+                guard let value = value as? Int else { return }
+                dateData.updateValue(String(value+uploadValue), forKey: key)
+                dateExistence = true
+            } else {
+                dateData.updateValue(value, forKey: key)
+            }
+        }
+        
+        if dateExistence == false {
+            dateData.updateValue(String(uploadValue), forKey: String(date))
+        }
+        
+        return dateData
+    }
     
     private func createGraphArray(_ data: [String:Any],
                                   _ type: String) -> [String] {

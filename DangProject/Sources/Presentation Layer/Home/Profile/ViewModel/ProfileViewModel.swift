@@ -64,6 +64,8 @@ protocol ProfileViewModelInputProtocol {
     func saveButtonDidTap()
     func passProfileData(_ data: ProfileDomainModel)
     func passProfileImageData(_ data: UIImage)
+    
+    func upLoadTest()
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -119,6 +121,10 @@ class ProfileViewModel: ProfileViewModelProtocol {
                 self?.profileDataSubject.onNext(profile)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func upLoadTest() {
+        self.firebaseStoreUseCase?.uploadDangAverage(20)
     }
     
     func convertGenderTypeToString() -> String {

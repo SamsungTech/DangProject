@@ -192,7 +192,8 @@ class ProfileViewController: UIViewController {
         profileNavigationBar.dismissButton.rx.tap
             .bind { [weak self] in
                 guard let strongSelf = self else { return }
-                self?.coordinator?.dismissViewController(strongSelf)
+//                self?.coordinator?.dismissViewController(strongSelf)
+                self?.viewModel?.upLoadTest()
             }
             .disposed(by: disposeBag)
         
