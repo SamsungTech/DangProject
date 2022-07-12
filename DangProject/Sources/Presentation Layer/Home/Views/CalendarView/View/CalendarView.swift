@@ -117,16 +117,15 @@ class CalendarView: UIView {
         currentCalendarCollectionView.rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                guard let strongSelf = self,
-                      let dateComponents = self?.viewModel.selectedDateComponents else { return }
-                if strongSelf.viewModel.selectedCellNeedFetch(date: dateComponents) {
-                    self?.viewModel.changeCurrentCell(index: indexPath.item)
-                    self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
-                                                                    cellIndexColumn: indexPath.item/7)
+                guard let strongSelf = self else { return }
+                
+                if strongSelf.viewModel.changeSelectedCell(index: indexPath.item) {
+                    guard let dateComponents = self?.viewModel.selectedDateComponents else { return }
+                        self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
+                                                                        cellIndexColumn: indexPath.item/7)
                 }
             })
             .disposed(by: disposeBag)
-        
     }
     
     private func makeCollectionView() -> UICollectionView {

@@ -20,7 +20,7 @@ protocol CalendarViewModelInputProtocol: AnyObject {
     var scrollDirection: ScrollDirection { get set }
     var animationIsNeeded: Bool { get }
     func scrollViewDirectionIsVaild() -> Bool
-    func changeCurrentCell(index: Int)
+    func changeSelectedCell(index: Int) -> Bool
     func calculateCalendarViewIndex() -> Int
     func nextMonthIsBiggerThanNow() -> Bool
     func nextMonthIsNow() -> Bool
@@ -183,17 +183,25 @@ class CalendarViewModel: CalendarViewModelProtocol {
         }
     }
     
-    func changeCurrentCell(index: Int) {
-        self.animationIsNeeded = false
-        self.scrollDirection = .center
+    func changeSelectedCell(index: Int) -> Bool {
         let selectedCell = currentDataObservable.value[index]
-        calendarService.changeSelectedDate(year: selectedCell.year,
-                                           month: selectedCell.month,
-                                           day: selectedCell.day)
-        self.selectedDateComponents = DateComponents(year: selectedCell.year,
-                                                     month: selectedCell.month,
-                                                     day: selectedCell.day)
-        self.selectedCellChanged = true
+        let selectedDate = DateComponents(year: selectedCell.year,
+                                          month: selectedCell.month,
+                                          day: selectedCell.day)
+        if selectedCellNeedFetch(date: selectedDate) {
+            self.animationIsNeeded = false
+            self.scrollDirection = .center
+            calendarService.changeSelectedDate(year: selectedCell.year,
+                                               month: selectedCell.month,
+                                               day: selectedCell.day)
+            self.selectedDateComponents = DateComponents(year: selectedCell.year,
+                                                         month: selectedCell.month,
+                                                         day: selectedCell.day)
+            self.selectedCellChanged = true
+            return true
+        } else {
+            return false
+        }
     }
     
     func checkTodayCellColumn() -> Int {
