@@ -12,8 +12,10 @@ import RxSwift
 import RxRelay
 
 protocol CalendarViewDelegate {
-    func changeCalendarView(_ dateComponents: DateComponents, fetchIsNeeded: Bool)
-    func cellDidSelected(dateComponents: DateComponents, cellIndexColumn: Int)
+    func changeCalendarView(_ dateComponents: DateComponents,
+                            fetchIsNeeded: Bool)
+    func cellDidSelected(dateComponents: DateComponents,
+                         cellIndexColumn: Int)
 }
 
 class CalendarView: UIView {
@@ -117,9 +119,13 @@ class CalendarView: UIView {
             .subscribe(onNext: { [weak self] indexPath in
                 self?.viewModel.changeCurrentCell(index: indexPath.item)
                 
-                guard let dateComponents = self?.viewModel.selectedDateComponents else { return }
-                self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
-                                                                cellIndexColumn: indexPath.item/7)
+                guard let strongSelf = self,
+                      let dateComponents = self?.viewModel.selectedDateComponents else { return }
+                
+                if strongSelf.viewModel.selectedCellNeedFetch(date: dateComponents) {
+                    self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
+                                                                    cellIndexColumn: indexPath.item/7)
+                }
             })
             .disposed(by: disposeBag)
         

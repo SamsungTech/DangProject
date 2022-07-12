@@ -36,6 +36,7 @@ protocol CalendarViewModelOutputProtocol: AnyObject {
     var currentDateComponents: DateComponents { get }
     var selectedDateComponents: DateComponents { get }
     func checkTodayCellColumn() -> Int
+    func selectedCellNeedFetch(date: DateComponents) -> Bool
 }
 
 protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarViewModelOutputProtocol { }
@@ -255,5 +256,23 @@ class CalendarViewModel: CalendarViewModelProtocol {
     
     func prepareToShowCurrentView() {
         currentCalendarWillShow = true
+    }
+    
+    func selectedCellNeedFetch(date: DateComponents) -> Bool {
+        let now: DateComponents = .currentDateComponents()
+
+        if date.year! > now.year! {
+            return false
+        }
+        if date.year! == now.year! {
+            if date.month! > now.month! {
+                return false
+            } else if date.month! == now.month {
+                if date.day! > now.day! {
+                    return false
+                }
+            }
+        }
+        return true
     }
 }
