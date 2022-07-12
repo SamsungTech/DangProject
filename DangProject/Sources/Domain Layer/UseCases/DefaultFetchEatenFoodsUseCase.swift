@@ -29,9 +29,10 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     
     // MARK: - Internal
     
-    func fetchMonthsData(month: DateComponents) {
-        var tempMonth = month
-        tempMonth.day! = 1
+    func fetchMonthsData(month dateComponents: DateComponents) {
+        let tempMonth = DateComponents.init(year: dateComponents.year!,
+                                            month: dateComponents.month!,
+                                            day: 1)
         guard let monthIndex = cachedMonth.firstIndex(of: tempMonth) else {
             return
         }
@@ -43,12 +44,13 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             ])
         }
         if cachedMonth.count == monthIndex + 2 {
-            var twoMonthBefore = month
+            var twoMonthBefore = dateComponents
             twoMonthBefore.month = twoMonthBefore.month! - 2
  
             fetchMonthData(dateComponents: twoMonthBefore)
                 .subscribe(onNext: { [weak self] monthData in
                     self?.cachedMonth.append(twoMonthBefore)
+
                 })
                 .disposed(by: disposeBag)
         }

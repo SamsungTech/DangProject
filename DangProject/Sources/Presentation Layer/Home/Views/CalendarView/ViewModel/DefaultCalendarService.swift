@@ -76,6 +76,7 @@ class DefaultCalendarService: CalendarService {
     
     func changeDateComponentsToSelected() {
         self.dateComponents = self.selectedDateComponents
+        dateComponents.day = 1
     }
     
     func changeDateComponentsToCurrent() {

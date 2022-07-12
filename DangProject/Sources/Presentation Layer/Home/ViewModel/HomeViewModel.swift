@@ -45,7 +45,7 @@ class HomeViewModel: HomeViewModelProtocol {
                                    month: dateComponents.month!,
                                    day: dateComponents.day)
         fetchEatenFoodsUseCase.fetchCurrentMonthsData()
-        fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
+//        fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
     }
     
     func fetchSelectedEatenFoods(_ dateComponents: DateComponents) {
@@ -89,7 +89,7 @@ class HomeViewModel: HomeViewModelProtocol {
             return "🍲 어제 먹은것들"
         } else {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "🍲 M월 dd일에 먹은것들"
+            dateFormatter.dateFormat = "🍲 M월 d일에 먹은것들"
             guard let unwrappedDate = Calendar.current.date(from: dateComponents) else { return "" }
             let dateToString = dateFormatter.string(from: unwrappedDate)
 
