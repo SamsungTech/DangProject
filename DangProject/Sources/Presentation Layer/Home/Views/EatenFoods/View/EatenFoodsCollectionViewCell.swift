@@ -67,6 +67,6 @@ class EatenFoodsCollectionViewCell: UICollectionViewCell {
     func setupCell(data: EatenFoodsViewModelEntity) {
         foodNameLabel.text = data.name
         amountLabel.text = "\(data.amount)개"
-        dangLabel.text = "\(data.totalSugar)g"
+        dangLabel.text = "\(data.sugar)g"
     }
 }
