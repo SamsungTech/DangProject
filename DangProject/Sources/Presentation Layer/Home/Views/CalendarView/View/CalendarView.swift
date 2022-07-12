@@ -119,7 +119,7 @@ class CalendarView: UIView {
             .subscribe(onNext: { [weak self] indexPath in
                 guard let strongSelf = self else { return }
                 
-                if strongSelf.viewModel.changeSelectedCell(index: indexPath.item) {
+                if strongSelf.viewModel.selectedCellIsValid(index: indexPath.item) {
                     guard let dateComponents = self?.viewModel.selectedDateComponents else { return }
                         self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
                                                                         cellIndexColumn: indexPath.item/7)

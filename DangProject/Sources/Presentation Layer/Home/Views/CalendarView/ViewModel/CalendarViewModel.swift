@@ -20,7 +20,7 @@ protocol CalendarViewModelInputProtocol: AnyObject {
     var scrollDirection: ScrollDirection { get set }
     var animationIsNeeded: Bool { get }
     func scrollViewDirectionIsVaild() -> Bool
-    func changeSelectedCell(index: Int) -> Bool
+    func selectedCellIsValid(index: Int) -> Bool
     func calculateCalendarViewIndex() -> Int
     func nextMonthIsBiggerThanNow() -> Bool
     func nextMonthIsNow() -> Bool
@@ -36,7 +36,7 @@ protocol CalendarViewModelOutputProtocol: AnyObject {
     var currentDateComponents: DateComponents { get }
     var selectedDateComponents: DateComponents { get }
     func checkTodayCellColumn() -> Int
-    func selectedCellNeedFetch(date: DateComponents) -> Bool
+    func checkSelectedCellNeedFetch(date: DateComponents) -> Bool
 }
 
 protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarViewModelOutputProtocol { }
@@ -183,12 +183,12 @@ class CalendarViewModel: CalendarViewModelProtocol {
         }
     }
     
-    func changeSelectedCell(index: Int) -> Bool {
+    func selectedCellIsValid(index: Int) -> Bool {
         let selectedCell = currentDataObservable.value[index]
         let selectedDate = DateComponents(year: selectedCell.year,
                                           month: selectedCell.month,
                                           day: selectedCell.day)
-        if selectedCellNeedFetch(date: selectedDate) {
+        if checkSelectedCellNeedFetch(date: selectedDate) {
             self.animationIsNeeded = false
             self.scrollDirection = .center
             calendarService.changeSelectedDate(year: selectedCell.year,
@@ -266,7 +266,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
         currentCalendarWillShow = true
     }
     
-    func selectedCellNeedFetch(date: DateComponents) -> Bool {
+    func checkSelectedCellNeedFetch(date: DateComponents) -> Bool {
         let now: DateComponents = .currentDateComponents()
 
         if date.year! > now.year! {
