@@ -84,7 +84,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
                 var oneMonthBefore: [CalendarCellViewModelEntity] = []
                 var currentMonth: [CalendarCellViewModelEntity] = []
                 var nextMonth: [CalendarCellViewModelEntity] = []
-
+                
                 if totalMonths[0].isEmpty {
                     oneMonthBefore = self?.returnCalendarEntity(calendar: previousCalendar) ?? []
                 } else {
@@ -98,7 +98,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
                 if totalMonths[2].isEmpty {
                     nextMonth = self?.returnCalendarEntity(calendar: nextCalendar) ?? []
                 } else {
-                    nextMonth = self?.mergeCalendarAndEatenFoods(calendar: nextCalendar, with: totalMonths[0]) ?? []
+                    nextMonth = self?.mergeCalendarAndEatenFoods(calendar: nextCalendar, with: totalMonths[2]) ?? []
                 }
                 self?.previousDataObservable.accept(oneMonthBefore)
                 self?.currentDataObservable.accept(currentMonth)

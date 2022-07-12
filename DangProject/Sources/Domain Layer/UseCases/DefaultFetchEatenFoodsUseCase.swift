@@ -65,16 +65,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     func fetchCurrentMonthsData() {
         var currentMonth: DateComponents = .currentYearMonth()
         currentMonth.day = 1
-        
-        if cachedMonth.contains(currentMonth) {
-            totalMonthsDataObservable.onNext([
-                fetchMonthDataFromCoreData(yearMonth: cachedMonth[1]),
-                fetchMonthDataFromCoreData(yearMonth: cachedMonth[0]),
-                []
-            ])
-            return
-        }
-        
+                
         let oneMonthBeforeEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
         let currentMonthEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
         lazy var totalMonthsZipObservable = Observable.zip(oneMonthBeforeEatenFoodsObservable, currentMonthEatenFoodsObservable, twoMonthBeforeEatenFoodsObservable)
@@ -105,6 +96,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         totalMonthsZipObservable
             .subscribe(onNext: { [weak self] monthData in
                 self?.totalMonthsDataObservable.onNext([monthData.0, monthData.1, []])
+                self?.emitEatenFoodsObservable(eatenFoods: monthData.1)
             })
             .disposed(by: disposeBag)
         
@@ -174,24 +166,18 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     }
         
     func fetchEatenFoods(date: Date = Date.currentDate()) {
-        let eatenFoods = coreDataManagerRepository.fetchEatenFoodsPerDay(date: date)
-        eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(eatenFoods))
+        coreDataManagerRepository.checkEatenFoodsPerDay(date: date)
+            .subscribe(onNext: { [weak self] isFirst, eatenFoods in
+                if isFirst {
+                    self?.eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(date: date, eatenFoods: []))
+                } else {
+                    self?.eatenFoodsObservable.onNext(EatenFoodsPerDayDomainModel.init(eatenFoods))
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Private
-    private func makeEatenFoodsPerDayModelFromFireBase(dateComponents: DateComponents) -> EatenFoodsPerDayDomainModel {
-        var tempData: EatenFoodsPerDayDomainModel = .empty
-        firebaseFireStoreUseCase.getEatenFoods(dateComponents: dateComponents)
-            .subscribe(onNext: { eatenFoods in
-                let date: Date = .makeDate(year: dateComponents.year!,
-                                           month: dateComponents.month!,
-                                           day: dateComponents.day!)
-                tempData = .init(date: date, eatenFoods: eatenFoods)
-            })
-            .disposed(by: disposeBag)
-        return tempData
-    }
-    
     private func fetchEatenFoodsPerDayFromFireBase(dateComponents: DateComponents) -> Observable<EatenFoodsPerDayDomainModel> {
         return Observable.create() { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create()}
@@ -207,5 +193,10 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 .disposed(by: strongSelf.disposeBag)
             return Disposables.create()
         }
+    }
+    
+    private func emitEatenFoodsObservable(eatenFoods: [EatenFoodsPerDayDomainModel]) {
+        let currentIndex = DateComponents.currentDateComponents().day! - 1
+        eatenFoodsObservable.onNext(eatenFoods[currentIndex])
     }
 }

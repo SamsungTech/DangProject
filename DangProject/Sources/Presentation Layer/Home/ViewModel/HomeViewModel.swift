@@ -41,11 +41,7 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {
-        let date: Date = .makeDate(year: dateComponents.year,
-                                   month: dateComponents.month!,
-                                   day: dateComponents.day)
         fetchEatenFoodsUseCase.fetchCurrentMonthsData()
-//        fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
     }
     
     func fetchSelectedEatenFoods(_ dateComponents: DateComponents) {
