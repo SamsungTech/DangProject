@@ -64,8 +64,6 @@ protocol ProfileViewModelInputProtocol {
     func saveButtonDidTap()
     func passProfileData(_ data: ProfileDomainModel)
     func passProfileImageData(_ data: UIImage)
-    
-    func upLoadTest()
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -74,7 +72,6 @@ protocol ProfileViewModelOutputProtocol {
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
     var profileDataSubject: PublishSubject<ProfileData> { get }
-    var graphDataSubject: PublishSubject<GraphData> { get }
     func convertGenderTypeToString() -> String
 }
 
@@ -92,8 +89,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     var profileDataSubject = PublishSubject<ProfileData>()
     
-    var graphDataSubject = PublishSubject<GraphData>()
-    
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
          firebaseStorageUseCase: FirebaseStorageUseCase) {
         self.firebaseStoreUseCase = firebaseStoreUseCase
@@ -104,14 +99,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
         guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
         guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
         
-        self.firebaseStoreUseCase?.createGraphThisYearMonthDayData()
-        
-        self.firebaseStoreUseCase?.yearMonthDayDataSubject
-            .subscribe(onNext: { [weak self] graphData in
-                self?.graphDataSubject.onNext(graphData)
-            })
-            .disposed(by: disposeBag)
-        
         Observable.combineLatest(profileImage, profileData)
             .subscribe(onNext: { [weak self] imageData, profileData in
                 guard let image = UIImage(data: imageData as Data) else { return }
@@ -121,10 +108,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
                 self?.profileDataSubject.onNext(profile)
             })
             .disposed(by: disposeBag)
-    }
-    
-    func upLoadTest() {
-        self.firebaseStoreUseCase?.uploadDangAverage(20)
     }
     
     func convertGenderTypeToString() -> String {

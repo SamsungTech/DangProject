@@ -159,7 +159,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         let uploadDayValue = calculateCalendarDictionary(yearMonthDayValue[2], day, data)
         self.fireStoreManagerRepository.setGraphDaysDataInFireStore(uploadDayValue)
         
-        
         // MARK: month
         let monthAverageData = calculateCalendarAverage(yearMonthDayValue[2])
         let uploadMonthValue = calculateCalendarDictionary(yearMonthDayValue[1], month, monthAverageData)
@@ -168,7 +167,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         // MARK: year
         let yearAverageData = calculateCalendarAverage(yearMonthDayValue[1])
         let uploadYearValue = calculateCalendarDictionary(yearMonthDayValue[0], year, yearAverageData)
-        
         self.fireStoreManagerRepository.setGraphYearDataInFireStore(uploadYearValue)
     }
     
