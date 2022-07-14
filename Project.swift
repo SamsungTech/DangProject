@@ -18,6 +18,7 @@ let target = Target(name: projectName,
                         .package(product: "FirebaseAuth"),
                         .package(product: "FirebaseFirestore"),
                         .package(product: "FirebaseAnalytics"),
+                        .package(product: "FirebaseStorage"),
                         .package(product: "GTMSessionFetcherFull")
                     ],
                     coreDataModels: [
