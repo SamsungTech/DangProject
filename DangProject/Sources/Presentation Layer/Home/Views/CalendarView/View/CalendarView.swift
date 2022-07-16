@@ -210,6 +210,11 @@ extension CalendarView: UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        checkCalendarViewScrollDirection()
+        calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
+    }
+    
+    private func checkCalendarViewScrollDirection() {
         if viewModel.scrollViewDirectionIsVaild() {
             if viewModel.nextMonthIsBiggerThanNow() {
                 parentableViewController?.changeCalendarView(viewModel.currentDateComponents, fetchIsNeeded: false)
@@ -217,6 +222,5 @@ extension CalendarView: UIScrollViewDelegate {
                 parentableViewController?.changeCalendarView(viewModel.currentDateComponents, fetchIsNeeded: true)
             }
         }
-        calendarScrollView.setContentOffset(CGPoint(x: screenWidthSize*2, y: 0), animated: false)
     }
 }
