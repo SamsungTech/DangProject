@@ -9,6 +9,8 @@ import Foundation
 
 import RxSwift
 
+import FirebaseFirestore
+
 class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     private let disposeBag = DisposeBag()
     
@@ -45,11 +47,10 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
         
     }
     
-    func getEatenFoods() -> Observable<[FoodDomainModel]> {
-        
+    func getEatenFoods(dateComponents: DateComponents) -> Observable<[FoodDomainModel]> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            self?.fireStoreManagerRepository.getEatenFoodsInFirestore()
+            self?.fireStoreManagerRepository.getEatenFoodsInFirestore(dateComponents: dateComponents)
                 .subscribe(onNext: { foodData in
                     var addedFoodDomainModel = [FoodDomainModel]()
                     foodData.forEach { foods in
@@ -57,10 +58,11 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                         for (key, value) in foods {
                             switch key {
                             case "name": foodModel.name = value as? String ?? ""
-                            case "sugar": foodModel.sugar = value as? String ?? ""
+                            case "sugar": foodModel.sugar = value as? Double ?? 0
                             case "foodCode": foodModel.foodCode = value as? String ?? ""
                             case "amount": foodModel.amount = value as? Int ?? 0
                             case "favorite": foodModel.favorite = value as? Bool ?? false
+                            case "eatenTime": foodModel.eatenTime = value as? Timestamp ?? Timestamp.init()
                             default:
                                 break
                             }

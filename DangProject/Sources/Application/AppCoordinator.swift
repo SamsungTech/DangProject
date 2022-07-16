@@ -79,6 +79,14 @@ class AppCoordinator: Coordinator {
     }
 }
 
+enum viewControllerType {
+    case inputPersonalInformation
+    case tabBar
+}
+protocol CoordinatorFinishDelegate {
+    func switchViewController(to viewController: viewControllerType)
+}
+
 extension AppCoordinator: CoordinatorFinishDelegate {
     func switchViewController(to viewController: viewControllerType) {
         self.navigationController.viewControllers.removeAll()

@@ -26,7 +26,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)> {
         return Observable.create { [weak self] emitter in
             
-            guard let request = self?.getRequest(coreDataName: .eatenFoodsPerDay) else { return Disposables.create() }
+            let request = EatenFoodsPerDay.fetchRequest()
             
             request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
             
@@ -35,7 +35,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
                     if checkedEatenFoodsPerDay.count == 0 {
                         emitter.onNext((true, EatenFoodsPerDay.init()))
                     } else {
-                        emitter.onNext((false, checkedEatenFoodsPerDay[0] as! EatenFoodsPerDay))
+                        emitter.onNext((false, checkedEatenFoodsPerDay[0]))
                     }
                 }
             } catch {
@@ -47,12 +47,33 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
+    func fetchEatenFoodsPerDay(date: Date) -> EatenFoodsPerDay {
+        let request = EatenFoodsPerDay.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
+        
+        do {
+            if let checkedEatenFoodsPerDay = try self.context?.fetch(request) {
+                if checkedEatenFoodsPerDay.count == 0 {
+                    return EatenFoodsPerDay.init()
+                } else {
+                    return checkedEatenFoodsPerDay[0]
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return EatenFoodsPerDay.init()
+        }
+        
+        return EatenFoodsPerDay.init()
+    }
+    
     func addFavoriteFood(food: FoodDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.favoriteFoods.rawValue, in: context),
               let favoriteFoods = NSManagedObject(entity: entity, insertInto: context) as? FavoriteFoods else { return }
         favoriteFoods.name = food.name
-        favoriteFoods.sugar = food.sugar
+        favoriteFoods.sugar = String(food.sugar)
         favoriteFoods.foodCode = food.foodCode
         
         do {
@@ -62,18 +83,11 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func addEatenFood(food: FoodDomainModel,
-                      eatenFoodsPerDayEntity: EatenFoodsPerDay?) {
+    func createEatenFoodPerDay(date: Date) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoodsPerDay.rawValue, in: context) else { return }
-        if eatenFoodsPerDayEntity == nil {
-            guard let eatenFoodsPerDay = NSManagedObject(entity: entity, insertInto: context) as? EatenFoodsPerDay else { return }
-            eatenFoodsPerDay.date = Date.currentDate()
-            updateEatenFoodsPerDay(eatenFood: food, to: eatenFoodsPerDay)
-        } else {
-            guard let unwrappedEatenFoodsPerDayEntity = eatenFoodsPerDayEntity else { return }
-            updateEatenFoodsPerDay(eatenFood: food, to: unwrappedEatenFoodsPerDayEntity)
-        }
+        guard let eatenFoodsPerDay = NSManagedObject(entity: entity, insertInto: context) as? EatenFoodsPerDay else { return }
+        eatenFoodsPerDay.date = date
         
         do {
             try context.save()
@@ -81,7 +95,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
         }
     }
-    
+        
     func addRecentQuery(keyword: String) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.recentQuery.rawValue, in: context) else { return }
@@ -91,6 +105,33 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             try context.save()
         } catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    func updateLocal(data: EatenFoodsPerDayDomainModel,
+                     date: Date) {
+        deleteEatenFoodsPerDay(date: date)
+        createEatenFoodPerDay(date: date)
+        data.eatenFoods.forEach { food in
+        let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
+            updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: food.eatenTime.dateValue())
+        }
+    }
+    
+    func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
+                                        date: Date) {
+        let request = EatenFoodsPerDay.fetchRequest()
+        request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
+        do {
+            if let checkedEatenFoodsPerDay = try context?.fetch(request) {
+                if checkedEatenFoodsPerDay.count == 0 {
+                } else {
+                    
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
         }
     }
     
@@ -106,7 +147,26 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return loadArrayFromCoreData(request: EatenFoodsPerDay.fetchRequest())
         }
     }
-
+    
+    func deleteEatenFoodsPerDay(date: Date) {
+        let request = EatenFoodsPerDay.fetchRequest()
+        request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
+        do {
+            if let checkedEatenFoodsPerDay = try context?.fetch(request) {
+                if checkedEatenFoodsPerDay.count == 0 {
+                    return
+                } else {
+                    context?.delete(checkedEatenFoodsPerDay[0])
+                    try context?.save()
+                    return
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
+        }
+    }
+    
     func deleteFavoriteFood(code: String) {
         let request = self.getRequest(coreDataName: .favoriteFoods)
         
@@ -114,7 +174,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         
         do {
             if let favoriteFoods = try context?.fetch(request) {
-                if favoriteFoods.count == 0 { return  }
+                if favoriteFoods.count == 0 { return }
                 context?.delete(favoriteFoods[0] as! FavoriteFoods)
                 try context?.save()
                 return
@@ -154,9 +214,8 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
         }
     }
-    
     //MARK: - Private
-        
+    
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
         switch coreDataName {
         case .eatenFoods:
@@ -172,7 +231,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     
     private func updateEatenFood(food: FoodDomainModel,
                                  parentEatenFoodsPerDay: EatenFoodsPerDay,
-                                 eatenTime: Date?) {
+                                 eatenTime: Date) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoods.rawValue,
                                                       in: context),
@@ -180,49 +239,26 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         else { return }
         eatenFoods.day = parentEatenFoodsPerDay
         eatenFoods.name = food.name
-        eatenFoods.sugar = Double(food.sugar) ?? 0
+        eatenFoods.sugar = food.sugar
         eatenFoods.foodCode = food.foodCode
         eatenFoods.amount = Double(food.amount)
-        if eatenTime == nil {
-            eatenFoods.eatenTime = Date.currentTime()
-        } else {
-            eatenFoods.eatenTime = eatenTime
-        }
-    }
-    
-    private func updateEatenFoodsPerDay(eatenFood: FoodDomainModel,
-                                        to eatenFoodsPerDay: EatenFoodsPerDay) {
-        let request = EatenFoods.fetchRequest()
-        request.predicate = NSPredicate(format: "foodCode == %@", eatenFood.foodCode)
+        eatenFoods.eatenTime = eatenTime
         
         do {
-            if let eatenFoods = try context?.fetch(request) {
-                if eatenFoods.count != 0 {
-                    let eatenTime = eatenFoods[0].unwrappedEatenTime
-                    context?.delete(eatenFoods[0])
-                    updateEatenFood(food: eatenFood,
-                                    parentEatenFoodsPerDay: eatenFoodsPerDay,
-                                    eatenTime: eatenTime)
-                } else {
-                    updateEatenFood(food: eatenFood,
-                                    parentEatenFoodsPerDay: eatenFoodsPerDay,
-                                    eatenTime: nil)
-                }
-            }
+            try context.save()
         } catch {
             print(error.localizedDescription)
         }
     }
     
     private func loadArrayFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T] {
-           guard let context = self.context else { return [] }
-           do {
-               let results = try context.fetch(request)
-               return results
-           } catch {
-               print(error.localizedDescription)
-               return []
-           }
-       }
+        guard let context = self.context else { return [] }
+        do {
+            let results = try context.fetch(request)
+            return results
+        } catch {
+            print(error.localizedDescription)
+            return []
+        }
+    }
 }
-
