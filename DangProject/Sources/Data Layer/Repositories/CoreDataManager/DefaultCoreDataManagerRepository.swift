@@ -88,6 +88,12 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoodsPerDay.rawValue, in: context) else { return }
         guard let eatenFoodsPerDay = NSManagedObject(entity: entity, insertInto: context) as? EatenFoodsPerDay else { return }
         eatenFoodsPerDay.date = date
+        
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
     }
         
     func addRecentQuery(keyword: String) {
@@ -237,6 +243,12 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         eatenFoods.foodCode = food.foodCode
         eatenFoods.amount = Double(food.amount)
         eatenFoods.eatenTime = eatenTime
+        
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     private func loadArrayFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T] {
