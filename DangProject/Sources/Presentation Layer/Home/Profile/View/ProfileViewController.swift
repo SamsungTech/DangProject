@@ -13,7 +13,7 @@ import RxCocoa
 
 class ProfileViewController: UIViewController {
     var coordinator: ProfileCoordinator?
-    var viewModel: ProfileViewModelProtocol?
+    private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
     private var profileNavigationBar = ProfileNavigationBar()
     private var saveButtonBottomConstraint: NSLayoutConstraint?
@@ -74,7 +74,7 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel?.viewDidLoad()
+        viewModel.viewDidLoad()
         configureUI()
         bind()
         view.bringSubviewToFront(profileNavigationBar)
@@ -85,8 +85,8 @@ class ProfileViewController: UIViewController {
     }
     
     init(viewModel: ProfileViewModelProtocol) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -198,7 +198,7 @@ class ProfileViewController: UIViewController {
             profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
             profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
         )
-            .bind(to: viewModel!.genderRelay)
+            .bind(to: viewModel.genderRelay)
             .disposed(by: disposeBag)
 
         if #available(iOS 13.4, *) {
@@ -208,7 +208,7 @@ class ProfileViewController: UIViewController {
                 profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
                 profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
             )
-            .bind(to: viewModel!.okButtonRelay)
+            .bind(to: viewModel.okButtonRelay)
             .disposed(by: disposeBag)
         } else {
             Observable.merge(
@@ -217,7 +217,7 @@ class ProfileViewController: UIViewController {
                 profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
                 profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
             )
-            .bind(to: viewModel!.okButtonRelay)
+            .bind(to: viewModel.okButtonRelay)
             .disposed(by: disposeBag)
         }
 
@@ -229,15 +229,15 @@ class ProfileViewController: UIViewController {
                           let heightData = self?.profileStackView.heightView.profileTextField.text,
                           let weightData = self?.profileStackView.weightView.profileTextField.text,
                           let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                    self?.viewModel?.passProfileImageData(profileImage)
-                    self?.viewModel?.passProfileData(
+                    self?.viewModel.passProfileImageData(profileImage)
+                    self?.viewModel.passProfileData(
                         ProfileDomainModel(uid: "",
                                            name: nameData,
                                            height: Int(heightData) ?? 0,
                                            weight: Int(weightData) ?? 0,
                                            sugarLevel: 0,
                                            profileImage: profileImage,
-                                           gender: self?.viewModel?.convertGenderTypeToString() ?? "",
+                                           gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                            birthDay: birthData)
                     )
                 } else {
@@ -246,15 +246,15 @@ class ProfileViewController: UIViewController {
                           let heightData = self?.profileStackView.heightView.profileTextField.text,
                           let weightData = self?.profileStackView.weightView.profileTextField.text,
                           let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
-                    self?.viewModel?.passProfileImageData(profileImage)
-                    self?.viewModel?.passProfileData(
+                    self?.viewModel.passProfileImageData(profileImage)
+                    self?.viewModel.passProfileData(
                         ProfileDomainModel(uid: "",
                                            name: nameData,
                                            height: Int(heightData) ?? 0,
                                            weight: Int(weightData) ?? 0,
                                            sugarLevel: 0,
                                            profileImage: profileImage,
-                                           gender: self?.viewModel?.convertGenderTypeToString() ?? "",
+                                           gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                            birthDay: birthData)
                     )
                 }
@@ -263,7 +263,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func bindProfileData() {
-        viewModel?.profileDataSubject
+        viewModel.profileDataSubject
             .subscribe(onNext: { [weak self] in
                 self?.profileStackView.nameView.profileTextField.text = $0.name
                 self?.profileStackView.heightView.profileTextField.text = String($0.height)
@@ -279,7 +279,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func bindAnimationValue() {
-        viewModel?.scrollValue
+        viewModel.scrollValue
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -291,7 +291,7 @@ class ProfileViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel?.genderRelay
+        viewModel.genderRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -305,7 +305,7 @@ class ProfileViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel?.saveButtonAnimationRelay
+        viewModel.saveButtonAnimationRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -320,7 +320,7 @@ class ProfileViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel?.okButtonRelay
+        viewModel.okButtonRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -338,7 +338,7 @@ class ProfileViewController: UIViewController {
                 case .weight:
                     self.profileStackView.weightView.profileTextField.resignFirstResponder()
                 }
-                self.viewModel?.saveButtonAnimationRelay.accept(.up)
+                self.viewModel.saveButtonAnimationRelay.accept(.up)
             })
             .disposed(by: disposeBag)
     }
@@ -354,7 +354,7 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        viewModel?.calculateScrollViewState(
+        viewModel.calculateScrollViewState(
             yPosition: scrollView.contentOffset.y
         )
     }
@@ -462,11 +462,11 @@ extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtoc
 
 extension ProfileViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        viewModel?.saveButtonAnimationRelay.accept(.down)
+        viewModel.saveButtonAnimationRelay.accept(.down)
         selectedTextField = textField
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        viewModel?.saveButtonAnimationRelay.accept(.up)
+        viewModel.saveButtonAnimationRelay.accept(.up)
     }
 }
