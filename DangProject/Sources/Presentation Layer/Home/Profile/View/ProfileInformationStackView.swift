@@ -7,9 +7,14 @@
 
 import UIKit
 
+protocol ProfileInputViewsProtocol: AnyObject {
+    func didTapped()
+}
+
 class ProfileInformationStackView: UIStackView {
     private let profileDummyData = ProfileDummy()
     private var views: [UIView] = []
+    var delegate: ProfileInputViewsProtocol?
     lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.delegate = self
@@ -32,6 +37,8 @@ class ProfileInformationStackView: UIStackView {
     @available(iOS 13.4, *)
     lazy var birthDatePickerView: DateTextFieldView = {
         let view = DateTextFieldView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        view.addGestureRecognizer(tapGesture)
         view.profileLabel.text = "생년월일"
         view.frame = CGRect(x: .zero,
                             y: .zero,
@@ -42,16 +49,20 @@ class ProfileInformationStackView: UIStackView {
     
     lazy var nameView: NameTextField = {
         let view = NameTextField()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        view.addGestureRecognizer(tapGesture)
         view.profileLabel.text = "이름"
         view.frame = CGRect(x: .zero,
-                                 y: .zero,
-                                 width: calculateXMax(),
-                                 height: yValueRatio(100))
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
         return view
     }()
     
     lazy var birthDateTextFieldView: DangTextFieldView = {
         let view = DangTextFieldView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        view.addGestureRecognizer(tapGesture)
         view.profileLabel.text = "생년월일"
         view.profileTextField.placeholder = "예) 19960609"
         return view
@@ -59,6 +70,8 @@ class ProfileInformationStackView: UIStackView {
     
     lazy var genderView: GenderView = {
         let view = GenderView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        view.addGestureRecognizer(tapGesture)
         view.frame = CGRect(x: .zero,
                             y: .zero,
                             width: calculateXMax(),
@@ -68,6 +81,8 @@ class ProfileInformationStackView: UIStackView {
     
     lazy var heightView: ProfileTextFieldView = {
         let view = ProfileTextFieldView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        view.addGestureRecognizer(tapGesture)
         view.profileLabel.text = "키"
         view.profileTextField.inputView = heightPickerView
         return view
@@ -75,6 +90,8 @@ class ProfileInformationStackView: UIStackView {
     
     lazy var weightView: ProfileTextFieldView = {
         let view = ProfileTextFieldView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        view.addGestureRecognizer(tapGesture)
         view.profileLabel.text = "몸무게"
         view.profileTextField.inputView = weightPickerView
         return view
@@ -106,6 +123,10 @@ extension ProfileInformationStackView {
         self.distribution = .fillEqually
         self.spacing = 10
         views.forEach() { self.addArrangedSubview($0) }
+    }
+    
+    @objc private func didTapView(_ sender: UITapGestureRecognizer) {
+        delegate?.didTapped()
     }
 }
 extension ProfileInformationStackView: UIPickerViewDataSource {

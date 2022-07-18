@@ -19,10 +19,10 @@ class ProfileViewController: UIViewController {
     private var saveButtonBottomConstraint: NSLayoutConstraint?
     private var invisibleViewBottomConstraint: NSLayoutConstraint?
     private var selectedTextField: UITextField?
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 MM월 dd일"
-
         return formatter
     }()
     
@@ -40,11 +40,15 @@ class ProfileViewController: UIViewController {
     
     private lazy var profileScrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewDidTap(_:)))
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.isEnabled = true
+        tapGesture.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(tapGesture)
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                         height: overSizeYValueRatio(1200))
-        
         return scrollView
     }()
     
@@ -316,7 +320,7 @@ class ProfileViewController: UIViewController {
                     self.animateInvisibleViewDown()
                 case .down:
                     self.animateSaveButtonDown()
-                    self.animateInvisibleViewUp()
+//                    self.animateInvisibleViewUp()
                 case .none: break
                 }
             })
@@ -348,6 +352,10 @@ class ProfileViewController: UIViewController {
     @objc private func backgroundViewDidTap() {
         self.animateSaveButtonDown()
     }
+    
+    @objc private func scrollViewDidTap(_ sender: UIScrollView) {
+        self.view.endEditing(true)
+    }
 }
 
 extension ProfileViewController: UIScrollViewDelegate {
@@ -355,6 +363,10 @@ extension ProfileViewController: UIScrollViewDelegate {
         viewModel?.calculateScrollViewState(
             yPosition: scrollView.contentOffset.y
         )
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
     }
 }
 
@@ -420,7 +432,7 @@ extension ProfileViewController {
     }
 }
 
-extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
+extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol, ProfileInputViewsProtocol {
     func profileImageButtonTapped() {
         coordinator?.presentPickerController(self)
     }
@@ -448,6 +460,9 @@ extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtoc
         } else {
             selectedTextField?.resignFirstResponder()
         }
+    }
+    
+    func didTapped() {
     }
 }
 
