@@ -32,7 +32,7 @@ class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository 
         }
     }
     
-    func upLoadImage(_ image: Data) {
+    func uploadImage(_ image: Data) {
         let metaData = StorageMetadata()
         metaData.contentType = "image/png"
         storage

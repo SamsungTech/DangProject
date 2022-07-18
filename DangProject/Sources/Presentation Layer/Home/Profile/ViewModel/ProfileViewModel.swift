@@ -143,7 +143,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     func passProfileImageData(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
-        firebaseStorageUseCase?.upDateProfileImage(data)
+        firebaseStorageUseCase?.updateProfileImage(data)
     }
 
     private func convertStringToGenderType(_ data: String) {
