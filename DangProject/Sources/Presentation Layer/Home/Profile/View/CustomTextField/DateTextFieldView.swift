@@ -7,6 +7,7 @@
 
 import UIKit
 
+@available(iOS 13.4, *)
 class DateTextFieldView: UIView {
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -24,12 +25,7 @@ class DateTextFieldView: UIView {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.locale = Locale(identifier: "ko-KR")
-        if #available(iOS 13.4, *) {
-            picker.preferredDatePickerStyle = .wheels
-        } else {
-            // Fallback on earlier versions
-        }
-        picker.addTarget(DateTextFieldView.self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        picker.preferredDatePickerStyle = .wheels
         return picker
     }()
     
@@ -81,6 +77,7 @@ class DateTextFieldView: UIView {
     }
 }
 
+@available(iOS 13.4, *)
 extension DateTextFieldView {
     private func configureUI() {
         setUpProfileLabel()
@@ -127,11 +124,5 @@ extension DateTextFieldView {
             profileTextField.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
             profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
         ])
-    }
-    
-    
-    @objc private func datePickerValueChanged() {
-        let birthText = dateFormatter.string(from: pickerView.date)
-        profileTextField.text = birthText
     }
 }

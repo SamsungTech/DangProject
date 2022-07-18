@@ -44,6 +44,7 @@ class ProfileInformationStackView: UIStackView {
                             y: .zero,
                             width: calculateXMax(),
                             height: yValueRatio(100))
+        view.profileTextField.text = "20222020220"
         return view
     }()
     

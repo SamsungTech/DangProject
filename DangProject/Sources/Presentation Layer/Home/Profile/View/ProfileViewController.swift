@@ -43,6 +43,11 @@ class ProfileViewController: UIViewController {
         let stackView = ProfileInformationStackView()
         if #available(iOS 13.4, *) {
             stackView.birthDatePickerView.profileTextField.delegate = self
+            stackView.birthDatePickerView.pickerView.addTarget(
+                self,
+                action: #selector(datePickerValueChanged(_:)),
+                for: UIControl.Event.valueChanged
+            )
         } else {
             stackView.birthDateTextFieldView.profileTextField.delegate = self
         }
@@ -335,6 +340,14 @@ class ProfileViewController: UIViewController {
     
     @objc private func scrollViewDidTap(_ sender: UIScrollView) {
         self.view.endEditing(true)
+    }
+    
+    @available(iOS 13.4, *)
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+        let birthText = dateFormatter.string(from: profileStackView.birthDatePickerView.pickerView.date)
+        profileStackView.birthDatePickerView.profileTextField.text = birthText
     }
 }
 
