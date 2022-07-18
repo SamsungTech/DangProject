@@ -20,12 +20,6 @@ class ProfileViewController: UIViewController {
     private var invisibleViewBottomConstraint: NSLayoutConstraint?
     private var selectedTextField: UITextField?
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 MM월 dd일"
-        return formatter
-    }()
-    
     private lazy var invisibleView: InvisibleView = {
         let view = InvisibleView()
         view.delegate = self
