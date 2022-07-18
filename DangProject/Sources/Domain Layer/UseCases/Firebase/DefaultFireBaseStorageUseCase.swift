@@ -29,7 +29,7 @@ class DefaultFireBaseStorageUseCase: FirebaseStorageUseCase {
         }
     }
     
-    func upDateProfileImage(_ data: Data) {
-        fireBaseStorageManagerRepository.upLoadImage(data)
+    func updateProfileImage(_ data: Data) {
+        fireBaseStorageManagerRepository.uploadImage(data)
     }
 }
