@@ -17,14 +17,7 @@ class ProfileViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var profileNavigationBar = ProfileNavigationBar()
     private var saveButtonBottomConstraint: NSLayoutConstraint?
-    private var invisibleViewBottomConstraint: NSLayoutConstraint?
     private var selectedTextField: UITextField?
-    
-    private lazy var invisibleView: InvisibleView = {
-        let view = InvisibleView()
-        view.delegate = self
-        return view
-    }()
     
     private lazy var profileImageButton: ProfileImageButton = {
         let button = ProfileImageButton()
@@ -100,7 +93,6 @@ class ProfileViewController: UIViewController {
         setUpProfileImageButton()
         setUpProfileStackView()
         setUpSaveButton()
-        setUpInvisibleView()
     }
     
     private func bind() {
@@ -170,19 +162,6 @@ class ProfileViewController: UIViewController {
             saveButton.heightAnchor.constraint(equalToConstant: yValueRatio(105)),
             saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-    }
-    
-    private func setUpInvisibleView() {
-        view.addSubview(invisibleView)
-        view.bringSubviewToFront(invisibleView)
-        invisibleView.translatesAutoresizingMaskIntoConstraints = false
-        invisibleViewBottomConstraint = invisibleView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: calculateYMax())
-        invisibleViewBottomConstraint?.isActive = true
-        NSLayoutConstraint.activate([
-            invisibleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            invisibleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            invisibleView.heightAnchor.constraint(equalToConstant: calculateYMax())
         ])
     }
     
@@ -311,10 +290,8 @@ class ProfileViewController: UIViewController {
                 switch $0 {
                 case .up:
                     self.animateSaveButtonUp()
-                    self.animateInvisibleViewDown()
                 case .down:
                     self.animateSaveButtonDown()
-//                    self.animateInvisibleViewUp()
                 case .none: break
                 }
             })
@@ -406,20 +383,6 @@ extension ProfileViewController {
     
     private func animateSaveButtonUp() {
         saveButtonBottomConstraint?.constant = 0
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
-    }
-    
-    private func animateInvisibleViewDown() {
-        invisibleViewBottomConstraint?.constant = calculateYMax()
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
-    }
-    
-    private func animateInvisibleViewUp() {
-        invisibleViewBottomConstraint?.constant = 0
         UIView.animate(withDuration: 0.2, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
