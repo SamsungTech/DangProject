@@ -96,11 +96,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func bind() {
-        if #available(iOS 13.4, *) {
-            bindUI()
-        } else {
-            // Fallback on earlier versions
-        }
+        bindUI()
         bindProfileData()
         bindAnimationValue()
     }
@@ -177,66 +173,79 @@ class ProfileViewController: UIViewController {
             profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
             profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
         )
-            .bind(to: viewModel.genderRelay)
-            .disposed(by: disposeBag)
-
+        .bind(to: viewModel.genderRelay)
+        .disposed(by: disposeBag)
+        
         if #available(iOS 13.4, *) {
-            Observable.merge(
-                profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
-                profileStackView.birthDatePickerView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
-                profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
-            )
-            .bind(to: viewModel.okButtonRelay)
-            .disposed(by: disposeBag)
+            newVersionBindUI()
         } else {
-            Observable.merge(
-                profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
-                profileStackView.birthDateTextFieldView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
-                profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-                profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
-            )
-            .bind(to: viewModel.okButtonRelay)
-            .disposed(by: disposeBag)
+            lowerVersionBindUI()
         }
-
+    }
+    
+    
+    @available(iOS 13.4, *)
+    private func newVersionBindUI() {
+        Observable.merge(
+            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+            profileStackView.birthDatePickerView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
+        )
+        .bind(to: viewModel.okButtonRelay)
+        .disposed(by: disposeBag)
+        
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
-                if #available(iOS 13.4, *) {
-                    guard let nameData = self?.profileStackView.nameView.profileTextField.text,
-                          let profileImage = self?.profileImageButton.profileImageView.image,
-                          let heightData = self?.profileStackView.heightView.profileTextField.text,
-                          let weightData = self?.profileStackView.weightView.profileTextField.text,
-                          let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                    self?.viewModel.passProfileImageData(profileImage)
-                    self?.viewModel.passProfileData(
-                        ProfileDomainModel(uid: "",
-                                           name: nameData,
-                                           height: Int(heightData) ?? 0,
-                                           weight: Int(weightData) ?? 0,
-                                           sugarLevel: 0,
-                                           profileImage: profileImage,
-                                           gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                           birthDay: birthData)
-                    )
-                } else {
-                    guard let nameData = self?.profileStackView.nameView.profileTextField.text,
-                          let profileImage = self?.profileImageButton.profileImageView.image,
-                          let heightData = self?.profileStackView.heightView.profileTextField.text,
-                          let weightData = self?.profileStackView.weightView.profileTextField.text,
-                          let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
-                    self?.viewModel.passProfileImageData(profileImage)
-                    self?.viewModel.passProfileData(
-                        ProfileDomainModel(uid: "",
-                                           name: nameData,
-                                           height: Int(heightData) ?? 0,
-                                           weight: Int(weightData) ?? 0,
-                                           sugarLevel: 0,
-                                           profileImage: profileImage,
-                                           gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                           birthDay: birthData)
-                    )
-                }
+                guard let nameData = self?.profileStackView.nameView.profileTextField.text,
+                      let profileImage = self?.profileImageButton.profileImageView.image,
+                      let heightData = self?.profileStackView.heightView.profileTextField.text,
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
+                self?.viewModel.passProfileImageData(profileImage)
+                self?.viewModel.passProfileData(
+                    ProfileDomainModel(uid: "",
+                                       name: nameData,
+                                       height: Int(heightData) ?? 0,
+                                       weight: Int(weightData) ?? 0,
+                                       sugarLevel: 0,
+                                       profileImage: profileImage,
+                                       gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                       birthDay: birthData)
+                )
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func lowerVersionBindUI() {
+        Observable.merge(
+            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+            profileStackView.birthDateTextFieldView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
+        )
+        .bind(to: viewModel.okButtonRelay)
+        .disposed(by: disposeBag)
+        
+        saveButton.saveButton.rx.tap
+            .bind { [weak self] in
+                guard let nameData = self?.profileStackView.nameView.profileTextField.text,
+                      let profileImage = self?.profileImageButton.profileImageView.image,
+                      let heightData = self?.profileStackView.heightView.profileTextField.text,
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
+                self?.viewModel.passProfileImageData(profileImage)
+                self?.viewModel.passProfileData(
+                    ProfileDomainModel(uid: "",
+                                       name: nameData,
+                                       height: Int(heightData) ?? 0,
+                                       weight: Int(weightData) ?? 0,
+                                       sugarLevel: 0,
+                                       profileImage: profileImage,
+                                       gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                       birthDay: birthData)
+                )
+                
             }
             .disposed(by: disposeBag)
     }
@@ -250,7 +259,7 @@ class ProfileViewController: UIViewController {
                 if #available(iOS 13.4, *) {
                     self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthDay
                 } else {
-                    // Fallback on earlier versions
+                    self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthDay
                 }
                 self?.profileImageButton.profileImageView.image = $0.profileImage
             })
