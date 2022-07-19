@@ -10,10 +10,10 @@ import Foundation
 struct AlarmEntity {
     static let empty: Self = .init(isOn: Bool(),
                                    title: "",
-                                   time: "",
+                                   time: Date.init(),
                                    selectedDays: "")
     var isOn: Bool
     var title: String
-    var time: String
+    var time: Date
     var selectedDays: String
 }

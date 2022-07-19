@@ -16,9 +16,7 @@ protocol AlarmDaySelectionDelegate: AnyObject {
 
 class AlarmDaySelectionView: UIView {
     private let disposeBag = DisposeBag()
-    private let week = [
-        "일", "월", "화", "수", "목", "금", "토"
-    ]
+    private let week = [ "일", "월", "화", "수", "목", "금", "토"  ]
     private lazy var alarmStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -33,17 +31,13 @@ class AlarmDaySelectionView: UIView {
     var thursdayButton = UIButton()
     var fridayButton = UIButton()
     var saturdayButton = UIButton()
-    var tagNumber = 0
+
     var delegate: AlarmDaySelectionDelegate?
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        if #available(iOS 15.0, *) {
             configureUI()
-        } else {
-            // Fallback on earlier versions
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -52,19 +46,19 @@ class AlarmDaySelectionView: UIView {
 }
 
 extension AlarmDaySelectionView {
-    @available(iOS 15.0, *)
+    
     private func configureUI() {
         setUpStackView()
     }
     
-    @available(iOS 15.0, *)
     private func setUpStackView() {
         let buttonsArray = [
             sundayButton, mondayButton, tuesdayButton,
             wednesdayButton, thursdayButton, fridayButton, saturdayButton
         ]
-        buttonsArray.forEach {
-            $0.setAttributedTitle(
+        var tagNumber = 0
+        buttonsArray.forEach { button in
+            button.setAttributedTitle(
                 NSAttributedString(
                     string: "\(week[tagNumber])",
                     attributes: [
@@ -73,18 +67,18 @@ extension AlarmDaySelectionView {
                             weight: .heavy
                         )]
                 ), for: .normal)
-            $0.setTitleColor(UIColor.lightGray, for: .normal)
-            $0.tag = tagNumber
-            $0.addTarget(
+            button.setTitleColor(UIColor.lightGray, for: .normal)
+            button.tag = tagNumber
+            button.addTarget(
                 self,
                 action: #selector(didTapDaysButton(_:)),
                 for: .touchUpInside
             )
-            $0.frame = CGRect(x: .zero, y: .zero, width: xValueRatio(33), height: yValueRatio(33))
-            $0.viewRadius(cornerRadius: xValueRatio(16.5))
-            $0.backgroundColor = .blue
+            button.frame = CGRect(x: .zero, y: .zero, width: xValueRatio(33), height: yValueRatio(33))
+            button.viewRadius(cornerRadius: xValueRatio(16.5))
+            button.backgroundColor = .blue
             tagNumber += 1
-            alarmStackView.addArrangedSubview($0)
+            alarmStackView.addArrangedSubview(button)
         }
         addSubview(alarmStackView)
         alarmStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,23 +92,22 @@ extension AlarmDaySelectionView {
 }
 
 extension AlarmDaySelectionView {
-    @available(iOS 15.0, *)
     @objc func didTapDaysButton(_ sender: UIButton) {
         switch sender.tag {
         case 0:
-            sundayButton.backgroundColor = .systemMint
+            sundayButton.backgroundColor = .systemGreen
         case 1:
-            mondayButton.backgroundColor = .systemMint
+            mondayButton.backgroundColor = .systemGreen
         case 2:
             tuesdayButton.backgroundColor = .systemGreen
         case 3:
-            wednesdayButton.backgroundColor = .systemMint
+            wednesdayButton.backgroundColor = .systemGreen
         case 4:
             thursdayButton.backgroundColor = .systemGreen
         case 5:
             fridayButton.backgroundColor = .systemGreen
         case 6:
-            saturdayButton.backgroundColor = .systemMint
+            saturdayButton.backgroundColor = .systemGreen
         default: break
         }
     }
