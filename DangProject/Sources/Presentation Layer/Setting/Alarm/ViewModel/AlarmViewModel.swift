@@ -32,9 +32,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private var searchRowPositionFactory: SearchRowPositionFactory
     
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
-    lazy var tempAlarmData: [AlarmTableViewCellData] = {
-        alarmDataArrayRelay.value
-    }()
+    lazy var tempAlarmData: [AlarmTableViewCellData] = { alarmDataArrayRelay.value }()
+    var cellScaleWillExpand: Bool = false
     
     init(useCase: SettingUseCase,
          searchRowPositionFactory: SearchRowPositionFactory) {
@@ -43,21 +42,18 @@ class AlarmViewModel: AlarmViewModelProtocol {
         bindAlarmArraySubject()
     }
     
-    func viewDidLoad() {
-        useCase?.startAlarmData()
-    }
-    
-    func cellScaleWillChange(index: IndexPath) {
-        resetAllCellScale(indexPath: index)
+    func changeCellScale(index: IndexPath) {
+        resetTotalCellScaleNormal(indexPath: index)
         for i in 0 ..< tempAlarmData.count {
             if i == index.row {
                 if tempAlarmData[i].scale == .normal {
                     tempAlarmData[i].scale = .expand
+                    self.cellScaleWillExpand = true
                 } else {
                     tempAlarmData[i].scale = .normal
+                    self.cellScaleWillExpand = false
                 }
             }
-            print("\(i). cellScaleWillChange")
         }
         alarmDataArrayRelay.accept(tempAlarmData)
     }
@@ -88,7 +84,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
         alarmDataArrayRelay.accept(tempAlarmData)
     }
     
-    private func resetAllCellScale(indexPath: IndexPath) {
+    private func resetTotalCellScaleNormal(indexPath: IndexPath) {
         for index in 0 ..< tempAlarmData.count {
             if index != indexPath.row {
                 tempAlarmData[index].scale = .normal

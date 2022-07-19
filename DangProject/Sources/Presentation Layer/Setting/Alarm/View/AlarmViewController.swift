@@ -11,13 +11,11 @@ import RxSwift
 import RxCocoa
 
 class AlarmViewController: UIViewController {
-    private var viewModel: AlarmViewModel?
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
+    private var viewModel: AlarmViewModel
     private var navigationBar = AlarmNavigationBar()
-    private var selectedIndexPath = IndexPath(row: -1, section: 0)
-    private var deSelectedIndexPath = IndexPath(row: -1, section: 0)
-    var alarmTableView = UITableView()
+    private var alarmTableView = UITableView()
     
     private lazy var alertController: UIAlertController = {
         let alert = UIAlertController(title: "기록되지 않았을 때 미리 알림받기", message: nil, preferredStyle: .actionSheet)
@@ -26,14 +24,13 @@ class AlarmViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel?.viewDidLoad()
         configureUI()
         bind()
     }
     
     init(viewModel: AlarmViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -119,55 +116,41 @@ class AlarmViewController: UIViewController {
     }
     
     private func bindAlarmTableViewCellData() {
-        viewModel?.alarmDataArrayRelay
+        viewModel.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
                 guard let strongSelf = self else { return }
                 for i in 0 ... data.count-1 {
-                    //                    guard let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem else {
-                    //                        print("returned")
-                    //                        return
-                    //                    }
                     if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewItem {
-                        cell.setUpCell(viewModel: data[i])
-                        print(i)
+                        cell.setUpCell(data: data[i])
                     }
                 }
-//                self?.updateCellUI()
-                strongSelf.alarmTableView.beginUpdates()
-                strongSelf.alarmTableView.endUpdates()
-                print("update")
+                self?.updateCellUI()
             })
             .disposed(by: disposeBag)
     }
     
     private func updateCellUI() {
-        DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.alarmTableView.beginUpdates()
-            
-            strongSelf.alarmTableView.endUpdates()
-            print("update")
-        }
+        self.alarmTableView.beginUpdates()
+        self.alarmTableView.endUpdates()
     }
 }
 
 extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let count = viewModel?.alarmDataArrayRelay.value.count else { return 0 }
-        return count
+        return viewModel.alarmDataArrayRelay.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmTableViewItem.identifier, for: indexPath) as? AlarmTableViewItem else { return UITableViewCell() }
-        guard let alarmItemEntity = viewModel?.alarmDataArrayRelay.value[indexPath.item] else { return UITableViewCell() }
-        cell.setUpCell(viewModel: alarmItemEntity)
+        let alarmItemData = viewModel.alarmDataArrayRelay.value[indexPath.item]
+        cell.setUpCell(data: alarmItemData)
         cell.delegate = self
         cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel?.getHeightForRow(indexPath) ?? 0
+        return viewModel.getHeightForRow(indexPath)
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -185,15 +168,18 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
             self.alarmTableView.deleteRows(at: [indexPath], with: .fade)
             self.alarmTableView.endUpdates()
         }
-        self.viewModel?.deleteAlarmData(indexPath)
+        self.viewModel.deleteAlarmData(indexPath)
     }
 }
 
 extension AlarmViewController: AlarmTableViewCellDelegate {
     func middleBottonButtonDidTapped(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel?.cellScaleWillChange(index: cellIndexPath)
-        alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
+        viewModel.changeCellScale(index: cellIndexPath)
+        if viewModel.cellScaleWillExpand {
+            alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
+        }
+        
         //        guard let cell = alarmTableView.cellForRow(at: cellIndexPath) as? AlarmTableViewItem else { return }
         //        guard let data = viewModel?.alarmDataArrayRelay[cellIndex]
         //        cell.setUpCell(viewModel: viewModel?.alarmDataArrayRelay[cellIndexPath.row])
@@ -202,12 +188,12 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     
     func switchButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel?.changeIsOnValue(index: cellIndexPath)
+        viewModel.changeIsOnValue(index: cellIndexPath)
     }
     
     func everyDayButtonDidTapped(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel?.changeMoreExpand(index: cellIndexPath)
+        viewModel.changeMoreExpand(index: cellIndexPath)
         //        alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
     }
 }
