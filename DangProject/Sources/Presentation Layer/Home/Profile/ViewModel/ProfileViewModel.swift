@@ -59,7 +59,6 @@ struct ProfileData {
 }
 
 protocol ProfileViewModelInputProtocol {
-    func viewDidLoad()
     func calculateScrollViewState(yPosition: CGFloat)
     func saveButtonDidTap()
     func passProfileData(_ data: ProfileDomainModel)
@@ -93,21 +92,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
          firebaseStorageUseCase: FirebaseStorageUseCase) {
         self.firebaseStoreUseCase = firebaseStoreUseCase
         self.firebaseStorageUseCase = firebaseStorageUseCase
-    }
-    
-    func viewDidLoad() {
-        guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
-        guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
-        
-        Observable.combineLatest(profileImage, profileData)
-            .subscribe(onNext: { [weak self] imageData, profileData in
-                guard let image = UIImage(data: imageData as Data) else { return }
-                let profile = ProfileData(image,
-                                          profileData)
-                self?.convertStringToGenderType(profileData.gender)
-                self?.profileDataSubject.onNext(profile)
-            })
-            .disposed(by: disposeBag)
+        self.viewDidLoad()
     }
     
     func convertGenderTypeToString() -> String {
@@ -144,6 +129,21 @@ class ProfileViewModel: ProfileViewModelProtocol {
     func passProfileImageData(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
         firebaseStorageUseCase?.updateProfileImage(data)
+    }
+    
+    private func viewDidLoad() {
+        guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
+        guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
+        
+        Observable.combineLatest(profileImage, profileData)
+            .subscribe(onNext: { [weak self] imageData, profileData in
+                guard let image = UIImage(data: imageData as Data) else { return }
+                let profile = ProfileData(image,
+                                          profileData)
+                self?.convertStringToGenderType(profileData.gender)
+                self?.profileDataSubject.onNext(profile)
+            })
+            .disposed(by: disposeBag)
     }
 
     private func convertStringToGenderType(_ data: String) {

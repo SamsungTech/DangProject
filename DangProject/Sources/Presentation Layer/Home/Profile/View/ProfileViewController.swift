@@ -73,7 +73,6 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.viewDidLoad()
         configureUI()
         bind()
         view.bringSubviewToFront(profileNavigationBar)
