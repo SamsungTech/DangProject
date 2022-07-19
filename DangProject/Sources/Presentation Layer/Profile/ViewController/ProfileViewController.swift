@@ -202,6 +202,7 @@ class ProfileViewController: UIViewController {
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
+                
                 guard let strongSelf = self,
                       let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
