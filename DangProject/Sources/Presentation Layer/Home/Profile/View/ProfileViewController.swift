@@ -218,6 +218,7 @@ class ProfileViewController: UIViewController {
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthDay: birthData)
                 )
+                
             }
             .disposed(by: disposeBag)
     }
@@ -260,9 +261,15 @@ class ProfileViewController: UIViewController {
             .subscribe(onNext: { [weak self] in
                 self?.profileStackView.nameView.profileTextField.text = $0.name
                 self?.profileStackView.heightView.profileTextField.text = String($0.height)
+                self?.profileStackView.heightPickerView.selectRow($0.height-1, inComponent: 0, animated: false)
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
+                self?.profileStackView.weightPickerView.selectRow($0.weight-1, inComponent: 0, animated: false)
                 if #available(iOS 13.4, *) {
                     self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthDay
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+                    guard let date = dateFormatter.date(from: $0.birthDay) else { return }
+                    self?.profileStackView.birthDatePickerView.pickerView.date = date
                 } else {
                     self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthDay
                 }
@@ -312,24 +319,9 @@ class ProfileViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.okButtonRelay
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .none: break
-                case .name:
-                    self.profileStackView.nameView.profileTextField.resignFirstResponder()
-                case .birthDate:
-                    if #available(iOS 13.4, *) {
-                        self.profileStackView.birthDatePickerView.profileTextField.resignFirstResponder()
-                    } else {
-                        self.profileStackView.birthDateTextFieldView.profileTextField.resignFirstResponder()
-                    }
-                case .height:
-                    self.profileStackView.heightView.profileTextField.resignFirstResponder()
-                case .weight:
-                    self.profileStackView.weightView.profileTextField.resignFirstResponder()
-                }
-                self.viewModel.saveButtonAnimationRelay.accept(.up)
+            .subscribe(onNext: { [weak self] _ in
+                self?.view.endEditing(true)
+                self?.viewModel.saveButtonAnimationRelay.accept(.up)
             })
             .disposed(by: disposeBag)
     }
@@ -411,7 +403,7 @@ extension ProfileViewController {
     }
 }
 
-extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol, ProfileInputViewsProtocol {
+extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
     func profileImageButtonTapped() {
         coordinator?.presentPickerController(self)
     }
@@ -439,9 +431,6 @@ extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtoc
         } else {
             selectedTextField?.resignFirstResponder()
         }
-    }
-    
-    func didTapped() {
     }
 }
 

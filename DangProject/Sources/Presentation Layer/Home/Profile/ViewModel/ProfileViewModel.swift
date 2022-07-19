@@ -113,7 +113,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     func convertGenderTypeToString() -> String {
         switch genderRelay.value {
         case .none:
-            return ""
+            return "에러"
         case .male:
             return "남자"
         case .female:

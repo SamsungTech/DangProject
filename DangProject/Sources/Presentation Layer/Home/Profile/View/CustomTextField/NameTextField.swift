@@ -77,7 +77,7 @@ extension NameTextField {
             textFieldBackgroundView.topAnchor.constraint(equalTo: profileLabel.bottomAnchor, constant: yValueRatio(10)),
             textFieldBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)),
             textFieldBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -xValueRatio(20)),
-            textFieldBackgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(10))
+            textFieldBackgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(70))
         ])
     }
     
@@ -85,8 +85,10 @@ extension NameTextField {
         textFieldBackgroundView.addSubview(profileTextField)
         profileTextField.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileTextField.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
-            profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
+            profileTextField.topAnchor.constraint(equalTo: textFieldBackgroundView.topAnchor),
+            profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10)),
+            profileTextField.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -xValueRatio(10)),
+            profileTextField.bottomAnchor.constraint(equalTo: textFieldBackgroundView.bottomAnchor)
         ])
     }
 }

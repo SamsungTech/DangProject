@@ -38,19 +38,19 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
+        
         let profileData = [
             "uid": self.uid,
             "name": profile.name,
             "height": profile.height,
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
-            "image": "\(profile.profileImage)",
             "gender": "\(profile.gender)",
             "birthDay": "\(profile.birthDay)"
         ] as [String : Any]
         
         database.collection("app")
-            .document(profile.uid)
+            .document(self.uid)
             .collection("personal")
             .document("profile")
             .setData(profileData) { error in
