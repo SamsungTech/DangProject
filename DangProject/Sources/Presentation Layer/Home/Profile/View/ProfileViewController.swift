@@ -18,6 +18,7 @@ class ProfileViewController: UIViewController {
     private var profileNavigationBar = ProfileNavigationBar()
     private var saveButtonBottomConstraint: NSLayoutConstraint?
     private var selectedTextField: UITextField?
+    private lazy var dateFormatter: DateFormatter = DateFormatter.formatDate()
     
     private lazy var profileImageButton: ProfileImageButton = {
         let button = ProfileImageButton()
@@ -267,10 +268,8 @@ class ProfileViewController: UIViewController {
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
                 self?.profileStackView.weightPickerView.selectRow($0.weight-1, inComponent: 0, animated: false)
                 if #available(iOS 13.4, *) {
+                    guard let date = self?.dateFormatter.date(from: $0.birthDay) else { return }
                     self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthDay
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-                    guard let date = dateFormatter.date(from: $0.birthDay) else { return }
                     self?.profileStackView.birthDatePickerView.pickerView.date = date
                 } else {
                     self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthDay
@@ -338,8 +337,6 @@ class ProfileViewController: UIViewController {
     
     @available(iOS 13.4, *)
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
         let birthText = dateFormatter.string(from: profileStackView.birthDatePickerView.pickerView.date)
         profileStackView.birthDatePickerView.profileTextField.text = birthText
     }
