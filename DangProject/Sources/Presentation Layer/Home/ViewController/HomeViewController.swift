@@ -185,6 +185,10 @@ extension HomeViewController: CalendarViewDelegate {
 }
 
 extension HomeViewController: NavigationBarDelegate {
+    func profileImageButtonDidTap() {
+        coordinator?.presentProfile(self)
+    }
+    
     func changeViewControllerExpandation(state: ChevronButtonState) {
         self.homeScrollViewTopAnchor.isActive = false
         self.calendarViewTopAnchor.isActive = false

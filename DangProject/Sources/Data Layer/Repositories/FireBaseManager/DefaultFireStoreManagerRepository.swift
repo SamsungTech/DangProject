@@ -48,7 +48,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         ] as [String : Any]
         
         database.collection("app")
-            .document(profile.uid)
+            .document(self.uid)
             .collection("personal")
             .document("profile")
             .setData(profileData) { error in
@@ -58,6 +58,29 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 }
             }
     }
+    
+    func getProfileDataInFireStore() -> Observable<[String: Any]> {
+            return Observable.create { [weak self] emitter in
+                guard let strongSelf = self else {
+                    return Disposables.create()
+                }
+                
+                self?.database.collection("app")
+                    .document(strongSelf.uid)
+                    .collection("personal")
+                    .document("profile")
+                    .getDocument() { snapshot, error  in
+                        if let error = error {
+                            print("DEBUG: \(error.localizedDescription)")
+                            return
+                        }
+                        if let result = snapshot?.data() {
+                            emitter.onNext(result)
+                        }
+                    }
+                return Disposables.create()
+            }
+        }
     
     func saveEatenFood(eatenFood: FoodDomainModel) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }

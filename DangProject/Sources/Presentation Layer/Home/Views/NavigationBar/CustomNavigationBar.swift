@@ -12,6 +12,7 @@ import RxCocoa
 
 protocol NavigationBarDelegate {
     func changeViewControllerExpandation(state: ChevronButtonState)
+    func profileImageButtonDidTap()
 }
 
 enum ChevronButtonState {
@@ -29,7 +30,11 @@ class CustomNavigationBar: UIView {
     private let chevronButton = UIButton()
     private var chevronButtonState: ChevronButtonState = .revert
     private let profileImageView = UIImageView()
-    private let profileImageButton = UIButton()
+    private lazy var profileImageButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(profileImageButtonDidTap), for: .touchDown)
+        return button
+    }()
     
     var parentableViewController: NavigationBarDelegate?
     
@@ -93,6 +98,10 @@ class CustomNavigationBar: UIView {
     @objc private func chevronButtonDidTapped() {
         changeChevronButton()
         parentableViewController?.changeViewControllerExpandation(state: chevronButtonState)
+    }
+    
+    @objc private func profileImageButtonDidTap() {
+        parentableViewController?.profileImageButtonDidTap()
     }
     
     private func setupWeekStackView() {
