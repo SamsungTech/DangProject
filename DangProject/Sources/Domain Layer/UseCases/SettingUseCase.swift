@@ -16,27 +16,27 @@ class SettingUseCase {
     var alarmArray: [AlarmEntity] = [
         AlarmEntity(isOn: false,
                     title: "아침식사",
-                    time: "8:00",
+                    time: .makeTime(hour: 8, minute: 0),
                     selectedDays: "매일"),
         AlarmEntity(isOn: true,
                     title: "아침식사",
-                    time: "9:00",
+                    time: .makeTime(hour: 9, minute: 0),
                     selectedDays: "주말"),
         AlarmEntity(isOn: false,
                     title: "점심식사",
-                    time: "11:00",
+                    time: .makeTime(hour: 11, minute: 0),
                     selectedDays: "주중"),
         AlarmEntity(isOn: false,
                     title: "점심식사",
-                    time: "14:00",
+                    time: .makeTime(hour: 12, minute: 0),
                     selectedDays: "화"),
         AlarmEntity(isOn: false,
                     title: "점심식사",
-                    time: "17:00",
+                    time: .makeTime(hour: 13, minute: 0),
                     selectedDays: "매일"),
         AlarmEntity(isOn: false,
                     title: "점심식사",
-                    time: "20:00",
+                    time: .makeTime(hour: 16, minute: 0),
                     selectedDays: "매일")
     ]
     
@@ -44,6 +44,7 @@ class SettingUseCase {
     
     init(repository: SettingRepository) {
         self.repository = repository
+        startAlarmData()
     }
     
     func startAlarmData() {
