@@ -43,8 +43,8 @@ class ProfileInformationStackView: UIStackView {
         return view
     }()
     
-    lazy var birthDateTextFieldView: DangTextFieldView = {
-        let view = DangTextFieldView()
+    lazy var birthDateTextFieldView: BirthDateTextFieldView = {
+        let view = BirthDateTextFieldView()
         view.profileLabel.text = "생년월일"
         view.profileTextField.placeholder = "예) 19960609"
         view.frame = CGRect(x: .zero,

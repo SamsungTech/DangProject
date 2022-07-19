@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DangTextFieldView: UIView {
+class BirthDateTextFieldView: UIView {
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
@@ -62,7 +62,7 @@ class DangTextFieldView: UIView {
     }
 }
 
-extension DangTextFieldView {
+extension BirthDateTextFieldView {
     private func configureUI() {
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
