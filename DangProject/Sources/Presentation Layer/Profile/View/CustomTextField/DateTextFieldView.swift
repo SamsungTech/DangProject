@@ -9,6 +9,7 @@ import UIKit
 
 @available(iOS 13.4, *)
 class DateTextFieldView: UIView {
+    private lazy var dateFormatter: DateFormatter = DateFormatter.formatDate()
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
@@ -19,9 +20,11 @@ class DateTextFieldView: UIView {
     private(set) var pickerView: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
+        picker.locale = Locale(identifier: "ko-KR")
         picker.preferredDatePickerStyle = .wheels
         return picker
     }()
+    
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
@@ -43,6 +46,7 @@ class DateTextFieldView: UIView {
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
         textField.inputView = pickerView
         textField.inputAccessoryView = toolBarButton
+        textField.textColor = .white
         return textField
     }()
     
@@ -95,7 +99,7 @@ extension DateTextFieldView {
             textFieldBackgroundView.topAnchor.constraint(equalTo: profileLabel.bottomAnchor, constant: yValueRatio(10)),
             textFieldBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)),
             textFieldBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -xValueRatio(20)),
-            textFieldBackgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(10))
+            textFieldBackgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(70))
         ])
     }
     
@@ -114,8 +118,10 @@ extension DateTextFieldView {
         textFieldBackgroundView.addSubview(profileTextField)
         profileTextField.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileTextField.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
-            profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10))
+            profileTextField.topAnchor.constraint(equalTo: textFieldBackgroundView.topAnchor),
+            profileTextField.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor, constant: xValueRatio(10)),
+            profileTextField.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -xValueRatio(10)),
+            profileTextField.bottomAnchor.constraint(equalTo: textFieldBackgroundView.bottomAnchor)
         ])
     }
 }

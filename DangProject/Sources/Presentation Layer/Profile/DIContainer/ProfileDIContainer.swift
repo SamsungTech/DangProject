@@ -21,14 +21,31 @@ class ProfileDIContainer {
     }
     
     func makeProfileViewModel() -> ProfileViewModel {
-        return ProfileViewModel(useCase: makeProfileUseCase())
+        return ProfileViewModel(firebaseStoreUseCase: makeFirebaseStoreUseCase(),
+                                firebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
-    func makeProfileUseCase() -> ProfileUseCaseProtocol {
-        return ProfileUseCase(repository: makeProfileRepository())
+    func makeFirebaseStoreUseCase() -> FirebaseFireStoreUseCase {
+        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFirebaseManagerRepository())
     }
     
-    func makeProfileRepository() -> ProfileRepositoryProtocol {
-        return ProfileRepository()
+    func makeFirebaseStorageUseCase() -> FirebaseStorageUseCase {
+        return DefaultFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFireBaseStorageManagerRepository())
+    }
+    
+    func makeFireBaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
+        return DefaultFirebaseStorageManagerRepository()
+    }
+    
+    func makeFirebaseManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
+    }
+    
+    func makeProfileImagePickerController(_ viewController: ProfileViewController) -> UIImagePickerController {
+        let pickerController = UIImagePickerController()
+        pickerController.sourceType = .photoLibrary
+        pickerController.delegate = viewController
+        pickerController.allowsEditing = true
+        return pickerController
     }
 }

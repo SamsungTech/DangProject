@@ -7,7 +7,12 @@
 
 import UIKit
 
+protocol ProfileImageButtonProtocol: AnyObject {
+    func profileImageButtonTapped()
+}
+
 class ProfileImageButton: UIView {
+    var delegate: ProfileImageButtonProtocol?
     private lazy var profileImageBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .profileImageBackgroundColor
@@ -59,11 +64,17 @@ class ProfileImageButton: UIView {
 
 extension ProfileImageButton {
     private func configureUI() {
+        setUpView()
         setUpProfileImageBackgroundView()
         setUpImageView()
         setUpProfileImageView()
         setUpProfileSideBackgroundView()
         setUpProfileSideImageView()
+    }
+    
+    private func setUpView() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageButtonDidTap))
+        self.addGestureRecognizer(tapGesture)
     }
     
     private func setUpProfileImageBackgroundView() {
@@ -110,5 +121,9 @@ extension ProfileImageButton {
         profileSideImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         profileSideImageView.widthAnchor.constraint(equalToConstant: xValueRatio(35)).isActive = true
         profileSideImageView.heightAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
+    }
+    
+    @objc private func profileImageButtonDidTap() {
+        delegate?.profileImageButtonTapped()
     }
 }

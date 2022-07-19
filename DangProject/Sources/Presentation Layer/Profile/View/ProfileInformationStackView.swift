@@ -8,7 +8,8 @@
 import UIKit
 
 class ProfileInformationStackView: UIStackView {
-    private let profileDummyData = ProfileDummy()
+    var viewModel: ProfileViewModelProtocol
+    private var views: [UIView] = []
     lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.delegate = self
@@ -21,33 +22,36 @@ class ProfileInformationStackView: UIStackView {
         pickerView.dataSource = self
         return pickerView
     }()
-    lazy var targetDangPickerView: UIPickerView = {
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        return pickerView
+    
+    @available(iOS 13.4, *)
+    lazy var birthDatePickerView: DateTextFieldView = {
+        let view = DateTextFieldView()
+        view.profileLabel.text = "생년월일"
+        view.frame = CGRect(x: .zero,
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
+        return view
     }()
     
     lazy var nameView: NameTextField = {
         let view = NameTextField()
         view.profileLabel.text = "이름"
-        view.profileTextField.insertText("김동우")
         view.frame = CGRect(x: .zero,
-                                 y: .zero,
-                                 width: calculateXMax(),
-                                 height: yValueRatio(100))
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
         return view
     }()
     
-    @available(iOS 13.4, *)
-    lazy var birthDateView: DateTextFieldView = {
-        let view = DateTextFieldView()
+    lazy var birthDateTextFieldView: BirthDateTextFieldView = {
+        let view = BirthDateTextFieldView()
         view.profileLabel.text = "생년월일"
-        view.profileTextField.insertText("1996년 6월 9일")
+        view.profileTextField.placeholder = "예) 19960609"
         view.frame = CGRect(x: .zero,
-                                 y: .zero,
-                                 width: calculateXMax(),
-                                 height: yValueRatio(100))
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
         return view
     }()
     
@@ -63,34 +67,30 @@ class ProfileInformationStackView: UIStackView {
     lazy var heightView: ProfileTextFieldView = {
         let view = ProfileTextFieldView()
         view.profileLabel.text = "키"
-        view.profileTextField.insertText("184 cm")
         view.profileTextField.inputView = heightPickerView
+        view.frame = CGRect(x: .zero,
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
         return view
     }()
     
     lazy var weightView: ProfileTextFieldView = {
         let view = ProfileTextFieldView()
         view.profileLabel.text = "몸무게"
-        view.profileTextField.insertText("76 kg")
         view.profileTextField.inputView = weightPickerView
-        return view
-    }()
-    
-    private(set) lazy var targetSugarView: DangTextFieldView = {
-        let view = DangTextFieldView()
-        view.profileLabel.text = "목표 당"
-        view.profileTextField.insertText("20.0")
-        view.profileTextField.inputView = targetDangPickerView
+        view.frame = CGRect(x: .zero,
+                            y: .zero,
+                            width: calculateXMax(),
+                            height: yValueRatio(100))
         return view
     }()
 
-    override init(frame: CGRect) {
+    init(frame: CGRect,
+         viewModel: ProfileViewModelProtocol) {
+        self.viewModel = viewModel
         super.init(frame: frame)
-        if #available(iOS 13.4, *) {
-            configureUI()
-        } else {
-            // Fallback on earlier versions
-        }
+        configureUI()
     }
     
     required init(coder: NSCoder) {
@@ -99,14 +99,16 @@ class ProfileInformationStackView: UIStackView {
 }
 
 extension ProfileInformationStackView {
-    @available(iOS 13.4, *)
     private func configureUI() {
         setUpStackView()
     }
     
-    @available(iOS 13.4, *)
     private func setUpStackView() {
-        let views = [ nameView, birthDateView, genderView, heightView, weightView, targetSugarView ]
+        if #available(iOS 13.4, *) {
+            views = [ nameView, birthDatePickerView, genderView, heightView, weightView ]
+        } else {
+            views = [ nameView, birthDateTextFieldView, genderView, heightView, weightView ]
+        }
         
         self.axis = .vertical
         self.distribution = .fillEqually
@@ -114,9 +116,10 @@ extension ProfileInformationStackView {
         views.forEach() { self.addArrangedSubview($0) }
     }
 }
+
 extension ProfileInformationStackView: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 3
+        return 2
     }
     
     func pickerView(_ pickerView: UIPickerView,
@@ -126,8 +129,6 @@ extension ProfileInformationStackView: UIPickerViewDataSource {
             case 0:
                 return 150
             case 1:
-                return 10
-            case 2:
                 return 1
             default:
                 return 0
@@ -137,8 +138,6 @@ extension ProfileInformationStackView: UIPickerViewDataSource {
             case 0:
                 return 200
             case 1:
-                return 10
-            case 2:
                 return 1
             default:
                 return 0
@@ -148,8 +147,6 @@ extension ProfileInformationStackView: UIPickerViewDataSource {
             case 0:
                 return 100
             case 1:
-                return 10
-            case 2:
                 return 1
             default:
                 return 0
@@ -166,10 +163,8 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
         if pickerView == weightPickerView {
             switch component {
             case 0:
-                return String(row + 1)
+                return viewModel.weights[row]
             case 1:
-                return String(row + 1)
-            case 2:
                 return "kg"
             default:
                 return ""
@@ -177,10 +172,8 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
         } else if pickerView == heightPickerView {
             switch component {
             case 0:
-                return String(row + 1)
+                return viewModel.heights[row]
             case 1:
-                return String(row + 1)
-            case 2:
                 return "cm"
             default:
                 return ""
@@ -190,12 +183,23 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
             case 0:
                 return String(row + 1)
             case 1:
-                return String(row + 1)
-            case 2:
                 return "g"
             default:
                 return ""
             }
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView,
+                    didSelectRow row: Int,
+                    inComponent component: Int) {
+        switch pickerView {
+        case weightPickerView:
+            weightView.profileTextField.text = String(row+1)
+        case heightPickerView:
+            heightView.profileTextField.text = String(row+1)
+        default:
+            break
         }
     }
 }
