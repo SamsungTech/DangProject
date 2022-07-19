@@ -27,67 +27,58 @@ protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutp
 
 class AlarmViewModel: AlarmViewModelProtocol {
     private let disposeBag = DisposeBag()
-    private var useCase: SettingUseCase?
+    private var useCase: SettingUseCase
     private var dateFormatter = DateFormatter()
-    private var searchRowPositionFactory: SearchRowPositionFactory
     
-    var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
-    lazy var tempAlarmData: [AlarmTableViewCellData] = { alarmDataArrayRelay.value }()
+    var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellViewModel]>(value: [])
+    lazy var tempAlarmData: [AlarmTableViewCellViewModel] = { alarmDataArrayRelay.value }()
     var cellScaleWillExpand: Bool = false
     
-    init(useCase: SettingUseCase,
-         searchRowPositionFactory: SearchRowPositionFactory) {
+    init(useCase: SettingUseCase) {
         self.useCase = useCase
-        self.searchRowPositionFactory = searchRowPositionFactory
         bindAlarmArraySubject()
     }
     
-    func changeCellScale(index: IndexPath) {
-        resetTotalCellScaleNormal(indexPath: index)
-        for i in 0 ..< tempAlarmData.count {
-            if i == index.row {
-                if tempAlarmData[i].scale == .normal {
-                    tempAlarmData[i].scale = .expand
-                    self.cellScaleWillExpand = true
-                } else {
-                    tempAlarmData[i].scale = .normal
-                    self.cellScaleWillExpand = false
-                }
-            }
-        }
-        alarmDataArrayRelay.accept(tempAlarmData)
-    }
-    
-    func changeMoreExpand(index: IndexPath) {
-        for i in 0..<tempAlarmData.count {
-            if tempAlarmData[i].scale == .expand {
-                tempAlarmData[i].scale = .moreExpand
-            } else if tempAlarmData[i].scale == .moreExpand {
-                tempAlarmData[i].scale = .expand
-            } else {
-                tempAlarmData[i].scale = .normal
-            }
-            print("\(i). changeMoreExpand")
+    func changeCellScale(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        
+        switch tempAlarmData[index].scale {
+        case .normal:
+            tempAlarmData[index].scale = .expand
+            self.cellScaleWillExpand = true
+        case .expand:
+            tempAlarmData[index].scale = .normal
+            self.cellScaleWillExpand = false
+        case .moreExpand:
+            tempAlarmData[index].scale = .normal
+            self.cellScaleWillExpand = false
         }
         
         alarmDataArrayRelay.accept(tempAlarmData)
     }
     
-    func changeIsOnValue(index: IndexPath) {
-//        var tempDataArray = alarmDataArrayRelay.value
-        for i in 0..<tempAlarmData.count {
-            if i == index.row {
-                tempAlarmData[i].isOn.toggle()
-            }
-            print("\(i). changeIsOnValue")
+    func changeCellScaleMoreExpand(index: Int) {
+        switch tempAlarmData[index].scale {
+        case .expand:
+            tempAlarmData[index].scale = .moreExpand
+        case .moreExpand:
+            tempAlarmData[index].scale = .expand
+        case .normal:
+            break
         }
+        
         alarmDataArrayRelay.accept(tempAlarmData)
     }
     
-    private func resetTotalCellScaleNormal(indexPath: IndexPath) {
-        for index in 0 ..< tempAlarmData.count {
-            if index != indexPath.row {
-                tempAlarmData[index].scale = .normal
+    func changeIsOnValue(index: Int) {
+        tempAlarmData[index].isOn.toggle()
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
+    
+    private func resetTotalCellScaleNormal(index: Int) {
+        for i in 0 ..< tempAlarmData.count {
+            if i != index {
+                tempAlarmData[i].scale = .normal
             }
         }
     }
@@ -105,14 +96,14 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     func deleteAlarmData(_ indexPath: IndexPath) {
-        useCase?.removeAlarmData(indexPath)
+        useCase.removeAlarmData(indexPath)
     }
 }
 
 extension AlarmViewModel {
     private func bindAlarmArraySubject() {
-        useCase?.alarmArrayRelay
-            .map { $0.map { AlarmTableViewCellData.init(alarmEntity: $0) } }
+        useCase.alarmArrayRelay
+            .map { $0.map { AlarmTableViewCellViewModel.init(alarmEntity: $0) } }
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 self.alarmDataArrayRelay.accept($0)
