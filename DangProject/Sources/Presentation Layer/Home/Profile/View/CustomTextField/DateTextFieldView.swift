@@ -9,11 +9,7 @@ import UIKit
 
 @available(iOS 13.4, *)
 class DateTextFieldView: UIView {
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 MM월 dd일"
-        return formatter
-    }()
+    private lazy var dateFormatter: DateFormatter = DateFormatter.formatDate()
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
