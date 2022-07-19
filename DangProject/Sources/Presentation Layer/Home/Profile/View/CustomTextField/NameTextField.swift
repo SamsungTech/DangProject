@@ -28,6 +28,7 @@ class NameTextField: UIView {
         let textField = UITextField()
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
         textField.inputAccessoryView = toolBarButton
+        textField.textColor = .white
         return textField
     }()
     

@@ -68,6 +68,9 @@ protocol ProfileViewModelInputProtocol {
 }
 
 protocol ProfileViewModelOutputProtocol {
+    var heights: [String] { get }
+    var weights: [String] { get }
+    
     var scrollValue: BehaviorRelay<ScrollState> { get }
     var genderRelay: BehaviorRelay<GenderType> { get }
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
@@ -89,6 +92,8 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
+    let heights: [String] = [Int](1...200).map{("\($0)")}
+    let weights: [String] = [Int](1...150).map{("\($0)")}
     
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
          firebaseStorageUseCase: FirebaseStorageUseCase) {

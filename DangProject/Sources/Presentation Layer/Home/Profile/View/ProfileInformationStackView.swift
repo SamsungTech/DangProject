@@ -8,6 +8,7 @@
 import UIKit
 
 class ProfileInformationStackView: UIStackView {
+    var viewModel: ProfileViewModelProtocol
     private var views: [UIView] = []
     lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
@@ -85,7 +86,9 @@ class ProfileInformationStackView: UIStackView {
         return view
     }()
 
-    override init(frame: CGRect) {
+    init(frame: CGRect,
+         viewModel: ProfileViewModelProtocol) {
+        self.viewModel = viewModel
         super.init(frame: frame)
         configureUI()
     }
@@ -160,7 +163,7 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
         if pickerView == weightPickerView {
             switch component {
             case 0:
-                return String(row + 1)
+                return viewModel.weights[row]
             case 1:
                 return "kg"
             default:
@@ -169,7 +172,7 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
         } else if pickerView == heightPickerView {
             switch component {
             case 0:
-                return String(row + 1)
+                return viewModel.heights[row]
             case 1:
                 return "cm"
             default:

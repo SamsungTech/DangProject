@@ -41,7 +41,7 @@ class ProfileViewController: UIViewController {
     }()
     
     private lazy var profileStackView: ProfileInformationStackView = {
-        let stackView = ProfileInformationStackView()
+        let stackView = ProfileInformationStackView(frame: .zero, viewModel: viewModel)
         if #available(iOS 13.4, *) {
             stackView.birthDatePickerView.profileTextField.delegate = self
             stackView.birthDatePickerView.pickerView.addTarget(

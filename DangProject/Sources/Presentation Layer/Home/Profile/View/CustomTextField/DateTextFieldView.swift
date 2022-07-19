@@ -46,6 +46,7 @@ class DateTextFieldView: UIView {
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
         textField.inputView = pickerView
         textField.inputAccessoryView = toolBarButton
+        textField.textColor = .white
         return textField
     }()
     
