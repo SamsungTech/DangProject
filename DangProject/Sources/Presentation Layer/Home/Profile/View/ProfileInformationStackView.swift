@@ -8,7 +8,6 @@
 import UIKit
 
 class ProfileInformationStackView: UIStackView {
-    private let profileDummyData = ProfileDummy()
     private var views: [UIView] = []
     lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
