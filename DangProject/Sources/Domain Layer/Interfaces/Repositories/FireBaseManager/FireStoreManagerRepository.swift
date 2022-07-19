@@ -16,6 +16,7 @@ protocol FireStoreManagerRepository {
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
     func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]>
+    
     func getProfileDataInFireStore() -> Observable<[String: Any]>
     func getGraphAllYearDataInFireStore() -> Observable<[[String: Any]]>
     func getGraphAllThisMonthDataInFireStore() -> Observable<[[String:Any]]>

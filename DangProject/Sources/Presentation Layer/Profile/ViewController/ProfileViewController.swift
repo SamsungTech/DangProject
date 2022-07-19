@@ -10,33 +10,51 @@ import UIKit
 import RxSwift
 import RxRelay
 import RxCocoa
-//import RxGesture
 
-protocol ProfileViewControllerProtocol: AnyObject {
-    
-}
-
-class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+class ProfileViewController: UIViewController {
     var coordinator: ProfileCoordinator?
-    var viewModel: ProfileViewModelProtocol?
+    private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
-    private var profileImageButton = ProfileImageButton()
     private var profileNavigationBar = ProfileNavigationBar()
-    private var invisibleView = UIView()
-    private var invisibleViewTopConstraint: NSLayoutConstraint?
     private var saveButtonBottomConstraint: NSLayoutConstraint?
+    private var selectedTextField: UITextField?
+    private lazy var dateFormatter: DateFormatter = DateFormatter.formatDate()
+    
+    private lazy var profileImageButton: ProfileImageButton = {
+        let button = ProfileImageButton()
+        button.delegate = self
+        return button
+    }()
+    
     private lazy var profileScrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewDidTap(_:)))
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.isEnabled = true
+        tapGesture.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(tapGesture)
         scrollView.delegate = self
         scrollView.contentInsetAdjustmentBehavior = .never
         scrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
                                         height: overSizeYValueRatio(1200))
-        
         return scrollView
     }()
     
     private lazy var profileStackView: ProfileInformationStackView = {
-        let stackView = ProfileInformationStackView()
+        let stackView = ProfileInformationStackView(frame: .zero, viewModel: viewModel)
+        if #available(iOS 13.4, *) {
+            stackView.birthDatePickerView.profileTextField.delegate = self
+            stackView.birthDatePickerView.pickerView.addTarget(
+                self,
+                action: #selector(datePickerValueChanged(_:)),
+                for: UIControl.Event.valueChanged
+            )
+        } else {
+            stackView.birthDateTextFieldView.profileTextField.delegate = self
+        }
+        stackView.weightView.profileTextField.delegate = self
+        stackView.heightView.profileTextField.delegate = self
+        stackView.nameView.profileTextField.delegate = self
         return stackView
     }()
     
@@ -55,17 +73,9 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.isHidden = true
-        view.backgroundColor = .homeBackgroundColor
-        viewModel?.viewDidLoad()
         configureUI()
-        if #available(iOS 13.4, *) {
-            bind()
-        } else {
-            // Fallback on earlier versions
-        }
+        bind()
         view.bringSubviewToFront(profileNavigationBar)
-        view.bringSubviewToFront(invisibleView)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -73,8 +83,8 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     }
     
     init(viewModel: ProfileViewModelProtocol) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -82,18 +92,23 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     }
     
     private func configureUI() {
+        setUpViewController()
         setUpProfileNavigationBar()
         setUpScrollView()
         setUpProfileImageButton()
         setUpProfileStackView()
         setUpSaveButton()
-        setUpInvisibleView()
     }
     
-    @available(iOS 13.4, *)
     private func bind() {
-//        bindUI()
+        bindUI()
+        bindProfileData()
         bindAnimationValue()
+    }
+    
+    private func setUpViewController() {
+        navigationController?.navigationBar.isHidden = true
+        view.backgroundColor = .homeBackgroundColor
     }
     
     private func setUpProfileNavigationBar() {
@@ -135,7 +150,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         NSLayoutConstraint.activate([
             profileStackView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: yValueRatio(70)),
             profileStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
-            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(700))
+            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(600))
         ])
     }
     
@@ -151,88 +166,121 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         ])
     }
     
-    private func setUpInvisibleView() {
-        view.addSubview(invisibleView)
-        invisibleView.translatesAutoresizingMaskIntoConstraints = false
-        invisibleViewTopConstraint = invisibleView.topAnchor.constraint(equalTo: view.topAnchor, constant: UIScreen.main.bounds.maxY)
-        invisibleViewTopConstraint?.isActive = true
-        NSLayoutConstraint.activate([
-            invisibleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            invisibleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            invisibleView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxY)
-        ])
+    private func bindUI() {
+        profileNavigationBar.dismissButton.rx.tap
+            .bind { [weak self] in
+                guard let strongSelf = self else { return }
+                self?.coordinator?.dismissViewController(strongSelf)
+            }
+            .disposed(by: disposeBag)
+        
+        Observable.merge(
+            profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
+            profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
+        )
+        .bind(to: viewModel.genderRelay)
+        .disposed(by: disposeBag)
+        
+        if #available(iOS 13.4, *) {
+            newVersionBindUI()
+        } else {
+            lowerVersionBindUI()
+        }
     }
     
-//    private func bindUI() {
-//        profileImageButton.rx.tapGesture()
-//            .when(.recognized)
-//            .subscribe(onNext: { [weak self] _ in
-//                guard let self = self else { return }
-//                self.present(self.profileImagePicker, animated: true)
-//            })
-//            .disposed(by: disposeBag)
-//
-//        profileNavigationBar.dismissButton.rx.tap
-//            .bind { [weak self] in
-//                if let coordinator = self?.coordinator as? ProfileCoordinator {
-//                    coordinator.dismissViewController()
-//                }
-//            }
-//            .disposed(by: disposeBag)
-//
-//        invisibleView.rx.tapGesture()
-//            .when(.recognized)
-//            .subscribe(onNext: { [weak self] _ in
-//                guard let self = self else { return }
-//                self.viewModel?.saveButtonDidTap()
-//                self.profileStackView.nameView.profileTextField.resignFirstResponder()
-//                self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
-//                self.profileStackView.heightView.profileTextField.resignFirstResponder()
-//                self.profileStackView.weightView.profileTextField.resignFirstResponder()
-//                self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
-//            })
-//            .disposed(by: disposeBag)
-//
-//        Observable.merge(
-//            profileStackView.nameView.profileTextField.rx.tapGesture().map { _ in },
-//            profileStackView.birthDateView.profileTextField.rx.tapGesture().map { _ in  },
-//            profileStackView.heightView.profileTextField.rx.tapGesture().map { _ in },
-//            profileStackView.weightView.profileTextField.rx.tapGesture().map { _ in },
-//            profileStackView.targetSugarView.profileTextField.rx.tapGesture().map { _ in  }
-//        )
-//            .subscribe(onNext: { [weak self] _ in
-//                guard let self = self else { return }
-//                self.viewModel?.saveButtonDidTap()
-//            })
-//            .disposed(by: disposeBag)
-//
-//        Observable.merge(
-//            profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
-//            profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
-//        )
-//            .bind(to: viewModel!.genderRelay)
-//            .disposed(by: disposeBag)
-//
-//        Observable.merge(
-//            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
-//            profileStackView.birthDateView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
-//            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-//            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height },
-//            profileStackView.targetSugarView.toolBarButton.rx.tap.map { TextFieldType.targetSugar }
-//        )
-//            .bind(to: viewModel!.okButtonRelay)
-//            .disposed(by: disposeBag)
-//
-//        saveButton.saveButton.rx.tap
-//            .bind { [weak self] in
-//                print("저-장")
-//            }
-//            .disposed(by: disposeBag)
-//    }
     
     @available(iOS 13.4, *)
+    private func newVersionBindUI() {
+        Observable.merge(
+            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+            profileStackView.birthDatePickerView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
+        )
+        .bind(to: viewModel.okButtonRelay)
+        .disposed(by: disposeBag)
+        
+        saveButton.saveButton.rx.tap
+            .bind { [weak self] in
+                guard let strongSelf = self,
+                      let nameData = self?.profileStackView.nameView.profileTextField.text,
+                      let profileImage = self?.profileImageButton.profileImageView.image,
+                      let heightData = self?.profileStackView.heightView.profileTextField.text,
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
+                self?.viewModel.passProfileImageData(profileImage)
+                
+                self?.viewModel.passProfileData(
+                    ProfileDomainModel(uid: "",
+                                       name: nameData,
+                                       height: Int(heightData) ?? 0,
+                                       weight: Int(weightData) ?? 0,
+                                       sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
+                                       profileImage: profileImage,
+                                       gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                       birthDay: birthData)
+                )
+                self?.coordinator?.dismissViewController(strongSelf)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func lowerVersionBindUI() {
+        Observable.merge(
+            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
+            profileStackView.birthDateTextFieldView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
+            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
+            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
+        )
+        .bind(to: viewModel.okButtonRelay)
+        .disposed(by: disposeBag)
+        
+        saveButton.saveButton.rx.tap
+            .bind { [weak self] in
+                guard let strongSelf = self,
+                      let nameData = self?.profileStackView.nameView.profileTextField.text,
+                      let profileImage = self?.profileImageButton.profileImageView.image,
+                      let heightData = self?.profileStackView.heightView.profileTextField.text,
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
+                self?.viewModel.passProfileImageData(profileImage)
+                self?.viewModel.passProfileData(
+                    ProfileDomainModel(uid: "",
+                                       name: nameData,
+                                       height: Int(heightData) ?? 0,
+                                       weight: Int(weightData) ?? 0,
+                                       sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
+                                       profileImage: profileImage,
+                                       gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                       birthDay: birthData)
+                )
+                self?.coordinator?.dismissViewController(strongSelf)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindProfileData() {
+        viewModel.profileDataRelay
+            .subscribe(onNext: { [weak self] in
+                self?.profileStackView.nameView.profileTextField.text = $0.name
+                self?.profileStackView.heightView.profileTextField.text = String($0.height)
+                self?.profileStackView.heightPickerView.selectRow($0.height-1, inComponent: 0, animated: false)
+                self?.profileStackView.weightView.profileTextField.text = String($0.weight)
+                self?.profileStackView.weightPickerView.selectRow($0.weight-1, inComponent: 0, animated: false)
+                if #available(iOS 13.4, *) {
+                    guard let date = self?.dateFormatter.date(from: $0.birthDay) else { return }
+                    self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthDay
+                    self?.profileStackView.birthDatePickerView.pickerView.date = date
+                } else {
+                    self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthDay
+                }
+                self?.profileImageButton.profileImageView.image = $0.profileImage
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func bindAnimationValue() {
-        viewModel?.scrollValue
+        viewModel.scrollValue
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -244,7 +292,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
             })
             .disposed(by: disposeBag)
         
-        viewModel?.genderRelay
+        viewModel.genderRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -258,52 +306,51 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
             })
             .disposed(by: disposeBag)
         
-        viewModel?.saveButtonAnimationRelay
+        viewModel.saveButtonAnimationRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
                 case .up:
                     self.animateSaveButtonUp()
-                    self.animateInvisibleViewDown()
                 case .down:
                     self.animateSaveButtonDown()
-                    self.animateInvisibleViewUp()
                 case .none: break
                 }
             })
             .disposed(by: disposeBag)
         
-        viewModel?.okButtonRelay
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .none: break
-                case .name:
-                    self.viewModel?.saveButtonDidTap()
-                    self.profileStackView.nameView.profileTextField.resignFirstResponder()
-                case .birthDate:
-                    self.viewModel?.saveButtonDidTap()
-                    self.profileStackView.birthDateView.profileTextField.resignFirstResponder()
-                case .height:
-                    self.viewModel?.saveButtonDidTap()
-                    self.profileStackView.heightView.profileTextField.resignFirstResponder()
-                case .weight:
-                    self.viewModel?.saveButtonDidTap()
-                    self.profileStackView.weightView.profileTextField.resignFirstResponder()
-                case .targetSugar:
-                    self.viewModel?.saveButtonDidTap()
-                    self.profileStackView.targetSugarView.profileTextField.resignFirstResponder()
-                }
+        viewModel.okButtonRelay
+            .subscribe(onNext: { [weak self] _ in
+                self?.view.endEditing(true)
+                self?.viewModel.saveButtonAnimationRelay.accept(.up)
             })
             .disposed(by: disposeBag)
+    }
+    
+    @objc private func backgroundViewDidTap() {
+        self.animateSaveButtonDown()
+    }
+    
+    @objc private func scrollViewDidTap(_ sender: UIScrollView) {
+        self.view.endEditing(true)
+    }
+    
+    @available(iOS 13.4, *)
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+        let birthText = dateFormatter.string(from: profileStackView.birthDatePickerView.pickerView.date)
+        profileStackView.birthDatePickerView.profileTextField.text = birthText
     }
 }
 
 extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        viewModel?.calculateScrollViewState(
+        viewModel.calculateScrollViewState(
             yPosition: scrollView.contentOffset.y
         )
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
     }
 }
 
@@ -313,13 +360,11 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         
         self.profileImageButton.profileImageView.image = image
-        
-        // Coordinator로 옮기기
-        profileImagePicker.dismiss(animated: true)
+        coordinator?.dismissPickerController()
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        profileImagePicker.dismiss(animated: true)
+        coordinator?.dismissPickerController()
     }
 }
 
@@ -355,18 +400,46 @@ extension ProfileViewController {
             self?.view.layoutIfNeeded()
         })
     }
-    
-    private func animateInvisibleViewDown() {
-        invisibleViewTopConstraint?.constant = UIScreen.main.bounds.maxY
-        UIView.animate(withDuration: 0.1, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
+}
+
+extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
+    func profileImageButtonTapped() {
+        coordinator?.presentPickerController(self)
     }
     
-    private func animateInvisibleViewUp() {
-        invisibleViewTopConstraint?.constant = 0
-        UIView.animate(withDuration: 0.1, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
+    func viewTapped() {
+        if #available(iOS 13.4, *) {
+            bringDownKeyboardWhileBirthPickerView()
+        } else {
+            bringDownKeyboardWhileBirthTextFieldView()
+        }
+    }
+    
+    @available(iOS 13.4, *)
+    private func bringDownKeyboardWhileBirthPickerView() {
+        if selectedTextField == profileStackView.birthDatePickerView.profileTextField {
+            selectedTextField?.resignFirstResponder()
+        } else {
+            selectedTextField?.resignFirstResponder()
+        }
+    }
+    
+    private func bringDownKeyboardWhileBirthTextFieldView() {
+        if selectedTextField == profileStackView.birthDateTextFieldView.profileTextField {
+            selectedTextField?.resignFirstResponder()
+        } else {
+            selectedTextField?.resignFirstResponder()
+        }
+    }
+}
+
+extension ProfileViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        viewModel.saveButtonAnimationRelay.accept(.down)
+        selectedTextField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        viewModel.saveButtonAnimationRelay.accept(.up)
     }
 }

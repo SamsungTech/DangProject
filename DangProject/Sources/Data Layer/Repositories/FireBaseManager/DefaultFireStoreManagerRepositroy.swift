@@ -1,8 +1,8 @@
 //
-//  DefaultFireStoreManagerRepository.swift
+//  DefaultFireStoreManagerRepositroy.swift
 //  DangProject
 //
-//  Created by 김성원 on 2022/05/02.
+//  Created by 김동우 on 2022/07/19.
 //
 
 import Foundation
@@ -15,9 +15,8 @@ import Firebase
 import RxSwift
 
 class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
-    
     // MARK: - Private
-    private let uid = UserInfoKey.getUserDefaultsUID
+    private lazy var uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
 
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
@@ -45,12 +44,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "height": profile.height,
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
-            "gender": "\(profile.gender)",
-            "birthDay": "\(profile.birthDay)"
+            "image": "\(profile.profileImage)"
         ] as [String : Any]
         
         database.collection("app")
-            .document(self.uid)
+            .document(profile.uid)
             .collection("personal")
             .document("profile")
             .setData(profileData) { error in
@@ -59,29 +57,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                     return
                 }
             }
-    }
-    
-    func getProfileDataInFireStore() -> Observable<[String: Any]> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else {
-                return Disposables.create()
-            }
-            
-            self?.database.collection("app")
-                .document(strongSelf.uid)
-                .collection("personal")
-                .document("profile")
-                .getDocument() { snapshot, error  in
-                    if let error = error {
-                        print("DEBUG: \(error.localizedDescription)")
-                        return
-                    }
-                    if let result = snapshot?.data() {
-                        emitter.onNext(result)
-                    }
-                }
-            return Disposables.create()
-        }
     }
     
     func saveEatenFood(eatenFood: FoodDomainModel) {
@@ -95,7 +70,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "sugar": eatenFood.sugar,
             "foodCode": eatenFood.foodCode,
             "favorite": eatenFood.favorite,
-            "amount": eatenFood.amount
+            "amount": eatenFood.amount,
+            "eatenTime": eatenFood.eatenTime
         ] as [String : Any]
         
         database.collection("app")
@@ -143,16 +119,14 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func getEatenFoodsInFirestore() -> Observable<[[String: Any]]> {
+    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]> {
         return Observable.create { [weak self] emitter in
-            let today = DateComponents.currentDateTimeComponents()
-            guard let year = today.year,
-                  let month = today.month,
-                  let day = today.day,
+            guard let year = dateComponents.year,
+                  let month = dateComponents.month,
+                  let day = dateComponents.day,
                   let strongSelf = self else {
                 return Disposables.create()
             }
-            
             self?.database.collection("app")
                 .document(strongSelf.uid)
                 .collection("foods")
