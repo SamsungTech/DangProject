@@ -130,17 +130,17 @@ class AlarmTableViewItem: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUpCell(viewModel: AlarmTableViewCellData) {
-        titleLabel.text = viewModel.title
-        pmAmLabel.text = viewModel.pmAm
+    func setUpCell(data: AlarmTableViewCellData) {
+        titleLabel.text = data.title
+        pmAmLabel.text = data.pmAm
         timeButton.setTitle(
-            viewModel.time,
+            data.time,
             for: .normal
         )
-        dayLabel.text = viewModel.selectedDays
+        dayLabel.text = data.selectedDays
         
         alarmDaySelectionView.isHidden = true
-        bindCheckSwitchValue(viewModel.isOn)
+        bindCheckSwitchValue(data.isOn)
     }
 }
 
