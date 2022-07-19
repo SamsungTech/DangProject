@@ -209,12 +209,13 @@ class ProfileViewController: UIViewController {
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
                 self?.viewModel.passProfileImageData(profileImage)
+                
                 self?.viewModel.passProfileData(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,
                                        weight: Int(weightData) ?? 0,
-                                       sugarLevel: 0,
+                                       sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                        profileImage: profileImage,
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthDay: birthData)
@@ -248,7 +249,7 @@ class ProfileViewController: UIViewController {
                                        name: nameData,
                                        height: Int(heightData) ?? 0,
                                        weight: Int(weightData) ?? 0,
-                                       sugarLevel: 0,
+                                       sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                        profileImage: profileImage,
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthDay: birthData)
@@ -259,7 +260,7 @@ class ProfileViewController: UIViewController {
     }
     
     private func bindProfileData() {
-        viewModel.profileDataSubject
+        viewModel.profileDataRelay
             .subscribe(onNext: { [weak self] in
                 self?.profileStackView.nameView.profileTextField.text = $0.name
                 self?.profileStackView.heightView.profileTextField.text = String($0.height)

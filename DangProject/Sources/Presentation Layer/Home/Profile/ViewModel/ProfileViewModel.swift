@@ -36,6 +36,8 @@ enum GenderType {
 }
 
 struct ProfileData {
+    static let empty: Self = .init(UIImage(),
+                                   ProfileDomainModel.empty)
     var profileImage: UIImage
     var uid: String
     var name: String
@@ -70,7 +72,7 @@ protocol ProfileViewModelOutputProtocol {
     var genderRelay: BehaviorRelay<GenderType> { get }
     var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
-    var profileDataSubject: PublishSubject<ProfileData> { get }
+    var profileDataRelay: BehaviorRelay<ProfileData> { get }
     func convertGenderTypeToString() -> String
 }
 
@@ -86,7 +88,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
-    var profileDataSubject = PublishSubject<ProfileData>()
+    var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
     
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
          firebaseStorageUseCase: FirebaseStorageUseCase) {
@@ -141,7 +143,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
                 let profile = ProfileData(image,
                                           profileData)
                 self?.convertStringToGenderType(profileData.gender)
-                self?.profileDataSubject.onNext(profile)
+                self?.profileDataRelay.accept(profile)
             })
             .disposed(by: disposeBag)
     }
