@@ -216,3 +216,6 @@ extension HomeViewController: NavigationBarDelegate {
         self.homeScrollView.isScrollEnabled = false
     }
 }
+
+
+
