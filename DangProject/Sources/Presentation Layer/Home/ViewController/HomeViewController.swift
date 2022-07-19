@@ -224,20 +224,4 @@ extension HomeViewController: UIScrollViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
     }
-    
-    //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    //        print(scrollView.contentOffset.y)
-    //        let targetVerticalPointee = scrollView.contentOffset.y
-    //        let navigationBarCalendarViewHeight = customNavigationBar.frame.height + yValueRatio(60)
-    //        UIView.animate(withDuration: 0.5) { [weak self] in
-    //            guard let strongSelf = self else { return }
-    //
-    //            self?.homeScrollViewTopAnchor.isActive = false
-    //            if targetVerticalPointee > 0 {
-    //                self?.homeScrollViewTopAnchor = scrollView.topAnchor.constraint(equalTo: strongSelf.view.topAnchor, constant: navigationBarCalendarViewHeight-targetVerticalPointee)
-    //                self?.homeScrollViewTopAnchor.isActive = true
-    //            }
-    //        }
-    //    }
-    
 }

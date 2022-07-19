@@ -21,7 +21,7 @@ class HomeCoordinator: NSObject, Coordinator {
         viewController.coordinator = self
         self.navigationController.pushViewController(viewController, animated: false)
     }
-        
+    
     func presentProfile(_ viewController: UIViewController) {
         let navigationController = UINavigationController()
         let coordinator = ProfileCoordinator(navigationController: navigationController)
