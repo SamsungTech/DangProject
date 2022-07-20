@@ -44,7 +44,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
         
         switch tempAlarmData[index].scale {
         case .normal:
-            tempAlarmData[index].scale = .expand
+            tempAlarmData[index].scale = .moreExpand
             self.cellScaleWillExpand = true
         case .expand:
             tempAlarmData[index].scale = .normal
@@ -89,9 +89,9 @@ class AlarmViewModel: AlarmViewModelProtocol {
         case .normal:
             return UIScreen.main.bounds.maxY/5
         case .expand:
-            return UIScreen.main.bounds.maxY/3.8
+            return UIScreen.main.bounds.maxY/3.2
         case .moreExpand:
-            return UIScreen.main.bounds.maxY/3
+            return UIScreen.main.bounds.maxY/2.5
         }
     }
     
