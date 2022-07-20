@@ -82,14 +82,4 @@ extension Date {
         let myDate = calendar.date(from: myDateComponents)
         return myDate ?? Date.init()
     }
-    
-    static func noon() -> Date {
-        let noonDateComponents = DateComponents(hour: 12, minute: 0)
-        let myDate = calendar.date(from: noonDateComponents)
-        return myDate ?? Date.init()
-    }
-    
-    static func makeAfternoon(time: Date) -> Date {
-        return calendar.date(byAdding: .hour, value: -12, to: time)!
-    }
 }
