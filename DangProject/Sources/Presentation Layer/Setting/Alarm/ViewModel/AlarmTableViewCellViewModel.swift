@@ -25,7 +25,7 @@ struct AlarmTableViewCellViewModel {
     init(alarmEntity: AlarmEntity) {
         self.isOn = alarmEntity.isOn
         self.title = alarmEntity.title
-        self.pmAm = .calculatePmAm(alarmEntity.time)
+        self.pmAm = .calculateAmPm(alarmEntity.time)
         self.time = .timeToString(alarmEntity.time)
         self.selectedDays = alarmEntity.selectedDays
     }

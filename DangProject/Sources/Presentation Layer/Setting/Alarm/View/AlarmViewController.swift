@@ -120,9 +120,10 @@ class AlarmViewController: UIViewController {
         viewModel.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
                 guard let strongSelf = self else { return }
+                
                 for i in 0 ... data.count-1 {
                     if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
-                        cell.setUpCell(data: data[i])
+                        cell.setupCell(data: data[i])
                     }
                 }
                 self?.updateCellUI()
@@ -144,7 +145,7 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmTableViewCell.identifier, for: indexPath) as? AlarmTableViewCell else { return UITableViewCell() }
         let alarmItemData = viewModel.alarmDataArrayRelay.value[indexPath.item]
-        cell.setUpCell(data: alarmItemData)
+        cell.setupCell(data: alarmItemData)
         cell.delegate = self
         cell.selectionStyle = .none
         return cell
