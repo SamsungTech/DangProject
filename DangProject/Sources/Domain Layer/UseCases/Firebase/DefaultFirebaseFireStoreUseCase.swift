@@ -214,7 +214,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     
     private func createGraphArray(_ data: [String:Any],
                                   _ type: String) -> [String] {
-        
         let thisData = createThisData(type)
         var yearArray: [String] = []
         var array: [String] = []
@@ -223,7 +222,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
             let result = thisData - i
             yearArray.append(String(result))
         }
-        
         for j in yearArray {
             data.forEach { (key, value) in
                 if j == key {
@@ -238,9 +236,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                 array.append("0")
             }
         }
-        
         array = array.reversed()
-        
         return array
     }
     

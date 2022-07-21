@@ -17,6 +17,14 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="sugar" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="Profile" representedClassName="Profile" syncable="YES" codeGenerationType="class">
+        <attribute name="birthDay" optional="YES" attributeType="String"/>
+        <attribute name="gender" optional="YES" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="sugarLevel" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="RecentQuery" representedClassName="RecentQuery" syncable="YES">
         <attribute name="keyword" optional="YES" attributeType="String"/>
     </entity>
@@ -25,5 +33,6 @@
         <element name="EatenFoodsPerDay" positionX="-10944" positionY="-1197" width="128" height="59"/>
         <element name="FavoriteFoods" positionX="-11295.39193725586" positionY="-1298.771240234375" width="128" height="74"/>
         <element name="RecentQuery" positionX="-11138.21527099609" positionY="-1271.575317382812" width="128" height="44"/>
+        <element name="Profile" positionX="-11088" positionY="-1215" width="128" height="119"/>
     </elements>
 </model>
