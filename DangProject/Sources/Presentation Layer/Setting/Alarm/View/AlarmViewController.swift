@@ -22,12 +22,20 @@ class AlarmViewController: UIViewController {
         return alert
     }()
     
+    private lazy var invisibleView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        view.alpha = 0.3
+        view.frame = self.view.bounds
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         bind()
     }
-    
+      
     init(viewModel: AlarmViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -38,18 +46,19 @@ class AlarmViewController: UIViewController {
     }
     
     private func configureUI() {
-        setUpView()
-        setUpNavigationBar()
-        setUpAlarmTableView()
-        setUpAlertController()
+        setupView()
+        setupNavigationBar()
+        setupAlarmTableView()
+        setupInvisibleView()
+        setupAlertController()
     }
     
-    private func setUpView() {
+    private func setupView() {
         view.backgroundColor = .homeBackgroundColor
         navigationController?.navigationBar.isHidden = true
     }
     
-    private func setUpNavigationBar() {
+    private func setupNavigationBar() {
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -60,7 +69,7 @@ class AlarmViewController: UIViewController {
         ])
     }
     
-    private func setUpAlarmTableView() {
+    private func setupAlarmTableView() {
         view.addSubview(alarmTableView)
         alarmTableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -75,11 +84,15 @@ class AlarmViewController: UIViewController {
                                 forCellReuseIdentifier: AlarmTableViewCell.identifier)
         alarmTableView.delegate = self
         alarmTableView.dataSource = self
-        alarmTableView.keyboardDismissMode = .onDrag
         alarmTableView.contentInset = .init(top: 0, left: 0, bottom: UIScreen.main.bounds.maxY/3, right: 0)
     }
     
-    private func setUpAlertController() {
+    private func setupInvisibleView() {
+        view.addSubview(invisibleView)
+        invisibleView.isHidden = true
+    }
+    
+    private func setupAlertController() {
         alertController.addAction(UIAlertAction(title: "아침",
                                                 style: .default,
                                                 handler: { [weak self] _ in
@@ -87,6 +100,7 @@ class AlarmViewController: UIViewController {
             let alarmData = AlarmEntity(
                 isOn: true,
                 title: "아침 식사",
+                message: "",
                 time: .makeTime(hour: 8, minute: 0),
                 selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
             )
@@ -124,7 +138,7 @@ class AlarmViewController: UIViewController {
             .subscribe(onNext: { [weak self] data in
                 guard let strongSelf = self else { return }
                 
-                for i in 0 ... data.count-1 {
+                for i in 0 ..< data.count {
                     if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
                         cell.setupCell(data: data[i])
                     }
@@ -164,7 +178,15 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension AlarmViewController: AlarmTableViewCellDelegate {
-    func middleBottonButtonDidTapped(cell: UITableViewCell) {
+    func textFieldWillStartEditing() {
+        invisibleView.isHidden = false
+    }
+    
+    func textFieldWillEndEditing() {
+        invisibleView.isHidden = true
+    }
+    
+    func middleAndBottomButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeCellScale(index: cellIndexPath.row)
         if viewModel.cellScaleWillExpand {
@@ -172,7 +194,7 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         }
     }
     
-    func deleteButtonDidTapped(cell: UITableViewCell) {
+    func deleteButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.deleteAlarmData(cellIndexPath.row)
     }
@@ -182,13 +204,18 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         viewModel.changeIsOnValue(index: cellIndexPath.row)
     }
     
-    func everyDayButtonDidTapped(cell: UITableViewCell) {
+    func everyDayButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeEveryDay(index: cellIndexPath.row)
     }
     
-    func dayOfTheWeekButtonDidTapped(cell: UITableViewCell, tag: Int) {
+    func dayOfTheWeekButtonDidTap(cell: UITableViewCell, tag: Int) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeDayOfTheWeek(index: cellIndexPath.row, tag: tag)
+    }
+    
+    func userMessageTextFieldEndEditing(cell: UITableViewCell, text: String) {
+        guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
+        viewModel.changeUserMessage(index: cellIndexPath.row, text: text)
     }
 }

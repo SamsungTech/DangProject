@@ -78,6 +78,13 @@ class AlarmViewModel: AlarmViewModelProtocol {
         // if isOn, create request/ if !isOn, delete request
     }
     
+    func changeUserMessage(index: Int, text: String) {
+        tempAlarmData[index].message = text
+        alarmDataArrayRelay.accept(tempAlarmData)
+        // save on server
+        // if isOn, update request
+    }
+    
     func changeDayOfTheWeek(index: Int, tag: Int) {
         if tempAlarmData[index].selectedDaysOfWeek.contains(tag) {
             guard let arrayIndex = tempAlarmData[index].selectedDaysOfWeek.firstIndex(of: tag) else { return }
@@ -107,11 +114,13 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private func calculateDaysOfWeekAndSelectedDays(index: Int) {
         tempAlarmData[index].selectedDaysOfWeek = AlarmTableViewCellViewModel.calculateDaysOfWeek(tempAlarmData[index].isEveryDay)
         tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
+        tempAlarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(tempAlarmData[index].selectedDaysOfWeek)
     }
     
     private func calculateEveryDayAndSelectedDays(index: Int) {
         tempAlarmData[index].isEveryDay = AlarmTableViewCellViewModel.calculateEveryDay(tempAlarmData[index].selectedDaysOfWeek)
         tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
+        tempAlarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(tempAlarmData[index].selectedDaysOfWeek)
     }
     
     private func resetTotalCellScaleNormal(index: Int) {

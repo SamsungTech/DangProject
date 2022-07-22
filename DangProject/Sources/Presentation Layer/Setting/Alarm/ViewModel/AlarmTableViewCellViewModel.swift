@@ -18,6 +18,7 @@ struct AlarmTableViewCellViewModel {
     var scale: CellScaleState = .normal
     var isOn: Bool
     var title: String
+    var message: String
     var amPm: String
     var time: String
     var selectedDays: String
@@ -27,12 +28,21 @@ struct AlarmTableViewCellViewModel {
     init(alarmEntity: AlarmEntity) {
         self.isOn = alarmEntity.isOn
         self.title = alarmEntity.title
+        self.message = alarmEntity.message
         self.amPm = .calculateAmPm(alarmEntity.time)
         self.time = .timeToString(alarmEntity.time)
         self.selectedDaysOfWeek = alarmEntity.selectedDaysOfTheWeek
         self.selectedDays = Self.calculateSelectedDays(alarmEntity.selectedDaysOfTheWeek)
         self.isEveryDay = Self.calculateEveryDay(alarmEntity.selectedDaysOfTheWeek)
         }
+    
+    static func calculateIsOn(_ days: [Int]) -> Bool {
+        if days.count == 0 {
+            return false
+        } else {
+            return true
+        }
+    }
     
     static func calculateDaysOfWeek(_ isEveryDay: Bool) -> [Int] {
         if isEveryDay {
@@ -42,7 +52,6 @@ struct AlarmTableViewCellViewModel {
         }
     }
     
-
     static func calculateEveryDay(_ days: [Int]) -> Bool {
         if days == [0,1,2,3,4,5,6] {
             return true
