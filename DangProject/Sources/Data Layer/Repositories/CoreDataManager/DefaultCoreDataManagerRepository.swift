@@ -118,6 +118,11 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
+    func updateLocalProfileData(_ profileData: ProfileDomainModel) {
+        deleteProfileData()
+        createProfileData()
+    }
+    
     func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
                                         date: Date) {
         let request = EatenFoodsPerDay.fetchRequest()
@@ -146,6 +151,13 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         case .eatenFoodsPerDay:
             return loadArrayFromCoreData(request: EatenFoodsPerDay.fetchRequest())
         }
+    }
+    
+    func deleteProfileData() {
+    }
+    
+    func createProfileData() {
+        
     }
     
     func deleteEatenFoodsPerDay(date: Date) {
@@ -214,6 +226,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
         }
     }
+    
     //MARK: - Private
     
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {

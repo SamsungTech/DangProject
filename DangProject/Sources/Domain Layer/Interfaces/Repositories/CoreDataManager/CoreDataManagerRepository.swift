@@ -26,5 +26,6 @@ protocol CoreDataManagerRepository {
                                       date: Date)
     func updateLocal(data: EatenFoodsPerDayDomainModel,
                      date: Date)
+    func updateLocalProfileData(_ profileData: ProfileDomainModel)
 }
 
