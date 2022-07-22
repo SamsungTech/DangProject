@@ -36,11 +36,11 @@ struct AlarmTableViewCellViewModel {
         self.isEveryDay = Self.calculateEveryDay(alarmEntity.selectedDaysOfTheWeek)
         }
     
-    static func calculateIsOn(_ days: [Int]) -> Bool {
+    static func calculateIsOn(days: [Int], origin: Bool) -> Bool {
         if days.count == 0 {
             return false
         } else {
-            return true
+            return origin
         }
     }
     

@@ -114,13 +114,13 @@ class AlarmViewModel: AlarmViewModelProtocol {
     private func calculateDaysOfWeekAndSelectedDays(index: Int) {
         tempAlarmData[index].selectedDaysOfWeek = AlarmTableViewCellViewModel.calculateDaysOfWeek(tempAlarmData[index].isEveryDay)
         tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
-        tempAlarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(tempAlarmData[index].selectedDaysOfWeek)
+        tempAlarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(days: tempAlarmData[index].selectedDaysOfWeek, origin: tempAlarmData[index].isOn)
     }
     
     private func calculateEveryDayAndSelectedDays(index: Int) {
         tempAlarmData[index].isEveryDay = AlarmTableViewCellViewModel.calculateEveryDay(tempAlarmData[index].selectedDaysOfWeek)
         tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
-        tempAlarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(tempAlarmData[index].selectedDaysOfWeek)
+        tempAlarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(days: tempAlarmData[index].selectedDaysOfWeek, origin: tempAlarmData[index].isOn)
     }
     
     private func resetTotalCellScaleNormal(index: Int) {
