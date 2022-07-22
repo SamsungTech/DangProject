@@ -9,32 +9,34 @@ import UIKit
 
 protocol AlarmTableViewCellDelegate: AnyObject {
     func middleBottonButtonDidTapped(cell: UITableViewCell)
+    func deleteButtonDidTapped(cell: UITableViewCell)
     func everyDayButtonDidTapped(cell: UITableViewCell)
     func isOnSwitchDidChanged(cell: UITableViewCell)
+    func dayOfTheWeekButtonDidTapped(cell: UITableViewCell, tag: Int)
 }
 
 class AlarmTableViewCell: UITableViewCell {
-    var delegate: AlarmTableViewCellDelegate?
-    private lazy var messageViewHeightConstant: NSLayoutConstraint = self.userMessageTextField.heightAnchor.constraint(equalToConstant: yValueRatio(50))
-    private lazy var everydaySelectButtonHeightConstant: NSLayoutConstraint = self.everydaySelectButton.heightAnchor.constraint(equalToConstant: yValueRatio(40))
-    private lazy var dayOfTheWeekSelectViewHeightConstant: NSLayoutConstraint = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: yValueRatio(33))
+    var parentableViewController: AlarmTableViewCellDelegate?
+    private var messageViewHeightConstant: NSLayoutConstraint?
+    private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
+    private var dayOfTheWeekSelectViewHeightConstant: NSLayoutConstraint?
     private lazy var topView: UIView = {
         let view = UIView()
-        view.backgroundColor = .cyan
+        view.backgroundColor = .homeBackgroundColor
         return view
     }()
     
     private lazy var middleView: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(middleBottomButtonTaped), for: .touchUpInside)
-        button.backgroundColor = .systemRed
+        button.backgroundColor = .homeBackgroundColor
         return button
     }()
     
     private lazy var bottomView: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(middleBottomButtonTaped), for: .touchUpInside)
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = .homeBackgroundColor
         return button
     }()
     
@@ -100,16 +102,21 @@ class AlarmTableViewCell: UITableViewCell {
         return textField
     }()
     
-    private(set) lazy var everydaySelectButton: AlarmSelectedDaysButton = {
-        let button = AlarmSelectedDaysButton()
-        button.addTarget(self, action: #selector(everyDayButtonTapped), for: .touchUpInside)
+    private(set) lazy var everydaySelectButton: EveryDaySelectButton = {
+        let button = EveryDaySelectButton()
+        button.addTarget(self, action: #selector(everyDayButtonDidTapped), for: .touchUpInside)
         return button
     }()
     
-    private(set) var dayOfTheWeekSelectView = AlarmDaySelectionView()
+    private(set) lazy var dayOfTheWeekSelectView: AlarmDaySelectionView = {
+        let view = AlarmDaySelectionView()
+        view.parentableTableViewCell = self
+        return view
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .homeBackgroundColor
         configureUI()
     }
     
@@ -122,26 +129,14 @@ class AlarmTableViewCell: UITableViewCell {
         bindAlarmIsOn(data.isOn)
         bindAlarmScale(data.scale)
         titleLabel.text = data.title
-        amPmLabel.text = data.pmAm
-        timeButton.setTitle(
-            data.time,
-            for: .normal
-        )
+        amPmLabel.text = data.amPm
+        timeButton.setTitle(data.time, for: .normal)
         selectedDayLabel.text = data.selectedDays
-    }
-    
-    func getCellHeight(_ scale: CellScaleState) -> CGFloat {
-        let defaultHeight: CGFloat = topView.frame.height + middleView.frame.height + bottomView.frame.height
-        let messageFieldHeight: CGFloat = userMessageTextField.frame.height
-        let alarmSelectedDaysButtonHeight: CGFloat = everydaySelectButton.frame.height
-        let alarmDaySelectionViewHeight: CGFloat = dayOfTheWeekSelectView.frame.height
-        switch scale {
-        case .expand:
-            return defaultHeight + messageFieldHeight + alarmSelectedDaysButtonHeight
-        case .normal:
-            return defaultHeight
-        case .moreExpand:
-            return defaultHeight + messageFieldHeight + alarmSelectedDaysButtonHeight + alarmDaySelectionViewHeight
+        dayOfTheWeekSelectView.configureButtonColor(data.selectedDaysOfWeek)
+        if data.isEveryDay {
+            everydaySelectButton.setCircleViewCheckMark()
+        } else {
+            everydaySelectButton.setCircleViewNormal()
         }
     }
     
@@ -179,10 +174,11 @@ class AlarmTableViewCell: UITableViewCell {
         contentView.addSubview(userMessageTextField)
         userMessageTextField.translatesAutoresizingMaskIntoConstraints = false
         messageViewHeightConstant = userMessageTextField.heightAnchor.constraint(equalToConstant: 0)
-        messageViewHeightConstant.isActive = true
+        messageViewHeightConstant?.isActive = true
         NSLayoutConstraint.activate([
             userMessageTextField.topAnchor.constraint(equalTo: topView.bottomAnchor),
-            userMessageTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: xValueRatio(20))
+            userMessageTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: xValueRatio(20)),
+            userMessageTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -xValueRatio(20))
         ])
     }
     
@@ -240,7 +236,7 @@ class AlarmTableViewCell: UITableViewCell {
         contentView.addSubview(everydaySelectButton)
         everydaySelectButton.translatesAutoresizingMaskIntoConstraints = false
         everydaySelectButtonHeightConstant = everydaySelectButton.heightAnchor.constraint(equalToConstant: 0)
-        everydaySelectButtonHeightConstant.isActive = true
+        everydaySelectButtonHeightConstant?.isActive = true
         NSLayoutConstraint.activate([
             everydaySelectButton.topAnchor.constraint(equalTo: middleView.bottomAnchor),
             everydaySelectButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: xValueRatio(10)),
@@ -252,7 +248,7 @@ class AlarmTableViewCell: UITableViewCell {
         contentView.addSubview(dayOfTheWeekSelectView)
         dayOfTheWeekSelectView.translatesAutoresizingMaskIntoConstraints = false
         dayOfTheWeekSelectViewHeightConstant = dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
-        dayOfTheWeekSelectViewHeightConstant.isActive = true
+        dayOfTheWeekSelectViewHeightConstant?.isActive = true
         NSLayoutConstraint.activate([
             dayOfTheWeekSelectView.topAnchor.constraint(equalTo: everydaySelectButton.bottomAnchor, constant: 10),
             dayOfTheWeekSelectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: xValueRatio(20)),
@@ -333,18 +329,19 @@ class AlarmTableViewCell: UITableViewCell {
 
 extension AlarmTableViewCell {
     @objc func isOnValueChanged(_ sender: UISwitch) {
-        delegate?.isOnSwitchDidChanged(cell: self)
+        parentableViewController?.isOnSwitchDidChanged(cell: self)
     }
     
     @objc func deleteButtonDidTap(_ sender: UIButton) {
+        parentableViewController?.deleteButtonDidTapped(cell: self)
     }
     
     @objc func middleBottomButtonTaped() {
-        delegate?.middleBottonButtonDidTapped(cell: self)
+        parentableViewController?.middleBottonButtonDidTapped(cell: self)
     }
     
-    @objc func everyDayButtonTapped() {
-        delegate?.everyDayButtonDidTapped(cell: self)
+    @objc func everyDayButtonDidTapped() {
+        parentableViewController?.everyDayButtonDidTapped(cell: self)
     }
 }
 
@@ -362,13 +359,12 @@ extension AlarmTableViewCell {
     }
     
     private func setupCellNormal() {
+        userMessageTextField.isHidden = true
         selectedDayLabel.isHidden = false
         deleteButton.isHidden = true
         arrowButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         everydaySelectButton.isHidden = true
-        
         dayOfTheWeekSelectView.isHidden = true
-        self.contentView.backgroundColor = .clear
         
         animateNormal()
     }
@@ -380,30 +376,29 @@ extension AlarmTableViewCell {
     }
     
     private func setupDaysButtonMoreExpand() {
+        userMessageTextField.isHidden = false
         arrowButton.setImage(UIImage(systemName: "chevron.up"), for: .normal)
         dayOfTheWeekSelectView.isHidden = false
         selectedDayLabel.isHidden = true
         deleteButton.isHidden = false
         // 매일 버튼 on off
         everydaySelectButton.isHidden = false
-        everydaySelectButton.layer.borderColor = UIColor.systemGreen.cgColor
-        everydaySelectButton.circleView.backgroundColor = .systemGreen
 
         animateMoreExpand()
     }
     
     private func animateNormal() {
-        messageViewHeightConstant.isActive = false
-        everydaySelectButtonHeightConstant.isActive = false
-        dayOfTheWeekSelectViewHeightConstant.isActive = false
+        messageViewHeightConstant?.isActive = false
+        everydaySelectButtonHeightConstant?.isActive = false
+        dayOfTheWeekSelectViewHeightConstant?.isActive = false
         
         messageViewHeightConstant = self.userMessageTextField.heightAnchor.constraint(equalToConstant: 0)
         everydaySelectButtonHeightConstant = self.everydaySelectButton.heightAnchor.constraint(equalToConstant: 0)
         dayOfTheWeekSelectViewHeightConstant = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
 
-        messageViewHeightConstant.isActive = true
-        everydaySelectButtonHeightConstant.isActive = true
-        dayOfTheWeekSelectViewHeightConstant.isActive = true
+        messageViewHeightConstant?.isActive = true
+        everydaySelectButtonHeightConstant?.isActive = true
+        dayOfTheWeekSelectViewHeightConstant?.isActive = true
         
         UIView.animate(withDuration: 0.3, animations: {
             self.contentView.layoutIfNeeded()
@@ -411,17 +406,17 @@ extension AlarmTableViewCell {
     }
     
     private func animateMoreExpand() {
-        messageViewHeightConstant.isActive = false
-        everydaySelectButtonHeightConstant.isActive = false
-        dayOfTheWeekSelectViewHeightConstant.isActive = false
+        messageViewHeightConstant?.isActive = false
+        everydaySelectButtonHeightConstant?.isActive = false
+        dayOfTheWeekSelectViewHeightConstant?.isActive = false
         
         messageViewHeightConstant = self.userMessageTextField.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         everydaySelectButtonHeightConstant = self.everydaySelectButton.heightAnchor.constraint(equalToConstant: yValueRatio(40))
         dayOfTheWeekSelectViewHeightConstant = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: yValueRatio(33))
         
-        messageViewHeightConstant.isActive = true
-        everydaySelectButtonHeightConstant.isActive = true
-        dayOfTheWeekSelectViewHeightConstant.isActive = true
+        messageViewHeightConstant?.isActive = true
+        everydaySelectButtonHeightConstant?.isActive = true
+        dayOfTheWeekSelectViewHeightConstant?.isActive = true
 
         UIView.animate(withDuration: 0.3, animations: {
             self.contentView.layoutIfNeeded()
@@ -429,27 +424,18 @@ extension AlarmTableViewCell {
     }
     
     private func animateExpand() {
-        messageViewHeightConstant.isActive = false
-        everydaySelectButtonHeightConstant.isActive = false
-        dayOfTheWeekSelectViewHeightConstant.isActive = false
-        
-        messageViewHeightConstant = self.userMessageTextField.heightAnchor.constraint(equalToConstant: yValueRatio(50))
-        everydaySelectButtonHeightConstant = self.everydaySelectButton.heightAnchor.constraint(equalToConstant: yValueRatio(40))
+        dayOfTheWeekSelectViewHeightConstant?.isActive = false
         dayOfTheWeekSelectViewHeightConstant = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
-        
-        messageViewHeightConstant.isActive = true
-        everydaySelectButtonHeightConstant.isActive = true
-        dayOfTheWeekSelectViewHeightConstant.isActive = true
+        dayOfTheWeekSelectViewHeightConstant?.isActive = true
 
         UIView.animate(withDuration: 0.3, animations: {
             self.contentView.layoutIfNeeded()
         })
-//        dayOfTheWeekSelectViewHeightConstant.isActive = false
-//        dayOfTheWeekSelectViewHeightConstant = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
-//        dayOfTheWeekSelectViewHeightConstant.isActive = true
-//
-//        UIView.animate(withDuration: 0.3, animations: {
-//            self.contentView.layoutIfNeeded()
-//        })
+    }
+}
+
+extension AlarmTableViewCell: AlarmDaySelectionDelegate {    
+    func dayOfTheWeekButtonDidTapped(tag: Int) {
+        parentableViewController?.dayOfTheWeekButtonDidTapped(cell: self , tag: tag)
     }
 }

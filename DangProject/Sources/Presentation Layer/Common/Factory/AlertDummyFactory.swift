@@ -22,28 +22,28 @@ class AlertDummyFactory {
                 isOn: true,
                 title: "아침 식사",
                 time: .makeTime(hour: 10, minute: 0),
-                selectedDays: "매일"
+                selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
             )
         case .lunch:
             return AlarmEntity(
                 isOn: true,
                 title: "점심 식사",
                 time: .makeTime(hour: 12, minute: 0),
-                selectedDays: "매일"
+                selectedDaysOfTheWeek: [0,6]
             )
         case .evening:
             return AlarmEntity(
                 isOn: true,
                 title: "저녁 식사",
                 time: .makeTime(hour: 18, minute: 0),
-                selectedDays: "매일"
+                selectedDaysOfTheWeek: [1,2,3,4,5]
             )
         case .snack:
             return AlarmEntity(
                 isOn: true,
                 title: "간식",
                 time: .makeTime(hour: 0, minute: 0),
-                selectedDays: "매일"
+                selectedDaysOfTheWeek: [2,3,4,5,6]
             )
         }
     }

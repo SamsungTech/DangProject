@@ -9,6 +9,7 @@ import UIKit
 
 import RxSwift
 import RxRelay
+import RxCocoa
 
 enum NavigationBarEvent {
     case back
@@ -27,17 +28,31 @@ protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutp
 
 class AlarmViewModel: AlarmViewModelProtocol {
     private let disposeBag = DisposeBag()
-    private var useCase: SettingUseCase
-    private var dateFormatter = DateFormatter()
     
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellViewModel]>(value: [])
     lazy var tempAlarmData: [AlarmTableViewCellViewModel] = { alarmDataArrayRelay.value }()
     var cellScaleWillExpand: Bool = false
     
-    init(useCase: SettingUseCase) {
-        self.useCase = useCase
+    // MARK: - Init
+    private var alarmManagerUseCase: DefaultAlarmManagerUseCase
+    
+    init(alarmManagerUseCase: DefaultAlarmManagerUseCase) {
+        self.alarmManagerUseCase = alarmManagerUseCase
         bindAlarmArraySubject()
     }
+    
+    private func bindAlarmArraySubject() {
+        alarmManagerUseCase.alarmArrayRelay
+            .map { $0.map { AlarmTableViewCellViewModel.init(alarmEntity: $0) } }
+            .subscribe(onNext: { [weak self] data in
+                guard let self = self else { return }
+                self.alarmDataArrayRelay.accept(data)
+            })
+            .disposed(by: disposeBag)
+    }
+
+    // MARK: - Input
+    // MARK: - Output
     
     func changeCellScale(index: Int) {
         resetTotalCellScaleNormal(index: index)
@@ -56,23 +71,47 @@ class AlarmViewModel: AlarmViewModelProtocol {
         
         alarmDataArrayRelay.accept(tempAlarmData)
     }
-    
-    func changeCellScaleMoreExpand(index: Int) {
-        switch tempAlarmData[index].scale {
-        case .expand:
-            tempAlarmData[index].scale = .moreExpand
-        case .moreExpand:
-            tempAlarmData[index].scale = .expand
-        case .normal:
-            break
-        }
-        
-        alarmDataArrayRelay.accept(tempAlarmData)
-    }
-    
+
     func changeIsOnValue(index: Int) {
         tempAlarmData[index].isOn.toggle()
         alarmDataArrayRelay.accept(tempAlarmData)
+        // if isOn, create request/ if !isOn, delete request
+    }
+    
+    func changeDayOfTheWeek(index: Int, tag: Int) {
+        if tempAlarmData[index].selectedDaysOfWeek.contains(tag) {
+            guard let arrayIndex = tempAlarmData[index].selectedDaysOfWeek.firstIndex(of: tag) else { return }
+            tempAlarmData[index].selectedDaysOfWeek.remove(at: arrayIndex)
+        } else {
+            tempAlarmData[index].selectedDaysOfWeek.append(tag)
+            tempAlarmData[index].selectedDaysOfWeek = tempAlarmData[index].selectedDaysOfWeek.sorted()
+        }
+        calculateEveryDayAndSelectedDays(index: index)
+        alarmDataArrayRelay.accept(tempAlarmData)
+        // save on server
+        // if isOn, update request
+    }
+    
+    func changeEveryDay(index: Int) {
+        if tempAlarmData[index].isEveryDay == true {
+            tempAlarmData[index].scale = .moreExpand
+            // delete request
+        } else {
+            tempAlarmData[index].scale = .expand
+            // update request
+        }
+        tempAlarmData[index].isEveryDay.toggle()
+        calculateDaysOfWeekAndSelectedDays(index: index)
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
+    private func calculateDaysOfWeekAndSelectedDays(index: Int) {
+        tempAlarmData[index].selectedDaysOfWeek = AlarmTableViewCellViewModel.calculateDaysOfWeek(tempAlarmData[index].isEveryDay)
+        tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
+    }
+    
+    private func calculateEveryDayAndSelectedDays(index: Int) {
+        tempAlarmData[index].isEveryDay = AlarmTableViewCellViewModel.calculateEveryDay(tempAlarmData[index].selectedDaysOfWeek)
+        tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
     }
     
     private func resetTotalCellScaleNormal(index: Int) {
@@ -95,19 +134,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
         }
     }
     
-    func deleteAlarmData(_ indexPath: IndexPath) {
-        useCase.removeAlarmData(indexPath)
-    }
-}
-
-extension AlarmViewModel {
-    private func bindAlarmArraySubject() {
-        useCase.alarmArrayRelay
-            .map { $0.map { AlarmTableViewCellViewModel.init(alarmEntity: $0) } }
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.alarmDataArrayRelay.accept($0)
-            })
-            .disposed(by: disposeBag)
+    func deleteAlarmData(_ indexPath: Int) {
+//        useCase.removeAlarmData(indexPath)
     }
 }

@@ -18,15 +18,67 @@ struct AlarmTableViewCellViewModel {
     var scale: CellScaleState = .normal
     var isOn: Bool
     var title: String
-    var pmAm: String
+    var amPm: String
     var time: String
     var selectedDays: String
+    var isEveryDay: Bool
+    var selectedDaysOfWeek: [Int]
     
     init(alarmEntity: AlarmEntity) {
         self.isOn = alarmEntity.isOn
         self.title = alarmEntity.title
-        self.pmAm = .calculateAmPm(alarmEntity.time)
+        self.amPm = .calculateAmPm(alarmEntity.time)
         self.time = .timeToString(alarmEntity.time)
-        self.selectedDays = alarmEntity.selectedDays
+        self.selectedDaysOfWeek = alarmEntity.selectedDaysOfTheWeek
+        self.selectedDays = Self.calculateSelectedDays(alarmEntity.selectedDaysOfTheWeek)
+        self.isEveryDay = Self.calculateEveryDay(alarmEntity.selectedDaysOfTheWeek)
+        }
+    
+    static func calculateDaysOfWeek(_ isEveryDay: Bool) -> [Int] {
+        if isEveryDay {
+            return [0,1,2,3,4,5,6]
+        } else {
+            return []
+        }
     }
+    
+
+    static func calculateEveryDay(_ days: [Int]) -> Bool {
+        if days == [0,1,2,3,4,5,6] {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    static func calculateSelectedDays(_ days: [Int]) -> String {
+        // 0: 일요일, 1: 월요일, 2: 화요일, 3: 수요일, 4: 목요일, 5: 금요일, 6: 토요일
+        let days = days.sorted()
+        if days == [0,1,2,3,4,5,6] {
+            return "매일"
+        } else if days == [] {
+            return "요일을 선택해 주세요"
+        } else if days == [0,6] {
+            return "주말"
+        } else if days == [1,2,3,4,5] {
+            return "주중"
+        } else {
+            return self.daysToString(days)
+        }
+    }
+   
+    static func daysToString(_ days: [Int]) -> String {
+        var result = ""
+        for i in 0 ..< days.count {
+            let convertString: String = .configureWeekOfTheDay(days[i])
+            if i == 0 {
+                result = convertString
+            } else {
+                result = result + ", " + convertString
+            }
+        }
+        return result
+    }
+    
+    
 }

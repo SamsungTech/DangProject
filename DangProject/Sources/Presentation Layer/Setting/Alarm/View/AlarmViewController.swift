@@ -69,11 +69,14 @@ class AlarmViewController: UIViewController {
             alarmTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             alarmTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        alarmTableView.backgroundColor = .homeBackgroundColor
+        alarmTableView.separatorColor = UIColor.systemGray
         alarmTableView.register(AlarmTableViewCell.self,
                                 forCellReuseIdentifier: AlarmTableViewCell.identifier)
         alarmTableView.delegate = self
         alarmTableView.dataSource = self
-        
+        alarmTableView.keyboardDismissMode = .onDrag
+        alarmTableView.contentInset = .init(top: 0, left: 0, bottom: UIScreen.main.bounds.maxY/3, right: 0)
     }
     
     private func setUpAlertController() {
@@ -85,7 +88,7 @@ class AlarmViewController: UIViewController {
                 isOn: true,
                 title: "아침 식사",
                 time: .makeTime(hour: 8, minute: 0),
-                selectedDays: "매일"
+                selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
             )
         }))
         alertController.addAction(UIAlertAction(title: "점심", style: .default, handler: nil))
@@ -146,7 +149,7 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmTableViewCell.identifier, for: indexPath) as? AlarmTableViewCell else { return UITableViewCell() }
         let alarmItemData = viewModel.alarmDataArrayRelay.value[indexPath.item]
         cell.setupCell(data: alarmItemData)
-        cell.delegate = self
+        cell.parentableViewController = self
         cell.selectionStyle = .none
         return cell
     }
@@ -157,18 +160,6 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
-    }
-    
-    
-    func didTapDeleteButton(_ sender: UIButton) {
-        let point = sender.convert(CGPoint.zero, to: alarmTableView)
-        guard let indexPath = alarmTableView.indexPathForRow(at: point) else { return }
-        DispatchQueue.main.async {
-            self.alarmTableView.beginUpdates()
-            self.alarmTableView.deleteRows(at: [indexPath], with: .fade)
-            self.alarmTableView.endUpdates()
-        }
-        self.viewModel.deleteAlarmData(indexPath)
     }
 }
 
@@ -181,6 +172,11 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         }
     }
     
+    func deleteButtonDidTapped(cell: UITableViewCell) {
+        guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
+        viewModel.deleteAlarmData(cellIndexPath.row)
+    }
+    
     func isOnSwitchDidChanged(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeIsOnValue(index: cellIndexPath.row)
@@ -188,6 +184,11 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     
     func everyDayButtonDidTapped(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel.changeCellScaleMoreExpand(index: cellIndexPath.row)
+        viewModel.changeEveryDay(index: cellIndexPath.row)
+    }
+    
+    func dayOfTheWeekButtonDidTapped(cell: UITableViewCell, tag: Int) {
+        guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
+        viewModel.changeDayOfTheWeek(index: cellIndexPath.row, tag: tag)
     }
 }
