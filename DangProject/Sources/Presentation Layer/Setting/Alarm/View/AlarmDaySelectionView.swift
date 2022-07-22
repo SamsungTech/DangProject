@@ -11,11 +11,12 @@ import RxSwift
 import RxCocoa
 
 protocol AlarmDaySelectionDelegate: AnyObject {
-    func didTapButton(tag: Int)
+    func dayOfTheWeekButtonDidTapped(tag: Int)
 }
 
 class AlarmDaySelectionView: UIView {
-    private let disposeBag = DisposeBag()
+    weak var parentableTableViewCell: AlarmDaySelectionDelegate?
+    
     private let week = [ "일", "월", "화", "수", "목", "금", "토"  ]
     private lazy var alarmStackView: UIStackView = {
         let stackView = UIStackView()
@@ -32,9 +33,6 @@ class AlarmDaySelectionView: UIView {
     var fridayButton = UIButton()
     var saturdayButton = UIButton()
 
-    var delegate: AlarmDaySelectionDelegate?
-    
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
             configureUI()
@@ -42,6 +40,36 @@ class AlarmDaySelectionView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureButtonColor(_ tags: [Int]) {
+        resetAllButtons()
+        tags.forEach { tag in
+            switch tag {
+            case 0:
+                sundayButton.backgroundColor = .circleColorGreen
+                sundayButton.setTitleColor(UIColor.white, for: .normal)
+            case 1:
+                mondayButton.backgroundColor = .circleColorGreen
+                mondayButton.setTitleColor(UIColor.white, for: .normal)
+            case 2:
+                tuesdayButton.backgroundColor = .circleColorGreen
+                tuesdayButton.setTitleColor(UIColor.white, for: .normal)
+            case 3:
+                wednesdayButton.backgroundColor = .circleColorGreen
+                wednesdayButton.setTitleColor(UIColor.white, for: .normal)
+            case 4:
+                thursdayButton.backgroundColor = .circleColorGreen
+                thursdayButton.setTitleColor(UIColor.white, for: .normal)
+            case 5:
+                fridayButton.backgroundColor = .circleColorGreen
+                fridayButton.setTitleColor(UIColor.white, for: .normal)
+            case 6:
+                saturdayButton.backgroundColor = .circleColorGreen
+                saturdayButton.setTitleColor(UIColor.white, for: .normal)
+            default: break
+            }
+        }
     }
 }
 
@@ -89,26 +117,27 @@ extension AlarmDaySelectionView {
             alarmStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
     }
+    
+    private func resetAllButtons() {
+        sundayButton.backgroundColor = .clear
+        sundayButton.setTitleColor(UIColor.lightGray, for: .normal)
+        mondayButton.backgroundColor = .clear
+        mondayButton.setTitleColor(UIColor.lightGray, for: .normal)
+        tuesdayButton.backgroundColor = .clear
+        tuesdayButton.setTitleColor(UIColor.lightGray, for: .normal)
+        wednesdayButton.backgroundColor = .clear
+        wednesdayButton.setTitleColor(UIColor.lightGray, for: .normal)
+        thursdayButton.backgroundColor = .clear
+        thursdayButton.setTitleColor(UIColor.lightGray, for: .normal)
+        fridayButton.backgroundColor = .clear
+        fridayButton.setTitleColor(UIColor.lightGray, for: .normal)
+        saturdayButton.backgroundColor = .clear
+        saturdayButton.setTitleColor(UIColor.lightGray, for: .normal)
+    }
 }
 
 extension AlarmDaySelectionView {
     @objc func didTapDaysButton(_ sender: UIButton) {
-        switch sender.tag {
-        case 0:
-            sundayButton.backgroundColor = .systemGreen
-        case 1:
-            mondayButton.backgroundColor = .systemGreen
-        case 2:
-            tuesdayButton.backgroundColor = .systemGreen
-        case 3:
-            wednesdayButton.backgroundColor = .systemGreen
-        case 4:
-            thursdayButton.backgroundColor = .systemGreen
-        case 5:
-            fridayButton.backgroundColor = .systemGreen
-        case 6:
-            saturdayButton.backgroundColor = .systemGreen
-        default: break
-        }
+        parentableTableViewCell?.dayOfTheWeekButtonDidTapped(tag: sender.tag)
     }
 }
