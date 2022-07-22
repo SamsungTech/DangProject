@@ -21,6 +21,7 @@ class AlertDummyFactory {
             return AlarmEntity(
                 isOn: true,
                 title: "아침 식사",
+                message: "",
                 time: .makeTime(hour: 10, minute: 0),
                 selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
             )
@@ -28,6 +29,7 @@ class AlertDummyFactory {
             return AlarmEntity(
                 isOn: true,
                 title: "점심 식사",
+                message: "",
                 time: .makeTime(hour: 12, minute: 0),
                 selectedDaysOfTheWeek: [0,6]
             )
@@ -35,6 +37,7 @@ class AlertDummyFactory {
             return AlarmEntity(
                 isOn: true,
                 title: "저녁 식사",
+                message: "",
                 time: .makeTime(hour: 18, minute: 0),
                 selectedDaysOfTheWeek: [1,2,3,4,5]
             )
@@ -42,6 +45,7 @@ class AlertDummyFactory {
             return AlarmEntity(
                 isOn: true,
                 title: "간식",
+                message: "",
                 time: .makeTime(hour: 0, minute: 0),
                 selectedDaysOfTheWeek: [2,3,4,5,6]
             )

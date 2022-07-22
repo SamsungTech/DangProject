@@ -25,26 +25,32 @@ class DefaultAlarmManagerUseCase {
     private var tempAlarmData: [AlarmEntity] = [
         AlarmEntity(isOn: false,
                     title: "아침식사",
+                    message: "아침먹고 기록",
                     time: .makeTime(hour: 8, minute: 0),
                     selectedDaysOfTheWeek: [0,1,2,3,4,5,6]),
         AlarmEntity(isOn: true,
                     title: "아침식사",
+                    message: "",
                     time: .makeTime(hour: 9, minute: 0),
                     selectedDaysOfTheWeek: [0,6]),
         AlarmEntity(isOn: false,
                     title: "점심식사",
+                    message: "점심먹었다",
                     time: .makeTime(hour: 11, minute: 0),
                     selectedDaysOfTheWeek: [1,2,3,4,5]),
         AlarmEntity(isOn: false,
                     title: "점심식사",
+                    message: "",
                     time: .makeTime(hour: 12, minute: 0),
                     selectedDaysOfTheWeek: [2,3,4,5,6]),
         AlarmEntity(isOn: false,
                     title: "점심식사",
+                    message: "",
                     time: .makeTime(hour: 13, minute: 0),
                     selectedDaysOfTheWeek: [0,3,4]),
         AlarmEntity(isOn: false,
                     title: "점심식사",
+                    message: "",
                     time: .makeTime(hour: 16, minute: 0),
                     selectedDaysOfTheWeek: [0,1,2,3]),
     ]
@@ -63,7 +69,7 @@ class DefaultAlarmManagerUseCase {
     
     // MARK: - Internal
     func alarmDataChanged(data: AlarmTableViewCellViewModel, changedOption: ChangeableAlarmOption) {
-        var alarmEntity: AlarmEntity = .init(alarmTableViewCellViewModel: data)
+//        var alarmEntity: AlarmEntity = .init(alarmTableViewCellViewModel: data)
 //        switch changedOption {
 //        case .add:
 //            <#code#>
