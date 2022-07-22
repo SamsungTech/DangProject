@@ -7,5 +7,8 @@
 
 import Foundation
 
+import RxSwift
+
 protocol FetchProfileUseCase {
+    func fetchProfileData() -> Observable<ProfileDomainModel>
 }
