@@ -82,4 +82,12 @@ extension Date {
         let myDate = calendar.date(from: myDateComponents)
         return myDate ?? Date.init()
     }
+    
+    static func stringToDate(amPm: String, time: String) -> Date {
+        let dateString = "\(amPm) \(time)"
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "a h:mm"
+        return dateFormatter.date(from: dateString) ?? Date.init()
+    }
 }
