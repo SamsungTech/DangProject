@@ -23,8 +23,8 @@ class SettingDIContainer {
         return SettingViewModel(settingUseCase: makeSettingUseCase())
     }
     
-    func makeSettingUseCase() -> SettingUseCase {
-        return SettingUseCase(repository: makeSettingRepository())
+    func makeSettingUseCase() -> DefaultAlarmManagerUseCase {
+        return DefaultAlarmManagerUseCase(repository: makeSettingRepository())
     }
     
     func makeSettingRepository() -> SettingRepository {

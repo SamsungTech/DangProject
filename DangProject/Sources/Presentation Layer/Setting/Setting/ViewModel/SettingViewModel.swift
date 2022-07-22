@@ -26,10 +26,10 @@ protocol SettingViewModelOutputProtocol: AnyObject {
 protocol SettingViewModelProtocol: SettingViewModelInputProtocol, SettingViewModelOutputProtocol {}
 
 class SettingViewModel: SettingViewModelProtocol {
-    private var settingUseCase: SettingUseCase?
+    private var settingUseCase: DefaultAlarmManagerUseCase?
     var scrollStateRelay = BehaviorRelay<SettingScrollState>(value: .top)
     
-    init(settingUseCase: SettingUseCase) {
+    init(settingUseCase: DefaultAlarmManagerUseCase) {
         self.settingUseCase = settingUseCase
     }
 }
