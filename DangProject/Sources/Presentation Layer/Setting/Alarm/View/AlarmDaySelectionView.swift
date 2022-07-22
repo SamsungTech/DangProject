@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 protocol AlarmDaySelectionDelegate: AnyObject {
-    func dayOfTheWeekButtonDidTapped(tag: Int)
+    func dayOfTheWeekButtonDidTap(tag: Int)
 }
 
 class AlarmDaySelectionView: UIView {
@@ -138,6 +138,6 @@ extension AlarmDaySelectionView {
 
 extension AlarmDaySelectionView {
     @objc func didTapDaysButton(_ sender: UIButton) {
-        parentableTableViewCell?.dayOfTheWeekButtonDidTapped(tag: sender.tag)
+        parentableTableViewCell?.dayOfTheWeekButtonDidTap(tag: sender.tag)
     }
 }

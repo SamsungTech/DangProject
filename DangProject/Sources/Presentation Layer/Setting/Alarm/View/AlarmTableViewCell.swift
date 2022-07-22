@@ -8,11 +8,14 @@
 import UIKit
 
 protocol AlarmTableViewCellDelegate: AnyObject {
-    func middleBottonButtonDidTapped(cell: UITableViewCell)
-    func deleteButtonDidTapped(cell: UITableViewCell)
-    func everyDayButtonDidTapped(cell: UITableViewCell)
+    func middleAndBottomButtonDidTap(cell: UITableViewCell)
+    func deleteButtonDidTap(cell: UITableViewCell)
+    func everyDayButtonDidTap(cell: UITableViewCell)
     func isOnSwitchDidChanged(cell: UITableViewCell)
-    func dayOfTheWeekButtonDidTapped(cell: UITableViewCell, tag: Int)
+    func dayOfTheWeekButtonDidTap(cell: UITableViewCell, tag: Int)
+    func userMessageTextFieldEndEditing(cell: UITableViewCell, text: String)
+    func textFieldWillStartEditing()
+    func textFieldWillEndEditing()
 }
 
 class AlarmTableViewCell: UITableViewCell {
@@ -28,14 +31,14 @@ class AlarmTableViewCell: UITableViewCell {
     
     private lazy var middleView: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(middleBottomButtonTaped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(middleBottomButtonDidTap), for: .touchUpInside)
         button.backgroundColor = .homeBackgroundColor
         return button
     }()
     
     private lazy var bottomView: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(middleBottomButtonTaped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(middleBottomButtonDidTap), for: .touchUpInside)
         button.backgroundColor = .homeBackgroundColor
         return button
     }()
@@ -88,6 +91,8 @@ class AlarmTableViewCell: UITableViewCell {
         return button
     }()
     
+    var originalText: String = ""
+    
     private(set) lazy var userMessageTextField: UITextField = {
         let textField = UITextField()
         textField.textColor = UIColor.lightGray
@@ -99,12 +104,37 @@ class AlarmTableViewCell: UITableViewCell {
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: xValueRatio(15), weight: .semibold)
             ]
         )
+        textField.addTarget(self, action: #selector(userMessageTextFieldDidTap), for: .editingDidBegin)
+        let toolbar = UIToolbar()
+        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: nil, action: #selector(cancelButtonDidTap))
+        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: nil, action: #selector(doneButtonDidTap))
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.sizeToFit()
+        toolbar.setItems([cancelButton, flexibleSpaceButton, saveButton], animated: false)
+        toolbar.backgroundColor = .systemGray
+        textField.inputAccessoryView = toolbar
         return textField
     }()
     
+    @objc private func userMessageTextFieldDidTap() {
+        parentableViewController?.textFieldWillStartEditing()
+    }
+    
+    @objc private func cancelButtonDidTap() {
+        userMessageTextField.text = originalText
+        parentableViewController?.textFieldWillEndEditing()
+        self.endEditing(true)
+    }
+
+    @objc private func doneButtonDidTap() {
+        parentableViewController?.userMessageTextFieldEndEditing(cell: self, text: userMessageTextField.text ?? "")
+        parentableViewController?.textFieldWillEndEditing()
+        self.endEditing(true)
+    }
+    
     private(set) lazy var everydaySelectButton: EveryDaySelectButton = {
         let button = EveryDaySelectButton()
-        button.addTarget(self, action: #selector(everyDayButtonDidTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(everyDayButtonDidTap), for: .touchUpInside)
         return button
     }()
     
@@ -129,6 +159,8 @@ class AlarmTableViewCell: UITableViewCell {
         bindAlarmIsOn(data.isOn)
         bindAlarmScale(data.scale)
         titleLabel.text = data.title
+        userMessageTextField.text = data.message
+        originalText = data.message
         amPmLabel.text = data.amPm
         timeButton.setTitle(data.time, for: .normal)
         selectedDayLabel.text = data.selectedDays
@@ -333,15 +365,15 @@ extension AlarmTableViewCell {
     }
     
     @objc func deleteButtonDidTap(_ sender: UIButton) {
-        parentableViewController?.deleteButtonDidTapped(cell: self)
+        parentableViewController?.deleteButtonDidTap(cell: self)
     }
     
-    @objc func middleBottomButtonTaped() {
-        parentableViewController?.middleBottonButtonDidTapped(cell: self)
+    @objc func middleBottomButtonDidTap() {
+        parentableViewController?.middleAndBottomButtonDidTap(cell: self)
     }
     
-    @objc func everyDayButtonDidTapped() {
-        parentableViewController?.everyDayButtonDidTapped(cell: self)
+    @objc func everyDayButtonDidTap() {
+        parentableViewController?.everyDayButtonDidTap(cell: self)
     }
 }
 
@@ -435,7 +467,7 @@ extension AlarmTableViewCell {
 }
 
 extension AlarmTableViewCell: AlarmDaySelectionDelegate {    
-    func dayOfTheWeekButtonDidTapped(tag: Int) {
-        parentableViewController?.dayOfTheWeekButtonDidTapped(cell: self , tag: tag)
+    func dayOfTheWeekButtonDidTap(tag: Int) {
+        parentableViewController?.dayOfTheWeekButtonDidTap(cell: self , tag: tag)
     }
 }
