@@ -15,10 +15,10 @@ enum CoreDataName: String {
     case recentQuery = "RecentQuery"
     case eatenFoods = "EatenFoods"
     case eatenFoodsPerDay = "EatenFoodsPerDay"
+    case profileEntity = "ProfileEntity"
 }
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
-    
     private let disposeBag = DisposeBag()
     private let appDelegate = UIApplication.shared.delegate as? AppDelegate
     private lazy var context = appDelegate?.persistentContainer.viewContext
@@ -68,6 +68,23 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         return EatenFoodsPerDay.init()
     }
     
+    func fetchProfileEntityData() -> ProfileEntity {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let checkedEatenFoodsPerDay = try self.context?.fetch(request) {
+                if checkedEatenFoodsPerDay.count == 0 {
+                    return ProfileEntity.init()
+                } else {
+                    return checkedEatenFoodsPerDay[0]
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return ProfileEntity.init()
+        }
+        return ProfileEntity.init()
+    }
+    
     func addFavoriteFood(food: FoodDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.favoriteFoods.rawValue, in: context),
@@ -113,9 +130,14 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         deleteEatenFoodsPerDay(date: date)
         createEatenFoodPerDay(date: date)
         data.eatenFoods.forEach { food in
-        let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
+            let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
             updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: food.eatenTime.dateValue())
         }
+    }
+    
+    func updateLocalProfileData(_ profileData: ProfileDomainModel) {
+        deleteProfileData()
+        createProfileData(profileData)
     }
     
     func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
@@ -145,6 +167,50 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return loadArrayFromCoreData(request: EatenFoods.fetchRequest())
         case .eatenFoodsPerDay:
             return loadArrayFromCoreData(request: EatenFoodsPerDay.fetchRequest())
+        case .profileEntity:
+            return loadArrayFromCoreData(request: ProfileEntity.fetchRequest())
+        }
+    }
+    
+    func deleteProfileData() {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let profileData = try context?.fetch(request) {
+                if profileData.count == 0 {
+                    return
+                } else {
+                    context?.delete(profileData[0])
+                    try context?.save()
+                    return
+                }
+            } else {
+                return
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
+        }
+    }
+    
+    func createProfileData(_ data: ProfileDomainModel) {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.profileEntity.rawValue,
+                                                      in: context),
+              let profileEntity = NSManagedObject(entity: entity, insertInto: context) as? ProfileEntity
+        else { return }
+        
+        profileEntity.name = data.name
+        profileEntity.birthDay = data.birthDay
+        profileEntity.gender = data.gender
+        profileEntity.sugarLevel = Int32(data.sugarLevel)
+        profileEntity.weight = Int32(data.weight)
+        profileEntity.height = Int32(data.height)
+        
+        do {
+            try context.save()
+            print("profile 저장완료")
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
@@ -214,6 +280,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
         }
     }
+    
     //MARK: - Private
     
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
@@ -226,6 +293,8 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return FavoriteFoods.fetchRequest()
         case .recentQuery:
             return RecentQuery.fetchRequest()
+        case .profileEntity:
+            return ProfileEntity.fetchRequest()
         }
     }
     

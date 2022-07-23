@@ -86,6 +86,7 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 class ProfileViewModel: ProfileViewModelProtocol {
     private var firebaseStoreUseCase: FirebaseFireStoreUseCase?
     private let firebaseStorageUseCase: FirebaseStorageUseCase?
+    private let fetchProfileUseCase: FetchProfileUseCase?
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
@@ -96,9 +97,11 @@ class ProfileViewModel: ProfileViewModelProtocol {
     let weights: [String] = [Int](1...150).map{("\($0)")}
     
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
-         firebaseStorageUseCase: FirebaseStorageUseCase) {
+         firebaseStorageUseCase: FirebaseStorageUseCase,
+         fetchProfileUseCase: FetchProfileUseCase) {
         self.firebaseStoreUseCase = firebaseStoreUseCase
         self.firebaseStorageUseCase = firebaseStorageUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
         self.viewDidLoad()
     }
     
@@ -140,7 +143,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     private func viewDidLoad() {
         guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
-        guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
+        guard let profileData = fetchProfileUseCase?.fetchProfileData() else { return }
         
         Observable.combineLatest(profileImage, profileData)
             .subscribe(onNext: { [weak self] imageData, profileData in

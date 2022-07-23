@@ -216,3 +216,9 @@ extension HomeViewController: NavigationBarDelegate {
         self.homeScrollView.isScrollEnabled = false
     }
 }
+
+extension HomeViewController: UIScrollViewDelegate {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+    }
+}
