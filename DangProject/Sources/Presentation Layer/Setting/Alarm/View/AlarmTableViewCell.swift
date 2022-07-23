@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum TextFieldCase {
+    case userMessage
+    case time
+}
+
 protocol AlarmTableViewCellDelegate: AnyObject {
     func middleAndBottomButtonDidTap(cell: UITableViewCell)
     func deleteButtonDidTap(cell: UITableViewCell)
@@ -14,6 +19,7 @@ protocol AlarmTableViewCellDelegate: AnyObject {
     func isOnSwitchDidChanged(cell: UITableViewCell)
     func dayOfTheWeekButtonDidTap(cell: UITableViewCell, tag: Int)
     func userMessageTextFieldEndEditing(cell: UITableViewCell, text: String)
+    func timeTextFieldEndEditing(cell: UITableViewCell, time: Date)
     func textFieldWillStartEditing()
     func textFieldWillEndEditing()
 }
@@ -23,6 +29,7 @@ class AlarmTableViewCell: UITableViewCell {
     private var messageViewHeightConstant: NSLayoutConstraint?
     private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
     private var dayOfTheWeekSelectViewHeightConstant: NSLayoutConstraint?
+    private lazy var textFieldType: TextFieldCase = .userMessage
     private lazy var topView: UIView = {
         let view = UIView()
         view.backgroundColor = .homeBackgroundColor
@@ -57,11 +64,31 @@ class AlarmTableViewCell: UITableViewCell {
         return label
     }()
     
-    private(set) lazy var timeButton: UIButton = {
-        let button = UIButton()
-        button.titleLabel?.font = UIFont.systemFont(ofSize: xValueRatio(45), weight: .medium)
-        button.setTitleColor(UIColor.lightGray, for: .normal)
-        return button
+    private(set) lazy var timeTextField: UITextField = {
+        let textField = UITextField()
+        textField.font = UIFont.systemFont(ofSize: xValueRatio(45), weight: .medium)
+        textField.tintColor = .clear
+        textField.addTarget(self, action: #selector(timeTextFieldDidTap), for: .editingDidBegin)
+        if #available(iOS 13.4, *) {
+            textField.inputView = wheelsTimePicker
+        }
+        self.inputToolbar(into: textField)
+        return textField
+    }()
+        
+    @objc private func timeTextFieldDidTap() {
+        self.textFieldType = .time
+        parentableViewController?.textFieldWillStartEditing()
+    }
+    
+    private lazy var wheelsTimePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .time
+        if #available(iOS 13.4, *) {
+            datePicker.preferredDatePickerStyle = .wheels
+        }
+        datePicker.locale = Locale(identifier: "ko-KR")
+        return datePicker
     }()
     
     private(set) lazy var selectedDayLabel: UILabel = {
@@ -91,7 +118,7 @@ class AlarmTableViewCell: UITableViewCell {
         return button
     }()
     
-    var originalText: String = ""
+    var originalMessageText: String = ""
     
     private(set) lazy var userMessageTextField: UITextField = {
         let textField = UITextField()
@@ -105,29 +132,33 @@ class AlarmTableViewCell: UITableViewCell {
             ]
         )
         textField.addTarget(self, action: #selector(userMessageTextFieldDidTap), for: .editingDidBegin)
-        let toolbar = UIToolbar()
-        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: nil, action: #selector(cancelButtonDidTap))
-        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: nil, action: #selector(doneButtonDidTap))
-        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbar.sizeToFit()
-        toolbar.setItems([cancelButton, flexibleSpaceButton, saveButton], animated: false)
-        toolbar.backgroundColor = .systemGray
-        textField.inputAccessoryView = toolbar
+        self.inputToolbar(into: textField)
         return textField
     }()
     
     @objc private func userMessageTextFieldDidTap() {
+        self.textFieldType = .userMessage
         parentableViewController?.textFieldWillStartEditing()
     }
     
     @objc private func cancelButtonDidTap() {
-        userMessageTextField.text = originalText
+        switch textFieldType {
+        case .userMessage:
+            userMessageTextField.text = originalMessageText
+        case .time:
+            break
+        }
         parentableViewController?.textFieldWillEndEditing()
         self.endEditing(true)
     }
 
     @objc private func doneButtonDidTap() {
-        parentableViewController?.userMessageTextFieldEndEditing(cell: self, text: userMessageTextField.text ?? "")
+        switch textFieldType {
+        case .userMessage:
+            parentableViewController?.userMessageTextFieldEndEditing(cell: self, text: userMessageTextField.text ?? "")
+        case .time:
+            parentableViewController?.timeTextFieldEndEditing(cell: self, time: wheelsTimePicker.date )
+        }
         parentableViewController?.textFieldWillEndEditing()
         self.endEditing(true)
     }
@@ -160,9 +191,9 @@ class AlarmTableViewCell: UITableViewCell {
         bindAlarmScale(data.scale)
         titleLabel.text = data.title
         userMessageTextField.text = data.message
-        originalText = data.message
+        originalMessageText = data.message
         amPmLabel.text = data.amPm
-        timeButton.setTitle(data.time, for: .normal)
+        timeTextField.text = data.time
         selectedDayLabel.text = data.selectedDays
         dayOfTheWeekSelectView.configureButtonColor(data.selectedDaysOfWeek)
         if data.isEveryDay {
@@ -254,13 +285,13 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     private func setupTimeLabel() {
-        middleView.addSubview(timeButton)
-        timeButton.translatesAutoresizingMaskIntoConstraints = false
+        middleView.addSubview(timeTextField)
+        timeTextField.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            timeButton.leadingAnchor.constraint(equalTo: amPmLabel.trailingAnchor, constant: xValueRatio(5)),
-            timeButton.bottomAnchor.constraint(equalTo: middleView.bottomAnchor, constant: -yValueRatio(10)),
-            timeButton.widthAnchor.constraint(equalToConstant: xValueRatio(120)),
-            timeButton.heightAnchor.constraint(equalToConstant: yValueRatio(40))
+            timeTextField.leadingAnchor.constraint(equalTo: amPmLabel.trailingAnchor, constant: xValueRatio(5)),
+            timeTextField.bottomAnchor.constraint(equalTo: middleView.bottomAnchor, constant: -yValueRatio(10)),
+            timeTextField.widthAnchor.constraint(equalToConstant: xValueRatio(120)),
+            timeTextField.heightAnchor.constraint(equalToConstant: yValueRatio(40))
         ])
     }
     
@@ -343,7 +374,7 @@ class AlarmTableViewCell: UITableViewCell {
         self.isOnSwitch.isOn = true
         self.titleLabel.textColor = .white
         self.amPmLabel.textColor = .white
-        self.timeButton.setTitleColor(UIColor.white, for: .normal)
+        self.timeTextField.textColor = UIColor.white
         self.selectedDayLabel.textColor = .white
         self.arrowButton.tintColor = .white
     }
@@ -352,11 +383,22 @@ class AlarmTableViewCell: UITableViewCell {
         self.isOnSwitch.isOn = false
         self.titleLabel.textColor = .lightGray
         self.amPmLabel.textColor = .lightGray
-        self.timeButton.setTitleColor(UIColor.lightGray, for: .normal)
+        self.timeTextField.textColor = UIColor.lightGray
         self.selectedDayLabel.textColor = .lightGray
         self.arrowButton.tintColor = .lightGray
     }
     
+    private func inputToolbar(into textField: UITextField) {
+        let toolbar = UIToolbar()
+        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: nil, action: #selector(cancelButtonDidTap))
+        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: nil, action: #selector(doneButtonDidTap))
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.sizeToFit()
+        toolbar.setItems([cancelButton, flexibleSpaceButton, saveButton], animated: false)
+        toolbar.backgroundColor = .systemGray
+        textField.inputAccessoryView = toolbar
+
+    }
 }
 
 extension AlarmTableViewCell {

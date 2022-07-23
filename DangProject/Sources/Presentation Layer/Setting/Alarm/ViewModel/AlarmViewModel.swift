@@ -85,6 +85,14 @@ class AlarmViewModel: AlarmViewModelProtocol {
         // if isOn, update request
     }
     
+    func changeTime(index: Int, time: Date) {
+        tempAlarmData[index].time = .timeToString(time)
+        tempAlarmData[index].amPm = .timeToAmPm(time)
+        alarmDataArrayRelay.accept(tempAlarmData)
+        // save on server
+        // if isOn, update request
+    }
+    
     func changeDayOfTheWeek(index: Int, tag: Int) {
         if tempAlarmData[index].selectedDaysOfWeek.contains(tag) {
             guard let arrayIndex = tempAlarmData[index].selectedDaysOfWeek.firstIndex(of: tag) else { return }

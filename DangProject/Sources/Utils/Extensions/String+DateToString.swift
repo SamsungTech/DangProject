@@ -20,9 +20,9 @@ extension String {
         return dateFormatter.string(from: time)
     }
     
-    static func calculateAmPm(_ originTime: Date) -> String {
+    static func timeToAmPm(_ time: Date) -> String {
         dateFormatter.dateFormat = "a"
-        return dateFormatter.string(from: originTime)
+        return dateFormatter.string(from: time)
     }
     
     static func configureWeekOfTheDay(_ num: Int) -> String {

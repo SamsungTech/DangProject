@@ -218,4 +218,9 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeUserMessage(index: cellIndexPath.row, text: text)
     }
+    
+    func timeTextFieldEndEditing(cell: UITableViewCell, time: Date) {
+        guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
+        viewModel.changeTime(index: cellIndexPath.row, time: time)
+    }
 }
