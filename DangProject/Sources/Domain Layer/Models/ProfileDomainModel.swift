@@ -42,6 +42,17 @@ struct ProfileDomainModel {
         self.gender = gender
         self.birthDay = birthDay
     }
+    
+    init(profileEntity: ProfileEntity) {
+        self.uid = ""
+        self.profileImage = UIImage()
+        self.name = profileEntity.name ?? ""
+        self.height = Int(profileEntity.height)
+        self.weight = Int(profileEntity.weight)
+        self.sugarLevel = Int(profileEntity.sugarLevel)
+        self.gender = profileEntity.gender ?? ""
+        self.birthDay = profileEntity.birthDay ?? ""
+    }
 }
 
 

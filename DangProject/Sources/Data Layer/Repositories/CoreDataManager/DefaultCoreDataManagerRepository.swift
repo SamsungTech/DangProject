@@ -68,6 +68,23 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         return EatenFoodsPerDay.init()
     }
     
+    func fetchProfileEntityData() -> ProfileEntity {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let checkedEatenFoodsPerDay = try self.context?.fetch(request) {
+                if checkedEatenFoodsPerDay.count == 0 {
+                    return ProfileEntity.init()
+                } else {
+                    return checkedEatenFoodsPerDay[0]
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return ProfileEntity.init()
+        }
+        return ProfileEntity.init()
+    }
+    
     func addFavoriteFood(food: FoodDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.favoriteFoods.rawValue, in: context),
@@ -113,7 +130,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         deleteEatenFoodsPerDay(date: date)
         createEatenFoodPerDay(date: date)
         data.eatenFoods.forEach { food in
-        let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
+            let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
             updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: food.eatenTime.dateValue())
         }
     }
