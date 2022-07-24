@@ -30,7 +30,8 @@ class AlarmTableViewCell: UITableViewCell {
     private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
     private var dayOfTheWeekSelectViewHeightConstant: NSLayoutConstraint?
     private lazy var textFieldType: TextFieldCase = .userMessage
-    private var originalMessageText: String = ""
+    private lazy var originalMessageText: String = ""
+    
     private lazy var topView: UIView = {
         let view = UIView()
         view.backgroundColor = .homeBackgroundColor
@@ -76,6 +77,8 @@ class AlarmTableViewCell: UITableViewCell {
         textField.addTarget(self, action: #selector(timeTextFieldDidTap), for: .editingDidBegin)
         if #available(iOS 13.4, *) {
             textField.inputView = wheelsTimePicker
+        } else {
+            textField.inputView = defaultTimePickerBackgroundView
         }
         self.inputToolbar(into: textField)
         return textField
@@ -86,12 +89,29 @@ class AlarmTableViewCell: UITableViewCell {
         parentableViewController?.textFieldWillStartEditing()
     }
     
+    @available(iOS 13.4, *)
     private lazy var wheelsTimePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .time
-        if #available(iOS 13.4, *) {
-            datePicker.preferredDatePickerStyle = .wheels
-        }
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.locale = Locale(identifier: "ko-KR")
+        return datePicker
+    }()
+    
+    private lazy var defaultTimePickerBackgroundView: UIView = {
+        let backgroundView = UIView()
+        backgroundView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: UIScreen.main.bounds.maxY/5)
+        backgroundView.backgroundColor = .systemGray5
+        backgroundView.addSubview(defaultTimePicker)
+        defaultTimePicker.translatesAutoresizingMaskIntoConstraints = false
+        defaultTimePicker.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor).isActive = true
+        defaultTimePicker.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
+        return backgroundView
+    }()
+    
+    private lazy var defaultTimePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .time
         datePicker.locale = Locale(identifier: "ko-KR")
         return datePicker
     }()
@@ -170,7 +190,11 @@ class AlarmTableViewCell: UITableViewCell {
                 parentableViewController?.userMessageTextFieldEndEditing(cell: self, text: userMessageText)
             }
         case .time:
-            parentableViewController?.timeTextFieldEndEditing(cell: self, time: wheelsTimePicker.date )
+            if #available(iOS 13.4, *) {
+                parentableViewController?.timeTextFieldEndEditing(cell: self, time: wheelsTimePicker.date )
+            } else {
+                parentableViewController?.timeTextFieldEndEditing(cell: self, time: defaultTimePicker.date)
+            }
         }
         parentableViewController?.textFieldWillEndEditing()
         self.endEditing(true)
@@ -207,6 +231,7 @@ class AlarmTableViewCell: UITableViewCell {
         setupAlarmIsOn(data.isOn)
         setupAlarmScale(data.scale)
         setupEveryDay(data.isEveryDay)
+        setupTimePickerFirstValue(amPm: data.amPm, time: data.time)
         titleLabel.text = data.title
         userMessageTextField.text = data.message
         originalMessageText = data.message
@@ -419,6 +444,15 @@ class AlarmTableViewCell: UITableViewCell {
         self.timeTextField.textColor = UIColor.lightGray
         self.selectedDayLabel.textColor = .lightGray
         self.arrowButton.tintColor = .lightGray
+    }
+    
+    // MARK: - TimePickerFirstValue
+    private func setupTimePickerFirstValue(amPm: String, time: String) {
+        if #available(iOS 13.4, *) {
+            wheelsTimePicker.date = .stringToDate(amPm: amPm, time: time)
+        } else {
+            defaultTimePicker.date = .stringToDate(amPm: amPm, time: time)
+        }
     }
     
     // MARK: - CellAnimating
