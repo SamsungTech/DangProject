@@ -30,6 +30,7 @@ class AlarmTableViewCell: UITableViewCell {
     private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
     private var dayOfTheWeekSelectViewHeightConstant: NSLayoutConstraint?
     private lazy var textFieldType: TextFieldCase = .userMessage
+    private var originalMessageText: String = ""
     private lazy var topView: UIView = {
         let view = UIView()
         view.backgroundColor = .homeBackgroundColor
@@ -49,6 +50,10 @@ class AlarmTableViewCell: UITableViewCell {
         button.backgroundColor = .homeBackgroundColor
         return button
     }()
+    
+    @objc func middleBottomButtonDidTap() {
+        parentableViewController?.middleAndBottomButtonDidTap(cell: self)
+    }
     
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -104,6 +109,10 @@ class AlarmTableViewCell: UITableViewCell {
         return checkSwitch
     }()
     
+    @objc func isOnValueChanged(_ sender: UISwitch) {
+        parentableViewController?.isOnSwitchDidChanged(cell: self)
+    }
+    
     private(set) lazy var arrowButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
@@ -118,7 +127,9 @@ class AlarmTableViewCell: UITableViewCell {
         return button
     }()
     
-    var originalMessageText: String = ""
+    @objc func deleteButtonDidTap(_ sender: UIButton) {
+        parentableViewController?.deleteButtonDidTap(cell: self)
+    }
     
     private(set) lazy var userMessageTextField: UITextField = {
         let textField = UITextField()
@@ -155,7 +166,9 @@ class AlarmTableViewCell: UITableViewCell {
     @objc private func doneButtonDidTap() {
         switch textFieldType {
         case .userMessage:
-            parentableViewController?.userMessageTextFieldEndEditing(cell: self, text: userMessageTextField.text ?? "")
+            if let userMessageText = userMessageTextField.text {
+                parentableViewController?.userMessageTextFieldEndEditing(cell: self, text: userMessageText)
+            }
         case .time:
             parentableViewController?.timeTextFieldEndEditing(cell: self, time: wheelsTimePicker.date )
         }
@@ -168,6 +181,10 @@ class AlarmTableViewCell: UITableViewCell {
         button.addTarget(self, action: #selector(everyDayButtonDidTap), for: .touchUpInside)
         return button
     }()
+    
+    @objc func everyDayButtonDidTap() {
+        parentableViewController?.everyDayButtonDidTap(cell: self)
+    }
     
     private(set) lazy var dayOfTheWeekSelectView: AlarmDaySelectionView = {
         let view = AlarmDaySelectionView()
@@ -187,24 +204,20 @@ class AlarmTableViewCell: UITableViewCell {
     
     // MARK: - Internal
     func setupCell(data: AlarmTableViewCellViewModel) {
-        bindAlarmIsOn(data.isOn)
-        bindAlarmScale(data.scale)
+        setupAlarmIsOn(data.isOn)
+        setupAlarmScale(data.scale)
+        setupEveryDay(data.isEveryDay)
         titleLabel.text = data.title
         userMessageTextField.text = data.message
         originalMessageText = data.message
         amPmLabel.text = data.amPm
         timeTextField.text = data.time
         selectedDayLabel.text = data.selectedDays
+        
         dayOfTheWeekSelectView.configureButtonColor(data.selectedDaysOfWeek)
-        if data.isEveryDay {
-            everydaySelectButton.setCircleViewCheckMark()
-        } else {
-            everydaySelectButton.setCircleViewNormal()
-        }
     }
     
     // MARK: - Private
-
     private func configureUI() {
         setupTopView()
         setupUserMessageTextField()
@@ -244,7 +257,6 @@ class AlarmTableViewCell: UITableViewCell {
             userMessageTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -xValueRatio(20))
         ])
     }
-    
     
     private func setupTitleLabel() {
         topView.addSubview(titleLabel)
@@ -361,12 +373,33 @@ class AlarmTableViewCell: UITableViewCell {
         ])
     }
     
-    private func bindAlarmIsOn(_ value: Bool) {
+    private func inputToolbar(into textField: UITextField) {
+        let toolbar = UIToolbar()
+        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: nil, action: #selector(cancelButtonDidTap))
+        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: nil, action: #selector(doneButtonDidTap))
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.sizeToFit()
+        toolbar.setItems([cancelButton, flexibleSpaceButton, saveButton], animated: false)
+        toolbar.backgroundColor = .systemGray
+        textField.inputAccessoryView = toolbar
+    }
+    
+    //MARK: - everyday
+    private func setupEveryDay(_ isEveryDay: Bool) {
+        if isEveryDay {
+            everydaySelectButton.setCircleViewCheckMark()
+        } else {
+            everydaySelectButton.setCircleViewNormal()
+        }
+    }
+    
+    //MARK: - isOn
+    private func setupAlarmIsOn(_ value: Bool) {
         switch value {
         case true:
             self.setupAlarmIsValid()
         case false:
-            self.setupAlarmIsInvaild()
+            self.setupAlarmIsInvalid()
         }
     }
     
@@ -379,7 +412,7 @@ class AlarmTableViewCell: UITableViewCell {
         self.arrowButton.tintColor = .white
     }
     
-    private func setupAlarmIsInvaild() {
+    private func setupAlarmIsInvalid() {
         self.isOnSwitch.isOn = false
         self.titleLabel.textColor = .lightGray
         self.amPmLabel.textColor = .lightGray
@@ -388,40 +421,8 @@ class AlarmTableViewCell: UITableViewCell {
         self.arrowButton.tintColor = .lightGray
     }
     
-    private func inputToolbar(into textField: UITextField) {
-        let toolbar = UIToolbar()
-        let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: nil, action: #selector(cancelButtonDidTap))
-        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: nil, action: #selector(doneButtonDidTap))
-        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbar.sizeToFit()
-        toolbar.setItems([cancelButton, flexibleSpaceButton, saveButton], animated: false)
-        toolbar.backgroundColor = .systemGray
-        textField.inputAccessoryView = toolbar
-
-    }
-}
-
-extension AlarmTableViewCell {
-    @objc func isOnValueChanged(_ sender: UISwitch) {
-        parentableViewController?.isOnSwitchDidChanged(cell: self)
-    }
-    
-    @objc func deleteButtonDidTap(_ sender: UIButton) {
-        parentableViewController?.deleteButtonDidTap(cell: self)
-    }
-    
-    @objc func middleBottomButtonDidTap() {
-        parentableViewController?.middleAndBottomButtonDidTap(cell: self)
-    }
-    
-    @objc func everyDayButtonDidTap() {
-        parentableViewController?.everyDayButtonDidTap(cell: self)
-    }
-}
-
-extension AlarmTableViewCell {
-    
-    private func bindAlarmScale(_ scale: CellScaleState) {
+    // MARK: - CellAnimating
+    private func setupAlarmScale(_ scale: CellScaleState) {
         switch scale {
         case .expand:
             self.setupDaysButtonExpand()
@@ -455,7 +456,6 @@ extension AlarmTableViewCell {
         dayOfTheWeekSelectView.isHidden = false
         selectedDayLabel.isHidden = true
         deleteButton.isHidden = false
-        // 매일 버튼 on off
         everydaySelectButton.isHidden = false
 
         animateMoreExpand()
