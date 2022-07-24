@@ -68,7 +68,7 @@ class DefaultAlarmManagerUseCase {
     }
     
     // MARK: - Internal
-    func alarmDataChanged(data: AlarmTableViewCellViewModel, changedOption: ChangeableAlarmOption) {
+    func alarmDataChanged(data: AlarmEntity, changedOption: ChangeableAlarmOption) {
 //        var alarmEntity: AlarmEntity = .init(alarmTableViewCellViewModel: data)
 //        switch changedOption {
 //        case .add:

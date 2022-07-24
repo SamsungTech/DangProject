@@ -32,7 +32,7 @@ struct AlarmEntity {
         self.title = alarmTableViewCellViewModel.title
         self.message = alarmTableViewCellViewModel.message
         self.time = .stringToDate(amPm: alarmTableViewCellViewModel.amPm,
-                                  time: alarmTableViewCellViewModel.time)
+                                  time: alarmTableViewCellViewModel.timeText)
         self.selectedDaysOfTheWeek = alarmTableViewCellViewModel.selectedDaysOfWeek
     }
     

@@ -19,18 +19,20 @@ struct AlarmTableViewCellViewModel {
     var isOn: Bool
     var title: String
     var message: String
+    var time: Date
     var amPm: String
-    var time: String
+    var timeText: String
+    var selectedDaysOfWeek: [Int]
     var selectedDays: String
     var isEveryDay: Bool
-    var selectedDaysOfWeek: [Int]
     
     init(alarmEntity: AlarmEntity) {
         self.isOn = alarmEntity.isOn
         self.title = alarmEntity.title
         self.message = alarmEntity.message
+        self.time = alarmEntity.time
         self.amPm = .timeToAmPm(alarmEntity.time)
-        self.time = .timeToString(alarmEntity.time)
+        self.timeText = .timeToString(alarmEntity.time)
         self.selectedDaysOfWeek = alarmEntity.selectedDaysOfTheWeek
         self.selectedDays = Self.calculateSelectedDays(alarmEntity.selectedDaysOfTheWeek)
         self.isEveryDay = Self.calculateEveryDay(alarmEntity.selectedDaysOfTheWeek)

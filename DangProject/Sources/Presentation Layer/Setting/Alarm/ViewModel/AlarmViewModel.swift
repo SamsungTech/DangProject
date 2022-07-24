@@ -52,6 +52,11 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
 
     // MARK: - Input
+    func addAlarmEntity(_ alarmEntity: AlarmEntity) {
+//        tempAlarmData.append(AlarmTableViewCellViewModel.init(alarmEntity: alarmEntity))
+//        tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
+//        alarmDataArrayRelay.accept(tempAlarmData)
+    }
     // MARK: - Output
     
     func changeCellScale(index: Int) {
@@ -86,7 +91,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     func changeTime(index: Int, time: Date) {
-        tempAlarmData[index].time = .timeToString(time)
+        tempAlarmData[index].timeText = .timeToString(time)
         tempAlarmData[index].amPm = .timeToAmPm(time)
         alarmDataArrayRelay.accept(tempAlarmData)
         // save on server

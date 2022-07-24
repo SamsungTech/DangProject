@@ -10,6 +10,13 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+enum EatenTimeAlertController {
+    case morning
+    case lunch
+    case dinner
+    case snack
+}
+
 class AlarmViewController: UIViewController {
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
@@ -93,22 +100,47 @@ class AlarmViewController: UIViewController {
     }
     
     private func setupAlertController() {
-        alertController.addAction(UIAlertAction(title: "아침",
+        let alertInstance = [EatenTimeAlertController.morning, EatenTimeAlertController.lunch, EatenTimeAlertController.dinner, EatenTimeAlertController.snack]
+        alertInstance.forEach { eatenTimeAlert in
+            makeAlertControllerAddAction(eatenTimeAlert: eatenTimeAlert)
+        }
+        alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+    }
+    
+    private func makeAlertControllerAddAction(eatenTimeAlert: EatenTimeAlertController) {
+        var alertActionTitle: String = ""
+        var alarmDataTitle: String = ""
+        var alarmDataTime: Date = .init()
+        switch eatenTimeAlert {
+        case .morning:
+            alertActionTitle = "아침"
+            alarmDataTitle = "아침 식사"
+            alarmDataTime = .makeTime(hour: 8, minute: 00)
+        case .lunch:
+            alertActionTitle = "점심"
+            alarmDataTitle = "점심 식사"
+            alarmDataTime = .makeTime(hour: 12, minute: 00)
+        case .dinner:
+            alertActionTitle = "저녁"
+            alarmDataTitle = "저녁 식사"
+            alarmDataTime = .makeTime(hour: 18, minute: 00)
+        case .snack:
+            alertActionTitle = "간식"
+            alarmDataTitle = "간식"
+            alarmDataTime = .makeTime(hour: 14, minute: 00)
+        }
+        alertController.addAction(UIAlertAction(title: alertActionTitle,
                                                 style: .default,
                                                 handler: { [weak self] _ in
-            // AlarmEntity?
             let alarmData = AlarmEntity(
                 isOn: true,
-                title: "아침 식사",
+                title: alarmDataTitle,
                 message: "",
-                time: .makeTime(hour: 8, minute: 0),
+                time: alarmDataTime,
                 selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
             )
+            self?.viewModel.addAlarmEntity(alarmData)
         }))
-        alertController.addAction(UIAlertAction(title: "점심", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "저녁", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "간식", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
     }
     
     private func bind() {

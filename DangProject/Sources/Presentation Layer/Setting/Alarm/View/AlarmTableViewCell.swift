@@ -136,6 +136,7 @@ class AlarmTableViewCell: UITableViewCell {
     private(set) lazy var arrowButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        button.addTarget(self, action: #selector(middleBottomButtonDidTap), for: .touchUpInside)
         button.tintColor = .lightGray
         return button
     }()
@@ -231,12 +232,12 @@ class AlarmTableViewCell: UITableViewCell {
         setupAlarmIsOn(data.isOn)
         setupAlarmScale(data.scale)
         setupEveryDay(data.isEveryDay)
-        setupTimePickerFirstValue(amPm: data.amPm, time: data.time)
+        setupTimePickerFirstValue(amPm: data.amPm, time: data.timeText)
         titleLabel.text = data.title
         userMessageTextField.text = data.message
         originalMessageText = data.message
         amPmLabel.text = data.amPm
-        timeTextField.text = data.time
+        timeTextField.text = data.timeText
         selectedDayLabel.text = data.selectedDays
         
         dayOfTheWeekSelectView.configureButtonColor(data.selectedDaysOfWeek)
