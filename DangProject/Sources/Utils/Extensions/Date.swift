@@ -74,13 +74,11 @@ extension Date {
     }
     
     static func makeTime(hour: Int, minute: Int) -> Date {
-        let calendar: Calendar = {
-            let calendar = Calendar.current
-            return calendar
-        }()
-        let myDateComponents = DateComponents(hour: hour, minute: minute)
-        let myDate = calendar.date(from: myDateComponents)
-        return myDate ?? Date.init()
+        let dateString = "\(hour):\(minute)"
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "HH:mm"
+        return dateFormatter.date(from: dateString) ?? Date.init()
     }
     
     static func stringToDate(amPm: String, time: String) -> Date {
