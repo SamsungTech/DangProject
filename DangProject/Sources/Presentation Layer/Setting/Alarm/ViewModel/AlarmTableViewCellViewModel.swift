@@ -13,7 +13,7 @@ enum CellScaleState {
     case moreExpand
 }
 
-struct AlarmTableViewCellViewModel {
+struct AlarmTableViewCellViewModel: Equatable {
     static let empty: Self = .init(alarmEntity: .empty)
     var scale: CellScaleState = .normal
     var isOn: Bool

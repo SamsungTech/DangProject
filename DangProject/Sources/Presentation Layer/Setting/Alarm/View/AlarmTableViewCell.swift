@@ -20,7 +20,7 @@ protocol AlarmTableViewCellDelegate: AnyObject {
     func dayOfTheWeekButtonDidTap(cell: UITableViewCell, tag: Int)
     func userMessageTextFieldEndEditing(cell: UITableViewCell, text: String)
     func timeTextFieldEndEditing(cell: UITableViewCell, time: Date)
-    func textFieldWillStartEditing()
+    func textFieldWillStartEditing(cell: UITableViewCell)
     func textFieldWillEndEditing()
 }
 
@@ -86,7 +86,7 @@ class AlarmTableViewCell: UITableViewCell {
         
     @objc private func timeTextFieldDidTap() {
         self.textFieldType = .time
-        parentableViewController?.textFieldWillStartEditing()
+        parentableViewController?.textFieldWillStartEditing(cell: self)
     }
     
     @available(iOS 13.4, *)
@@ -170,7 +170,7 @@ class AlarmTableViewCell: UITableViewCell {
     
     @objc private func userMessageTextFieldDidTap() {
         self.textFieldType = .userMessage
-        parentableViewController?.textFieldWillStartEditing()
+        parentableViewController?.textFieldWillStartEditing(cell: self)
     }
     
     @objc private func cancelButtonDidTap() {

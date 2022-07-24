@@ -31,8 +31,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellViewModel]>(value: [])
     lazy var tempAlarmData: [AlarmTableViewCellViewModel] = { alarmDataArrayRelay.value }()
-    var cellScaleWillExpand: Bool = false
-    
+    lazy var cellScaleWillExpand: Bool = false
+    lazy var addedCellIndex: Int = 0
     // MARK: - Init
     private var alarmManagerUseCase: DefaultAlarmManagerUseCase
     
@@ -53,12 +53,29 @@ class AlarmViewModel: AlarmViewModelProtocol {
 
     // MARK: - Input
     func addAlarmEntity(_ alarmEntity: AlarmEntity) {
-//        tempAlarmData.append(AlarmTableViewCellViewModel.init(alarmEntity: alarmEntity))
-//        tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
-//        alarmDataArrayRelay.accept(tempAlarmData)
+        var alarmViewModel = AlarmTableViewCellViewModel.init(alarmEntity: alarmEntity)
+        alarmViewModel.scale = .moreExpand
+        tempAlarmData.append(alarmViewModel)
+        tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
+        guard let index = self.tempAlarmData.firstIndex(of: alarmViewModel) else { return }
+        addedCellIndex = index
+        print(addedCellIndex)
+        resetTotalCellScaleNormal(index: addedCellIndex)
+        alarmDataArrayRelay.accept(tempAlarmData)
     }
     // MARK: - Output
-    
+    func expandSelectedCell(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        switch tempAlarmData[index].scale {
+        case .normal:
+            tempAlarmData[index].scale = .moreExpand
+        case .expand:
+            tempAlarmData[index].scale = .expand
+        case .moreExpand:
+            tempAlarmData[index].scale = .moreExpand
+        }
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
     func changeCellScale(index: Int) {
         resetTotalCellScaleNormal(index: index)
         
@@ -91,8 +108,10 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     func changeTime(index: Int, time: Date) {
+        tempAlarmData[index].time = time
         tempAlarmData[index].timeText = .timeToString(time)
         tempAlarmData[index].amPm = .timeToAmPm(time)
+        tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
         alarmDataArrayRelay.accept(tempAlarmData)
         // save on server
         // if isOn, update request

@@ -10,6 +10,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+enum CellAmountState{
+    case plus
+    case minus
+    case none
+}
+
 enum EatenTimeAlertController {
     case morning
     case lunch
@@ -83,12 +89,14 @@ class AlarmViewController: UIViewController {
             alarmTableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             alarmTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             alarmTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            alarmTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            alarmTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         alarmTableView.backgroundColor = .homeBackgroundColor
         alarmTableView.separatorColor = UIColor.systemGray
         alarmTableView.register(AlarmTableViewCell.self,
                                 forCellReuseIdentifier: AlarmTableViewCell.identifier)
+        alarmTableView.showsVerticalScrollIndicator = true
+        alarmTableView.indicatorStyle = .white
         alarmTableView.delegate = self
         alarmTableView.dataSource = self
         alarmTableView.contentInset = .init(top: 0, left: 0, bottom: UIScreen.main.bounds.maxY/3, right: 0)
@@ -115,7 +123,7 @@ class AlarmViewController: UIViewController {
         case .morning:
             alertActionTitle = "아침"
             alarmDataTitle = "아침 식사"
-            alarmDataTime = .makeTime(hour: 8, minute: 00)
+            alarmDataTime = .makeTime(hour: 7, minute: 00)
         case .lunch:
             alertActionTitle = "점심"
             alarmDataTitle = "점심 식사"
@@ -166,23 +174,39 @@ class AlarmViewController: UIViewController {
     }
     
     private func bindAlarmTableViewCellData() {
+        var dataCount = viewModel.alarmDataArrayRelay.value.count
         viewModel.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
                 guard let strongSelf = self else { return }
-                
+                if data.count > dataCount {
+                    self?.updateCellUI(.plus)
+                    dataCount += 1
+                } else {
+                    self?.updateCellUI(.none)
+                }
                 for i in 0 ..< data.count {
                     if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
                         cell.setupCell(data: data[i])
                     }
                 }
-                self?.updateCellUI()
             })
             .disposed(by: disposeBag)
     }
     
-    private func updateCellUI() {
-        self.alarmTableView.beginUpdates()
-        self.alarmTableView.endUpdates()
+    private func updateCellUI(_ cellAmountState: CellAmountState) {
+        alarmTableView.performBatchUpdates {
+            switch cellAmountState {
+            case .plus:
+                print(viewModel.addedCellIndex)
+                alarmTableView.scrollToRow(at: IndexPath(row: viewModel.addedCellIndex, section: 0), at: .top, animated: true)
+                // scrollToRow 가 간식 저녁 안먹힘
+                alarmTableView.insertRows(at: [IndexPath(row: viewModel.addedCellIndex, section: 0)], with: UITableView.RowAnimation.none)
+            case .minus:
+                break
+            case .none:
+                break
+            }
+        }
     }
 }
 
@@ -210,7 +234,10 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension AlarmViewController: AlarmTableViewCellDelegate {
-    func textFieldWillStartEditing() {
+    func textFieldWillStartEditing(cell: UITableViewCell) {
+        guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
+        alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
+        viewModel.expandSelectedCell(index: cellIndexPath.row)
         invisibleView.isHidden = false
     }
     
