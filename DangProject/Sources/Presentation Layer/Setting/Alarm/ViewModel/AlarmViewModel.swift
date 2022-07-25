@@ -63,69 +63,41 @@ class AlarmViewModel: AlarmViewModelProtocol {
     func addAlarmEntity(_ alarmEntity: AlarmEntity) {
         var alarmViewModel = AlarmTableViewCellViewModel.init(alarmEntity: alarmEntity)
         alarmViewModel.scale = .moreExpand
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmViewModel, changedOption: .add)
+        
         tempAlarmData.append(alarmViewModel)
         tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
         guard let index = self.tempAlarmData.firstIndex(of: alarmViewModel) else { return }
         addedCellIndex = index
         resetTotalCellScaleNormal(index: addedCellIndex)
         alarmDataArrayRelay.accept(tempAlarmData)
+        // save on server
     }
     
     func changeIsOnValue(index: Int) {
         tempAlarmData[index].isOn.toggle()
-        alarmDataArrayRelay.accept(tempAlarmData)
         alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .isOn)
-    }
-    // MARK: - Output
-    func expandSelectedCell(index: Int) {
-        resetTotalCellScaleNormal(index: index)
-        switch tempAlarmData[index].scale {
-        case .normal:
-            tempAlarmData[index].scale = .moreExpand
-        case .expand:
-            tempAlarmData[index].scale = .expand
-        case .moreExpand:
-            tempAlarmData[index].scale = .moreExpand
-        }
-        alarmDataArrayRelay.accept(tempAlarmData)
-    }
-    func changeCellScale(index: Int) {
-        resetTotalCellScaleNormal(index: index)
-        
-        switch tempAlarmData[index].scale {
-        case .normal:
-            tempAlarmData[index].scale = .moreExpand
-            self.cellScaleWillExpand = true
-        case .expand:
-            tempAlarmData[index].scale = .normal
-            self.cellScaleWillExpand = false
-        case .moreExpand:
-            tempAlarmData[index].scale = .normal
-            self.cellScaleWillExpand = false
-        }
-        
         alarmDataArrayRelay.accept(tempAlarmData)
     }
     
     func changeUserMessage(index: Int, text: String) {
         tempAlarmData[index].message = text
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .message)
         alarmDataArrayRelay.accept(tempAlarmData)
-        // save on server
-        // if isOn, update request
     }
     
     func changeTime(index: Int, time: Date) {
         tempAlarmData[index].time = time
         tempAlarmData[index].timeText = .timeToString(time)
         tempAlarmData[index].amPm = .timeToAmPm(time)
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .time)
+        
         let willChangeAlarmData = tempAlarmData[index]
         tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
         guard let dataIndex = self.tempAlarmData.firstIndex(of: willChangeAlarmData) else { return }
         changedCellIndex = dataIndex
-
         alarmDataArrayRelay.accept(tempAlarmData)
-        // save on server
-        // if isOn, update request
+        
     }
     
     func changeDayOfTheWeek(index: Int, tag: Int) {
@@ -143,17 +115,72 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     func changeEveryDay(index: Int) {
-        if tempAlarmData[index].isEveryDay == true {
+        if tempAlarmData[index].isEveryDay {
             tempAlarmData[index].scale = .moreExpand
-            // delete request
         } else {
             tempAlarmData[index].scale = .expand
-            // update request
         }
         tempAlarmData[index].isEveryDay.toggle()
         calculateDaysOfWeekAndSelectedDays(index: index)
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .isEveryDay)
         alarmDataArrayRelay.accept(tempAlarmData)
     }
+    
+    func willDeleteAlarmData(_ indexPath: Int) {
+        willDeleteCellIndex = indexPath
+    }
+    
+    func deleteAlarmData() {
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[willDeleteCellIndex], changedOption: .delete)
+        tempAlarmData.remove(at: willDeleteCellIndex)
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
+
+    // MARK: - Output
+    func expandSelectedCell(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        switch tempAlarmData[index].scale {
+        case .normal:
+            tempAlarmData[index].scale = .moreExpand
+        case .expand:
+            tempAlarmData[index].scale = .expand
+        case .moreExpand:
+            tempAlarmData[index].scale = .moreExpand
+        }
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
+    
+    func changeCellScale(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        
+        switch tempAlarmData[index].scale {
+        case .normal:
+            tempAlarmData[index].scale = .moreExpand
+            self.cellScaleWillExpand = true
+        case .expand:
+            tempAlarmData[index].scale = .normal
+            self.cellScaleWillExpand = false
+        case .moreExpand:
+            tempAlarmData[index].scale = .normal
+            self.cellScaleWillExpand = false
+        }
+        
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
+        
+    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat {
+        let cellData = alarmDataArrayRelay.value[indexPath.row]
+        switch cellData.scale {
+        case .normal:
+            return UIScreen.main.bounds.maxY/5
+        case .expand:
+            return UIScreen.main.bounds.maxY/3.2
+        case .moreExpand:
+            return UIScreen.main.bounds.maxY/2.5
+        }
+    }
+        
+    // MARK: - Private
     private func calculateDaysOfWeekAndSelectedDays(index: Int) {
         tempAlarmData[index].selectedDaysOfWeek = AlarmTableViewCellViewModel.calculateDaysOfWeek(tempAlarmData[index].isEveryDay)
         tempAlarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(tempAlarmData[index].selectedDaysOfWeek)
@@ -172,26 +199,5 @@ class AlarmViewModel: AlarmViewModelProtocol {
                 tempAlarmData[i].scale = .normal
             }
         }
-    }
-    
-    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat {
-        let cellData = alarmDataArrayRelay.value[indexPath.row]
-        switch cellData.scale {
-        case .normal:
-            return UIScreen.main.bounds.maxY/5
-        case .expand:
-            return UIScreen.main.bounds.maxY/3.2
-        case .moreExpand:
-            return UIScreen.main.bounds.maxY/2.5
-        }
-    }
-    
-    func willDeleteAlarmData(_ indexPath: Int) {
-        willDeleteCellIndex = indexPath
-    }
-    
-    func deleteAlarmData() {
-        tempAlarmData.remove(at: willDeleteCellIndex)
-        alarmDataArrayRelay.accept(tempAlarmData)
     }
 }

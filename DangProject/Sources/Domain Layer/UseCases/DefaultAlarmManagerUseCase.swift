@@ -12,11 +12,12 @@ import RxSwift
 import RxRelay
 
 enum ChangeableAlarmOption {
-    //    case add
-    //    case delete
+    case add
+    case delete
     case isOn
-    //    case message
-    //    case time
+    case message
+    case time
+    case isEveryDay
     //    case dayOfWeek
 }
 
@@ -62,6 +63,7 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     init(repository: SettingRepository) {
         self.repository = repository
         startAlarmData()
+//        deleteAllRequests()
     }
     
     private func startAlarmData() {
@@ -85,16 +87,34 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     func changeAlarmNotificationRequest(data: AlarmTableViewCellViewModel,
                                         changedOption: ChangeableAlarmOption) {
         let alarmEntity: AlarmEntity = .init(alarmTableViewCellViewModel: data)
-        printAllRequests()
         switch changedOption {
+        case .add:
+            addNotificationRequest(alarmEntity)
+        case .delete:
+            deleteNotificationRequest(alarmEntity)
         case .isOn:
-            if alarmEntity.isOn {
+            if data.isOn {
                 addNotificationRequest(alarmEntity)
             } else {
                 deleteNotificationRequest(alarmEntity)
             }
+        case .message:
+            if data.isOn {
+                // update Notification
+            }
+        case .time:
+            if data.isOn {
+                // update Notification
+            }
+        case .isEveryDay:
+            // 다시 봐야됨
+            if data.isEveryDay {
+                // update Notification
+            } else {
+                deleteNotificationRequest(alarmEntity)
+            }
         }
-        
+        printAllRequests()
     }
     
     // MARK: - Private
@@ -117,7 +137,7 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         let content = makeNotificationContent(data)
         
         data.selectedDaysOfTheWeek.forEach { weekday in
-            let identifier = "\(data.title) \(data.message) \(String.timeToStringWith24Hour(data.time)) \(weekday)"
+            let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier, weekday: weekday)
             let trigger = makeNotificationTrigger(data, weekday: weekday)
             let request = UNNotificationRequest(identifier: identifier,
                                                 content: content,
@@ -129,14 +149,31 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     private func deleteNotificationRequest(_ data: AlarmEntity) {
         var removeIdentifiers: [String] = []
         UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
-            notificationRequests.forEach {
-                removeIdentifiers.append($0.identifier)
+            for i in 0 ..< data.selectedDaysOfTheWeek.count {
+                let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier,
+                                                                 weekday: data.selectedDaysOfTheWeek[i])
+                notificationRequests.forEach { requests in
+                    if identifier == requests.identifier {
+                        removeIdentifiers.append(identifier)
+                    }
+                }
             }
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
         }
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
     }
     
     // test
+    
+    private func deleteAllRequests() {
+        var removeIdentifiers: [String] = []
+        UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
+            notificationRequests.forEach {
+                removeIdentifiers.append($0.identifier)
+            }
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
+        }
+    }
+    
     private func printAllRequests() {
         UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
             notificationRequests.forEach {
