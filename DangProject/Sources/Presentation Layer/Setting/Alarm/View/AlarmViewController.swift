@@ -195,6 +195,7 @@ class AlarmViewController: UIViewController {
         viewModel.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
                 guard let strongSelf = self else { return }
+                
                 if data.count > dataCount {
                     self?.updateCellUI(.plus)
                     dataCount += 1
@@ -204,6 +205,7 @@ class AlarmViewController: UIViewController {
                 } else {
                     self?.updateCellUI(.none)
                 }
+
                 for i in 0 ..< data.count {
                     if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
                         cell.setupCell(data: data[i])
@@ -219,7 +221,7 @@ class AlarmViewController: UIViewController {
             case .plus:
                 alarmTableView.insertRows(at: [IndexPath(row: viewModel.addedCellIndex, section: 0)], with: UITableView.RowAnimation.none)
             case .minus:
-                alarmTableView.deleteRows(at: [IndexPath(row: viewModel.willDeleteCellIndex, section: 0)], with: UITableView.RowAnimation.none)
+                alarmTableView.deleteRows(at: [IndexPath(row: viewModel.willDeleteCellIndex, section: 0)], with: UITableView.RowAnimation.top)
             case .none:
                 break
             }
@@ -302,7 +304,6 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     func timeTextFieldEndEditing(cell: UITableViewCell, time: Date) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeTime(index: cellIndexPath.row, time: time)
-        // refact
         alarmTableView.scrollToRow(at: IndexPath(row: viewModel.changedCellIndex, section: 0), at: .top, animated: true)
     }
 }

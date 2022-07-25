@@ -61,7 +61,6 @@ class AlarmViewModel: AlarmViewModelProtocol {
         tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
         guard let index = self.tempAlarmData.firstIndex(of: alarmViewModel) else { return }
         addedCellIndex = index
-        print(addedCellIndex)
         resetTotalCellScaleNormal(index: addedCellIndex)
         alarmDataArrayRelay.accept(tempAlarmData)
     }
@@ -113,11 +112,11 @@ class AlarmViewModel: AlarmViewModelProtocol {
         tempAlarmData[index].time = time
         tempAlarmData[index].timeText = .timeToString(time)
         tempAlarmData[index].amPm = .timeToAmPm(time)
+        let willChangeAlarmData = tempAlarmData[index]
         tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
-        guard let dataIndex = self.tempAlarmData.firstIndex(of: tempAlarmData[index]) else { return }
+        guard let dataIndex = self.tempAlarmData.firstIndex(of: willChangeAlarmData) else { return }
         changedCellIndex = dataIndex
-        print(changedCellIndex)
-        // 수정 필요
+
         alarmDataArrayRelay.accept(tempAlarmData)
         // save on server
         // if isOn, update request
