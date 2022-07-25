@@ -131,7 +131,7 @@ class AlarmViewController: UIViewController {
         case .morning:
             alertActionTitle = "아침"
             alarmDataTitle = "아침 식사"
-            alarmDataTime = .makeTime(hour: 7, minute: 00)
+            alarmDataTime = .makeTime(hour: 8, minute: 00)
         case .lunch:
             alertActionTitle = "점심"
             alarmDataTitle = "점심 식사"
@@ -153,7 +153,7 @@ class AlarmViewController: UIViewController {
                 title: alarmDataTitle,
                 message: "",
                 time: alarmDataTime,
-                selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
+                selectedDaysOfTheWeek: [1,2,3,4,5,6,7]
             )
             self?.viewModel.addAlarmEntity(alarmData)
         }))

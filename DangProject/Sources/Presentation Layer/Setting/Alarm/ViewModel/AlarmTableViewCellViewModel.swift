@@ -48,14 +48,14 @@ struct AlarmTableViewCellViewModel: Equatable {
     
     static func calculateDaysOfWeek(_ isEveryDay: Bool) -> [Int] {
         if isEveryDay {
-            return [0,1,2,3,4,5,6]
+            return [1,2,3,4,5,6,7]
         } else {
             return []
         }
     }
     
     static func calculateEveryDay(_ days: [Int]) -> Bool {
-        if days == [0,1,2,3,4,5,6] {
+        if days == [1,2,3,4,5,6,7] {
             return true
         } else {
             return false
@@ -63,13 +63,13 @@ struct AlarmTableViewCellViewModel: Equatable {
     }
     
     static func calculateSelectedDays(_ days: [Int]) -> String {
-        // 0: 일요일, 1: 월요일, 2: 화요일, 3: 수요일, 4: 목요일, 5: 금요일, 6: 토요일
+        // 1: 월요일, 2: 화요일, 3: 수요일, 4: 목요일, 5: 금요일, 6: 토요일, 7: 일요일
         let days = days.sorted()
-        if days == [0,1,2,3,4,5,6] {
+        if days == [1,2,3,4,5,6,7] {
             return "매일"
         } else if days == [] {
             return "요일을 선택해 주세요"
-        } else if days == [0,6] {
+        } else if days == [6,7] {
             return "주말"
         } else if days == [1,2,3,4,5] {
             return "주중"

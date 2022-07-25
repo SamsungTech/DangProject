@@ -46,9 +46,6 @@ class AlarmDaySelectionView: UIView {
         resetAllButtons()
         tags.forEach { tag in
             switch tag {
-            case 0:
-                sundayButton.backgroundColor = .circleColorGreen
-                sundayButton.setTitleColor(UIColor.white, for: .normal)
             case 1:
                 mondayButton.backgroundColor = .circleColorGreen
                 mondayButton.setTitleColor(UIColor.white, for: .normal)
@@ -67,6 +64,9 @@ class AlarmDaySelectionView: UIView {
             case 6:
                 saturdayButton.backgroundColor = .circleColorGreen
                 saturdayButton.setTitleColor(UIColor.white, for: .normal)
+            case 7:
+                sundayButton.backgroundColor = .circleColorGreen
+                sundayButton.setTitleColor(UIColor.white, for: .normal)
             default: break
             }
         }
@@ -84,11 +84,11 @@ extension AlarmDaySelectionView {
             sundayButton, mondayButton, tuesdayButton,
             wednesdayButton, thursdayButton, fridayButton, saturdayButton
         ]
-        var tagNumber = 0
+        var tagNumber = 1
         buttonsArray.forEach { button in
             button.setAttributedTitle(
                 NSAttributedString(
-                    string: "\(week[tagNumber])",
+                    string: "\(week[tagNumber-1])",
                     attributes: [
                         NSAttributedString.Key.font: UIFont.systemFont(
                             ofSize: xValueRatio(15),
