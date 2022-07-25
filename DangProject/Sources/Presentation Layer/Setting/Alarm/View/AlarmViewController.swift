@@ -30,8 +30,13 @@ class AlarmViewController: UIViewController {
     private var navigationBar = AlarmNavigationBar()
     private var alarmTableView = UITableView()
     
-    private lazy var alertController: UIAlertController = {
+    private lazy var addAlarmAlertController: UIAlertController = {
         let alert = UIAlertController(title: "기록되지 않았을 때 미리 알림받기", message: nil, preferredStyle: .actionSheet)
+        return alert
+    }()
+    
+    private lazy var deleteAlertController: UIAlertController = {
+        let alert = UIAlertController(title: "이 미리 알림을 삭제하시겠습니까?", message: nil, preferredStyle: .alert)
         return alert
     }()
     
@@ -58,15 +63,17 @@ class AlarmViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - setupView
     private func configureUI() {
-        setupView()
+        setupBackground()
         setupNavigationBar()
         setupAlarmTableView()
         setupInvisibleView()
-        setupAlertController()
+        setupAddAlarmAlertController()
+        setupDeleteAlertController()
     }
     
-    private func setupView() {
+    private func setupBackground() {
         view.backgroundColor = .homeBackgroundColor
         navigationController?.navigationBar.isHidden = true
     }
@@ -107,15 +114,15 @@ class AlarmViewController: UIViewController {
         invisibleView.isHidden = true
     }
     
-    private func setupAlertController() {
+    private func setupAddAlarmAlertController() {
         let alertInstance = [EatenTimeAlertController.morning, EatenTimeAlertController.lunch, EatenTimeAlertController.dinner, EatenTimeAlertController.snack]
         alertInstance.forEach { eatenTimeAlert in
-            makeAlertControllerAddAction(eatenTimeAlert: eatenTimeAlert)
+            makeAddAlarmAlertControllerAddAction(eatenTimeAlert: eatenTimeAlert)
         }
-        alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        addAlarmAlertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
     }
     
-    private func makeAlertControllerAddAction(eatenTimeAlert: EatenTimeAlertController) {
+    private func makeAddAlarmAlertControllerAddAction(eatenTimeAlert: EatenTimeAlertController) {
         var alertActionTitle: String = ""
         var alarmDataTitle: String = ""
         var alarmDataTime: Date = .init()
@@ -137,7 +144,7 @@ class AlarmViewController: UIViewController {
             alarmDataTitle = "간식"
             alarmDataTime = .makeTime(hour: 14, minute: 00)
         }
-        alertController.addAction(UIAlertAction(title: alertActionTitle,
+        addAlarmAlertController.addAction(UIAlertAction(title: alertActionTitle,
                                                 style: .default,
                                                 handler: { [weak self] _ in
             let alarmData = AlarmEntity(
@@ -151,6 +158,16 @@ class AlarmViewController: UIViewController {
         }))
     }
     
+    private func setupDeleteAlertController() {
+        let no = UIAlertAction(title: "취소", style: .default, handler: nil)
+        let yes = UIAlertAction(title: "삭제하기", style: .destructive) { [weak self] _ in
+            self?.viewModel.deleteAlarmData()
+        }
+        deleteAlertController.addAction(yes)
+        deleteAlertController.addAction(no)
+    }
+    
+    // MARK: - Bind
     private func bind() {
         bindUI()
         bindAlarmTableViewCellData()
@@ -167,7 +184,7 @@ class AlarmViewController: UIViewController {
             case .back:
                 self.coordinator?.popAlarmViewController()
             case .add:
-                self.present(self.alertController, animated: true, completion: nil)
+                self.present(self.addAlarmAlertController, animated: true, completion: nil)
             }
         }
         .disposed(by: disposeBag)
@@ -181,6 +198,9 @@ class AlarmViewController: UIViewController {
                 if data.count > dataCount {
                     self?.updateCellUI(.plus)
                     dataCount += 1
+                } else if data.count < dataCount {
+                    self?.updateCellUI(.minus)
+                    dataCount -= 1
                 } else {
                     self?.updateCellUI(.none)
                 }
@@ -197,15 +217,15 @@ class AlarmViewController: UIViewController {
         alarmTableView.performBatchUpdates {
             switch cellAmountState {
             case .plus:
-                print(viewModel.addedCellIndex)
-                alarmTableView.scrollToRow(at: IndexPath(row: viewModel.addedCellIndex, section: 0), at: .top, animated: true)
-                // scrollToRow 가 간식 저녁 안먹힘
                 alarmTableView.insertRows(at: [IndexPath(row: viewModel.addedCellIndex, section: 0)], with: UITableView.RowAnimation.none)
             case .minus:
-                break
+                alarmTableView.deleteRows(at: [IndexPath(row: viewModel.willDeleteCellIndex, section: 0)], with: UITableView.RowAnimation.none)
             case .none:
                 break
             }
+        }
+        if cellAmountState == .plus {
+            alarmTableView.scrollToRow(at: IndexPath(row: viewModel.addedCellIndex, section: 0), at: .top, animated: true)
         }
     }
 }
@@ -255,7 +275,8 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     
     func deleteButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel.deleteAlarmData(cellIndexPath.row)
+        viewModel.willDeleteAlarmData(cellIndexPath.row)
+        present(deleteAlertController, animated: true, completion: nil)
     }
     
     func isOnSwitchDidChanged(cell: UITableViewCell) {
@@ -281,5 +302,7 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     func timeTextFieldEndEditing(cell: UITableViewCell, time: Date) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeTime(index: cellIndexPath.row, time: time)
+        // refact
+        alarmTableView.scrollToRow(at: IndexPath(row: viewModel.changedCellIndex, section: 0), at: .top, animated: true)
     }
 }

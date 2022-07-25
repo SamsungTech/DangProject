@@ -33,6 +33,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     lazy var tempAlarmData: [AlarmTableViewCellViewModel] = { alarmDataArrayRelay.value }()
     lazy var cellScaleWillExpand: Bool = false
     lazy var addedCellIndex: Int = 0
+    lazy var changedCellIndex: Int = 0
+    lazy var willDeleteCellIndex: Int = 0
     // MARK: - Init
     private var alarmManagerUseCase: DefaultAlarmManagerUseCase
     
@@ -112,6 +114,10 @@ class AlarmViewModel: AlarmViewModelProtocol {
         tempAlarmData[index].timeText = .timeToString(time)
         tempAlarmData[index].amPm = .timeToAmPm(time)
         tempAlarmData = tempAlarmData.sorted { $0.time < $1.time }
+        guard let dataIndex = self.tempAlarmData.firstIndex(of: tempAlarmData[index]) else { return }
+        changedCellIndex = dataIndex
+        print(changedCellIndex)
+        // 수정 필요
         alarmDataArrayRelay.accept(tempAlarmData)
         // save on server
         // if isOn, update request
@@ -175,7 +181,12 @@ class AlarmViewModel: AlarmViewModelProtocol {
         }
     }
     
-    func deleteAlarmData(_ indexPath: Int) {
-//        useCase.removeAlarmData(indexPath)
+    func willDeleteAlarmData(_ indexPath: Int) {
+        willDeleteCellIndex = indexPath
+    }
+    
+    func deleteAlarmData() {
+        tempAlarmData.remove(at: willDeleteCellIndex)
+        alarmDataArrayRelay.accept(tempAlarmData)
     }
 }
