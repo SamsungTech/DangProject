@@ -25,6 +25,7 @@ struct AlarmTableViewCellViewModel: Equatable {
     var selectedDaysOfWeek: [Int]
     var selectedDays: String
     var isEveryDay: Bool
+    var identifier: String
     
     init(alarmEntity: AlarmEntity) {
         self.isOn = alarmEntity.isOn
@@ -36,6 +37,7 @@ struct AlarmTableViewCellViewModel: Equatable {
         self.selectedDaysOfWeek = alarmEntity.selectedDaysOfTheWeek
         self.selectedDays = Self.calculateSelectedDays(alarmEntity.selectedDaysOfTheWeek)
         self.isEveryDay = Self.calculateEveryDay(alarmEntity.selectedDaysOfTheWeek)
+        self.identifier = alarmEntity.identifier
         }
     
     static func calculateIsOn(days: [Int], origin: Bool) -> Bool {
@@ -90,6 +92,4 @@ struct AlarmTableViewCellViewModel: Equatable {
         }
         return result
     }
-    
-    
 }

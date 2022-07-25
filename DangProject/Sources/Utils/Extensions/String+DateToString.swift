@@ -15,6 +15,11 @@ extension String {
         return dateFormatter
     }()
     
+    static func currentDateToString() -> String {
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.string(from: .currentDateTime())
+    }
+    
     static func timeToString(_ time: Date) -> String {
         dateFormatter.dateFormat = "h:mm"
         return dateFormatter.string(from: time)
@@ -32,8 +37,6 @@ extension String {
     
     static func configureWeekOfTheDay(_ num: Int) -> String {
         switch num {
-        case 0:
-            return "일"
         case 1:
             return "월"
         case 2:
@@ -46,6 +49,8 @@ extension String {
             return "금"
         case 6:
             return "토"
+        case 7:
+            return "일"
         default:
             return ""
         }
