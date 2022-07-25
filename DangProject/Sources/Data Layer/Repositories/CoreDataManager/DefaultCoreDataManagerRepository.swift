@@ -131,7 +131,11 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         createEatenFoodPerDay(date: date)
         data.eatenFoods.forEach { food in
             let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
-            updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: food.eatenTime.dateValue())
+            updateEatenFood(
+                food: food,
+                parentEatenFoodsPerDay: eatenFoodsPerDay,
+                eatenTime: food.eatenTime.dateValue()
+            )
         }
     }
     
@@ -199,12 +203,15 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
               let profileEntity = NSManagedObject(entity: entity, insertInto: context) as? ProfileEntity
         else { return }
         
+        let image = data.profileImage.pngData()
+        
         profileEntity.name = data.name
         profileEntity.birthDay = data.birthDay
         profileEntity.gender = data.gender
         profileEntity.sugarLevel = Int32(data.sugarLevel)
         profileEntity.weight = Int32(data.weight)
         profileEntity.height = Int32(data.height)
+        profileEntity.profileImage = image
         
         do {
             try context.save()

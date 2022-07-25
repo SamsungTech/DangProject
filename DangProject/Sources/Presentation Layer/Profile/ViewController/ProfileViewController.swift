@@ -73,9 +73,14 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         configureUI()
         bind()
         view.bringSubviewToFront(profileNavigationBar)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

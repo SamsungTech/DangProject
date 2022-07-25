@@ -62,9 +62,9 @@ struct ProfileData {
 
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
-    func saveButtonDidTap()
-    func passProfileData(_ data: ProfileDomainModel)
-    func passProfileImageData(_ data: UIImage)
+    func switchSaveButtonRelayValue()
+    func handOverProfileData(_ data: ProfileDomainModel)
+    func handOverProfileImageData(_ data: UIImage)
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -102,7 +102,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
         self.firebaseStoreUseCase = firebaseStoreUseCase
         self.firebaseStorageUseCase = firebaseStorageUseCase
         self.fetchProfileUseCase = fetchProfileUseCase
-        self.viewDidLoad()
+        self.getProfileData()
     }
     
     func convertGenderTypeToString() -> String {
@@ -116,7 +116,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func passProfileData(_ data: ProfileDomainModel) {
+    func handOverProfileData(_ data: ProfileDomainModel) {
         firebaseStoreUseCase?.updateProfileData(data)
     }
     
@@ -128,7 +128,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func saveButtonDidTap() {
+    func switchSaveButtonRelayValue() {
         if saveButtonAnimationRelay.value == .up || saveButtonAnimationRelay.value == .none {
             saveButtonAnimationRelay.accept(.down)
         } else {
@@ -136,12 +136,12 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func passProfileImageData(_ data: UIImage) {
+    func handOverProfileImageData(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
         firebaseStorageUseCase?.updateProfileImage(data)
     }
     
-    private func viewDidLoad() {
+    private func getProfileData() {
         guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
         guard let profileData = fetchProfileUseCase?.fetchProfileData() else { return }
         

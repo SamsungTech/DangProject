@@ -178,16 +178,8 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
             default:
                 return ""
             }
-        } else {
-            switch component {
-            case 0:
-                return String(row + 1)
-            case 1:
-                return "g"
-            default:
-                return ""
-            }
         }
+        return ""
     }
     
     func pickerView(_ pickerView: UIPickerView,
