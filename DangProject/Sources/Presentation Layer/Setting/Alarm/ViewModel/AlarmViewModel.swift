@@ -54,6 +54,12 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
 
     // MARK: - Input
+    func checkUserNotifications() {
+        if !UserDefaults.standard.bool(forKey: UserInfoKey.userNotificationsPermission) {
+            alarmManagerUseCase.getRequestAuthorization()
+        }
+    }
+    
     func addAlarmEntity(_ alarmEntity: AlarmEntity) {
         var alarmViewModel = AlarmTableViewCellViewModel.init(alarmEntity: alarmEntity)
         alarmViewModel.scale = .moreExpand
@@ -63,6 +69,12 @@ class AlarmViewModel: AlarmViewModelProtocol {
         addedCellIndex = index
         resetTotalCellScaleNormal(index: addedCellIndex)
         alarmDataArrayRelay.accept(tempAlarmData)
+    }
+    
+    func changeIsOnValue(index: Int) {
+        tempAlarmData[index].isOn.toggle()
+        alarmDataArrayRelay.accept(tempAlarmData)
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .isOn)
     }
     // MARK: - Output
     func expandSelectedCell(index: Int) {
@@ -93,12 +105,6 @@ class AlarmViewModel: AlarmViewModelProtocol {
         }
         
         alarmDataArrayRelay.accept(tempAlarmData)
-    }
-
-    func changeIsOnValue(index: Int) {
-        tempAlarmData[index].isOn.toggle()
-        alarmDataArrayRelay.accept(tempAlarmData)
-        // if isOn, create request/ if !isOn, delete request
     }
     
     func changeUserMessage(index: Int, text: String) {

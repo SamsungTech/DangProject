@@ -20,6 +20,11 @@ extension String {
         return dateFormatter.string(from: time)
     }
     
+    static func timeToStringWith24Hour(_ time: Date) -> String {
+        dateFormatter.dateFormat = "H:mm"
+        return dateFormatter.string(from: time)
+    }
+    
     static func timeToAmPm(_ time: Date) -> String {
         dateFormatter.dateFormat = "a"
         return dateFormatter.string(from: time)
