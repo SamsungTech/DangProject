@@ -16,12 +16,12 @@ extension Alarm {
         return NSFetchRequest<Alarm>(entityName: "Alarm")
     }
 
-    @NSManaged public var identifier: String?
+    @NSManaged public var identifier: String
     @NSManaged public var isOn: Bool
-    @NSManaged public var message: String?
-    @NSManaged public var selectedDays: [Int]?
-    @NSManaged public var time: Date?
-    @NSManaged public var title: String?
+    @NSManaged public var message: String
+    @NSManaged public var selectedDays: [Int]
+    @NSManaged public var time: Date
+    @NSManaged public var title: String
 
 }
 

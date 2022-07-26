@@ -17,5 +17,8 @@ protocol CoreDataManagerRepository {
     @discardableResult func deleteQuery<T: NSManagedObject>(at query: String, request: NSFetchRequest<T>) -> Bool
     @discardableResult func deleteAll<T: NSManagedObject>(request: NSFetchRequest<T>) -> Bool
     
-    func addAlarmEntity(_ alarm: AlarmDomainModel)
+    func createAlarmEntity(_ alarm: AlarmDomainModel)
+    func readTotalAlarmEntity() -> [AlarmDomainModel]
+    func updateAlarmEntity(_ alarm: AlarmDomainModel)
+    func deleteAlarmEntity(_ alarm: AlarmDomainModel)
 }

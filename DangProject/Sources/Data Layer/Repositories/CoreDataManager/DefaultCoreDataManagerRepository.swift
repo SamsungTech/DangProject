@@ -120,7 +120,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func addAlarmEntity(_ alarm: AlarmDomainModel) {
+    func createAlarmEntity(_ alarm: AlarmDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.alarm.rawValue, in: context),
               let alarmEntity = NSManagedObject(entity: entity, insertInto: context) as? Alarm else { return }
@@ -135,6 +135,54 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             try context.save ()
         } catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    func readTotalAlarmEntity() -> [AlarmDomainModel] {
+        let result = loadFromCoreData(request: Alarm.fetchRequest())
+        let alarmDomainModelArray = result.map{ AlarmDomainModel.init(alarmEntity: $0) }
+        return alarmDomainModelArray.sorted { $0.time < $1.time }
+    }
+    
+    func updateAlarmEntity(_ alarm: AlarmDomainModel) {
+        let request = Alarm.fetchRequest()
+        request.predicate = NSPredicate(format: "identifier == %@", alarm.identifier)
+        do {
+            if let checkedAlarmEntity = try context?.fetch(request) {
+                if checkedAlarmEntity.count == 0 {
+                    return
+                } else {
+                    checkedAlarmEntity[0].isOn = alarm.isOn
+                    checkedAlarmEntity[0].title = alarm.title
+                    checkedAlarmEntity[0].message = alarm.message
+                    checkedAlarmEntity[0].time = alarm.time
+                    checkedAlarmEntity[0].selectedDays = alarm.selectedDaysOfTheWeek
+                    try context?.save()
+                    return
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
+        }
+    }
+    
+    func deleteAlarmEntity(_ alarm: AlarmDomainModel) {
+        let request = Alarm.fetchRequest()
+        request.predicate = NSPredicate(format: "identifier == %@", alarm.identifier)
+        do {
+            if let checkedAlarmEntity = try context?.fetch(request) {
+                if checkedAlarmEntity.count == 0 {
+                    return
+                } else {
+                    context?.delete(checkedAlarmEntity[0])
+                    try context?.save()
+                    return
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
         }
     }
 }
