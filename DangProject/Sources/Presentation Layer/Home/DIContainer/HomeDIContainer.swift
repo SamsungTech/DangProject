@@ -5,7 +5,6 @@
 //  Created by 김동우 on 2022/01/19.
 //
 
-import Foundation
 import UIKit
 
 class HomeDIContainer {
@@ -20,7 +19,8 @@ class HomeDIContainer {
     }
     
     func makeHomeViewModel() -> HomeViewModelProtocol{
-        return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+        return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
+                             fetchProfileUseCase: makeFetchProfileUseCase())
     }
     
     func makeCalendarView() -> CalendarView {
@@ -52,6 +52,12 @@ class HomeDIContainer {
         return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
+    func makeFetchProfileUseCase() -> FetchProfileUseCase {
+        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                          firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase(),
+                                          firebaseStorageUseCase: makeFirebaseStorageUseCase())
+    }
+    
     func makeFetchEatenFoodsUseCase() -> FetchEatenFoodsUseCase {
         return DefaultFetchEatenFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(), firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase())
     }
@@ -62,6 +68,14 @@ class HomeDIContainer {
     
     func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
         return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    }
+    
+    func makeFirebaseStorageUseCase() -> FirebaseStorageUseCase {
+        return DefaultFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
+    }
+    
+    func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
+        return DefaultFirebaseStorageManagerRepository()
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {

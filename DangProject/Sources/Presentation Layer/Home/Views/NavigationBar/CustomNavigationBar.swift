@@ -29,8 +29,7 @@ class CustomNavigationBar: UIView {
     private let dateLabel = UILabel()
     private let chevronButton = UIButton()
     private var chevronButtonState: ChevronButtonState = .revert
-    private let profileImageView = UIImageView()
-    private lazy var profileImageButton: UIButton = {
+    private(set) lazy var profileImageButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(profileImageButtonDidTap), for: .touchDown)
         return button

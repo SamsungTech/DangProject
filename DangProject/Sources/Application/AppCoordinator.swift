@@ -28,6 +28,9 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
+        UserInfoKey.setIsLatestProfileData(false)
+
+        
         /// check app is first time
         guard UserDefaults.standard.bool(forKey: UserInfoKey.isFirstTime) else {
             return startOnboarding()

@@ -71,11 +71,11 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     func fetchProfileEntityData() -> ProfileEntity {
         let request = ProfileEntity.fetchRequest()
         do {
-            if let checkedEatenFoodsPerDay = try self.context?.fetch(request) {
-                if checkedEatenFoodsPerDay.count == 0 {
+            if let checkedProfileEntity = try self.context?.fetch(request) {
+                if checkedProfileEntity.count == 0 {
                     return ProfileEntity.init()
                 } else {
-                    return checkedEatenFoodsPerDay[0]
+                    return checkedProfileEntity[0]
                 }
             }
         } catch {
@@ -288,7 +288,49 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    //MARK: - Private
+    func updateProfileImageData(_ imageData: UIImage,
+                                _ profileData: ProfileDomainModel) {
+        var profileData = profileData
+        profileData.profileImage = imageData
+        
+        deleteProfileData()
+        createProfileData(profileData)
+    }
+    
+    func fetchProfileImageData() -> Data {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let checkedProfileData = try self.context?.fetch(request) {
+                if checkedProfileData.count == 0 {
+                    return ProfileEntity.init().profileImage ?? Data()
+                } else {
+                    return checkedProfileData[0].profileImage ?? Data()
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return ProfileEntity.init().profileImage ?? Data()
+        }
+        return ProfileEntity.init().profileImage ?? Data()
+    }
+    
+//    func createProfileImageData(_ data: Data) {
+//        guard let context = self.context,
+//              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.profileEntity.rawValue,
+//                                                      in: context),
+//              let profileEntity = NSManagedObject(entity: entity, insertInto: context) as? ProfileEntity
+//        else { return }
+//
+//        profileEntity.profileImage = data
+//
+//        do {
+//            try context.save()
+//        } catch {
+//            print(error.localizedDescription)
+//        }
+//    }
+    
+    // MARK: - Private
     
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
         switch coreDataName {

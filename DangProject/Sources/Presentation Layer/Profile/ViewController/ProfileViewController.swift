@@ -73,7 +73,6 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureUI()
         bind()
         view.bringSubviewToFront(profileNavigationBar)
@@ -81,6 +80,7 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -214,9 +214,9 @@ class ProfileViewController: UIViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                self?.viewModel.passProfileImageData(profileImage)
+                self?.viewModel.handOverProfileImageData(profileImage)
                 
-                self?.viewModel.passProfileData(
+                self?.viewModel.handOverProfileData(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,
@@ -249,8 +249,8 @@ class ProfileViewController: UIViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
-                self?.viewModel.passProfileImageData(profileImage)
-                self?.viewModel.passProfileData(
+                self?.viewModel.handOverProfileImageData(profileImage)
+                self?.viewModel.handOverProfileData(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,

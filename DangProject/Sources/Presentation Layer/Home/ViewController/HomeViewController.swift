@@ -51,6 +51,7 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        viewModel.fetchProfileImageData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
         changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
@@ -63,6 +64,7 @@ class HomeViewController: UIViewController {
         configure()
         configureTodayCalendarColumn()
         layout()
+        bind()
     }
     
     private func configure() {
@@ -146,6 +148,16 @@ class HomeViewController: UIViewController {
         homeGraphView.translatesAutoresizingMaskIntoConstraints = false
         homeGraphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
         homeGraphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
+    }
+    
+    private func bind() {
+        viewModel.profileImageDataRelay
+            .subscribe(onNext: { [weak self] profileImageData in
+                guard let strongSelf = self else { return }
+                
+                strongSelf.customNavigationBar.profileImageButton.setImage(profileImageData, for: .normal)
+            })
+            .disposed(by: disposeBag)
     }
 }
 extension HomeViewController: CalendarViewDelegate {

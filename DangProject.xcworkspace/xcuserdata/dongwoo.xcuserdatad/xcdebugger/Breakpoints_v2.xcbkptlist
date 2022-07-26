@@ -30,8 +30,8 @@
             filePath = "DangProject/Sources/Application/AppCoordinator.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
             landmarkName = "start()"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "DangProject/Sources/Application/AppCoordinator.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "compareFireStoreUID(with:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -71,32 +71,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "20EC7D49-2586-41BE-9D9D-CA70E1AC9DFD"
+            uuid = "05F3EB1F-F77D-431E-BAE7-EB834250A341"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Presentation Layer/Profile/ViewController/ProfileViewController.swift"
+            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchProfileUseCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "viewWillAppear(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0457ACEE-4B90-40DA-957C-0AB266EF4B34"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Presentation Layer/Profile/ViewController/ProfileViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "fetchProfileData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

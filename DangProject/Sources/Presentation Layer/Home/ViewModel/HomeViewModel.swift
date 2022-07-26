@@ -15,6 +15,7 @@ enum CalendarScaleState {
     case revert
 }
 protocol HomeViewModelInputProtocol {
+    func fetchProfileImageData()
     func fetchCurrentMonthData(dateComponents: DateComponents)
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents)
     func fetchOnlyCalendar(_ dateComponents: DateComponents)
@@ -24,6 +25,7 @@ protocol HomeViewModelInputProtocol {
 
 protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
+    var profileImageDataRelay: BehaviorRelay<UIImage> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
     func checkEatenFoodsTitleText(dateComponents: DateComponents) -> String
 }
@@ -36,8 +38,22 @@ class HomeViewModel: HomeViewModelProtocol {
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
-    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
+    private let fetchProfileUseCase: FetchProfileUseCase
+    internal let profileImageDataRelay = BehaviorRelay<UIImage>(value: UIImage())
+    
+    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
+         fetchProfileUseCase: FetchProfileUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
+    }
+    
+    func fetchProfileImageData() {
+        fetchProfileUseCase.fetchProfileImageData()
+            .subscribe(onNext: { [weak self] data in
+                guard let imageData = UIImage(data: data) else { return }
+                self?.profileImageDataRelay.accept(imageData)
+            })
+            .disposed(by: disposeBag)
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {
@@ -48,6 +64,7 @@ class HomeViewModel: HomeViewModelProtocol {
         let date: Date = .makeDate(year: dateComponents.year,
                                    month: dateComponents.month!,
                                    day: dateComponents.day)
+        
         fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
     }

@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 import RxSwift
+import UIKit
 
 protocol CoreDataManagerRepository {
         
@@ -28,5 +29,7 @@ protocol CoreDataManagerRepository {
                      date: Date)
     func updateLocalProfileData(_ profileData: ProfileDomainModel)
     func fetchProfileEntityData() -> ProfileEntity
+    func fetchProfileImageData() -> Data
+    func updateProfileImageData(_ imageData: UIImage, _ profileData: ProfileDomainModel)
 }
 
