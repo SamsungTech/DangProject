@@ -17,7 +17,7 @@ protocol AlarmDaySelectionDelegate: AnyObject {
 class AlarmDaySelectionView: UIView {
     weak var parentableTableViewCell: AlarmDaySelectionDelegate?
     
-    private let week = [ "일", "월", "화", "수", "목", "금", "토"  ]
+    private let week = ["월", "화", "수", "목", "금", "토", "일"]
     private lazy var alarmStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -80,10 +80,8 @@ extension AlarmDaySelectionView {
     }
     
     private func setUpStackView() {
-        let buttonsArray = [
-            sundayButton, mondayButton, tuesdayButton,
-            wednesdayButton, thursdayButton, fridayButton, saturdayButton
-        ]
+        let buttonsArray = [mondayButton, tuesdayButton,
+            wednesdayButton, thursdayButton, fridayButton, saturdayButton, sundayButton]
         var tagNumber = 1
         buttonsArray.forEach { button in
             button.setAttributedTitle(

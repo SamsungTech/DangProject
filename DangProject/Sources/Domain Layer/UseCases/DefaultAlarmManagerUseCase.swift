@@ -18,7 +18,7 @@ enum ChangeableAlarmOption {
     case message
     case time
     case isEveryDay
-    //    case dayOfWeek
+    case dayOfWeek
 }
 
 class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
@@ -89,29 +89,36 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         let alarmEntity: AlarmEntity = .init(alarmTableViewCellViewModel: data)
         switch changedOption {
         case .add:
-            addNotificationRequest(alarmEntity)
+            createNotificationRequest(alarmEntity)
         case .delete:
-            deleteNotificationRequest(alarmEntity)
+            if data.isOn {
+                deleteNotificationRequest(alarmEntity)
+            }
         case .isOn:
             if data.isOn {
-                addNotificationRequest(alarmEntity)
+                createNotificationRequest(alarmEntity)
             } else {
                 deleteNotificationRequest(alarmEntity)
             }
         case .message:
             if data.isOn {
-                // update Notification
+                createNotificationRequest(alarmEntity)
             }
         case .time:
             if data.isOn {
-                // update Notification
+                createNotificationRequest(alarmEntity)
             }
         case .isEveryDay:
-            // 다시 봐야됨
             if data.isEveryDay {
-                // update Notification
+                if data.isOn{
+                    createNotificationRequest(alarmEntity)
+                }
             } else {
                 deleteNotificationRequest(alarmEntity)
+            }
+        case .dayOfWeek:
+            if data.isOn {
+//                createNotificationRequest(alarmEntity)
             }
         }
         printAllRequests()
@@ -133,7 +140,7 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         return trigger
     }
     
-    private func addNotificationRequest(_ data: AlarmEntity) {
+    private func createNotificationRequest(_ data: AlarmEntity) {
         let content = makeNotificationContent(data)
         
         data.selectedDaysOfTheWeek.forEach { weekday in
@@ -149,9 +156,9 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     private func deleteNotificationRequest(_ data: AlarmEntity) {
         var removeIdentifiers: [String] = []
         UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
-            for i in 0 ..< data.selectedDaysOfTheWeek.count {
+            for i in 1...7 {
                 let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier,
-                                                                 weekday: data.selectedDaysOfTheWeek[i])
+                                                                 weekday: i)
                 notificationRequests.forEach { requests in
                     if identifier == requests.identifier {
                         removeIdentifiers.append(identifier)

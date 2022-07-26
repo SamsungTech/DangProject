@@ -9,4 +9,6 @@ import Foundation
 
 protocol AlarmManagerUseCase {
     func getRequestAuthorization()
+    func changeAlarmNotificationRequest(data: AlarmTableViewCellViewModel,
+                                        changedOption: ChangeableAlarmOption)
 }

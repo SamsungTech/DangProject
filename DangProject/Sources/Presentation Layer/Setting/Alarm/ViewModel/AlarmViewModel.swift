@@ -109,9 +109,9 @@ class AlarmViewModel: AlarmViewModelProtocol {
             tempAlarmData[index].selectedDaysOfWeek = tempAlarmData[index].selectedDaysOfWeek.sorted()
         }
         calculateEveryDayAndSelectedDays(index: index)
+        alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .dayOfWeek)
         alarmDataArrayRelay.accept(tempAlarmData)
         // save on server
-        // if isOn, update request
     }
     
     func changeEveryDay(index: Int) {
