@@ -11,6 +11,7 @@ import CoreData
 enum CoreDataName: String {
     case favoriteFoods = "FavoriteFoods"
     case eatenFoods = "EatenFoods"
+    case alarm = "Alarm"
 }
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
@@ -33,6 +34,8 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             eatenFoods.sugar = Double(food.sugar) ?? 0
             eatenFoods.foodCode = food.foodCode
             eatenFoods.amount = Double(food.amount)
+        case .alarm:
+            break
         }
         do {
             try context.save ()
@@ -114,6 +117,24 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return true
         } catch {
             return false
+        }
+    }
+    
+    func addAlarmEntity(_ alarm: AlarmDomainModel) {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.alarm.rawValue, in: context),
+              let alarmEntity = NSManagedObject(entity: entity, insertInto: context) as? Alarm else { return }
+        alarmEntity.isOn = alarm.isOn
+        alarmEntity.title = alarm.title
+        alarmEntity.message = alarm.message
+        alarmEntity.time = alarm.time
+        alarmEntity.identifier = alarm.identifier
+        alarmEntity.selectedDays = alarm.selectedDaysOfTheWeek
+        
+        do {
+            try context.save ()
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }

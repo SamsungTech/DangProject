@@ -24,10 +24,10 @@ class SettingDIContainer {
     }
     
     func makeSettingUseCase() -> DefaultAlarmManagerUseCase {
-        return DefaultAlarmManagerUseCase(repository: makeSettingRepository())
+        return DefaultAlarmManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     
-    func makeSettingRepository() -> SettingRepository {
-        return SettingRepository()
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
 }

@@ -22,46 +22,45 @@ enum ChangeableAlarmOption {
 }
 
 class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
-    private var repository: SettingRepository?
-    
-    private var tempAlarmData: [AlarmEntity] = [
-        AlarmEntity(isOn: false,
+    private var tempAlarmData: [AlarmDomainModel] = [
+        AlarmDomainModel(isOn: false,
                     title: "아침식사",
                     message: "아침먹고 기록",
                     time: .makeTime(hour: 8, minute: 0),
                     selectedDaysOfTheWeek: [1,2,3,4,5,6,7]),
-        AlarmEntity(isOn: false,
+        AlarmDomainModel(isOn: false,
                     title: "아침식사",
                     message: "",
                     time: .makeTime(hour: 9, minute: 0),
                     selectedDaysOfTheWeek: [6,7]),
-        AlarmEntity(isOn: false,
+        AlarmDomainModel(isOn: false,
                     title: "점심식사",
                     message: "점심먹었다",
                     time: .makeTime(hour: 11, minute: 0),
                     selectedDaysOfTheWeek: [1,2,3,4,5]),
-        AlarmEntity(isOn: false,
+        AlarmDomainModel(isOn: false,
                     title: "점심식사",
                     message: "",
                     time: .makeTime(hour: 12, minute: 0),
                     selectedDaysOfTheWeek: [2,3,4,5,6]),
-        AlarmEntity(isOn: false,
+        AlarmDomainModel(isOn: false,
                     title: "점심식사",
                     message: "",
                     time: .makeTime(hour: 13, minute: 0),
                     selectedDaysOfTheWeek: [3,4,7]),
-        AlarmEntity(isOn: false,
+        AlarmDomainModel(isOn: false,
                     title: "점심식사",
                     message: "",
                     time: .makeTime(hour: 16, minute: 0),
                     selectedDaysOfTheWeek: [1,2,3,7]),
     ]
     
-    var alarmArrayRelay = BehaviorRelay<[AlarmEntity]>(value: [])
+    var alarmArrayRelay = BehaviorRelay<[AlarmDomainModel]>(value: [])
     
     // MARK: - Init
-    init(repository: SettingRepository) {
-        self.repository = repository
+    private var coreDataManagerRepository: CoreDataManagerRepository
+    init(coreDataManagerRepository: CoreDataManagerRepository) {
+        self.coreDataManagerRepository = coreDataManagerRepository
         startAlarmData()
     }
     
@@ -85,7 +84,7 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     
     func changeAlarmNotificationRequest(data: AlarmTableViewCellViewModel,
                                         changedOption: ChangeableAlarmOption) {
-        let alarmEntity: AlarmEntity = .init(alarmTableViewCellViewModel: data)
+        let alarmEntity: AlarmDomainModel = .init(alarmTableViewCellViewModel: data)
         switch changedOption {
         case .add:
             createNotificationRequest(alarmEntity)
@@ -120,10 +119,11 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
                 updateNotificationRequest(alarmEntity)
             }
         }
+        // savedata
     }
     
     // MARK: - Private
-    private func makeNotificationContent(_ data: AlarmEntity) -> UNMutableNotificationContent {
+    private func makeNotificationContent(_ data: AlarmDomainModel) -> UNMutableNotificationContent {
         let content = UNMutableNotificationContent()
         content.title = data.title
         content.subtitle = "🍽 먹은것을 입력해 주세요!"
@@ -131,18 +131,18 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         return content
     }
     
-    private func makeNotificationTrigger(_ data: AlarmEntity, weekday: Int) -> UNCalendarNotificationTrigger {
+    private func makeNotificationTrigger(_ data: AlarmDomainModel, weekday: Int) -> UNCalendarNotificationTrigger {
         var dateComponents = Calendar.current.dateComponents([.hour, .minute], from: data.time)
         dateComponents.weekday = weekday
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         return trigger
     }
     
-    private func createNotificationRequest(_ data: AlarmEntity) {
+    private func createNotificationRequest(_ data: AlarmDomainModel) {
         let content = makeNotificationContent(data)
         
         data.selectedDaysOfTheWeek.forEach { weekday in
-            let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier, weekday: weekday)
+            let identifier = AlarmDomainModel.makeAlarmIdentifier(origin: data.identifier, weekday: weekday)
             let trigger = makeNotificationTrigger(data, weekday: weekday)
             let request = UNNotificationRequest(identifier: identifier,
                                                 content: content,
@@ -151,11 +151,11 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         }
     }
     
-    private func updateNotificationRequest(_ data: AlarmEntity) {
+    private func updateNotificationRequest(_ data: AlarmDomainModel) {
         var removeIdentifiers: [String] = []
         UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
             for i in 1...7 {
-                let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier,
+                let identifier = AlarmDomainModel.makeAlarmIdentifier(origin: data.identifier,
                                                                  weekday: i)
                 notificationRequests.forEach { requests in
                     if identifier == requests.identifier {
@@ -168,11 +168,11 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         }
     }
     
-    private func deleteNotificationRequest(_ data: AlarmEntity) {
+    private func deleteNotificationRequest(_ data: AlarmDomainModel) {
         var removeIdentifiers: [String] = []
         UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
             for i in 1...7 {
-                let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier,
+                let identifier = AlarmDomainModel.makeAlarmIdentifier(origin: data.identifier,
                                                                  weekday: i)
                 notificationRequests.forEach { requests in
                     if identifier == requests.identifier {

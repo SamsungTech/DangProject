@@ -36,16 +36,16 @@ class AlarmViewModel: AlarmViewModelProtocol {
     lazy var changedCellIndex: Int = 0
     lazy var willDeleteCellIndex: Int = 0
     // MARK: - Init
-    private var alarmManagerUseCase: DefaultAlarmManagerUseCase
+    private var alarmManagerUseCase: AlarmManagerUseCase
     
-    init(alarmManagerUseCase: DefaultAlarmManagerUseCase) {
+    init(alarmManagerUseCase: AlarmManagerUseCase) {
         self.alarmManagerUseCase = alarmManagerUseCase
         bindAlarmArraySubject()
     }
     
     private func bindAlarmArraySubject() {
         alarmManagerUseCase.alarmArrayRelay
-            .map { $0.map { AlarmTableViewCellViewModel.init(alarmEntity: $0) } }
+            .map { $0.map { AlarmTableViewCellViewModel.init(alarmDomainModel: $0) } }
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 self.alarmDataArrayRelay.accept(data)
@@ -60,8 +60,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
         }
     }
     
-    func addAlarmEntity(_ alarmEntity: AlarmEntity) {
-        var alarmViewModel = AlarmTableViewCellViewModel.init(alarmEntity: alarmEntity)
+    func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel) {
+        var alarmViewModel = AlarmTableViewCellViewModel.init(alarmDomainModel: alarmDomainModel)
         alarmViewModel.scale = .moreExpand
         alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmViewModel, changedOption: .add)
         
@@ -71,7 +71,6 @@ class AlarmViewModel: AlarmViewModelProtocol {
         addedCellIndex = index
         resetTotalCellScaleNormal(index: addedCellIndex)
         alarmDataArrayRelay.accept(tempAlarmData)
-        // save on server
     }
     
     func changeIsOnValue(index: Int) {
@@ -97,7 +96,6 @@ class AlarmViewModel: AlarmViewModelProtocol {
         guard let dataIndex = self.tempAlarmData.firstIndex(of: willChangeAlarmData) else { return }
         changedCellIndex = dataIndex
         alarmDataArrayRelay.accept(tempAlarmData)
-        
     }
     
     func changeDayOfTheWeek(index: Int, tag: Int) {
@@ -111,7 +109,6 @@ class AlarmViewModel: AlarmViewModelProtocol {
         calculateEveryDayAndSelectedDays(index: index)
         alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .dayOfWeek)
         alarmDataArrayRelay.accept(tempAlarmData)
-        // save on server
     }
     
     func changeEveryDay(index: Int) {

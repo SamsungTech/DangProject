@@ -7,7 +7,10 @@
 
 import Foundation
 
+import RxRelay
+
 protocol AlarmManagerUseCase {
+    var alarmArrayRelay: BehaviorRelay<[AlarmDomainModel]> { get }
     func getRequestAuthorization()
     func changeAlarmNotificationRequest(data: AlarmTableViewCellViewModel,
                                         changedOption: ChangeableAlarmOption)

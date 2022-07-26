@@ -15,10 +15,10 @@ enum AlertTime {
 }
 
 class AlertDummyFactory {
-    func createDummyAlertData(_ alertTime: AlertTime) -> AlarmEntity {
+    func createDummyAlertData(_ alertTime: AlertTime) -> AlarmDomainModel {
         switch alertTime {
         case .morning:
-            return AlarmEntity(
+            return AlarmDomainModel(
                 isOn: true,
                 title: "아침 식사",
                 message: "",
@@ -26,7 +26,7 @@ class AlertDummyFactory {
                 selectedDaysOfTheWeek: [0,1,2,3,4,5,6]
             )
         case .lunch:
-            return AlarmEntity(
+            return AlarmDomainModel(
                 isOn: true,
                 title: "점심 식사",
                 message: "",
@@ -34,7 +34,7 @@ class AlertDummyFactory {
                 selectedDaysOfTheWeek: [0,6]
             )
         case .evening:
-            return AlarmEntity(
+            return AlarmDomainModel(
                 isOn: true,
                 title: "저녁 식사",
                 message: "",
@@ -42,7 +42,7 @@ class AlertDummyFactory {
                 selectedDaysOfTheWeek: [1,2,3,4,5]
             )
         case .snack:
-            return AlarmEntity(
+            return AlarmDomainModel(
                 isOn: true,
                 title: "간식",
                 message: "",

@@ -16,4 +16,6 @@ protocol CoreDataManagerRepository {
     @discardableResult func deleteFavoriteFood<T: NSManagedObject>(at code: String, request: NSFetchRequest<T>) -> Bool
     @discardableResult func deleteQuery<T: NSManagedObject>(at query: String, request: NSFetchRequest<T>) -> Bool
     @discardableResult func deleteAll<T: NSManagedObject>(request: NSFetchRequest<T>) -> Bool
+    
+    func addAlarmEntity(_ alarm: AlarmDomainModel)
 }

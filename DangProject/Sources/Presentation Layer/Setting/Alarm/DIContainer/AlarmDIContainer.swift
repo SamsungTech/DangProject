@@ -16,11 +16,11 @@ class AlarmDIContainer {
         return AlarmViewModel(alarmManagerUseCase: makeAlarmManagerUseCase())
     }
     
-    func makeAlarmManagerUseCase() -> DefaultAlarmManagerUseCase {
-        return DefaultAlarmManagerUseCase(repository: makeSettingRepository())
+    func makeAlarmManagerUseCase() -> AlarmManagerUseCase {
+        return DefaultAlarmManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     
-    func makeSettingRepository() -> SettingRepository {
-        return SettingRepository()
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
 }

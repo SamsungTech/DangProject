@@ -148,14 +148,14 @@ class AlarmViewController: UIViewController {
         addAlarmAlertController.addAction(UIAlertAction(title: alertActionTitle,
                                                 style: .default,
                                                 handler: { [weak self] _ in
-            let alarmData = AlarmEntity(
+            let alarmData = AlarmDomainModel(
                 isOn: true,
                 title: alarmDataTitle,
                 message: "",
                 time: alarmDataTime,
                 selectedDaysOfTheWeek: [1,2,3,4,5,6,7]
             )
-            self?.viewModel.addAlarmEntity(alarmData)
+            self?.viewModel.addAlarmDomainModel(alarmData)
         }))
     }
     

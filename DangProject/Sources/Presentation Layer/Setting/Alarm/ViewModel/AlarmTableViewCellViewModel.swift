@@ -14,7 +14,7 @@ enum CellScaleState {
 }
 
 struct AlarmTableViewCellViewModel: Equatable {
-    static let empty: Self = .init(alarmEntity: .empty)
+    static let empty: Self = .init(alarmDomainModel: .empty)
     var scale: CellScaleState = .normal
     var isOn: Bool
     var title: String
@@ -27,17 +27,17 @@ struct AlarmTableViewCellViewModel: Equatable {
     var isEveryDay: Bool
     var identifier: String
     
-    init(alarmEntity: AlarmEntity) {
-        self.isOn = alarmEntity.isOn
-        self.title = alarmEntity.title
-        self.message = alarmEntity.message
-        self.time = alarmEntity.time
-        self.amPm = .timeToAmPm(alarmEntity.time)
-        self.timeText = .timeToString(alarmEntity.time)
-        self.selectedDaysOfWeek = alarmEntity.selectedDaysOfTheWeek
-        self.selectedDays = Self.calculateSelectedDays(alarmEntity.selectedDaysOfTheWeek)
-        self.isEveryDay = Self.calculateEveryDay(alarmEntity.selectedDaysOfTheWeek)
-        self.identifier = alarmEntity.identifier
+    init(alarmDomainModel: AlarmDomainModel) {
+        self.isOn = alarmDomainModel.isOn
+        self.title = alarmDomainModel.title
+        self.message = alarmDomainModel.message
+        self.time = alarmDomainModel.time
+        self.amPm = .timeToAmPm(alarmDomainModel.time)
+        self.timeText = .timeToString(alarmDomainModel.time)
+        self.selectedDaysOfWeek = alarmDomainModel.selectedDaysOfTheWeek
+        self.selectedDays = Self.calculateSelectedDays(alarmDomainModel.selectedDaysOfTheWeek)
+        self.isEveryDay = Self.calculateEveryDay(alarmDomainModel.selectedDaysOfTheWeek)
+        self.identifier = alarmDomainModel.identifier
         }
     
     static func calculateIsOn(days: [Int], origin: Bool) -> Bool {
