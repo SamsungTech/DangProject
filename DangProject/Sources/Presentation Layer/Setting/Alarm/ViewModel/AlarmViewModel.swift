@@ -44,7 +44,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     private func bindAlarmArraySubject() {
-        alarmManagerUseCase.alarmArrayRelay
+        alarmManagerUseCase.alarmDomainModelsRelay
             .map { $0.map { AlarmTableViewCellViewModel.init(alarmDomainModel: $0) } }
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
