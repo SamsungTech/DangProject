@@ -63,7 +63,6 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     init(repository: SettingRepository) {
         self.repository = repository
         startAlarmData()
-//        deleteAllRequests()
     }
     
     private func startAlarmData() {
@@ -118,10 +117,9 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
             }
         case .dayOfWeek:
             if data.isOn {
-//                createNotificationRequest(alarmEntity)
+                updateNotificationRequest(alarmEntity)
             }
         }
-        printAllRequests()
     }
     
     // MARK: - Private
@@ -153,6 +151,23 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         }
     }
     
+    private func updateNotificationRequest(_ data: AlarmEntity) {
+        var removeIdentifiers: [String] = []
+        UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
+            for i in 1...7 {
+                let identifier = AlarmEntity.makeAlarmIdentifier(origin: data.identifier,
+                                                                 weekday: i)
+                notificationRequests.forEach { requests in
+                    if identifier == requests.identifier {
+                        removeIdentifiers.append(identifier)
+                    }
+                }
+            }
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
+            self.createNotificationRequest(data)
+        }
+    }
+    
     private func deleteNotificationRequest(_ data: AlarmEntity) {
         var removeIdentifiers: [String] = []
         UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
@@ -167,39 +182,5 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
             }
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
         }
-    }
-    
-    // test
-    
-    private func deleteAllRequests() {
-        var removeIdentifiers: [String] = []
-        UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
-            notificationRequests.forEach {
-                removeIdentifiers.append($0.identifier)
-            }
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
-        }
-    }
-    
-    private func printAllRequests() {
-        UNUserNotificationCenter.current().getPendingNotificationRequests { notificationRequests in
-            notificationRequests.forEach {
-                print($0.identifier)
-            }
-        }
-    }
-    
-    func removeAlarmData(_ indexPath: Int) {
-        
-        tempAlarmData.remove(at: indexPath)
-        // MARK: 다시 데이터 넣기
-        alarmArrayRelay.accept(tempAlarmData)
-        
-    }
-    
-    func insertAlarmData(_ indexPath: IndexPath,
-                         _ alarmEntity: AlarmEntity) {
-        tempAlarmData.insert(alarmEntity, at: indexPath.row)
-        alarmArrayRelay.accept(tempAlarmData)
     }
 }
