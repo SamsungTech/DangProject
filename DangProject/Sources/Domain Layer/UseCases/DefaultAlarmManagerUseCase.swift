@@ -9,7 +9,6 @@ import Foundation
 import UserNotifications
 
 import RxSwift
-import RxRelay
 
 enum ChangeableAlarmOption {
     case add
@@ -55,17 +54,20 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
                     selectedDaysOfTheWeek: [1,2,3,7]),
     ]
     
-    var alarmArrayRelay = BehaviorRelay<[AlarmDomainModel]>(value: [])
+    var alarmDomainModelsRelay = BehaviorSubject<[AlarmDomainModel]>(value: [])
     
     // MARK: - Init
     private var coreDataManagerRepository: CoreDataManagerRepository
     init(coreDataManagerRepository: CoreDataManagerRepository) {
         self.coreDataManagerRepository = coreDataManagerRepository
-        startAlarmData()
+        fetchAlarmFromCoreData()
     }
     
-    private func startAlarmData() {
-        alarmArrayRelay.accept(tempAlarmData)
+    private func fetchAlarmFromCoreData() {
+        guard UserDefaults.standard.bool(forKey: UserInfoKey.initialAlarmDataIsNeeded) else {
+            return makeInitialAlarmData()
+        }
+            alarmDomainModelsRelay.onNext(coreDataManagerRepository.readTotalAlarmEntity())
     }
     
     // MARK: - Internal
@@ -88,24 +90,29 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         switch changedOption {
         case .add:
             createNotificationRequest(alarmEntity)
+            coreDataManagerRepository.createAlarmEntity(alarmEntity)
         case .delete:
             if data.isOn {
                 deleteNotificationRequest(alarmEntity)
             }
+            coreDataManagerRepository.deleteAlarmEntity(alarmEntity)
         case .isOn:
             if data.isOn {
                 createNotificationRequest(alarmEntity)
             } else {
                 deleteNotificationRequest(alarmEntity)
             }
+            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
         case .message:
             if data.isOn {
                 createNotificationRequest(alarmEntity)
             }
+            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
         case .time:
             if data.isOn {
                 createNotificationRequest(alarmEntity)
             }
+            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
         case .isEveryDay:
             if data.isEveryDay {
                 if data.isOn{
@@ -114,12 +121,13 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
             } else {
                 deleteNotificationRequest(alarmEntity)
             }
+            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
         case .dayOfWeek:
             if data.isOn {
                 updateNotificationRequest(alarmEntity)
             }
+            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
         }
-        // savedata
     }
     
     // MARK: - Private
@@ -182,5 +190,13 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
             }
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: removeIdentifiers)
         }
+    }
+    
+    private func makeInitialAlarmData(){
+        AlarmDomainModel.initialAlarmDomainModel.forEach { alarmModel in
+            coreDataManagerRepository.createAlarmEntity(alarmModel)
+        }
+        alarmDomainModelsRelay.onNext(coreDataManagerRepository.readTotalAlarmEntity())
+        UserDefaults.standard.set(true, forKey: UserInfoKey.initialAlarmDataIsNeeded)
     }
 }
