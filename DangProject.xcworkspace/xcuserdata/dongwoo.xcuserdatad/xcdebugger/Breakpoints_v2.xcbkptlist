@@ -71,16 +71,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "05F3EB1F-F77D-431E-BAE7-EB834250A341"
+            uuid = "32682A67-D401-42E1-B63C-79A267E9C31A"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchProfileUseCase.swift"
+            filePath = "DangProject/Sources/Presentation Layer/Profile/ViewController/ProfileViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "fetchProfileData()"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
+            landmarkName = "newVersionBindUI()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

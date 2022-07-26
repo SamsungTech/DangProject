@@ -58,7 +58,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                         switch key {
                         case "name": domainProfileData.name = value as? String ?? ""
                         case "gender": domainProfileData.gender = value as? String ?? ""
-                        case "image": domainProfileData.profileImage = value as? UIImage ?? UIImage()
                         case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
                         case "uid": domainProfileData.uid = value as? String ?? ""
                         case "weight": domainProfileData.weight = value as? Int ?? 0

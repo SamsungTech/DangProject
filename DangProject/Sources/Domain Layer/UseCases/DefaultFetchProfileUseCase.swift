@@ -32,6 +32,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
                         emitter.onNext(profileData)
                     })
                     .disposed(by: strongSelf.disposeBag)
+                UserInfoKey.setIsLatestProfileData(true)
             } else {
                 strongSelf.fetchLocalProfileData()
                     .subscribe(onNext: { profileData in
@@ -46,13 +47,13 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     func fetchProfileImageData() -> Observable<Data> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            if UserDefaults.standard.bool(forKey: UserInfoKey.isLatestProfileData) != true {
+            if UserDefaults.standard.bool(forKey: UserInfoKey.isLatestProfileImageData) != true {
                 strongSelf.fetchRemoteProfileImageData()
                     .subscribe(onNext: { imageData in
                         emitter.onNext(imageData)
                     })
                     .disposed(by: strongSelf.disposeBag)
-                UserInfoKey.setIsLatestProfileData(true)
+                UserInfoKey.setIsLatestProfileImageData(true)
             } else {
                 strongSelf.fetchLocalProfileImageData()
                     .subscribe(onNext: { imageData in
@@ -68,10 +69,15 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     // MARK: - Private
     private func fetchRemoteProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-                
-            self?.firebaseFireStoreUseCase.getProfileData()
-                .subscribe(onNext: { profileData in
+            guard let strongSelf = self,
+                  let profileImage = self?.firebaseStorageUseCase.getProfileImage(),
+                  let profileData = self?.firebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
+            
+            Observable.combineLatest(profileImage, profileData)
+                .subscribe(onNext: { profileImageData, profileData in
+                    guard let image = UIImage(data: profileImageData as Data) else { return }
+                    var profileData: ProfileDomainModel = profileData
+                    profileData.profileImage = image
                     self?.coreDataManagerRepository.updateLocalProfileData(profileData)
                     emitter.onNext(profileData)
                 })
@@ -83,9 +89,9 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     
     private func fetchLocalProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
-            if let result = self?.coreDataManagerRepository.fetchProfileEntityData {
-                emitter.onNext(ProfileDomainModel.init(profileEntity: result()))
-            }
+            guard let result = self?.coreDataManagerRepository.fetchProfileEntityData(),
+                  let profileData = ProfileDomainModel.init(profileEntity: result) else { return Disposables.create() }
+            emitter.onNext(profileData)
             return Disposables.create()
         }
     }

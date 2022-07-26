@@ -314,22 +314,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         return ProfileEntity.init().profileImage ?? Data()
     }
     
-//    func createProfileImageData(_ data: Data) {
-//        guard let context = self.context,
-//              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.profileEntity.rawValue,
-//                                                      in: context),
-//              let profileEntity = NSManagedObject(entity: entity, insertInto: context) as? ProfileEntity
-//        else { return }
-//
-//        profileEntity.profileImage = data
-//
-//        do {
-//            try context.save()
-//        } catch {
-//            print(error.localizedDescription)
-//        }
-//    }
-    
     // MARK: - Private
     
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {

@@ -43,15 +43,20 @@ struct ProfileDomainModel {
         self.birthDay = birthDay
     }
     
-    init(profileEntity: ProfileEntity) {
+    init?(profileEntity: ProfileEntity) {
+        guard let imageData = profileEntity.profileImage,
+              let image = UIImage(data: imageData),
+              let name = profileEntity.name,
+              let gender = profileEntity.gender,
+              let birthDay = profileEntity.birthDay else { return nil }
         self.uid = ""
-        self.profileImage = UIImage()
-        self.name = profileEntity.name ?? ""
+        self.profileImage = image
+        self.name = name
         self.height = Int(profileEntity.height)
         self.weight = Int(profileEntity.weight)
         self.sugarLevel = Int(profileEntity.sugarLevel)
-        self.gender = profileEntity.gender ?? ""
-        self.birthDay = profileEntity.birthDay ?? ""
+        self.gender = gender
+        self.birthDay = birthDay
     }
 }
 

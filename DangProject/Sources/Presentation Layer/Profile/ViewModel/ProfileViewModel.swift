@@ -36,8 +36,7 @@ enum GenderType {
 }
 
 struct ProfileData {
-    static let empty: Self = .init(UIImage(),
-                                   ProfileDomainModel.empty)
+    static let empty: Self = .init(ProfileDomainModel.empty)
     var profileImage: UIImage
     var uid: String
     var name: String
@@ -47,9 +46,8 @@ struct ProfileData {
     var gender: String
     var birthDay: String
 
-    init(_ image: UIImage,
-         _ profileDomainModel: ProfileDomainModel) {
-        self.profileImage = image
+    init(_ profileDomainModel: ProfileDomainModel) {
+        self.profileImage = profileDomainModel.profileImage
         self.uid = profileDomainModel.uid
         self.name = profileDomainModel.name
         self.height = profileDomainModel.height
@@ -142,16 +140,12 @@ class ProfileViewModel: ProfileViewModelProtocol {
     }
     
     private func getProfileData() {
-        guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
-        guard let profileData = fetchProfileUseCase?.fetchProfileData() else { return }
-        
-        Observable.combineLatest(profileImage, profileData)
-            .subscribe(onNext: { [weak self] imageData, profileData in
-                guard let image = UIImage(data: imageData as Data) else { return }
-                let profile = ProfileData(image,
-                                          profileData)
-                self?.convertStringToGenderType(profileData.gender)
-                self?.profileDataRelay.accept(profile)
+        fetchProfileUseCase?.fetchProfileData()
+            .subscribe(onNext: { [weak self] profileData in
+                
+                guard let strongSelf = self else { return }
+                strongSelf.convertStringToGenderType(profileData.gender)
+                self?.profileDataRelay.accept(ProfileData(profileData))
             })
             .disposed(by: disposeBag)
     }
