@@ -26,7 +26,7 @@ enum EatenTimeAlertController {
 class AlarmViewController: UIViewController {
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
-    private var viewModel: AlarmViewModel
+    private var viewModel: AlarmViewModelProtocol
     private var navigationBar = AlarmNavigationBar()
     private var alarmTableView = UITableView()
     
@@ -50,12 +50,12 @@ class AlarmViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.checkUserNotifications()
+        viewModel.checkUserNotificationsIsFirst()
         configureUI()
         bind()
     }
       
-    init(viewModel: AlarmViewModel) {
+    init(viewModel: AlarmViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

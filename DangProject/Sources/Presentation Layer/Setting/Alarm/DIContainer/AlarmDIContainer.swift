@@ -12,7 +12,7 @@ class AlarmDIContainer {
         return AlarmViewController(viewModel: makeAlarmViewModel())
     }
     
-    func makeAlarmViewModel() -> AlarmViewModel {
+    func makeAlarmViewModel() -> AlarmViewModelProtocol {
         return AlarmViewModel(alarmManagerUseCase: makeAlarmManagerUseCase())
     }
     

@@ -21,41 +21,7 @@ enum ChangeableAlarmOption {
 }
 
 class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
-    private var tempAlarmData: [AlarmDomainModel] = [
-        AlarmDomainModel(isOn: false,
-                    title: "아침식사",
-                    message: "아침먹고 기록",
-                    time: .makeTime(hour: 8, minute: 0),
-                    selectedDaysOfTheWeek: [1,2,3,4,5,6,7]),
-        AlarmDomainModel(isOn: false,
-                    title: "아침식사",
-                    message: "",
-                    time: .makeTime(hour: 9, minute: 0),
-                    selectedDaysOfTheWeek: [6,7]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "점심먹었다",
-                    time: .makeTime(hour: 11, minute: 0),
-                    selectedDaysOfTheWeek: [1,2,3,4,5]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "",
-                    time: .makeTime(hour: 12, minute: 0),
-                    selectedDaysOfTheWeek: [2,3,4,5,6]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "",
-                    time: .makeTime(hour: 13, minute: 0),
-                    selectedDaysOfTheWeek: [3,4,7]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "",
-                    time: .makeTime(hour: 16, minute: 0),
-                    selectedDaysOfTheWeek: [1,2,3,7]),
-    ]
-    
     var alarmDomainModelsRelay = BehaviorSubject<[AlarmDomainModel]>(value: [])
-    
     // MARK: - Init
     private var coreDataManagerRepository: CoreDataManagerRepository
     init(coreDataManagerRepository: CoreDataManagerRepository) {

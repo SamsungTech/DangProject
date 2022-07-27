@@ -17,11 +17,26 @@ enum NavigationBarEvent {
 }
 
 protocol AlarmViewModelInputProtocol: AnyObject {
-    
+    func checkUserNotificationsIsFirst()
+    func expandSelectedCell(index: Int)
+    func changeCellScale(index: Int)
+    func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel)
+    func changeIsOnValue(index: Int)
+    func changeUserMessage(index: Int, text: String)
+    func changeTime(index: Int, time: Date)
+    func changeDayOfTheWeek(index: Int, tag: Int)
+    func changeEveryDay(index: Int)
+    func willDeleteAlarmData(_ indexPath: Int)
+    func deleteAlarmData()
 }
 
 protocol AlarmViewModelOutputProtocol: AnyObject {
-    
+    var alarmDataArrayRelay: BehaviorRelay<[AlarmTableViewCellViewModel]> { get }
+    var cellScaleWillExpand: Bool { get }
+    var addedCellIndex: Int { get }
+    var changedCellIndex: Int { get }
+    var willDeleteCellIndex: Int { get }
+    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat
 }
 
 protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutputProtocol {}
@@ -54,10 +69,41 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
 
     // MARK: - Input
-    func checkUserNotifications() {
+    func checkUserNotificationsIsFirst() {
         if !UserDefaults.standard.bool(forKey: UserInfoKey.userNotificationsPermission) {
             alarmManagerUseCase.getRequestAuthorization()
         }
+    }
+    
+    func expandSelectedCell(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        switch tempAlarmData[index].scale {
+        case .normal:
+            tempAlarmData[index].scale = .moreExpand
+        case .expand:
+            tempAlarmData[index].scale = .expand
+        case .moreExpand:
+            tempAlarmData[index].scale = .moreExpand
+        }
+        alarmDataArrayRelay.accept(tempAlarmData)
+    }
+    
+    func changeCellScale(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        
+        switch tempAlarmData[index].scale {
+        case .normal:
+            tempAlarmData[index].scale = .moreExpand
+            self.cellScaleWillExpand = true
+        case .expand:
+            tempAlarmData[index].scale = .normal
+            self.cellScaleWillExpand = false
+        case .moreExpand:
+            tempAlarmData[index].scale = .normal
+            self.cellScaleWillExpand = false
+        }
+        
+        alarmDataArrayRelay.accept(tempAlarmData)
     }
     
     func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel) {
@@ -134,37 +180,6 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
 
     // MARK: - Output
-    func expandSelectedCell(index: Int) {
-        resetTotalCellScaleNormal(index: index)
-        switch tempAlarmData[index].scale {
-        case .normal:
-            tempAlarmData[index].scale = .moreExpand
-        case .expand:
-            tempAlarmData[index].scale = .expand
-        case .moreExpand:
-            tempAlarmData[index].scale = .moreExpand
-        }
-        alarmDataArrayRelay.accept(tempAlarmData)
-    }
-    
-    func changeCellScale(index: Int) {
-        resetTotalCellScaleNormal(index: index)
-        
-        switch tempAlarmData[index].scale {
-        case .normal:
-            tempAlarmData[index].scale = .moreExpand
-            self.cellScaleWillExpand = true
-        case .expand:
-            tempAlarmData[index].scale = .normal
-            self.cellScaleWillExpand = false
-        case .moreExpand:
-            tempAlarmData[index].scale = .normal
-            self.cellScaleWillExpand = false
-        }
-        
-        alarmDataArrayRelay.accept(tempAlarmData)
-    }
-        
     func getHeightForRow(_ indexPath: IndexPath) -> CGFloat {
         let cellData = alarmDataArrayRelay.value[indexPath.row]
         switch cellData.scale {
