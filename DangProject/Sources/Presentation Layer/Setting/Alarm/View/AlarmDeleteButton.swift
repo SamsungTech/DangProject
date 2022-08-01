@@ -54,7 +54,7 @@ extension AlarmDeleteButton {
         deleteLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             deleteLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            deleteLabel.leadingAnchor.constraint(equalTo: deleteImageView.trailingAnchor, constant: 5)
+            deleteLabel.leadingAnchor.constraint(equalTo: deleteImageView.trailingAnchor, constant: xValueRatio(10))
         ])
     }
 }

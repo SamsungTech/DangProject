@@ -86,7 +86,7 @@ extension AlarmDaySelectionView {
         buttonsArray.forEach { button in
             button.setAttributedTitle(
                 NSAttributedString(
-                    string: "\(week[tagNumber-1])",
+                    string: "\(week[tagNumber - 1])",
                     attributes: [
                         NSAttributedString.Key.font: UIFont.systemFont(
                             ofSize: xValueRatio(15),

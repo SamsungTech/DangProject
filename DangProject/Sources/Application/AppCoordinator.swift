@@ -28,23 +28,23 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        startTabbar()
+        startTabBar()
     }
     
     func checkUID(userDefaultUID: String) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultUID) { [weak self] uid in
             if uid == userDefaultUID {
-                self?.startTabbar()
+                self?.startTabBar()
             } else {
                 self?.startLogin()
             }
         }
     }
 
-    func startTabbar() {
-        let tabbarCoordinator = TabBarCoordinator(navigationController: navigationController)
-        childCoordinators.append(tabbarCoordinator)
-        tabbarCoordinator.start()
+    func startTabBar() {
+        let tabBarCoordinator = TabBarCoordinator(navigationController: navigationController)
+        childCoordinators.append(tabBarCoordinator)
+        tabBarCoordinator.start()
     }
 
     func startLogin() {
@@ -76,7 +76,7 @@ extension AppCoordinator: CoordinatorFinishDelegate {
         case .inputPersonalInformation:
             startInputPersonalInformation()
         case .tabBar:
-            startTabbar()
+            startTabBar()
         }
     }
 }
