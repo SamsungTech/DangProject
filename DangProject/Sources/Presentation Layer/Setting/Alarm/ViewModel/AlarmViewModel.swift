@@ -19,7 +19,7 @@ enum NavigationBarEvent {
 protocol AlarmViewModelInputProtocol: AnyObject {
     func checkUserNotificationsIsFirst()
     func expandSelectedCell(index: Int)
-    func changeCellScale(index: Int)
+    func changeCellActivated(index: Int)
     func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel)
     func changeIsOnValue(index: Int)
     func changeUserMessage(index: Int, text: String)
@@ -89,17 +89,14 @@ class AlarmViewModel: AlarmViewModelProtocol {
         alarmDataArrayRelay.accept(tempAlarmData)
     }
     
-    func changeCellScale(index: Int) {
+    func changeCellActivated(index: Int) {
         resetTotalCellScaleNormal(index: index)
         
         switch tempAlarmData[index].scale {
         case .normal:
             tempAlarmData[index].scale = .moreExpand
             self.cellScaleWillExpand = true
-        case .expand:
-            tempAlarmData[index].scale = .normal
-            self.cellScaleWillExpand = false
-        case .moreExpand:
+        case .expand, .moreExpand:
             tempAlarmData[index].scale = .normal
             self.cellScaleWillExpand = false
         }

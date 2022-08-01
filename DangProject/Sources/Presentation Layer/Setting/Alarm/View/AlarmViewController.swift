@@ -268,7 +268,7 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     
     func middleAndBottomButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel.changeCellScale(index: cellIndexPath.row)
+        viewModel.changeCellActivated(index: cellIndexPath.row)
         if viewModel.cellScaleWillExpand {
             alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
         }
