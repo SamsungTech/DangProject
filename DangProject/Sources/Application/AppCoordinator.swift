@@ -28,16 +28,17 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-        /// check app is first time
-        guard UserDefaults.standard.bool(forKey: UserInfoKey.isFirstTime) else {
-            return startOnboarding()
-        }
-        /// check userUID
-        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
-            return startLogin()
-        }
-        compareFireStoreUID(with: userDefaultsUID)
+            /// check app is first time
+            if UserDefaults.standard.bool(forKey: UserInfoKey.tutorialFinished) == false {
+                startOnboarding()
+            }
+            /// check userUID
+            guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+                return startLogin()
+            }
+            compareFireStoreUID(with: userDefaultsUID)
     }
+    
     // MARK: - Private
     
     private func compareFireStoreUID(with userDefaultsUID: String) {
@@ -83,11 +84,13 @@ enum viewControllerType {
     case inputPersonalInformation
     case tabBar
 }
+
 protocol CoordinatorFinishDelegate {
     func switchViewController(to viewController: viewControllerType)
 }
 
 extension AppCoordinator: CoordinatorFinishDelegate {
+    
     func switchViewController(to viewController: viewControllerType) {
         self.navigationController.viewControllers.removeAll()
         switch viewController {
