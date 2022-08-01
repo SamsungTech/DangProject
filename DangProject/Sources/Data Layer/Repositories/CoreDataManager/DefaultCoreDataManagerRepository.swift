@@ -129,7 +129,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         alarmEntity.message = alarm.message
         alarmEntity.time = alarm.time
         alarmEntity.identifier = alarm.identifier
-        alarmEntity.selectedDays = alarm.selectedDaysOfTheWeek
+        alarmEntity.selectedDays = alarm.selectedDaysOfTheWeek.map{ $0.rawValue }
         
         do {
             try context.save ()
@@ -148,37 +148,31 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         let request = Alarm.fetchRequest()
         request.predicate = NSPredicate(format: "identifier == %@", alarm.identifier)
         do {
-            if let checkedAlarmEntity = try context?.fetch(request) {
-                if checkedAlarmEntity.count == 0 {
-                    return
-                } else {
-                    checkedAlarmEntity[0].isOn = alarm.isOn
-                    checkedAlarmEntity[0].title = alarm.title
-                    checkedAlarmEntity[0].message = alarm.message
-                    checkedAlarmEntity[0].time = alarm.time
-                    checkedAlarmEntity[0].selectedDays = alarm.selectedDaysOfTheWeek
-                    try context?.save()
-                    return
-                }
+            if let checkedAlarmEntity = try context?.fetch(request),
+               checkedAlarmEntity.count != 0 {
+                checkedAlarmEntity[0].isOn = alarm.isOn
+                checkedAlarmEntity[0].title = alarm.title
+                checkedAlarmEntity[0].message = alarm.message
+                checkedAlarmEntity[0].time = alarm.time
+                checkedAlarmEntity[0].selectedDays = alarm.selectedDaysOfTheWeek.map{ $0.rawValue }
+                try context?.save()
+                return
             }
         } catch {
             print(error.localizedDescription)
             return
         }
     }
-    
+
     func deleteAlarmEntity(_ alarm: AlarmDomainModel) {
         let request = Alarm.fetchRequest()
         request.predicate = NSPredicate(format: "identifier == %@", alarm.identifier)
         do {
-            if let checkedAlarmEntity = try context?.fetch(request) {
-                if checkedAlarmEntity.count == 0 {
-                    return
-                } else {
-                    context?.delete(checkedAlarmEntity[0])
-                    try context?.save()
-                    return
-                }
+            if let checkedAlarmEntity = try context?.fetch(request),
+               checkedAlarmEntity.count != 0{
+                context?.delete(checkedAlarmEntity[0])
+                try context?.save()
+                return
             }
         } catch {
             print(error.localizedDescription)
