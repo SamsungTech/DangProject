@@ -64,7 +64,7 @@ class HomeViewController: UIViewController {
         configure()
         configureTodayCalendarColumn()
         layout()
-        bind()
+        bindProfileImageData()
     }
     
     private func configure() {
@@ -147,7 +147,7 @@ class HomeViewController: UIViewController {
         homeGraphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
     }
     
-    private func bind() {
+    private func bindProfileImageData() {
         viewModel.profileImageDataRelay
             .subscribe(onNext: { [weak self] profileImageData in
                 guard let strongSelf = self else { return }
