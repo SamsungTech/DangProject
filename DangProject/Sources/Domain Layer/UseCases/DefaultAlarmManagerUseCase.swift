@@ -21,6 +21,7 @@ enum ChangeableAlarmOption {
 }
 
 class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
+    
     var alarmDomainModelsRelay = BehaviorSubject<[AlarmDomainModel]>(value: [])
     // MARK: - Init
     private var coreDataManagerRepository: CoreDataManagerRepository
@@ -35,64 +36,66 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         }
             alarmDomainModelsRelay.onNext(coreDataManagerRepository.readTotalAlarmEntity())
     }
-    
+
     // MARK: - Internal
     func getRequestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound]) { didAllow, error in
+            if let error = error {
+                return print(error.localizedDescription)
+            }
+            
             if didAllow {
                 UserDefaults.standard.set(true, forKey: UserInfoKey.userNotificationsPermission)
             } else {
                 print("UserNotifications Permission Denied")
             }
-            if let error = error {
-                print(error.localizedDescription)
-            }
+            
         }
     }
     
-    func changeAlarmNotificationRequest(data: AlarmTableViewCellViewModel,
+    func changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel,
                                         changedOption: ChangeableAlarmOption) {
-        let alarmEntity: AlarmDomainModel = .init(alarmTableViewCellViewModel: data)
+
         switch changedOption {
         case .add:
-            createNotificationRequest(alarmEntity)
-            coreDataManagerRepository.createAlarmEntity(alarmEntity)
+            createNotificationRequest(alarmDomainModel)
+            coreDataManagerRepository.createAlarmEntity(alarmDomainModel)
         case .delete:
-            if data.isOn {
-                deleteNotificationRequest(alarmEntity)
+            if alarmDomainModel.isOn {
+                deleteNotificationRequest(alarmDomainModel)
             }
-            coreDataManagerRepository.deleteAlarmEntity(alarmEntity)
+            coreDataManagerRepository.deleteAlarmEntity(alarmDomainModel)
         case .isOn:
-            if data.isOn {
-                createNotificationRequest(alarmEntity)
+            if alarmDomainModel.isOn {
+                createNotificationRequest(alarmDomainModel)
             } else {
-                deleteNotificationRequest(alarmEntity)
+                deleteNotificationRequest(alarmDomainModel)
             }
-            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
+            coreDataManagerRepository.updateAlarmEntity(alarmDomainModel)
         case .message:
-            if data.isOn {
-                createNotificationRequest(alarmEntity)
+            if alarmDomainModel.isOn {
+                createNotificationRequest(alarmDomainModel)
             }
-            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
+            coreDataManagerRepository.updateAlarmEntity(alarmDomainModel)
         case .time:
-            if data.isOn {
-                createNotificationRequest(alarmEntity)
+            if alarmDomainModel.isOn {
+                createNotificationRequest(alarmDomainModel)
             }
-            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
+            coreDataManagerRepository.updateAlarmEntity(alarmDomainModel)
         case .isEveryDay:
-            if data.isEveryDay {
-                if data.isOn{
-                    createNotificationRequest(alarmEntity)
+            if alarmDomainModel.selectedDaysOfTheWeek == [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday] {
+                if alarmDomainModel.isOn{
+                    createNotificationRequest(alarmDomainModel)
                 }
             } else {
-                deleteNotificationRequest(alarmEntity)
+                deleteNotificationRequest(alarmDomainModel)
             }
-            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
+            coreDataManagerRepository.updateAlarmEntity(alarmDomainModel)
         case .dayOfWeek:
-            if data.isOn {
-                updateNotificationRequest(alarmEntity)
+            if alarmDomainModel.isOn {
+                updateNotificationRequest(alarmDomainModel)
             }
-            coreDataManagerRepository.updateAlarmEntity(alarmEntity)
+            coreDataManagerRepository.updateAlarmEntity(alarmDomainModel)
         }
     }
     
@@ -116,8 +119,8 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
         let content = makeNotificationContent(data)
         
         data.selectedDaysOfTheWeek.forEach { weekday in
-            let identifier = AlarmDomainModel.makeAlarmIdentifier(origin: data.identifier, weekday: weekday)
-            let trigger = makeNotificationTrigger(data, weekday: weekday)
+            let identifier = AlarmDomainModel.makeAlarmIdentifier(origin: data.identifier, weekday: weekday.rawValue)
+            let trigger = makeNotificationTrigger(data, weekday: weekday.rawValue)
             let request = UNNotificationRequest(identifier: identifier,
                                                 content: content,
                                                 trigger: trigger)
@@ -159,7 +162,7 @@ class DefaultAlarmManagerUseCase: AlarmManagerUseCase {
     }
     
     private func makeInitialAlarmData(){
-        AlarmDomainModel.initialAlarmDomainModel.forEach { alarmModel in
+        AlarmDomainModel.makeInitialAlarmData().forEach { alarmModel in
             coreDataManagerRepository.createAlarmEntity(alarmModel)
         }
         alarmDomainModelsRelay.onNext(coreDataManagerRepository.readTotalAlarmEntity())

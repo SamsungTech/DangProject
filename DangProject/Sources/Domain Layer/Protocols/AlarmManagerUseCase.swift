@@ -12,6 +12,6 @@ import RxSwift
 protocol AlarmManagerUseCase {
     var alarmDomainModelsRelay: BehaviorSubject<[AlarmDomainModel]> { get }
     func getRequestAuthorization()
-    func changeAlarmNotificationRequest(data: AlarmTableViewCellViewModel,
+    func changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel,
                                         changedOption: ChangeableAlarmOption)
 }

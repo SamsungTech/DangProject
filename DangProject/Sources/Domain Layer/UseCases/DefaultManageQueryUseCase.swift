@@ -48,7 +48,7 @@ class DefaultManageQueryUseCase: ManageQueryUseCase {
     }
     
     // MARK: - Private
-    func checkQueryWithCoreData(keyword: String) {
+    private func checkQueryWithCoreData(keyword: String) {
         let savedQuery = coreDataManagerRepository.loadFromCoreData(request: RecentQuery.fetchRequest())
         
         savedQuery.forEach{ query in

@@ -106,7 +106,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel) {
         var alarmViewModel = AlarmTableViewCellViewModel.init(alarmDomainModel: alarmDomainModel)
         alarmViewModel.scale = .moreExpand
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmViewModel, changedOption: .add)
+        
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: alarmDomainModel, changedOption: .add)
         
         alarmData.append(alarmViewModel)
         alarmData = alarmData.sorted { $0.time < $1.time }
@@ -118,13 +119,16 @@ class AlarmViewModel: AlarmViewModelProtocol {
     
     func changeIsOnValue(index: Int) {
         alarmData[index].isOn.toggle()
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmData[index], changedOption: .isOn)
+        
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .isOn)
         alarmDataArrayRelay.accept(alarmData)
     }
     
     func changeUserMessage(index: Int, text: String) {
         alarmData[index].message = text
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmData[index], changedOption: .message)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .message)
         alarmDataArrayRelay.accept(alarmData)
     }
     
@@ -132,7 +136,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
         alarmData[index].time = time
         alarmData[index].timeText = .timeToString(time)
         alarmData[index].amPm = .timeToAmPm(time)
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmData[index], changedOption: .time)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .time)
         
         let willChangeAlarmData = alarmData[index]
         alarmData = alarmData.sorted { $0.time < $1.time }
@@ -151,7 +156,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
             alarmData[index].selectedDaysOfWeek = alarmData[index].selectedDaysOfWeek.sorted{ $0.rawValue < $1.rawValue }
         }
         calculateEveryDayAndSelectedDays(index: index)
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmData[index], changedOption: .dayOfWeek)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .dayOfWeek)
         alarmDataArrayRelay.accept(alarmData)
     }
     
@@ -159,7 +165,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
         alarmData[index].scale = alarmData[index].isEveryDay ? .moreExpand : .expand
         alarmData[index].isEveryDay.toggle()
         calculateDaysOfWeekAndSelectedDays(index: index)
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmData[index], changedOption: .isEveryDay)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .isEveryDay)
         alarmDataArrayRelay.accept(alarmData)
     }
     
@@ -168,7 +175,9 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     func deleteAlarmData() {
-        alarmManagerUseCase.changeAlarmNotificationRequest(data: alarmData[willDeleteCellIndex], changedOption: .delete)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel:
+                                                            AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[willDeleteCellIndex]),
+                                                           changedOption: .delete)
         alarmData.remove(at: willDeleteCellIndex)
         alarmDataArrayRelay.accept(alarmData)
     }
