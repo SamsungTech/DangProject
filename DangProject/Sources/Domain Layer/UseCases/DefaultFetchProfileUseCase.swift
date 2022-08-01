@@ -13,14 +13,14 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     private let disposeBag = DisposeBag()
     private var coreDataManagerRepository: CoreDataManagerRepository
     private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
-    private let firebaseStorageUseCase: FirebaseStorageUseCase
+    private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
     
     init(coreDataManagerRepository: CoreDataManagerRepository,
          firebaseFireStoreUseCase: FirebaseFireStoreUseCase,
-         firebaseStorageUseCase: FirebaseStorageUseCase) {
+         manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase) {
         self.coreDataManagerRepository = coreDataManagerRepository
         self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
-        self.firebaseStorageUseCase = firebaseStorageUseCase
+        self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
     }
     
     func fetchProfileData() -> Observable<ProfileDomainModel> {
@@ -70,7 +70,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     private func fetchRemoteProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self,
-                  let profileImage = self?.firebaseStorageUseCase.getProfileImage(),
+                  let profileImage = self?.manageFirebaseStorageUseCase.getProfileImage(),
                   let profileData = self?.firebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
             
             Observable.combineLatest(profileImage, profileData)
@@ -99,7 +99,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     private func fetchRemoteProfileImageData() -> Observable<Data> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self,
-                  let profileImage = self?.firebaseStorageUseCase.getProfileImage(),
+                  let profileImage = self?.manageFirebaseStorageUseCase.getProfileImage(),
                   let profileData = self?.firebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
             
             Observable.combineLatest(profileImage, profileData)

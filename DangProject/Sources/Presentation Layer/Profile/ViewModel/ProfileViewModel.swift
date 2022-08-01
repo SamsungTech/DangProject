@@ -83,7 +83,7 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 
 class ProfileViewModel: ProfileViewModelProtocol {
     private var firebaseStoreUseCase: FirebaseFireStoreUseCase?
-    private let firebaseStorageUseCase: FirebaseStorageUseCase?
+    private let firebaseStorageUseCase: ManageFirebaseStorageUseCase?
     private let fetchProfileUseCase: FetchProfileUseCase?
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
@@ -95,7 +95,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     let weights: [String] = [Int](1...150).map{("\($0)")}
     
     init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
-         firebaseStorageUseCase: FirebaseStorageUseCase,
+         firebaseStorageUseCase: ManageFirebaseStorageUseCase,
          fetchProfileUseCase: FetchProfileUseCase) {
         self.firebaseStoreUseCase = firebaseStoreUseCase
         self.firebaseStorageUseCase = firebaseStorageUseCase

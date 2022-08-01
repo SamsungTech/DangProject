@@ -55,7 +55,7 @@ class HomeDIContainer {
     func makeFetchProfileUseCase() -> FetchProfileUseCase {
         return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
                                           firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase(),
-                                          firebaseStorageUseCase: makeFirebaseStorageUseCase())
+                                          manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
     func makeFetchEatenFoodsUseCase() -> FetchEatenFoodsUseCase {
@@ -70,8 +70,8 @@ class HomeDIContainer {
         return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
-    func makeFirebaseStorageUseCase() -> FirebaseStorageUseCase {
-        return DefaultFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
+    func makeFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
     }
     
     func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {

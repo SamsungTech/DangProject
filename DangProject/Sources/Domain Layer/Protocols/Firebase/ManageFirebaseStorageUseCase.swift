@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-protocol FirebaseStorageUseCase {
+protocol ManageFirebaseStorageUseCase {
     func getProfileImage() -> Observable<NSData>
     func updateProfileImage(_ data: Data)
 }

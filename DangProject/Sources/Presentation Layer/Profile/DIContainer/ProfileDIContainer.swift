@@ -22,15 +22,15 @@ class ProfileDIContainer {
     func makeFetchProfileUseCase() -> FetchProfileUseCase {
         return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
                                           firebaseFireStoreUseCase: makeFirebaseStoreUseCase(),
-                                          firebaseStorageUseCase: makeFirebaseStorageUseCase())
+                                          manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
     func makeFirebaseStoreUseCase() -> FirebaseFireStoreUseCase {
         return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFirebaseManagerRepository())
     }
     
-    func makeFirebaseStorageUseCase() -> FirebaseStorageUseCase {
-        return DefaultFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFireBaseStorageManagerRepository())
+    func makeFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFireBaseStorageManagerRepository())
     }
     
     func makeFireBaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
