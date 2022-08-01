@@ -57,9 +57,7 @@ class CustomNavigationBar: UIView {
     
     private func setupProfileImageButton() {
         self.addSubview(profileImageButton)
-        /// fetch profile
         profileImageButton.setImage(UIImage(named: "231.png"), for: .normal)
-        
         profileImageButton.viewRadius(cornerRadius: xValueRatio(20))
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
@@ -76,10 +74,6 @@ class CustomNavigationBar: UIView {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)).isActive = true
         dateLabel.centerYAnchor.constraint(equalTo: profileImageButton.centerYAnchor).isActive = true
-    }
-    
-    func changeNavigationBarTitleLabel(text: String) {
-        dateLabel.text = text
     }
     
     private func setupChevronButton() {
@@ -136,5 +130,13 @@ class CustomNavigationBar: UIView {
             chevronButton.setImage(UIImage(systemName: "chevron.up"), for: .normal)
             chevronButtonState = .expand
         }
+    }
+    
+    func changeNavigationBarTitleLabel(text: String) {
+        dateLabel.text = text
+    }
+    
+    func setupProfileImage(_ imageData: UIImage) {
+        self.profileImageButton.setImage(imageData, for: .normal)
     }
 }
