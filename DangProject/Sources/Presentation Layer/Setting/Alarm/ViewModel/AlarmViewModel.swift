@@ -5,163 +5,214 @@
 //  Created by 김동우 on 2022/04/25.
 //
 
-import Foundation
 import UIKit
 
 import RxSwift
 import RxRelay
+import RxCocoa
 
 enum NavigationBarEvent {
     case back
     case add
 }
 
-enum CellScaleState {
-    case expand
-    case normal
-    case moreExpand
-    case none
-}
-
-enum SetUpCellState {
-    case expand(AlarmTableViewItem)
-    case normal(AlarmTableViewItem)
-    case none
-}
-
-struct AlarmTableViewCellData {
-    static let empty: Self = .init(alarmEntity: AlarmEntity.empty)
-    var isOn: Bool
-    var title: String
-    var pmAm: String
-    var time: String
-    var selectedDays: String
-    
-    init(alarmEntity: AlarmEntity) {
-        self.isOn = alarmEntity.isOn
-        self.title = alarmEntity.title
-        self.pmAm = .calculatePmAm(alarmEntity.time)
-        self.time = .calculateTime(alarmEntity.time)
-        self.selectedDays = alarmEntity.selectedDays
-    }
-}
-
 protocol AlarmViewModelInputProtocol: AnyObject {
-    
+    func checkUserNotificationsIsFirst()
+    func expandSelectedCell(index: Int)
+    func changeCellActivated(index: Int)
+    func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel)
+    func changeIsOnValue(index: Int)
+    func changeUserMessage(index: Int, text: String)
+    func changeTime(index: Int, time: Date)
+    func changeDayOfTheWeek(index: Int, tag: Int)
+    func changeEveryday(index: Int)
+    func willDeleteAlarmData(_ indexPath: Int)
+    func deleteAlarmData()
 }
 
 protocol AlarmViewModelOutputProtocol: AnyObject {
-    var selectedIndexRelay: BehaviorRelay<IndexPath> { get }
-    var cellScaleStateRelay: BehaviorRelay<CellScaleState> { get }
+    var alarmDataArrayRelay: BehaviorRelay<[AlarmTableViewCellViewModel]> { get }
+    var cellScaleWillExpand: Bool { get }
+    var addedCellIndex: Int { get }
+    var changedCellIndex: Int { get }
+    var willDeleteCellIndex: Int { get }
+    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat
 }
 
 protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutputProtocol {}
 
 class AlarmViewModel: AlarmViewModelProtocol {
+    
     private let disposeBag = DisposeBag()
-    private var useCase: SettingUseCase?
-    private var dateFormatter = DateFormatter()
-    private var searchRowPositionFactory: SearchRowPositionFactory
-    var selectedIndexRelay = BehaviorRelay<IndexPath>(value: IndexPath(row: -1, section: 0))
-    var cellScaleStateRelay = BehaviorRelay<CellScaleState>(value: .none)
-    var setUpCellStateRelay = BehaviorRelay<SetUpCellState>(value: .none)
-    var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
     
-    init(useCase: SettingUseCase,
-         searchRowPositionFactory: SearchRowPositionFactory) {
-        self.useCase = useCase
-        self.searchRowPositionFactory = searchRowPositionFactory
-    }
+    var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellViewModel]>(value: [])
+    lazy var alarmData: [AlarmTableViewCellViewModel] = { alarmDataArrayRelay.value }()
+    lazy var cellScaleWillExpand: Bool = false
+    lazy var addedCellIndex: Int = 0
+    lazy var changedCellIndex: Int = 0
+    lazy var willDeleteCellIndex: Int = 0
+    // MARK: - Init
+    private var alarmManagerUseCase: AlarmManagerUseCase
     
-    func viewDidLoad() {
-        useCase?.startAlarmData()
+    init(alarmManagerUseCase: AlarmManagerUseCase) {
+        self.alarmManagerUseCase = alarmManagerUseCase
         bindAlarmArraySubject()
     }
     
-    func branchOutSelectedIndex(_ indexPath: IndexPath) {
-        if selectedIndexRelay.value == indexPath {
-            branchOutIsSelected()
-        } else {
-            cellScaleStateRelay.accept(.expand)
-        }
-        selectedIndexRelay.accept(indexPath)
-    }
-    
-    func branchOutIsSelected() {
-        if cellScaleStateRelay.value == .expand {
-            cellScaleStateRelay.accept(.normal)
-        } else {
-            cellScaleStateRelay.accept(.expand)
-        }
-    }
-    
-    func branchOutMoreExpand() {
-        if cellScaleStateRelay.value == .expand {
-            cellScaleStateRelay.accept(.moreExpand)
-        } else {
-            cellScaleStateRelay.accept(.expand)
-        }
-    }
-    
-    func branchOutSetUpCell(_ selectedIndexPath: IndexPath,
-                            _ indexPath: IndexPath,
-                            _ cell: AlarmTableViewItem) {
-        if cellScaleStateRelay.value == .expand {
-            if selectedIndexPath == indexPath {
-                setUpCellStateRelay.accept(.normal(cell))
-            } else {
-                setUpCellStateRelay.accept(.expand(cell))
-            }
-        } else {
-            setUpCellStateRelay.accept(.expand(cell))
-        }
-    }
-    
-    func branchOutHeightForRow(_ indexPath: IndexPath) -> CGFloat {
-        if cellScaleStateRelay.value == .expand {
-            if selectedIndexRelay.value == indexPath {
-                return UIScreen.main.bounds.maxY/3
-            } else {
-                return UIScreen.main.bounds.maxY/5
-            }
-        } else if cellScaleStateRelay.value == .normal {
-            return UIScreen.main.bounds.maxY/5
-        } else {
-            if selectedIndexRelay.value == indexPath {
-                return UIScreen.main.bounds.maxY/2.5
-            } else {
-                return UIScreen.main.bounds.maxY/5
-            }
-        }
-    }
-    
-    func deleteAlarmData(_ indexPath: IndexPath) {
-        useCase?.removeAlarmData(indexPath)
-    }
-    
-    func insertAlarmData(_ indexPath: IndexPath,
-                         _ alarmEntity: AlarmEntity) {
-        useCase?.insertAlarmData(indexPath, alarmEntity)
-    }
-    
-    func searchRowsPosition(alarmData: AlarmEntity) -> IndexPath {
-        var result = IndexPath(row: 0, section: 0)
-        if let data = useCase?.alarmArray {
-            result = searchRowPositionFactory.calculateRowPoint(alarmData, data)
-        }
-        return result
-    }
-    
-}
-
-extension AlarmViewModel {
     private func bindAlarmArraySubject() {
-        useCase?.alarmArrayRelay
-            .map { $0.map { AlarmTableViewCellData.init(alarmEntity: $0) } }
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.alarmDataArrayRelay.accept($0)
+        alarmManagerUseCase.alarmDomainModelsRelay
+            .map { $0.map { AlarmTableViewCellViewModel.init(alarmDomainModel: $0) } }
+            .subscribe(onNext: { [weak self] data in
+                self?.alarmDataArrayRelay.accept(data)
             })
             .disposed(by: disposeBag)
+    }
+
+    // MARK: - Input
+    func checkUserNotificationsIsFirst() {
+        if UserDefaults.standard.bool(forKey: UserInfoKey.userNotificationsPermission) == false {
+            alarmManagerUseCase.getRequestAuthorization()
+        }
+    }
+    
+    func expandSelectedCell(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        switch alarmData[index].scale {
+        case .normal:
+            alarmData[index].scale = .moreExpand
+        case .expand:
+            alarmData[index].scale = .expand
+        case .moreExpand:
+            alarmData[index].scale = .moreExpand
+        }
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func changeCellActivated(index: Int) {
+        resetTotalCellScaleNormal(index: index)
+        
+        switch alarmData[index].scale {
+        case .normal:
+            alarmData[index].scale = .moreExpand
+            cellScaleWillExpand = true
+        case .expand, .moreExpand:
+            alarmData[index].scale = .normal
+            cellScaleWillExpand = false
+        }
+        
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func addAlarmDomainModel(_ alarmDomainModel: AlarmDomainModel) {
+        var alarmViewModel = AlarmTableViewCellViewModel.init(alarmDomainModel: alarmDomainModel)
+        alarmViewModel.scale = .moreExpand
+        
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: alarmDomainModel, changedOption: .add)
+        
+        alarmData.append(alarmViewModel)
+        alarmData = alarmData.sorted { $0.time < $1.time }
+        guard let index = self.alarmData.firstIndex(of: alarmViewModel) else { return }
+        addedCellIndex = index
+        resetTotalCellScaleNormal(index: addedCellIndex)
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func changeIsOnValue(index: Int) {
+        alarmData[index].isOn.toggle()
+        
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .isOn)
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func changeUserMessage(index: Int, text: String) {
+        alarmData[index].message = text
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .message)
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func changeTime(index: Int, time: Date) {
+        alarmData[index].time = time
+        alarmData[index].timeText = .timeToString(time)
+        alarmData[index].amPm = .timeToAmPm(time)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .time)
+        
+        let willChangeAlarmData = alarmData[index]
+        alarmData = alarmData.sorted { $0.time < $1.time }
+        guard let dataIndex = self.alarmData.firstIndex(of: willChangeAlarmData) else { return }
+        changedCellIndex = dataIndex
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func changeDayOfTheWeek(index: Int, tag: Int) {
+        guard let selectedTag = DayOfWeek(rawValue: tag) else { return }
+        if alarmData[index].selectedDaysOfWeek.contains(selectedTag) {
+            guard let arrayIndex = alarmData[index].selectedDaysOfWeek.firstIndex(of: selectedTag) else { return }
+            alarmData[index].selectedDaysOfWeek.remove(at: arrayIndex)
+        } else {
+            alarmData[index].selectedDaysOfWeek.append(selectedTag)
+            alarmData[index].selectedDaysOfWeek = alarmData[index].selectedDaysOfWeek.sorted{ $0.rawValue < $1.rawValue }
+        }
+        calculateEveryDayAndSelectedDays(index: index)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .dayOfWeek)
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func changeEveryday(index: Int) {
+        alarmData[index].scale = alarmData[index].isEveryDay ? .moreExpand : .expand
+        alarmData[index].isEveryDay.toggle()
+        calculateDaysOfWeekAndSelectedDays(index: index)
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel: AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[index]),
+                                                           changedOption: .isEveryDay)
+        alarmDataArrayRelay.accept(alarmData)
+    }
+    
+    func willDeleteAlarmData(_ indexPath: Int) {
+        willDeleteCellIndex = indexPath
+    }
+    
+    func deleteAlarmData() {
+        alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel:
+                                                            AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[willDeleteCellIndex]),
+                                                           changedOption: .delete)
+        alarmData.remove(at: willDeleteCellIndex)
+        alarmDataArrayRelay.accept(alarmData)
+    }
+
+    // MARK: - Output
+    func getHeightForRow(_ indexPath: IndexPath) -> CGFloat {
+        let cellData = alarmDataArrayRelay.value[indexPath.row]
+        switch cellData.scale {
+        case .normal:
+            return UIScreen.main.bounds.maxY/5
+        case .expand:
+            return UIScreen.main.bounds.maxY/3.2
+        case .moreExpand:
+            return UIScreen.main.bounds.maxY/2.5
+        }
+    }
+        
+    // MARK: - Private
+    private func calculateDaysOfWeekAndSelectedDays(index: Int) {
+        alarmData[index].selectedDaysOfWeek = AlarmTableViewCellViewModel.calculateDaysOfWeek(alarmData[index].isEveryDay)
+        alarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(alarmData[index].selectedDaysOfWeek)
+        alarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(days: alarmData[index].selectedDaysOfWeek, origin: alarmData[index].isOn)
+    }
+    
+    private func calculateEveryDayAndSelectedDays(index: Int) {
+        alarmData[index].isEveryDay = AlarmTableViewCellViewModel.calculateEveryDay(alarmData[index].selectedDaysOfWeek)
+        alarmData[index].selectedDays = AlarmTableViewCellViewModel.calculateSelectedDays(alarmData[index].selectedDaysOfWeek)
+        alarmData[index].isOn = AlarmTableViewCellViewModel.calculateIsOn(days: alarmData[index].selectedDaysOfWeek, origin: alarmData[index].isOn)
+    }
+    
+    private func resetTotalCellScaleNormal(index: Int) {
+        for i in 0 ..< alarmData.count {
+            if i != index {
+                alarmData[i].scale = .normal
+            }
+        }
     }
 }

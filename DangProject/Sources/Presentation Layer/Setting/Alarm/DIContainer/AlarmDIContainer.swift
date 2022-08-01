@@ -8,19 +8,20 @@
 import Foundation
 
 class AlarmDIContainer {
+    
     func makeAlarmViewController() -> AlarmViewController {
         return AlarmViewController(viewModel: makeAlarmViewModel())
     }
     
-    func makeAlarmViewModel() -> AlarmViewModel {
-        return AlarmViewModel(useCase: makeAlarmUseCase(), searchRowPositionFactory: SearchRowPositionFactory())
+    func makeAlarmViewModel() -> AlarmViewModelProtocol {
+        return AlarmViewModel(alarmManagerUseCase: makeAlarmManagerUseCase())
     }
     
-    func makeAlarmUseCase() -> SettingUseCase {
-        return SettingUseCase(repository: makeSettingRepository())
+    func makeAlarmManagerUseCase() -> AlarmManagerUseCase {
+        return DefaultAlarmManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     
-    func makeSettingRepository() -> SettingRepository {
-        return SettingRepository()
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
 }

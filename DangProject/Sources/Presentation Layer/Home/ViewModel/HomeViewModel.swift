@@ -24,6 +24,7 @@ protocol HomeViewModelInputProtocol {
 
 protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
+    var profileImageDataRelay: BehaviorRelay<UIImage> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
     func checkEatenFoodsTitleText(dateComponents: DateComponents) -> String
 }
@@ -36,6 +37,8 @@ class HomeViewModel: HomeViewModelProtocol {
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
+    internal let profileImageDataRelay = BehaviorRelay<UIImage>(value: UIImage())
+    
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
     }
@@ -48,6 +51,7 @@ class HomeViewModel: HomeViewModelProtocol {
         let date: Date = .makeDate(year: dateComponents.year,
                                    month: dateComponents.month!,
                                    day: dateComponents.day)
+        
         fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
     }

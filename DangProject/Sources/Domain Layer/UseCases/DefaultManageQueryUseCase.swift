@@ -50,9 +50,9 @@ class DefaultManageQueryUseCase: ManageQueryUseCase {
     }
     
     // MARK: - Private
+
     func checkQueryWithCoreData(keyword: String) {
         let savedQuery = coreDataManagerRepository.fetchCoreDataArray(from: .recentQuery).map { $0 as? RecentQuery ?? RecentQuery.init() }
-        
         savedQuery.forEach{ query in
             if query.keyword == keyword {
                 coreDataManagerRepository.deleteQuery(at: query.keyword!)

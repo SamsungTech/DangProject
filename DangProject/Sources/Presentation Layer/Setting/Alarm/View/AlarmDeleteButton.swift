@@ -8,6 +8,7 @@
 import UIKit
 
 class AlarmDeleteButton: UIButton {
+    
     private lazy var deleteImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "trash.fill")
@@ -53,7 +54,7 @@ extension AlarmDeleteButton {
         deleteLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             deleteLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            deleteLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+            deleteLabel.leadingAnchor.constraint(equalTo: deleteImageView.trailingAnchor, constant: xValueRatio(10))
         ])
     }
 }
