@@ -16,7 +16,7 @@ protocol AlarmDaySelectionDelegate: AnyObject {
 
 class AlarmDaySelectionView: UIView {
     
-    weak var parentableTableViewCell: AlarmDaySelectionDelegate?
+    weak var alarmDaySelectionDelegate: AlarmDaySelectionDelegate?
     
     private let week = ["월", "화", "수", "목", "금", "토", "일"]
     private lazy var alarmStackView: UIStackView = {
@@ -26,13 +26,13 @@ class AlarmDaySelectionView: UIView {
         stackView.distribution = .fillEqually
         return stackView
     }()
-    var sundayButton = UIButton()
-    var mondayButton = UIButton()
-    var tuesdayButton = UIButton()
-    var wednesdayButton = UIButton()
-    var thursdayButton = UIButton()
-    var fridayButton = UIButton()
-    var saturdayButton = UIButton()
+    private var sundayButton = UIButton()
+    private var mondayButton = UIButton()
+    private var tuesdayButton = UIButton()
+    private var wednesdayButton = UIButton()
+    private var thursdayButton = UIButton()
+    private var fridayButton = UIButton()
+    private var saturdayButton = UIButton()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -97,7 +97,7 @@ extension AlarmDaySelectionView {
             button.tag = tagNumber
             button.addTarget(
                 self,
-                action: #selector(didTapDaysButton(_:)),
+                action: #selector(daysButtonDidTap(_:)),
                 for: .touchUpInside
             )
             button.frame = CGRect(x: .zero, y: .zero, width: xValueRatio(33), height: yValueRatio(33))
@@ -135,7 +135,7 @@ extension AlarmDaySelectionView {
 }
 
 extension AlarmDaySelectionView {
-    @objc func didTapDaysButton(_ sender: UIButton) {
-        parentableTableViewCell?.dayOfTheWeekButtonDidTap(tag: sender.tag)
+    @objc func daysButtonDidTap(_ sender: UIButton) {
+        alarmDaySelectionDelegate?.dayOfTheWeekButtonDidTap(tag: sender.tag)
     }
 }

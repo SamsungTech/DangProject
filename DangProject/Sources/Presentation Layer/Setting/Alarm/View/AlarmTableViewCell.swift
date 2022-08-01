@@ -216,7 +216,7 @@ class AlarmTableViewCell: UITableViewCell {
     
     private(set) lazy var dayOfTheWeekSelectView: AlarmDaySelectionView = {
         let view = AlarmDaySelectionView()
-        view.parentableTableViewCell = self
+        view.alarmDaySelectionDelegate = self
         return view
     }()
     
