@@ -8,6 +8,7 @@
 import UIKit
 
 class AlarmDeleteButton: UIButton {
+    
     private lazy var deleteImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "trash.fill")

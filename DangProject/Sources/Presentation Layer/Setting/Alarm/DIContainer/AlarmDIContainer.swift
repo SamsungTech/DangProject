@@ -8,6 +8,7 @@
 import Foundation
 
 class AlarmDIContainer {
+    
     func makeAlarmViewController() -> AlarmViewController {
         return AlarmViewController(viewModel: makeAlarmViewModel())
     }

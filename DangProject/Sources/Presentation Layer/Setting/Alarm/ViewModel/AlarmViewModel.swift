@@ -25,7 +25,7 @@ protocol AlarmViewModelInputProtocol: AnyObject {
     func changeUserMessage(index: Int, text: String)
     func changeTime(index: Int, time: Date)
     func changeDayOfTheWeek(index: Int, tag: Int)
-    func changeEveryDay(index: Int)
+    func changeEveryday(index: Int)
     func willDeleteAlarmData(_ indexPath: Int)
     func deleteAlarmData()
 }
@@ -42,6 +42,7 @@ protocol AlarmViewModelOutputProtocol: AnyObject {
 protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutputProtocol {}
 
 class AlarmViewModel: AlarmViewModelProtocol {
+    
     private let disposeBag = DisposeBag()
     
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellViewModel]>(value: [])
@@ -157,7 +158,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
         alarmDataArrayRelay.accept(tempAlarmData)
     }
     
-    func changeEveryDay(index: Int) {
+    func changeEveryday(index: Int) {
         if tempAlarmData[index].isEveryDay {
             tempAlarmData[index].scale = .moreExpand
         } else {

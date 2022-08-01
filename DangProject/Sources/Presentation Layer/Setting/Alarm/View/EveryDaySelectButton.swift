@@ -8,6 +8,7 @@
 import UIKit
 
 class EveryDaySelectButton: UIButton {
+    
     private(set) lazy var circleView: UIImageView = {
         let view = UIImageView()
         view.backgroundColor = .clear

@@ -15,6 +15,7 @@ protocol AlarmDaySelectionDelegate: AnyObject {
 }
 
 class AlarmDaySelectionView: UIView {
+    
     weak var parentableTableViewCell: AlarmDaySelectionDelegate?
     
     private let week = ["월", "화", "수", "목", "금", "토", "일"]

@@ -13,18 +13,21 @@ enum TextFieldCase {
 }
 
 protocol AlarmTableViewCellDelegate: AnyObject {
+    
     func middleAndBottomButtonDidTap(cell: UITableViewCell)
     func deleteButtonDidTap(cell: UITableViewCell)
-    func everyDayButtonDidTap(cell: UITableViewCell)
+    func changeEverydayValue(cell: UITableViewCell)
     func isOnSwitchDidChanged(cell: UITableViewCell)
     func dayOfTheWeekButtonDidTap(cell: UITableViewCell, tag: Int)
     func userMessageTextFieldEndEditing(cell: UITableViewCell, text: String)
     func timeTextFieldEndEditing(cell: UITableViewCell, time: Date)
     func textFieldWillStartEditing(cell: UITableViewCell)
     func textFieldWillEndEditing()
+    
 }
 
 class AlarmTableViewCell: UITableViewCell {
+    
     var parentableViewController: AlarmTableViewCellDelegate?
     private var messageViewHeightConstant: NSLayoutConstraint?
     private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
@@ -208,7 +211,7 @@ class AlarmTableViewCell: UITableViewCell {
     }()
     
     @objc func everyDayButtonDidTap() {
-        parentableViewController?.everyDayButtonDidTap(cell: self)
+        parentableViewController?.changeEverydayValue(cell: self)
     }
     
     private(set) lazy var dayOfTheWeekSelectView: AlarmDaySelectionView = {
@@ -543,7 +546,8 @@ class AlarmTableViewCell: UITableViewCell {
     }
 }
 
-extension AlarmTableViewCell: AlarmDaySelectionDelegate {    
+extension AlarmTableViewCell: AlarmDaySelectionDelegate {
+    
     func dayOfTheWeekButtonDidTap(tag: Int) {
         parentableViewController?.dayOfTheWeekButtonDidTap(cell: self , tag: tag)
     }

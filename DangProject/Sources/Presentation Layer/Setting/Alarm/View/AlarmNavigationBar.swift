@@ -8,6 +8,7 @@
 import UIKit
 
 class AlarmNavigationBar: UIView {
+    
     private(set) lazy var backButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)

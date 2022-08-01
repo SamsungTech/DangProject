@@ -24,6 +24,7 @@ enum EatenTimeAlertController {
 }
 
 class AlarmViewController: UIViewController {
+    
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
     private var viewModel: AlarmViewModelProtocol
@@ -221,14 +222,12 @@ class AlarmViewController: UIViewController {
             switch cellAmountState {
             case .plus:
                 alarmTableView.insertRows(at: [IndexPath(row: viewModel.addedCellIndex, section: 0)], with: UITableView.RowAnimation.none)
+                alarmTableView.scrollToRow(at: IndexPath(row: viewModel.addedCellIndex, section: 0), at: .top, animated: true)
             case .minus:
                 alarmTableView.deleteRows(at: [IndexPath(row: viewModel.willDeleteCellIndex, section: 0)], with: UITableView.RowAnimation.top)
             case .none:
                 break
             }
-        }
-        if cellAmountState == .plus {
-            alarmTableView.scrollToRow(at: IndexPath(row: viewModel.addedCellIndex, section: 0), at: .top, animated: true)
         }
     }
 }
@@ -287,9 +286,9 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
         viewModel.changeIsOnValue(index: cellIndexPath.row)
     }
     
-    func everyDayButtonDidTap(cell: UITableViewCell) {
+    func changeEverydayValue(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
-        viewModel.changeEveryDay(index: cellIndexPath.row)
+        viewModel.changeEveryday(index: cellIndexPath.row)
     }
     
     func dayOfTheWeekButtonDidTap(cell: UITableViewCell, tag: Int) {
