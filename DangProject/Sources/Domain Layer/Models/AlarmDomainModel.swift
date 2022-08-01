@@ -7,23 +7,31 @@
 
 import Foundation
 
+enum DayOfWeek: Int {
+    case monday = 1
+    case tuesday = 2
+    case wednesday = 3
+    case thursday = 4
+    case friday = 5
+    case saturday = 6
+    case sunday = 7
+}
+
 struct AlarmDomainModel {
     static let empty: Self = .init(isOn: Bool(),
                                    title: "",
-                                   message: "",
                                    time: Date.init(),
                                    selectedDaysOfTheWeek: [])
     var isOn: Bool
     var title: String
-    var message: String
+    var message: String = ""
     var time: Date
-    var selectedDaysOfTheWeek: [Int]
+    var selectedDaysOfTheWeek: [DayOfWeek]
     var identifier: String
     
-    init(isOn: Bool, title: String, message: String, time: Date, selectedDaysOfTheWeek: [Int]) {
+    init(isOn: Bool, title: String, time: Date, selectedDaysOfTheWeek: [DayOfWeek]) {
         self.isOn = isOn
         self.title = title
-        self.message = message
         self.time = time
         self.selectedDaysOfTheWeek = selectedDaysOfTheWeek
         self.identifier = Self.makeDefaultAlarmIdentifier(title: title, time: time)
@@ -44,42 +52,9 @@ struct AlarmDomainModel {
         self.title = alarmEntity.title
         self.message = alarmEntity.message
         self.time = alarmEntity.time
-        self.selectedDaysOfTheWeek = alarmEntity.selectedDays
+        self.selectedDaysOfTheWeek = alarmEntity.selectedDays.map{ DayOfWeek(rawValue: $0)! }
         self.identifier = alarmEntity.identifier
     }
-    
-    static let initialAlarmDomainModel: [Self] = [
-        AlarmDomainModel(isOn: false,
-                    title: "아침식사",
-                    message: "아침먹고 기록",
-                    time: .makeTime(hour: 8, minute: 0),
-                    selectedDaysOfTheWeek: [1,2,3,4,5,6,7]),
-        AlarmDomainModel(isOn: false,
-                    title: "아침식사",
-                    message: "",
-                    time: .makeTime(hour: 9, minute: 0),
-                    selectedDaysOfTheWeek: [6,7]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "점심먹었다",
-                    time: .makeTime(hour: 11, minute: 0),
-                    selectedDaysOfTheWeek: [1,2,3,4,5]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "",
-                    time: .makeTime(hour: 12, minute: 0),
-                    selectedDaysOfTheWeek: [2,3,4,5,6]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "",
-                    time: .makeTime(hour: 13, minute: 0),
-                    selectedDaysOfTheWeek: [3,4,7]),
-        AlarmDomainModel(isOn: false,
-                    title: "점심식사",
-                    message: "",
-                    time: .makeTime(hour: 16, minute: 0),
-                    selectedDaysOfTheWeek: [1,2,3,7]),
-    ]
     
     static func makeDefaultAlarmIdentifier(title: String, time: Date) -> String {
         let alarmInformation = "\(title) \(String.timeToStringWith24Hour(time))"
@@ -89,6 +64,27 @@ struct AlarmDomainModel {
     
     static func makeAlarmIdentifier(origin: String, weekday: Int) -> String {
         return "\(origin) \(String(weekday))"
+    }
+    
+    static func makeInitialAlarmData() -> [Self] {
+        return [
+            AlarmDomainModel(isOn: false,
+                             title: "아침식사",
+                             time: .makeTime(hour: 9, minute: 0),
+                             selectedDaysOfTheWeek: [.monday, .tuesday, .wednesday, .thursday, .friday]),
+            AlarmDomainModel(isOn: false,
+                             title: "점심식사",
+                             time: .makeTime(hour: 12, minute: 0),
+                             selectedDaysOfTheWeek: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]),
+            AlarmDomainModel(isOn: false,
+                             title: "간식",
+                             time: .makeTime(hour: 14, minute: 0),
+                             selectedDaysOfTheWeek: [.monday, .wednesday, .friday]),
+            AlarmDomainModel(isOn: false,
+                             title: "저녁식사",
+                             time: .makeTime(hour: 18, minute: 0),
+                             selectedDaysOfTheWeek: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday])
+        ]
     }
     
 }
