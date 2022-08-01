@@ -21,14 +21,6 @@ class ProfileDIContainer {
     }
     
     func makeProfileViewModel() -> ProfileViewModel {
-        return ProfileViewModel(useCase: makeProfileUseCase())
-    }
-    
-    func makeProfileUseCase() -> ProfileUseCaseProtocol {
-        return ProfileUseCase(repository: makeProfileRepository())
-    }
-    
-    func makeProfileRepository() -> ProfileRepositoryProtocol {
-        return ProfileRepository()
-    }
+        return ProfileViewModel()
+    }    
 }

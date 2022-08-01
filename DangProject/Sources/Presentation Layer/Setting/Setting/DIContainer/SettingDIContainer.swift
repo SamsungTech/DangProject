@@ -20,14 +20,6 @@ class SettingDIContainer {
     }
     
     func makeSettingViewModel() -> SettingViewModelProtocol {
-        return SettingViewModel(settingUseCase: makeSettingUseCase())
-    }
-    
-    func makeSettingUseCase() -> DefaultAlarmManagerUseCase {
-        return DefaultAlarmManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository())
-    }
-    
-    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
-        return DefaultCoreDataManagerRepository()
+        return SettingViewModel()
     }
 }
