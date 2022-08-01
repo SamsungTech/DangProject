@@ -16,7 +16,7 @@ extension ProfileEntity {
         return NSFetchRequest<ProfileEntity>(entityName: "ProfileEntity")
     }
 
-    @NSManaged public var birthDay: String?
+    @NSManaged public var birthday: String?
     @NSManaged public var gender: String?
     @NSManaged public var height: Int32
     @NSManaged public var name: String?
@@ -27,5 +27,5 @@ extension ProfileEntity {
 }
 
 extension ProfileEntity : Identifiable {
-
+    
 }

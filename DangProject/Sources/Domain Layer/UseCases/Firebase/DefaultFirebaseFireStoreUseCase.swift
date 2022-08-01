@@ -62,7 +62,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                         case "uid": domainProfileData.uid = value as? String ?? ""
                         case "weight": domainProfileData.weight = value as? Int ?? 0
                         case "height": domainProfileData.height = value as? Int ?? 0
-                        case "birthDay": domainProfileData.birthDay = value as? String ?? ""
+                        case "birthDay": domainProfileData.birthday = value as? String ?? ""
                         default: break
                         }
                     }

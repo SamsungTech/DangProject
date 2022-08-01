@@ -44,7 +44,7 @@ struct ProfileData {
     var weight: Int
     var sugarLevel: Int
     var gender: String
-    var birthDay: String
+    var birthday: String
 
     init(_ profileDomainModel: ProfileDomainModel) {
         self.profileImage = profileDomainModel.profileImage
@@ -54,7 +54,7 @@ struct ProfileData {
         self.weight = profileDomainModel.weight
         self.sugarLevel = profileDomainModel.sugarLevel
         self.gender = profileDomainModel.gender
-        self.birthDay = profileDomainModel.birthDay
+        self.birthday = profileDomainModel.birthday
     }
 }
 
