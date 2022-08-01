@@ -43,32 +43,31 @@ class AlarmDaySelectionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureButtonColor(_ tags: [Int]) {
+    func configureButtonColor(_ selectedDays: [DayOfWeek]) {
         resetAllButtons()
-        tags.forEach { tag in
-            switch tag {
-            case 1:
+        selectedDays.forEach { dayOfWeek in
+            switch dayOfWeek {
+            case .monday:
                 mondayButton.backgroundColor = .circleColorGreen
                 mondayButton.setTitleColor(UIColor.white, for: .normal)
-            case 2:
+            case .tuesday:
                 tuesdayButton.backgroundColor = .circleColorGreen
                 tuesdayButton.setTitleColor(UIColor.white, for: .normal)
-            case 3:
+            case .wednesday:
                 wednesdayButton.backgroundColor = .circleColorGreen
                 wednesdayButton.setTitleColor(UIColor.white, for: .normal)
-            case 4:
+            case .thursday:
                 thursdayButton.backgroundColor = .circleColorGreen
                 thursdayButton.setTitleColor(UIColor.white, for: .normal)
-            case 5:
+            case .friday:
                 fridayButton.backgroundColor = .circleColorGreen
                 fridayButton.setTitleColor(UIColor.white, for: .normal)
-            case 6:
+            case .saturday:
                 saturdayButton.backgroundColor = .circleColorGreen
                 saturdayButton.setTitleColor(UIColor.white, for: .normal)
-            case 7:
+            case .sunday:
                 sundayButton.backgroundColor = .circleColorGreen
                 sundayButton.setTitleColor(UIColor.white, for: .normal)
-            default: break
             }
         }
     }

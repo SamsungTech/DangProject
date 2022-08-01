@@ -16,11 +16,11 @@ enum CellAmountState{
     case none
 }
 
-enum EatenTimeAlertController {
-    case morning
-    case lunch
-    case dinner
-    case snack
+enum EatenTimeAlertController: String {
+    case morning = "아침"
+    case lunch = "점심"
+    case dinner = "저녁"
+    case snack = "간식"
 }
 
 class AlarmViewController: UIViewController {
@@ -130,20 +130,20 @@ class AlarmViewController: UIViewController {
         var alarmDataTime: Date = .init()
         switch eatenTimeAlert {
         case .morning:
-            alertActionTitle = "아침"
-            alarmDataTitle = "아침 식사"
-            alarmDataTime = .makeTime(hour: 8, minute: 00)
+            alertActionTitle = eatenTimeAlert.rawValue
+            alarmDataTitle = "\(eatenTimeAlert.rawValue)식사"
+            alarmDataTime = .makeTime(hour: 9, minute: 00)
         case .lunch:
-            alertActionTitle = "점심"
-            alarmDataTitle = "점심 식사"
+            alertActionTitle = eatenTimeAlert.rawValue
+            alarmDataTitle = "\(eatenTimeAlert.rawValue)식사"
             alarmDataTime = .makeTime(hour: 12, minute: 00)
         case .dinner:
-            alertActionTitle = "저녁"
-            alarmDataTitle = "저녁 식사"
+            alertActionTitle = eatenTimeAlert.rawValue
+            alarmDataTitle = "\(eatenTimeAlert.rawValue)식사"
             alarmDataTime = .makeTime(hour: 18, minute: 00)
         case .snack:
-            alertActionTitle = "간식"
-            alarmDataTitle = "간식"
+            alertActionTitle = eatenTimeAlert.rawValue
+            alarmDataTitle = eatenTimeAlert.rawValue
             alarmDataTime = .makeTime(hour: 14, minute: 00)
         }
         addAlarmAlertController.addAction(UIAlertAction(title: alertActionTitle,
@@ -152,9 +152,8 @@ class AlarmViewController: UIViewController {
             let alarmData = AlarmDomainModel(
                 isOn: true,
                 title: alarmDataTitle,
-                message: "",
                 time: alarmDataTime,
-                selectedDaysOfTheWeek: [1,2,3,4,5,6,7]
+                selectedDaysOfTheWeek: [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
             )
             self?.viewModel.addAlarmDomainModel(alarmData)
         }))

@@ -146,12 +146,13 @@ class AlarmViewModel: AlarmViewModelProtocol {
     }
     
     func changeDayOfTheWeek(index: Int, tag: Int) {
-        if tempAlarmData[index].selectedDaysOfWeek.contains(tag) {
-            guard let arrayIndex = tempAlarmData[index].selectedDaysOfWeek.firstIndex(of: tag) else { return }
+        guard let selectedTag = DayOfWeek(rawValue: tag) else { return }
+        if tempAlarmData[index].selectedDaysOfWeek.contains(selectedTag) {
+            guard let arrayIndex = tempAlarmData[index].selectedDaysOfWeek.firstIndex(of: selectedTag) else { return }
             tempAlarmData[index].selectedDaysOfWeek.remove(at: arrayIndex)
         } else {
-            tempAlarmData[index].selectedDaysOfWeek.append(tag)
-            tempAlarmData[index].selectedDaysOfWeek = tempAlarmData[index].selectedDaysOfWeek.sorted()
+            tempAlarmData[index].selectedDaysOfWeek.append(selectedTag)
+            tempAlarmData[index].selectedDaysOfWeek = tempAlarmData[index].selectedDaysOfWeek.sorted{ $0.rawValue < $1.rawValue }
         }
         calculateEveryDayAndSelectedDays(index: index)
         alarmManagerUseCase.changeAlarmNotificationRequest(data: tempAlarmData[index], changedOption: .dayOfWeek)

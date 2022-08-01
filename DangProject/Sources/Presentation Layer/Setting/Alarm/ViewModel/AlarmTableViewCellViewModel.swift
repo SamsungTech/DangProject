@@ -22,7 +22,7 @@ struct AlarmTableViewCellViewModel: Equatable {
     var time: Date
     var amPm: String
     var timeText: String
-    var selectedDaysOfWeek: [Int]
+    var selectedDaysOfWeek: [DayOfWeek]
     var selectedDays: String
     var isEveryDay: Bool
     var identifier: String
@@ -40,7 +40,7 @@ struct AlarmTableViewCellViewModel: Equatable {
         self.identifier = alarmDomainModel.identifier
         }
     
-    static func calculateIsOn(days: [Int], origin: Bool) -> Bool {
+    static func calculateIsOn(days: [DayOfWeek], origin: Bool) -> Bool {
         if days.count == 0 {
             return false
         } else {
@@ -48,42 +48,40 @@ struct AlarmTableViewCellViewModel: Equatable {
         }
     }
     
-    static func calculateDaysOfWeek(_ isEveryDay: Bool) -> [Int] {
+    static func calculateDaysOfWeek(_ isEveryDay: Bool) -> [DayOfWeek] {
         if isEveryDay {
-            return [1,2,3,4,5,6,7]
+            return [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
         } else {
             return []
         }
     }
     
-    static func calculateEveryDay(_ days: [Int]) -> Bool {
-        if days == [1,2,3,4,5,6,7] {
+    static func calculateEveryDay(_ days: [DayOfWeek]) -> Bool {
+        if days == [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday] {
             return true
         } else {
             return false
         }
     }
     
-    static func calculateSelectedDays(_ days: [Int]) -> String {
-        // 1: 월요일, 2: 화요일, 3: 수요일, 4: 목요일, 5: 금요일, 6: 토요일, 7: 일요일
-        let days = days.sorted()
-        if days == [1,2,3,4,5,6,7] {
+    static func calculateSelectedDays(_ days: [DayOfWeek]) -> String {
+        if days == [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday] {
             return "매일"
         } else if days == [] {
             return "요일을 선택해 주세요"
-        } else if days == [6,7] {
+        } else if days == [.saturday, .sunday] {
             return "주말"
-        } else if days == [1,2,3,4,5] {
+        } else if days == [.monday, .tuesday, .wednesday, .thursday, .friday] {
             return "주중"
         } else {
             return self.daysToString(days)
         }
     }
    
-    static func daysToString(_ days: [Int]) -> String {
+    static func daysToString(_ days: [DayOfWeek]) -> String {
         var result = ""
         for i in 0 ..< days.count {
-            let convertString: String = .configureWeekOfTheDay(days[i])
+            let convertString: String = Self.dayOfWeekToString(days[i])
             if i == 0 {
                 result = convertString
             } else {
@@ -92,4 +90,24 @@ struct AlarmTableViewCellViewModel: Equatable {
         }
         return result
     }
+    
+    static func dayOfWeekToString(_ dayOfWeek: DayOfWeek) -> String {
+        switch dayOfWeek {
+        case .monday:
+            return "월"
+        case .tuesday:
+            return "화"
+        case .wednesday:
+            return "수"
+        case .thursday:
+            return "목"
+        case .friday:
+            return "금"
+        case .saturday:
+            return "토"
+        case .sunday:
+            return "일"
+        }
+    }
+
 }
