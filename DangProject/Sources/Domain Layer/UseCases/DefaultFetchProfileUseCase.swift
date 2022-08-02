@@ -26,19 +26,19 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     func fetchProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            if ProfileDomainModel.isLatestProfileDataValue != true {
+            if ProfileDomainModel.isLatestProfileDataValue {
+                strongSelf.fetchLocalProfileData()
+                    .subscribe(onNext: { profileData in
+                        emitter.onNext(profileData)
+                    })
+                    .disposed(by: strongSelf.disposeBag)
+            } else {
                 strongSelf.fetchRemoteProfileData()
                     .subscribe(onNext: { profileData in
                         emitter.onNext(profileData)
                     })
                     .disposed(by: strongSelf.disposeBag)
                 ProfileDomainModel.setIsLatestProfileData(true)
-            } else {
-                strongSelf.fetchLocalProfileData()
-                    .subscribe(onNext: { profileData in
-                        emitter.onNext(profileData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
             }
             return Disposables.create()
         }
@@ -47,19 +47,19 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     func fetchProfileImageData() -> Observable<Data> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            if ProfileDomainModel.isLatestProfileImageDataValue != true {
+            if ProfileDomainModel.isLatestProfileImageDataValue {
+                strongSelf.fetchLocalProfileImageData()
+                    .subscribe(onNext: { imageData in
+                        emitter.onNext(imageData)
+                    })
+                    .disposed(by: strongSelf.disposeBag)
+            } else {
                 strongSelf.fetchRemoteProfileImageData()
                     .subscribe(onNext: { imageData in
                         emitter.onNext(imageData)
                     })
                     .disposed(by: strongSelf.disposeBag)
                 ProfileDomainModel.setIsLatestProfileImageData(true)
-            } else {
-                strongSelf.fetchLocalProfileImageData()
-                    .subscribe(onNext: { imageData in
-                        emitter.onNext(imageData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
             }
             return Disposables.create()
         }
