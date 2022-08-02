@@ -61,8 +61,8 @@ struct ProfileData {
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
     func switchSaveButtonRelayValue()
-    func handOverProfileData(_ data: ProfileDomainModel)
-    func handOverProfileImageData(_ data: UIImage)
+    func handOverProfileDataToSave(_ data: ProfileDomainModel)
+    func handOverProfileImageDataToSave(_ data: UIImage)
 }
 
 protocol ProfileViewModelOutputProtocol {
