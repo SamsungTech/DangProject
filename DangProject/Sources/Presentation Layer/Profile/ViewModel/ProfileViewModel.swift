@@ -82,8 +82,8 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 }
 
 class ProfileViewModel: ProfileViewModelProtocol {
-    private var firebaseStoreUseCase: FirebaseFireStoreUseCase?
-    private let firebaseStorageUseCase: ManageFirebaseStorageUseCase?
+    private var manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase?
+    private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase?
     private let fetchProfileUseCase: FetchProfileUseCase?
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
@@ -94,11 +94,11 @@ class ProfileViewModel: ProfileViewModelProtocol {
     let heights: [String] = [Int](1...200).map{("\($0)")}
     let weights: [String] = [Int](1...150).map{("\($0)")}
     
-    init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
-         firebaseStorageUseCase: ManageFirebaseStorageUseCase,
+    init(manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase,
+         manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase,
          fetchProfileUseCase: FetchProfileUseCase) {
-        self.firebaseStoreUseCase = firebaseStoreUseCase
-        self.firebaseStorageUseCase = firebaseStorageUseCase
+        self.manageFirebaseStoreUseCase = manageFirebaseStoreUseCase
+        self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
         self.fetchProfileUseCase = fetchProfileUseCase
         self.getProfileData()
     }
@@ -115,7 +115,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     }
     
     func handOverProfileDataToSave(_ data: ProfileDomainModel) {
-        firebaseStoreUseCase?.updateProfileData(data)
+        manageFirebaseStoreUseCase?.updateProfileData(data)
     }
     
     func calculateScrollViewState(yPosition: CGFloat) {
@@ -136,7 +136,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     func handOverProfileImageDataToSave(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
-        firebaseStorageUseCase?.updateProfileImage(data)
+        manageFirebaseStorageUseCase?.updateProfileImage(data)
     }
     
     private func getProfileData() {

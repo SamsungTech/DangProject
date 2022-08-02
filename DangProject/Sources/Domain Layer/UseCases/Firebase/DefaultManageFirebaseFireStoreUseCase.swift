@@ -11,7 +11,7 @@ import RxRelay
 
 import FirebaseFirestore
 
-class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
+class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
     private let disposeBag = DisposeBag()
     
     // MARK: - Init

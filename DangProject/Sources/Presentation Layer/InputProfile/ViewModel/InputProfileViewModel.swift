@@ -42,10 +42,10 @@ protocol InputProfileViewModelProtocol: InputProfileViewModelInput, InputProfile
 
 class InputProfileViewModel: InputProfileViewModelProtocol {
     // MARK: - Init
-    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     
-    init(firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
-        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
+    init(manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
+        self.manageFirebaseFireStoreUseCase = manageFirebaseFireStoreUseCase
         checkReadyButtonIsValid()
     }
     
@@ -116,6 +116,6 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          gender: "",
                                          birthday: "")
         
-        firebaseFireStoreUseCase.uploadProfile(profile: profile)
+        manageFirebaseFireStoreUseCase.uploadProfile(profile: profile)
     }
 }

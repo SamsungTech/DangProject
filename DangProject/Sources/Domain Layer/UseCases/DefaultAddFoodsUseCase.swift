@@ -12,10 +12,10 @@ import RxSwift
 class DefaultAddFoodsUseCase: AddFoodsUseCase {
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository
-    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let firebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     
     init(coreDataManagerRepository: CoreDataManagerRepository,
-         firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
+         firebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
         self.coreDataManagerRepository = coreDataManagerRepository
         self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
     }

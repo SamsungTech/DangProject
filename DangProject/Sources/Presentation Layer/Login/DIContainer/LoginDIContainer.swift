@@ -7,21 +7,22 @@ class LoginDIContainer {
     }
     
     func makeLoginViewModel() -> LoginViewModel {
-        return LoginViewModel(firebaseAuthUseCase: makeFirebaseAuthUseCase(),
-                              firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase())
+        return LoginViewModel(manageFirebaseAuthUseCase: makeManageFirebaseAuthUseCase(),
+                              manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase())
     }
     
-    func makeFirebaseAuthUseCase() -> FirebaseAuthUseCase {
-        return DefaultFirebaseAuthUseCase(firebaseAuthRepository: makeFirebaseAuthRepository())
+    func makeManageFirebaseAuthUseCase() -> ManageFirebaseAuthUseCase {
+        return DefaultManageFirebaseAuthUseCase(firebaseAuthRepository: makeFirebaseAuthRepository())
     }
     
-    func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
-        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    func makeManageFirebaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
         return DefaultFireStoreManagerRepository()
     }
+    
     func makeFirebaseAuthRepository() -> FirebaseAuthManagerRepository {
         return DefaultFirebaseAuthManagerRepository()
     }

@@ -13,14 +13,6 @@ class AlarmDIContainer {
     }
     
     func makeAlarmViewModel() -> AlarmViewModel {
-        return AlarmViewModel(useCase: makeAlarmUseCase(), searchRowPositionFactory: SearchRowPositionFactory())
-    }
-    
-    func makeAlarmUseCase() -> SettingUseCase {
-        return SettingUseCase(repository: makeSettingRepository())
-    }
-    
-    func makeSettingRepository() -> SettingRepository {
-        return SettingRepository()
+        return AlarmViewModel(searchRowPositionFactory: SearchRowPositionFactory())
     }
 }

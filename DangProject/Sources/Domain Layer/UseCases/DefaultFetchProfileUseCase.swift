@@ -12,14 +12,14 @@ import RxSwift
 class DefaultFetchProfileUseCase: FetchProfileUseCase {
     private let disposeBag = DisposeBag()
     private var coreDataManagerRepository: CoreDataManagerRepository
-    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
     
     init(coreDataManagerRepository: CoreDataManagerRepository,
-         firebaseFireStoreUseCase: FirebaseFireStoreUseCase,
+         manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase,
          manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase) {
         self.coreDataManagerRepository = coreDataManagerRepository
-        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
+        self.manageFirebaseFireStoreUseCase = manageFirebaseFireStoreUseCase
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
     }
     
@@ -70,7 +70,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self,
                   let profileImage = self?.manageFirebaseStorageUseCase.getProfileImage(),
-                  let profileData = self?.firebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
+                  let profileData = self?.manageFirebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
             
             Observable.combineLatest(profileImage, profileData)
                 .subscribe(onNext: { profileImageData, profileData in
@@ -88,8 +88,8 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     
     private func fetchLocalProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
-            guard let result = self?.coreDataManagerRepository.fetchProfileEntityData(),
-                  let profileData = ProfileDomainModel.init(profileEntity: result) else { return Disposables.create() }
+            guard let result = self?.coreDataManagerRepository.fetchProfileEntityData() else { return Disposables.create() }
+            let profileData = ProfileDomainModel(result)
             emitter.onNext(profileData)
             return Disposables.create()
         }
@@ -99,7 +99,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self,
                   let profileImage = self?.manageFirebaseStorageUseCase.getProfileImage(),
-                  let profileData = self?.firebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
+                  let profileData = self?.manageFirebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
             
             Observable.combineLatest(profileImage, profileData)
                 .subscribe(onNext: { profileImage, profileData in

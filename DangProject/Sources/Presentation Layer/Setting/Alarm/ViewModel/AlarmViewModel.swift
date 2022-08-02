@@ -59,7 +59,6 @@ protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutp
 
 class AlarmViewModel: AlarmViewModelProtocol {
     private let disposeBag = DisposeBag()
-    private var useCase: SettingUseCase?
     private var dateFormatter = DateFormatter()
     private var searchRowPositionFactory: SearchRowPositionFactory
     var selectedIndexRelay = BehaviorRelay<IndexPath>(value: IndexPath(row: -1, section: 0))
@@ -67,15 +66,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
     var setUpCellStateRelay = BehaviorRelay<SetUpCellState>(value: .none)
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellData]>(value: [])
     
-    init(useCase: SettingUseCase,
-         searchRowPositionFactory: SearchRowPositionFactory) {
-        self.useCase = useCase
+    init(searchRowPositionFactory: SearchRowPositionFactory) {
         self.searchRowPositionFactory = searchRowPositionFactory
-    }
-    
-    func viewDidLoad() {
-        useCase?.startAlarmData()
-        bindAlarmArraySubject()
     }
     
     func branchOutSelectedIndex(_ indexPath: IndexPath) {
@@ -133,35 +125,5 @@ class AlarmViewModel: AlarmViewModelProtocol {
                 return UIScreen.main.bounds.maxY/5
             }
         }
-    }
-    
-    func deleteAlarmData(_ indexPath: IndexPath) {
-        useCase?.removeAlarmData(indexPath)
-    }
-    
-    func insertAlarmData(_ indexPath: IndexPath,
-                         _ alarmEntity: AlarmEntity) {
-        useCase?.insertAlarmData(indexPath, alarmEntity)
-    }
-    
-    func searchRowsPosition(alarmData: AlarmEntity) -> IndexPath {
-        var result = IndexPath(row: 0, section: 0)
-        if let data = useCase?.alarmArray {
-            result = searchRowPositionFactory.calculateRowPoint(alarmData, data)
-        }
-        return result
-    }
-    
-}
-
-extension AlarmViewModel {
-    private func bindAlarmArraySubject() {
-        useCase?.alarmArrayRelay
-            .map { $0.map { AlarmTableViewCellData.init(alarmEntity: $0) } }
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.alarmDataArrayRelay.accept($0)
-            })
-            .disposed(by: disposeBag)
     }
 }

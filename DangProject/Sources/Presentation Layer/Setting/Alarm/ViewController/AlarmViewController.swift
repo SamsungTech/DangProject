@@ -33,7 +33,6 @@ class AlarmViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel?.viewDidLoad()
         configureUI()
         bind()
     }
@@ -194,7 +193,6 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource, Alarm
             self.alarmTableView.deleteRows(at: [indexPath], with: .fade)
             self.alarmTableView.endUpdates()
         }
-        self.viewModel?.deleteAlarmData(indexPath)
     }
 }
 
@@ -219,18 +217,6 @@ extension AlarmViewController {
     }
     
     private func insertAlarmTableViewCell(_ alarmData: AlarmEntity) {
-        guard let insertIndexPath = self.viewModel?.searchRowsPosition(alarmData: alarmData) else { return }
-        self.viewModel?.insertAlarmData(insertIndexPath, alarmData)
-        DispatchQueue.main.async {
-            self.alarmTableView.beginUpdates()
-            self.alarmTableView.insertRows(at: [insertIndexPath], with: .fade)
-            self.alarmTableView.endUpdates()
-            self.alarmTableView.scrollToRow(at: insertIndexPath, at: .top, animated: true)
-            self.alarmTableView.delegate?.tableView?(self.alarmTableView, didDeselectRowAt: self.deSelectedIndexPath)
-            self.alarmTableView.delegate?.tableView?(self.alarmTableView, didSelectRowAt: insertIndexPath)
-            
-            self.deSelectedIndexPath = insertIndexPath
-        }
     }
     
     private func resetAlarmTableViewCellScale() {
