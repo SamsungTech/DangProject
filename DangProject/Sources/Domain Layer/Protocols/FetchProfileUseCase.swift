@@ -10,6 +10,5 @@ import Foundation
 import RxSwift
 
 protocol FetchProfileUseCase {
-    func fetchProfileImageData() -> Observable<Data>
     func fetchProfileData() -> Observable<ProfileDomainModel>
 }

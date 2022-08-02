@@ -96,11 +96,12 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     init(manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase,
          manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase,
-         fetchProfileUseCase: FetchProfileUseCase) {
+         fetchProfileUseCase: FetchProfileUseCase,
+         profileData: ProfileDomainModel) {
         self.manageFirebaseStoreUseCase = manageFirebaseStoreUseCase
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
         self.fetchProfileUseCase = fetchProfileUseCase
-        self.getProfileData()
+        self.profileDataRelay.accept(ProfileData(profileData))
     }
     
     func convertGenderTypeToString() -> String {
@@ -137,17 +138,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
     func handOverProfileImageDataToSave(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
         manageFirebaseStorageUseCase?.updateProfileImage(data)
-    }
-    
-    private func getProfileData() {
-        fetchProfileUseCase?.fetchProfileData()
-            .subscribe(onNext: { [weak self] profileData in
-                
-                guard let strongSelf = self else { return }
-                strongSelf.convertStringToGenderType(profileData.gender)
-                self?.profileDataRelay.accept(ProfileData(profileData))
-            })
-            .disposed(by: disposeBag)
     }
 
     private func convertStringToGenderType(_ data: String) {

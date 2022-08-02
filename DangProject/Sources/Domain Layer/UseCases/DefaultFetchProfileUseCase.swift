@@ -44,27 +44,6 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
         }
     }
     
-    func fetchProfileImageData() -> Observable<Data> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            if ProfileDomainModel.isLatestProfileImageDataValue {
-                strongSelf.fetchLocalProfileImageData()
-                    .subscribe(onNext: { imageData in
-                        emitter.onNext(imageData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-            } else {
-                strongSelf.fetchRemoteProfileImageData()
-                    .subscribe(onNext: { imageData in
-                        emitter.onNext(imageData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-                ProfileDomainModel.setIsLatestProfileImageData(true)
-            }
-            return Disposables.create()
-        }
-    }
-    
     // MARK: - Private
     private func fetchRemoteProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
@@ -91,33 +70,6 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
             guard let result = self?.coreDataManagerRepository.fetchProfileEntityData() else { return Disposables.create() }
             let profileData = ProfileDomainModel(result)
             emitter.onNext(profileData)
-            return Disposables.create()
-        }
-    }
-    
-    private func fetchRemoteProfileImageData() -> Observable<Data> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self,
-                  let profileImage = self?.manageFirebaseStorageUseCase.getProfileImage(),
-                  let profileData = self?.manageFirebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
-            
-            Observable.combineLatest(profileImage, profileData)
-                .subscribe(onNext: { profileImage, profileData in
-                    guard let profileImageData = UIImage(data: profileImage as Data) else { return }
-                    strongSelf.coreDataManagerRepository.updateProfileImageData(profileImageData,profileData)
-                    emitter.onNext(profileImage as Data)
-                })
-                .disposed(by: strongSelf.disposeBag)
-            
-            return Disposables.create()
-        }
-    }
-    
-    private func fetchLocalProfileImageData() -> Observable<Data> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            let profileImageData = strongSelf.coreDataManagerRepository.fetchProfileImageData()
-            emitter.onNext(profileImageData)
             return Disposables.create()
         }
     }

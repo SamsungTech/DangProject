@@ -52,6 +52,11 @@ class AccountViewController: UIViewController {
         bindUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel?.fetchProfileData()
+    }
+    
     private func configureUI() {
         setUpView()
         setUpAccountNavigationBar()
@@ -118,7 +123,8 @@ class AccountViewController: UIViewController {
         
         stackView.profileEditView.rx.tap
             .bind { [weak self] in
-                self?.coordinator?.pushProfileEditViewController()
+                guard let profileData = self?.viewModel?.profileDataRelay.value else { return }
+                self?.coordinator?.pushProfileEditViewController(profileData)
             }
             .disposed(by: disposeBag)
     }

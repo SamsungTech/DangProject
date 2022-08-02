@@ -9,14 +9,15 @@ import Foundation
 import UIKit
 
 class ProfileDIContainer {
-    func makeProfileViewController() -> ProfileViewController {
-        return ProfileViewController(viewModel: makeProfileViewModel())
+    func makeProfileViewController(_ profileData: ProfileDomainModel) -> ProfileViewController {
+        return ProfileViewController(viewModel: makeProfileViewModel(profileData))
     }
     
-    func makeProfileViewModel() -> ProfileViewModel {
+    func makeProfileViewModel(_ profileData: ProfileDomainModel) -> ProfileViewModel {
         return ProfileViewModel(manageFirebaseStoreUseCase: makeFirebaseStoreUseCase(),
                                 manageFirebaseStorageUseCase: makeFirebaseStorageUseCase(),
-                                fetchProfileUseCase: makeFetchProfileUseCase())
+                                fetchProfileUseCase: makeFetchProfileUseCase(),
+                                profileData: profileData)
     }
     
     func makeFetchProfileUseCase() -> FetchProfileUseCase {

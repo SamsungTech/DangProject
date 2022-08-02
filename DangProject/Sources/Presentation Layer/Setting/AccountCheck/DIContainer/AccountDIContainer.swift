@@ -13,6 +13,33 @@ class AccountDIContainer {
     }
     
     func makeAccountViewModel() -> AccountViewModel {
-        return AccountViewModel()
+        return AccountViewModel(fetchProfileUseCase: makeFetchProfileUseCase())
     }
+    
+    func makeFetchProfileUseCase() -> FetchProfileUseCase {
+        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                          manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
+                                          manageFirebaseStorageUseCase: makeManageFirebaseStorageUseCase())
+    }
+    
+    func makeManageFirebaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManageRepository())
+    }
+    
+    func makeManageFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFireStorageManageRepository())
+    }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
+    }
+    
+    func makeFireStoreManageRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
+    }
+    
+    func makeFireStorageManageRepository() -> FireBaseStorageManagerRepository {
+        return DefaultFirebaseStorageManagerRepository()
+    }
+    
 }
