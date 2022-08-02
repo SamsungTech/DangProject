@@ -226,8 +226,8 @@ class ProfileViewController: UIViewController {
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthday: birthData)
                 )
-                UserInfoKey.setIsLatestProfileImageData(false)
-                UserInfoKey.setIsLatestProfileData(false)
+                ProfileDomainModel.setIsLatestProfileImageData(false)
+                ProfileDomainModel.setIsLatestProfileData(false)
                 self?.coordinator?.dismissViewController(strongSelf)
             }
             .disposed(by: disposeBag)
@@ -262,8 +262,8 @@ class ProfileViewController: UIViewController {
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthday: birthData)
                 )
-                UserInfoKey.setIsLatestProfileImageData(false)
-                UserInfoKey.setIsLatestProfileData(false)
+                ProfileDomainModel.setIsLatestProfileImageData(false)
+                ProfileDomainModel.setIsLatestProfileData(false)
                 self?.coordinator?.dismissViewController(strongSelf)
             }
             .disposed(by: disposeBag)

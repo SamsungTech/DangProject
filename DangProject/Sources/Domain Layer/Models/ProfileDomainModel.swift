@@ -16,6 +16,17 @@ struct ProfileDomainModel {
                                    profileImage: UIImage(),
                                    gender: "",
                                    birthday: "")
+    static var isLatestProfileDataValue: Bool = false
+    static var isLatestProfileImageDataValue: Bool = false
+    
+    static func setIsLatestProfileData(_ data: Bool) {
+        self.isLatestProfileDataValue = data
+    }
+    
+    static func setIsLatestProfileImageData(_ data: Bool) {
+        self.isLatestProfileImageDataValue = data
+    }
+    
     var uid: String
     var name: String
     var height: Int

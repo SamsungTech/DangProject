@@ -26,13 +26,13 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     func fetchProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            if UserDefaults.standard.bool(forKey: UserInfoKey.isLatestProfileData) != true {
+            if ProfileDomainModel.isLatestProfileDataValue != true {
                 strongSelf.fetchRemoteProfileData()
                     .subscribe(onNext: { profileData in
                         emitter.onNext(profileData)
                     })
                     .disposed(by: strongSelf.disposeBag)
-                UserInfoKey.setIsLatestProfileData(true)
+                ProfileDomainModel.setIsLatestProfileData(true)
             } else {
                 strongSelf.fetchLocalProfileData()
                     .subscribe(onNext: { profileData in
@@ -47,20 +47,19 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     func fetchProfileImageData() -> Observable<Data> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            if UserDefaults.standard.bool(forKey: UserInfoKey.isLatestProfileImageData) != true {
+            if ProfileDomainModel.isLatestProfileImageDataValue != true {
                 strongSelf.fetchRemoteProfileImageData()
                     .subscribe(onNext: { imageData in
                         emitter.onNext(imageData)
                     })
                     .disposed(by: strongSelf.disposeBag)
-                UserInfoKey.setIsLatestProfileImageData(true)
+                ProfileDomainModel.setIsLatestProfileImageData(true)
             } else {
                 strongSelf.fetchLocalProfileImageData()
                     .subscribe(onNext: { imageData in
                         emitter.onNext(imageData)
                     })
                     .disposed(by: strongSelf.disposeBag)
-
             }
             return Disposables.create()
         }
