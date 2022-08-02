@@ -214,9 +214,9 @@ class ProfileViewController: UIViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                self?.viewModel.handOverProfileImageData(profileImage)
+                self?.viewModel.handOverProfileImageDataToSave(profileImage)
                 
-                self?.viewModel.handOverProfileData(
+                self?.viewModel.handOverProfileDataToSave(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,
@@ -251,8 +251,8 @@ class ProfileViewController: UIViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
-                self?.viewModel.handOverProfileImageData(profileImage)
-                self?.viewModel.handOverProfileData(
+                self?.viewModel.handOverProfileImageDataToSave(profileImage)
+                self?.viewModel.handOverProfileDataToSave(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,

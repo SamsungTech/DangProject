@@ -127,16 +127,7 @@ extension ProfileInformationStackView: UIPickerViewDataSource {
         if pickerView == weightPickerView {
             switch component {
             case 0:
-                return 150
-            case 1:
-                return 1
-            default:
-                return 0
-            }
-        } else if pickerView == heightPickerView {
-            switch component {
-            case 0:
-                return 200
+                return viewModel.weights.count
             case 1:
                 return 1
             default:
@@ -145,14 +136,13 @@ extension ProfileInformationStackView: UIPickerViewDataSource {
         } else {
             switch component {
             case 0:
-                return 100
+                return viewModel.heights.count
             case 1:
                 return 1
             default:
                 return 0
             }
         }
-        
     }
 }
 
@@ -169,7 +159,7 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
             default:
                 return ""
             }
-        } else if pickerView == heightPickerView {
+        } else {
             switch component {
             case 0:
                 return viewModel.heights[row]
@@ -179,7 +169,6 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
                 return ""
             }
         }
-        return ""
     }
     
     func pickerView(_ pickerView: UIPickerView,
@@ -187,9 +176,9 @@ extension ProfileInformationStackView: UIPickerViewDelegate {
                     inComponent component: Int) {
         switch pickerView {
         case weightPickerView:
-            weightView.profileTextField.text = String(row+1)
+            weightView.profileTextField.text = viewModel.weights[row]
         case heightPickerView:
-            heightView.profileTextField.text = String(row+1)
+            heightView.profileTextField.text = viewModel.heights[row]
         default:
             break
         }

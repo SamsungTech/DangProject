@@ -114,7 +114,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func handOverProfileData(_ data: ProfileDomainModel) {
+    func handOverProfileDataToSave(_ data: ProfileDomainModel) {
         firebaseStoreUseCase?.updateProfileData(data)
     }
     
@@ -134,7 +134,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func handOverProfileImageData(_ data: UIImage) {
+    func handOverProfileImageDataToSave(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
         firebaseStorageUseCase?.updateProfileImage(data)
     }
