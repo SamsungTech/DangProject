@@ -29,8 +29,9 @@ class CustomNavigationBar: UIView {
     private let dateLabel = UILabel()
     private let chevronButton = UIButton()
     private var chevronButtonState: ChevronButtonState = .revert
-    private(set) lazy var profileImageButton: UIButton = {
-        let button = UIButton()
+    private(set) lazy var profileImageButton: ProfileImageSmallButton = {
+        let button = ProfileImageSmallButton()
+        button.setImage(UIImage(systemName: "person.fill"), for: .normal)
         button.addTarget(self, action: #selector(profileImageButtonDidTap), for: .touchDown)
         return button
     }()
@@ -57,8 +58,6 @@ class CustomNavigationBar: UIView {
     
     private func setupProfileImageButton() {
         self.addSubview(profileImageButton)
-        profileImageButton.setImage(UIImage(named: "231.png"), for: .normal)
-        profileImageButton.viewRadius(cornerRadius: xValueRatio(20))
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
         profileImageButton.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
@@ -85,10 +84,10 @@ class CustomNavigationBar: UIView {
         chevronButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
         chevronButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
         chevronButton.heightAnchor.constraint(equalToConstant: xValueRatio(40)).isActive = true
-        chevronButton.addTarget(self, action: #selector(chevronButtonDidTapped), for: .touchUpInside)
+        chevronButton.addTarget(self, action: #selector(chevronButtonDidTap), for: .touchUpInside)
     }
     
-    @objc private func chevronButtonDidTapped() {
+    @objc private func chevronButtonDidTap() {
         changeChevronButton()
         parentableViewController?.changeViewControllerExpandation(state: chevronButtonState)
     }
@@ -134,9 +133,5 @@ class CustomNavigationBar: UIView {
     
     func changeNavigationBarTitleLabel(text: String) {
         dateLabel.text = text
-    }
-    
-    func setupProfileImage(_ imageData: UIImage) {
-        self.profileImageButton.setImage(imageData, for: .normal)
     }
 }

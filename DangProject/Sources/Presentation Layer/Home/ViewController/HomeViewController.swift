@@ -150,7 +150,7 @@ class HomeViewController: UIViewController {
     private func bindProfileImageData() {
         viewModel.profileImageDataRelay
             .subscribe(onNext: { [weak self] profileImageData in
-                self?.customNavigationBar.setupProfileImage(profileImageData)
+                self?.customNavigationBar.profileImageButton.setupProfileImageViewImage(profileImageData)
             })
             .disposed(by: disposeBag)
     }
