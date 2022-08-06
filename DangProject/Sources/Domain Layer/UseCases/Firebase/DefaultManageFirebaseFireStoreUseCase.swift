@@ -44,6 +44,7 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                     emitter.onNext(false)
                 }
             }
+            
             return Disposables.create()
         }
     }
