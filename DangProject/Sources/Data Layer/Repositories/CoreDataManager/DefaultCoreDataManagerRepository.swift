@@ -318,58 +318,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         return ProfileEntity.init().profileImage ?? Data()
     }
     
-    // MARK: - Private
-    
-    private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
-        switch coreDataName {
-        case .eatenFoods:
-            return EatenFoods.fetchRequest()
-        case .eatenFoodsPerDay:
-            return EatenFoodsPerDay.fetchRequest()
-        case .favoriteFoods:
-            return FavoriteFoods.fetchRequest()
-        case .recentQuery:
-            return RecentQuery.fetchRequest()
-        case .alarm:
-            return Alarm.fetchRequest()
-        case .profileEntity:
-            return ProfileEntity.fetchRequest()
-        }
-    }
-    
-    private func updateEatenFood(food: FoodDomainModel,
-                                 parentEatenFoodsPerDay: EatenFoodsPerDay,
-                                 eatenTime: Date) {
-        guard let context = self.context,
-              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoods.rawValue,
-                                                      in: context),
-              let eatenFoods = NSManagedObject(entity: entity, insertInto: context) as? EatenFoods
-        else { return }
-        eatenFoods.day = parentEatenFoodsPerDay
-        eatenFoods.name = food.name
-        eatenFoods.sugar = food.sugar
-        eatenFoods.foodCode = food.foodCode
-        eatenFoods.amount = Double(food.amount)
-        eatenFoods.eatenTime = eatenTime
-        
-        do {
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    private func loadArrayFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T] {
-        guard let context = self.context else { return [] }
-        do {
-            let results = try context.fetch(request)
-            return results
-        } catch {
-            print(error.localizedDescription)
-            return []
-        }
-    }
-    
     func createAlarmEntity(_ alarm: AlarmDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.alarm.rawValue, in: context),
@@ -427,6 +375,56 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         } catch {
             print(error.localizedDescription)
             return
+        }
+    }
+    
+    private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
+        switch coreDataName {
+        case .eatenFoods:
+            return EatenFoods.fetchRequest()
+        case .eatenFoodsPerDay:
+            return EatenFoodsPerDay.fetchRequest()
+        case .favoriteFoods:
+            return FavoriteFoods.fetchRequest()
+        case .recentQuery:
+            return RecentQuery.fetchRequest()
+        case .alarm:
+            return Alarm.fetchRequest()
+        case .profileEntity:
+            return ProfileEntity.fetchRequest()
+        }
+    }
+    
+    private func updateEatenFood(food: FoodDomainModel,
+                                 parentEatenFoodsPerDay: EatenFoodsPerDay,
+                                 eatenTime: Date) {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoods.rawValue,
+                                                      in: context),
+              let eatenFoods = NSManagedObject(entity: entity, insertInto: context) as? EatenFoods
+        else { return }
+        eatenFoods.day = parentEatenFoodsPerDay
+        eatenFoods.name = food.name
+        eatenFoods.sugar = food.sugar
+        eatenFoods.foodCode = food.foodCode
+        eatenFoods.amount = Double(food.amount)
+        eatenFoods.eatenTime = eatenTime
+        
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func loadArrayFromCoreData<T: NSManagedObject>(request: NSFetchRequest<T>) -> [T] {
+        guard let context = self.context else { return [] }
+        do {
+            let results = try context.fetch(request)
+            return results
+        } catch {
+            print(error.localizedDescription)
+            return []
         }
     }
 }
