@@ -26,5 +26,10 @@ protocol CoreDataManagerRepository {
                                       date: Date)
     func updateLocal(data: EatenFoodsPerDayDomainModel,
                      date: Date)
+    func createAlarmEntity(_ alarm: AlarmDomainModel)
+    func readTotalAlarmEntity() -> [AlarmDomainModel]
+    func updateAlarmEntity(_ alarm: AlarmDomainModel)
+    func deleteAlarmEntity(_ alarm: AlarmDomainModel)
+
 }
 

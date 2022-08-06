@@ -15,6 +15,7 @@ enum CoreDataName: String {
     case recentQuery = "RecentQuery"
     case eatenFoods = "EatenFoods"
     case eatenFoodsPerDay = "EatenFoodsPerDay"
+    case alarm = "Alarm"
 }
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
@@ -44,6 +45,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             }
             
             return Disposables.create()
+
         }
     }
     
@@ -145,6 +147,8 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return loadArrayFromCoreData(request: EatenFoods.fetchRequest())
         case .eatenFoodsPerDay:
             return loadArrayFromCoreData(request: EatenFoodsPerDay.fetchRequest())
+        case .alarm:
+            return loadArrayFromCoreData(request: Alarm.fetchRequest())
         }
     }
     
@@ -226,6 +230,8 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return FavoriteFoods.fetchRequest()
         case .recentQuery:
             return RecentQuery.fetchRequest()
+        case .alarm:
+            return Alarm.fetchRequest()
         }
     }
     
@@ -259,6 +265,66 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         } catch {
             print(error.localizedDescription)
             return []
+        }
+    }
+    
+    func createAlarmEntity(_ alarm: AlarmDomainModel) {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.alarm.rawValue, in: context),
+              let alarmEntity = NSManagedObject(entity: entity, insertInto: context) as? Alarm else { return }
+        alarmEntity.isOn = alarm.isOn
+        alarmEntity.title = alarm.title
+        alarmEntity.message = alarm.message
+        alarmEntity.time = alarm.time
+        alarmEntity.identifier = alarm.identifier
+        alarmEntity.selectedDays = alarm.selectedDaysOfTheWeek.map{ $0.rawValue }
+        
+        do {
+            try context.save ()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func readTotalAlarmEntity() -> [AlarmDomainModel] {
+        let result = loadArrayFromCoreData(request: Alarm.fetchRequest())
+        let alarmDomainModelArray = result.map{ AlarmDomainModel.init(alarmEntity: $0) }
+        return alarmDomainModelArray.sorted { $0.time < $1.time }
+    }
+    
+    func updateAlarmEntity(_ alarm: AlarmDomainModel) {
+        let request = Alarm.fetchRequest()
+        request.predicate = NSPredicate(format: "identifier == %@", alarm.identifier)
+        do {
+            if let checkedAlarmEntity = try context?.fetch(request),
+               checkedAlarmEntity.count != 0 {
+                checkedAlarmEntity[0].isOn = alarm.isOn
+                checkedAlarmEntity[0].title = alarm.title
+                checkedAlarmEntity[0].message = alarm.message
+                checkedAlarmEntity[0].time = alarm.time
+                checkedAlarmEntity[0].selectedDays = alarm.selectedDaysOfTheWeek.map{ $0.rawValue }
+                try context?.save()
+                return
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
+        }
+    }
+
+    func deleteAlarmEntity(_ alarm: AlarmDomainModel) {
+        let request = Alarm.fetchRequest()
+        request.predicate = NSPredicate(format: "identifier == %@", alarm.identifier)
+        do {
+            if let checkedAlarmEntity = try context?.fetch(request),
+               checkedAlarmEntity.count != 0{
+                context?.delete(checkedAlarmEntity[0])
+                try context?.save()
+                return
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
         }
     }
 }

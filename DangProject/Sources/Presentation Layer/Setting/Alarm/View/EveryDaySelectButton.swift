@@ -7,11 +7,11 @@
 
 import UIKit
 
-class AlarmSelectedDaysButton: UIButton {
-    private(set) lazy var circleView: UIView = {
-        let view = UIView()
+class EveryDaySelectButton: UIButton {
+    
+    private(set) lazy var circleView: UIImageView = {
+        let view = UIImageView()
         view.backgroundColor = .clear
-        view.layer.borderWidth = 2.5
         view.layer.borderColor = UIColor.lightGray.cgColor
         view.viewRadius(cornerRadius: xValueRatio(10))
         return view
@@ -33,9 +33,20 @@ class AlarmSelectedDaysButton: UIButton {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func setCircleViewCheckMark() {
+        circleView.layer.borderWidth = 0
+        circleView.image = UIImage.init(systemName: "checkmark.circle.fill")
+        circleView.tintColor = .circleColorGreen
+    }
+    
+    func setCircleViewNormal() {
+        circleView.image = nil
+        circleView.layer.borderWidth = 2
+    }
 }
 
-extension AlarmSelectedDaysButton {
+extension EveryDaySelectButton {
     private func configureUI() {
         setUpCircleView()
         setUpDaysLabel()

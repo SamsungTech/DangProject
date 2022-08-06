@@ -31,7 +31,6 @@ protocol DetailFoodViewModelOutput {
 protocol DetailFoodViewModelProtocol: DetailFoodViewModelInput, DetailFoodViewModelOutput {}
 
 class DetailFoodViewModel: DetailFoodViewModelProtocol {
-    
     // MARK: - Init
     var detailFood: FoodViewModel
     private let addFoodsUseCase: AddFoodsUseCase
@@ -40,6 +39,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
         self.detailFood = detailFood
         self.addFoodsUseCase = addFoodsUseCase
     }
+
     // MARK: - Input
     var amount: Int = 1
     var pickerViewIsActivatedObservable = BehaviorRelay(value: false)
