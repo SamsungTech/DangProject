@@ -16,15 +16,19 @@ class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var diContainer = ProfileDIContainer()
     private var pickerController: UIImagePickerController?
+    private var profileData: ProfileDomainModel?
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController,
+         profileData: ProfileDomainModel) {
         self.navigationController = navigationController
+        self.profileData = profileData
     }
     
     func start() {
-        let viewController = diContainer.makeProfileViewController()
+        guard let profileData = profileData else { return }
+        let viewController = diContainer.makeProfileViewController(profileData)
         viewController.coordinator = self
-        self.navigationController.pushViewController(viewController, animated: true)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     func childDidFinish(_ child: Coordinator?) {

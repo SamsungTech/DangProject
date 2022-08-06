@@ -42,9 +42,7 @@ protocol AlarmViewModelOutputProtocol: AnyObject {
 protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutputProtocol {}
 
 class AlarmViewModel: AlarmViewModelProtocol {
-    
     private let disposeBag = DisposeBag()
-    
     var alarmDataArrayRelay = BehaviorRelay<[AlarmTableViewCellViewModel]>(value: [])
     lazy var alarmData: [AlarmTableViewCellViewModel] = { alarmDataArrayRelay.value }()
     lazy var cellScaleWillExpand: Bool = false

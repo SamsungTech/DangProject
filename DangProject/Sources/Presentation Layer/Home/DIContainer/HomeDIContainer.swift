@@ -5,7 +5,6 @@
 //  Created by 김동우 on 2022/01/19.
 //
 
-import Foundation
 import UIKit
 
 class HomeDIContainer {
@@ -20,7 +19,8 @@ class HomeDIContainer {
     }
     
     func makeHomeViewModel() -> HomeViewModelProtocol{
-        return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+        return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
+                             fetchProfileUseCase: makeFetchProfileUseCase())
     }
     
     func makeCalendarView() -> CalendarView {
@@ -37,7 +37,7 @@ class HomeDIContainer {
     
     func makeCalendarViewModel() -> CalendarViewModel {
         return CalendarViewModel(calendarService: makeCalendarService(),
-                                 fetchEatenFoodsUsecase: fetchEatenFoodsUseCase)
+                                 fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
     func makeCalendarService() -> CalendarService {
@@ -52,16 +52,31 @@ class HomeDIContainer {
         return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
+    func makeFetchProfileUseCase() -> FetchProfileUseCase {
+        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                          manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
+                                          manageFirebaseStorageUseCase: makeManageFirebaseStorageUseCase())
+    }
+    
     func makeFetchEatenFoodsUseCase() -> FetchEatenFoodsUseCase {
-        return DefaultFetchEatenFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(), firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase())
+        return DefaultFetchEatenFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                             manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase())
     }
 
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
     }
     
-    func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
-        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    func makeManageFirebaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    }
+    
+    func makeManageFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
+    }
+    
+    func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
+        return DefaultFirebaseStorageManagerRepository()
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {

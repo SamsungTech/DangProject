@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Alarm" representedClassName="Alarm" syncable="YES">
-            <attribute name="identifier" optional="YES" attributeType="String"/>
-            <attribute name="isOn" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-            <attribute name="message" optional="YES" attributeType="String"/>
-            <attribute name="selectedDays" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[Int]"/>
-            <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-            <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="isOn" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="message" optional="YES" attributeType="String"/>
+        <attribute name="selectedDays" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[Int]"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <entity name="EatenFoods" representedClassName="EatenFoods" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -25,13 +25,24 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="sugar" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="ProfileEntity" representedClassName="ProfileEntity" syncable="YES">
+        <attribute name="birthday" optional="YES" attributeType="String"/>
+        <attribute name="gender" optional="YES" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="profileImage" optional="YES" attributeType="Binary"/>
+        <attribute name="sugarLevel" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="RecentQuery" representedClassName="RecentQuery" syncable="YES">
         <attribute name="keyword" optional="YES" attributeType="String"/>
     </entity>
     <elements>
+        <element name="Alarm" positionX="160" positionY="192" width="128" height="119"/>
         <element name="EatenFoods" positionX="-10652.74450683594" positionY="-1245.929382324219" width="128" height="119"/>
         <element name="EatenFoodsPerDay" positionX="-10944" positionY="-1197" width="128" height="59"/>
         <element name="FavoriteFoods" positionX="-11295.39193725586" positionY="-1298.771240234375" width="128" height="74"/>
+        <element name="ProfileEntity" positionX="-11088" positionY="-1215" width="128" height="134"/>
         <element name="RecentQuery" positionX="-11138.21527099609" positionY="-1271.575317382812" width="128" height="44"/>
     </elements>
 </model>

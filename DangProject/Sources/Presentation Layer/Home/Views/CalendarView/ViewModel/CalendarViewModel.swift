@@ -60,17 +60,17 @@ class CalendarViewModel: CalendarViewModelProtocol {
     var monthlyEatenFoodsDatas: [EatenFoodsPerDayDomainModel] = []
     // MARK: - Init
     let calendarService: CalendarService
-    let fetchEatenFoodsUsecase: FetchEatenFoodsUseCase
+    let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     
     init(calendarService: CalendarService,
-         fetchEatenFoodsUsecase: FetchEatenFoodsUseCase) {
+         fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
         self.calendarService = calendarService
-        self.fetchEatenFoodsUsecase = fetchEatenFoodsUsecase
+        self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         bindTotalMonthEatenFoods()
     }
     
     private func bindTotalMonthEatenFoods() {
-        fetchEatenFoodsUsecase.totalMonthsDataObservable
+        fetchEatenFoodsUseCase.totalMonthsDataObservable
             .subscribe(onNext: { [weak self] totalMonths in
                 self?.checkSelectedCalendarWillShow()
                 self?.checkCurrentCalendarWillShow()

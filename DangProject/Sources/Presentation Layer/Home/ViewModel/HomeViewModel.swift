@@ -15,6 +15,7 @@ enum CalendarScaleState {
     case revert
 }
 protocol HomeViewModelInputProtocol {
+    func fetchProfileData()
     func fetchCurrentMonthData(dateComponents: DateComponents)
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents)
     func fetchOnlyCalendar(_ dateComponents: DateComponents)
@@ -24,7 +25,7 @@ protocol HomeViewModelInputProtocol {
 
 protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
-    var profileImageDataRelay: BehaviorRelay<UIImage> { get }
+    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
     func checkEatenFoodsTitleText(dateComponents: DateComponents) -> String
 }
@@ -37,10 +38,21 @@ class HomeViewModel: HomeViewModelProtocol {
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
-    internal let profileImageDataRelay = BehaviorRelay<UIImage>(value: UIImage())
+    private let fetchProfileUseCase: FetchProfileUseCase
+    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
-    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
+    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
+         fetchProfileUseCase: FetchProfileUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
+    }
+    
+    func fetchProfileData() {
+        fetchProfileUseCase.fetchProfileData()
+            .subscribe(onNext: { [weak self] in
+                self?.profileDataRelay.accept($0)
+            })
+            .disposed(by: disposeBag)
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {

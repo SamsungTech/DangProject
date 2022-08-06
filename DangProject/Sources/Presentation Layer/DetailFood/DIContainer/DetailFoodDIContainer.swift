@@ -25,15 +25,15 @@ class DetailFoodDIContainer {
     
     func makeAddFoodsUseCase() -> AddFoodsUseCase {
         return DefaultAddFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
-                               firebaseFireStoreUseCase: makeFireBaseFireStoreUseCase())
+                               firebaseFireStoreUseCase: makeManageFireBaseFireStoreUseCase())
     }
     
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
     }
     
-    func makeFireBaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
-        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    func makeManageFireBaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {

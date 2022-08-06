@@ -16,10 +16,10 @@ enum CoreDataName: String {
     case eatenFoods = "EatenFoods"
     case eatenFoodsPerDay = "EatenFoodsPerDay"
     case alarm = "Alarm"
+    case profileEntity = "ProfileEntity"
 }
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
-    
     private let disposeBag = DisposeBag()
     private let appDelegate = UIApplication.shared.delegate as? AppDelegate
     private lazy var context = appDelegate?.persistentContainer.viewContext
@@ -70,6 +70,23 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         return EatenFoodsPerDay.init()
     }
     
+    func fetchProfileEntityData() -> ProfileEntity {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let checkedProfileEntity = try self.context?.fetch(request) {
+                if checkedProfileEntity.count == 0 {
+                    return ProfileEntity.init()
+                } else {
+                    return checkedProfileEntity[0]
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return ProfileEntity.init()
+        }
+        return ProfileEntity.init()
+    }
+    
     func addFavoriteFood(food: FoodDomainModel) {
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.favoriteFoods.rawValue, in: context),
@@ -115,9 +132,18 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         deleteEatenFoodsPerDay(date: date)
         createEatenFoodPerDay(date: date)
         data.eatenFoods.forEach { food in
-        let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
-            updateEatenFood(food: food, parentEatenFoodsPerDay: eatenFoodsPerDay, eatenTime: food.eatenTime.dateValue())
+            let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
+            updateEatenFood(
+                food: food,
+                parentEatenFoodsPerDay: eatenFoodsPerDay,
+                eatenTime: food.eatenTime.dateValue()
+            )
         }
+    }
+    
+    func updateLocalProfileData(_ profileData: ProfileDomainModel) {
+        deleteProfileData()
+        createProfileData(profileData)
     }
     
     func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
@@ -149,6 +175,53 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return loadArrayFromCoreData(request: EatenFoodsPerDay.fetchRequest())
         case .alarm:
             return loadArrayFromCoreData(request: Alarm.fetchRequest())
+        case .profileEntity:
+            return loadArrayFromCoreData(request: ProfileEntity.fetchRequest())
+        }
+    }
+    
+    func deleteProfileData() {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let profileData = try context?.fetch(request) {
+                if profileData.count == 0 {
+                    return
+                } else {
+                    context?.delete(profileData[0])
+                    try context?.save()
+                    return
+                }
+            } else {
+                return
+            }
+        } catch {
+            print(error.localizedDescription)
+            return
+        }
+    }
+    
+    func createProfileData(_ data: ProfileDomainModel) {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.profileEntity.rawValue,
+                                                      in: context),
+              let profileEntity = NSManagedObject(entity: entity, insertInto: context) as? ProfileEntity
+        else { return }
+        
+        let image = data.profileImage.pngData()
+        
+        profileEntity.name = data.name
+        profileEntity.birthday = data.birthday
+        profileEntity.gender = data.gender
+        profileEntity.sugarLevel = Int32(data.sugarLevel)
+        profileEntity.weight = Int32(data.weight)
+        profileEntity.height = Int32(data.height)
+        profileEntity.profileImage = image
+        
+        do {
+            try context.save()
+            print("profile 저장완료")
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
@@ -218,7 +291,34 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
         }
     }
-    //MARK: - Private
+    
+    func updateProfileImageData(_ imageData: UIImage,
+                                _ profileData: ProfileDomainModel) {
+        var profileData = profileData
+        profileData.profileImage = imageData
+        
+        deleteProfileData()
+        createProfileData(profileData)
+    }
+    
+    func fetchProfileImageData() -> Data {
+        let request = ProfileEntity.fetchRequest()
+        do {
+            if let checkedProfileData = try self.context?.fetch(request) {
+                if checkedProfileData.count == 0 {
+                    return ProfileEntity.init().profileImage ?? Data()
+                } else {
+                    return checkedProfileData[0].profileImage ?? Data()
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return ProfileEntity.init().profileImage ?? Data()
+        }
+        return ProfileEntity.init().profileImage ?? Data()
+    }
+    
+    // MARK: - Private
     
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
         switch coreDataName {
@@ -232,6 +332,8 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return RecentQuery.fetchRequest()
         case .alarm:
             return Alarm.fetchRequest()
+        case .profileEntity:
+            return ProfileEntity.fetchRequest()
         }
     }
     

@@ -15,7 +15,18 @@ struct ProfileDomainModel {
                                    sugarLevel: 0,
                                    profileImage: UIImage(),
                                    gender: "",
-                                   birthDay: "")
+                                   birthday: "")
+    static var isLatestProfileDataValue: Bool = false
+    static var isLatestProfileImageDataValue: Bool = false
+    
+    static func setIsLatestProfileData(_ data: Bool) {
+        self.isLatestProfileDataValue = data
+    }
+    
+    static func setIsLatestProfileImageData(_ data: Bool) {
+        self.isLatestProfileImageDataValue = data
+    }
+    
     var uid: String
     var name: String
     var height: Int
@@ -23,7 +34,7 @@ struct ProfileDomainModel {
     var sugarLevel: Int
     var profileImage: UIImage
     var gender: String
-    var birthDay: String
+    var birthday: String
     
     init(uid: String,
          name: String,
@@ -32,7 +43,7 @@ struct ProfileDomainModel {
          sugarLevel: Int,
          profileImage: UIImage,
          gender: String,
-         birthDay: String) {
+         birthday: String) {
         self.uid = uid
         self.name = name
         self.height = height
@@ -40,9 +51,17 @@ struct ProfileDomainModel {
         self.sugarLevel = sugarLevel
         self.profileImage = profileImage
         self.gender = gender
-        self.birthDay = birthDay
+        self.birthday = birthday
+    }
+    
+    init(_ profileEntity: ProfileEntity) {
+        self.uid = ""
+        self.profileImage = UIImage(data: profileEntity.profileImage ?? Data()) ?? UIImage()
+        self.name = profileEntity.name ?? ""
+        self.height = Int(profileEntity.height)
+        self.weight = Int(profileEntity.weight)
+        self.sugarLevel = Int(profileEntity.sugarLevel)
+        self.gender = profileEntity.gender ?? ""
+        self.birthday = profileEntity.birthday ?? ""
     }
 }
-
-
-

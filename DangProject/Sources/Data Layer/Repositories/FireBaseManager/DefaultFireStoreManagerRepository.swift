@@ -45,7 +45,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
             "gender": "\(profile.gender)",
-            "birthDay": "\(profile.birthDay)"
+            "birthDay": "\(profile.birthday)"
         ] as [String : Any]
         
         database.collection("app")

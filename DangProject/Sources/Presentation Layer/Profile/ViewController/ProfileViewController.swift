@@ -78,6 +78,11 @@ class ProfileViewController: UIViewController {
         view.bringSubviewToFront(profileNavigationBar)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
@@ -209,9 +214,9 @@ class ProfileViewController: UIViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                self?.viewModel.passProfileImageData(profileImage)
+                self?.viewModel.handOverProfileImageDataToSave(profileImage)
                 
-                self?.viewModel.passProfileData(
+                self?.viewModel.handOverProfileDataToSave(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,
@@ -219,8 +224,10 @@ class ProfileViewController: UIViewController {
                                        sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                        profileImage: profileImage,
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                       birthDay: birthData)
+                                       birthday: birthData)
                 )
+                ProfileDomainModel.setIsLatestProfileImageData(false)
+                ProfileDomainModel.setIsLatestProfileData(false)
                 self?.coordinator?.dismissViewController(strongSelf)
             }
             .disposed(by: disposeBag)
@@ -244,8 +251,8 @@ class ProfileViewController: UIViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
-                self?.viewModel.passProfileImageData(profileImage)
-                self?.viewModel.passProfileData(
+                self?.viewModel.handOverProfileImageDataToSave(profileImage)
+                self?.viewModel.handOverProfileDataToSave(
                     ProfileDomainModel(uid: "",
                                        name: nameData,
                                        height: Int(heightData) ?? 0,
@@ -253,8 +260,10 @@ class ProfileViewController: UIViewController {
                                        sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                        profileImage: profileImage,
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                       birthDay: birthData)
+                                       birthday: birthData)
                 )
+                ProfileDomainModel.setIsLatestProfileImageData(false)
+                ProfileDomainModel.setIsLatestProfileData(false)
                 self?.coordinator?.dismissViewController(strongSelf)
             }
             .disposed(by: disposeBag)
@@ -269,11 +278,11 @@ class ProfileViewController: UIViewController {
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
                 self?.profileStackView.weightPickerView.selectRow($0.weight-1, inComponent: 0, animated: false)
                 if #available(iOS 13.4, *) {
-                    guard let date = self?.dateFormatter.date(from: $0.birthDay) else { return }
-                    self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthDay
+                    guard let date = self?.dateFormatter.date(from: $0.birthday) else { return }
+                    self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthday
                     self?.profileStackView.birthDatePickerView.pickerView.date = date
                 } else {
-                    self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthDay
+                    self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthday
                 }
                 self?.profileImageButton.profileImageView.image = $0.profileImage
             })

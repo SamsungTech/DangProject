@@ -20,11 +20,12 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository
-    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
+    
     init(coreDataManagerRepository: CoreDataManagerRepository,
-         firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
+         manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
         self.coreDataManagerRepository = coreDataManagerRepository
-        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
+        self.manageFirebaseFireStoreUseCase = manageFirebaseFireStoreUseCase
     }
     
     // MARK: - Internal
@@ -182,7 +183,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         return Observable.create() { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create()}
             var tempData: EatenFoodsPerDayDomainModel = .empty
-            self?.firebaseFireStoreUseCase.getEatenFoods(dateComponents: dateComponents)
+            self?.manageFirebaseFireStoreUseCase.getEatenFoods(dateComponents: dateComponents)
                 .subscribe(onNext: { eatenFoods in
                     let date: Date = .makeDate(year: dateComponents.year!,
                                                month: dateComponents.month!,
