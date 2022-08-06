@@ -27,5 +27,4 @@ extension ProfileEntity {
 }
 
 extension ProfileEntity : Identifiable {
-
 }
