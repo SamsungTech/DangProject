@@ -23,7 +23,7 @@ class HomeViewController: UIViewController {
     private let calendarView: CalendarView
     
     private let graphTitleView = GraphTitleView()
-    private var homeGraphView = HomeGraphView()
+    private var homeGraphView: HomeGraphView
     
     private var homeScrollView = UIScrollView()
     private var homeStackView = UIStackView()
@@ -38,10 +38,12 @@ class HomeViewController: UIViewController {
     init(viewModel: HomeViewModelProtocol,
          calendarView: CalendarView,
          eatenFoodsView: EatenFoodsView,
-         batteryView: BatteryView) {
+         batteryView: BatteryView,
+         homeGraphView: HomeGraphView) {
         self.calendarView = calendarView
         self.eatenFoodsView = eatenFoodsView
         self.batteryView = batteryView
+        self.homeGraphView = homeGraphView
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

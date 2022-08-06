@@ -15,7 +15,7 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
     private let disposeBag = DisposeBag()
     
     
-    var yearMonthDayDataSubject = PublishSubject<GraphData>()
+    var yearMonthDayDataSubject = PublishSubject<GraphDomainModel>()
     var yearMonthDayDataRelay = BehaviorRelay<[[String : Any]]>(value: [])
     
     
@@ -54,9 +54,9 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
                     yearMonthDaysArray.append(dayData)
                 }
                 self?.yearMonthDayDataSubject.onNext(
-                    GraphData(yearArray: yearArray,
-                              monthArray: monthArray,
-                              dayArray: daysArray)
+                    GraphDomainModel(yearArray: yearArray,
+                                     monthArray: monthArray,
+                                     dayArray: daysArray)
                 )
                 
                 self?.yearMonthDayDataRelay.accept(yearMonthDaysArray)

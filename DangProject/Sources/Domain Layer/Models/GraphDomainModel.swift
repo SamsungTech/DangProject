@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GraphData {
+struct GraphDomainModel {
     static let empty: Self = .init(yearArray: [], monthArray: [], dayArray: [])
     var yearArray: [String]
     var monthArray: [String]

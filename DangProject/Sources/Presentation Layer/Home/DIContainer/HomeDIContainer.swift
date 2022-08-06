@@ -15,7 +15,8 @@ class HomeDIContainer {
         return HomeViewController(viewModel: makeHomeViewModel(),
                                   calendarView: makeCalendarView(),
                                   eatenFoodsView: makeEatenFoodsView(),
-                                  batteryView: makeBatteryView())
+                                  batteryView: makeBatteryView(),
+                                  homeGraphView: makeGraphView())
     }
     
     func makeHomeViewModel() -> HomeViewModelProtocol{
@@ -41,7 +42,11 @@ class HomeDIContainer {
     }
     
     func makeGraphView() -> HomeGraphView {
-        return HomeGraphView()
+        return HomeGraphView(viewModel: makeGraphViewModel())
+    }
+    
+    func makeGraphViewModel() -> GraphViewModel {
+        return GraphViewModel(fetchGraphDataUseCase: makeFetchGraphDataUseCase())
     }
     
     func makeCalendarService() -> CalendarService {
@@ -56,6 +61,10 @@ class HomeDIContainer {
         return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
+    func makeFetchGraphDataUseCase() -> FetchGraphDataUseCase {
+        return DefaultFetchGraphDataUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    }
+    
     func makeFetchProfileUseCase() -> FetchProfileUseCase {
         return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
                                           manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
@@ -67,6 +76,10 @@ class HomeDIContainer {
                                              manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase())
     }
 
+    func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
+    }
+    
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
     }
@@ -81,9 +94,5 @@ class HomeDIContainer {
     
     func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
         return DefaultFirebaseStorageManagerRepository()
-    }
-    
-    func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
-        return DefaultFireStoreManagerRepository()
     }
 }
