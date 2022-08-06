@@ -23,7 +23,5 @@ extension ProfileEntity {
     @NSManaged public var profileImage: Data?
     @NSManaged public var sugarLevel: Int32
     @NSManaged public var weight: Int32
-}
 
-extension ProfileEntity : Identifiable {
 }
