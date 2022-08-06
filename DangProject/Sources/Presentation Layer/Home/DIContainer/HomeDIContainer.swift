@@ -40,6 +40,10 @@ class HomeDIContainer {
                                  fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
+    func makeGraphView() -> HomeGraphView {
+        return HomeGraphView()
+    }
+    
     func makeCalendarService() -> CalendarService {
         return DefaultCalendarService()
     }

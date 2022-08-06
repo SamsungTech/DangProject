@@ -10,7 +10,7 @@ import RxSwift
 
 class HomeGraphView: UIView {
     static let identifier = "HomeGraphCell"
-    private var viewModel: GraphViewModel?
+    private var viewModel: GraphViewModel
     private var disposeBag = DisposeBag()
     private var graphMainView = UIView()
     private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Month", "Year"])
@@ -19,10 +19,11 @@ class HomeGraphView: UIView {
     private var graphNameStackView = UIStackView()
     private let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: GraphViewModel) {
+        self.viewModel = viewModel
         configure()
         layout()
+        bindItems()
     }
     
     override func draw(_ rect: CGRect) {
@@ -33,11 +34,6 @@ class HomeGraphView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func bind(viewModel: GraphViewModel) {
-        self.viewModel = viewModel
-        subscribe()
     }
 }
 
@@ -150,7 +146,7 @@ extension HomeGraphView {
         }
     }
     
-    private func subscribe() {
+    private func bindItems() {
         viewModel?.items
             .subscribe(onNext: { [weak self] in
                 self?.createGraphViews(items: $0)
