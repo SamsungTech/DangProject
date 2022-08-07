@@ -49,7 +49,7 @@ class OnboardingViewModel {
     }
 
     func changeUserDefaultsOnboardingValue() {
-        UserDefaults.standard.set(true, forKey: UserInfoKey.isFirstTime)
+        UserDefaults.standard.set(true, forKey: UserInfoKey.tutorialFinished)
     }
     // MARK: - Output
     var viewControllers = [OnboardingContentViewController]()
