@@ -7,11 +7,11 @@ class InputProfileDIContainer {
     }
     
     func makeInputProfileViewModel() -> InputProfileViewModel {
-        return InputProfileViewModel(firebaseFireStoreUseCase: makeFirebaseFireStoreUseCase())
+        return InputProfileViewModel(manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase())
     }
     
-    func makeFirebaseFireStoreUseCase() -> FirebaseFireStoreUseCase {
-        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    func makeManageFirebaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {

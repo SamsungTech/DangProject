@@ -11,7 +11,7 @@ import RxRelay
 
 import FirebaseFirestore
 
-class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
+class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
     private let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -58,12 +58,11 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                         switch key {
                         case "name": domainProfileData.name = value as? String ?? ""
                         case "gender": domainProfileData.gender = value as? String ?? ""
-                        case "image": domainProfileData.profileImage = value as? UIImage ?? UIImage()
                         case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
                         case "uid": domainProfileData.uid = value as? String ?? ""
                         case "weight": domainProfileData.weight = value as? Int ?? 0
                         case "height": domainProfileData.height = value as? Int ?? 0
-                        case "birthDay": domainProfileData.birthDay = value as? String ?? ""
+                        case "birthDay": domainProfileData.birthday = value as? String ?? ""
                         default: break
                         }
                     }
@@ -214,7 +213,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
     
     private func createGraphArray(_ data: [String:Any],
                                   _ type: String) -> [String] {
-        
         let thisData = createThisData(type)
         var yearArray: [String] = []
         var array: [String] = []
@@ -223,7 +221,6 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
             let result = thisData - i
             yearArray.append(String(result))
         }
-        
         for j in yearArray {
             data.forEach { (key, value) in
                 if j == key {
@@ -238,9 +235,7 @@ class DefaultFirebaseFireStoreUseCase: FirebaseFireStoreUseCase {
                 array.append("0")
             }
         }
-        
         array = array.reversed()
-        
         return array
     }
     

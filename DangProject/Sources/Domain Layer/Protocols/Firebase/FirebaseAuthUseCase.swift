@@ -9,7 +9,7 @@ import Foundation
 
 import RxSwift
 
-protocol FirebaseAuthUseCase {
+protocol ManageFirebaseAuthUseCase {
     var authObservable: PublishSubject<(Bool, String)> { get }
     func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String) -> Observable<(Bool, String)>
 }

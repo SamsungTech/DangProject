@@ -7,12 +7,15 @@
 
 import Foundation
 
+import RxSwift
+import RxRelay
+
 protocol AccountViewModelInputProtocol: AnyObject {
     
 }
 
 protocol AccountViewModelOutputProtocol: AnyObject {
-    
+    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
 }
 
 protocol AccountViewModelProtocol: AccountViewModelInputProtocol, AccountViewModelOutputProtocol {
@@ -20,7 +23,19 @@ protocol AccountViewModelProtocol: AccountViewModelInputProtocol, AccountViewMod
 }
 
 class AccountViewModel: AccountViewModelProtocol {
+    private let disposeBag = DisposeBag()
+    private var fetchProfileUseCase: FetchProfileUseCase
+    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
-    init() {}
+    init(fetchProfileUseCase: FetchProfileUseCase) {
+        self.fetchProfileUseCase = fetchProfileUseCase
+    }
     
+    func fetchProfileData() {
+        fetchProfileUseCase.fetchProfileData()
+            .subscribe(onNext: { [weak self] in
+                self?.profileDataRelay.accept($0)
+            })
+            .disposed(by: disposeBag)
+    }
 }

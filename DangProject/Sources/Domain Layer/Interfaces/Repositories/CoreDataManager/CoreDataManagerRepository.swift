@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 import RxSwift
+import UIKit
 
 protocol CoreDataManagerRepository {
         
@@ -30,6 +31,9 @@ protocol CoreDataManagerRepository {
     func readTotalAlarmEntity() -> [AlarmDomainModel]
     func updateAlarmEntity(_ alarm: AlarmDomainModel)
     func deleteAlarmEntity(_ alarm: AlarmDomainModel)
-
+    func updateLocalProfileData(_ profileData: ProfileDomainModel)
+    func fetchProfileEntityData() -> ProfileEntity
+    func fetchProfileImageData() -> Data
+    func updateProfileImageData(_ imageData: UIImage, _ profileData: ProfileDomainModel)
 }
 

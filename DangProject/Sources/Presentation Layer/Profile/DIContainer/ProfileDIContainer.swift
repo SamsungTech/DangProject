@@ -9,28 +9,29 @@ import Foundation
 import UIKit
 
 class ProfileDIContainer {
-    func makeProfileNavigationViewController() -> UINavigationController {
-        let navigationViewController = UINavigationController(
-            rootViewController: makeProfileViewController()
-        )
-        return navigationViewController
+    func makeProfileViewController(_ profileData: ProfileDomainModel) -> ProfileViewController {
+        return ProfileViewController(viewModel: makeProfileViewModel(profileData))
     }
     
-    func makeProfileViewController() -> ProfileViewController {
-        return ProfileViewController(viewModel: makeProfileViewModel())
+    func makeProfileViewModel(_ profileData: ProfileDomainModel) -> ProfileViewModel {
+        return ProfileViewModel(manageFirebaseStoreUseCase: makeFirebaseStoreUseCase(),
+                                manageFirebaseStorageUseCase: makeFirebaseStorageUseCase(),
+                                fetchProfileUseCase: makeFetchProfileUseCase(),
+                                profileData: profileData)
     }
     
-    func makeProfileViewModel() -> ProfileViewModel {
-        return ProfileViewModel(firebaseStoreUseCase: makeFirebaseStoreUseCase(),
-                                firebaseStorageUseCase: makeFirebaseStorageUseCase())
+    func makeFetchProfileUseCase() -> FetchProfileUseCase {
+        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                          manageFirebaseFireStoreUseCase: makeFirebaseStoreUseCase(),
+                                          manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
-    func makeFirebaseStoreUseCase() -> FirebaseFireStoreUseCase {
-        return DefaultFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFirebaseManagerRepository())
+    func makeFirebaseStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFirebaseManagerRepository())
     }
     
-    func makeFirebaseStorageUseCase() -> FirebaseStorageUseCase {
-        return DefaultFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFireBaseStorageManagerRepository())
+    func makeFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFireBaseStorageManagerRepository())
     }
     
     func makeFireBaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
@@ -39,6 +40,10 @@ class ProfileDIContainer {
     
     func makeFirebaseManagerRepository() -> FireStoreManagerRepository {
         return DefaultFireStoreManagerRepository()
+    }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
     
     func makeProfileImagePickerController(_ viewController: ProfileViewController) -> UIImagePickerController {

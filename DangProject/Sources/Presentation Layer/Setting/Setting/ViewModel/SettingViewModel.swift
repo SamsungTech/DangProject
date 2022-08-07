@@ -27,7 +27,6 @@ protocol SettingViewModelProtocol: SettingViewModelInputProtocol, SettingViewMod
 
 class SettingViewModel: SettingViewModelProtocol {
     var scrollStateRelay = BehaviorRelay<SettingScrollState>(value: .top)
-    
 }
 
 extension SettingViewModel {

@@ -21,10 +21,12 @@ class HomeCoordinator: NSObject, Coordinator {
         viewController.coordinator = self
         self.navigationController.pushViewController(viewController, animated: false)
     }
-        
-    func presentProfile(_ viewController: UIViewController) {
+    
+    func presentProfile(_ viewController: UIViewController,
+                        _ profileData: ProfileDomainModel) {
         let navigationController = UINavigationController()
-        let coordinator = ProfileCoordinator(navigationController: navigationController)
+        let coordinator = ProfileCoordinator(navigationController: navigationController,
+                                             profileData: profileData)
         coordinator.start()
         navigationController.modalPresentationStyle = .fullScreen
         navigationController.modalTransitionStyle = .coverVertical

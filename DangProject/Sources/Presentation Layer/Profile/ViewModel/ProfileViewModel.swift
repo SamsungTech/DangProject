@@ -36,8 +36,7 @@ enum GenderType {
 }
 
 struct ProfileData {
-    static let empty: Self = .init(UIImage(),
-                                   ProfileDomainModel.empty)
+    static let empty: Self = .init(ProfileDomainModel.empty)
     var profileImage: UIImage
     var uid: String
     var name: String
@@ -45,26 +44,25 @@ struct ProfileData {
     var weight: Int
     var sugarLevel: Int
     var gender: String
-    var birthDay: String
+    var birthday: String
 
-    init(_ image: UIImage,
-         _ profileDomainModel: ProfileDomainModel) {
-        self.profileImage = image
+    init(_ profileDomainModel: ProfileDomainModel) {
+        self.profileImage = profileDomainModel.profileImage
         self.uid = profileDomainModel.uid
         self.name = profileDomainModel.name
         self.height = profileDomainModel.height
         self.weight = profileDomainModel.weight
         self.sugarLevel = profileDomainModel.sugarLevel
         self.gender = profileDomainModel.gender
-        self.birthDay = profileDomainModel.birthDay
+        self.birthday = profileDomainModel.birthday
     }
 }
 
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
-    func saveButtonDidTap()
-    func passProfileData(_ data: ProfileDomainModel)
-    func passProfileImageData(_ data: UIImage)
+    func switchSaveButtonRelayValue()
+    func handOverProfileDataToSave(_ data: ProfileDomainModel)
+    func handOverProfileImageDataToSave(_ data: UIImage)
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -84,8 +82,9 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 }
 
 class ProfileViewModel: ProfileViewModelProtocol {
-    private var firebaseStoreUseCase: FirebaseFireStoreUseCase?
-    private let firebaseStorageUseCase: FirebaseStorageUseCase?
+    private var manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase?
+    private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase?
+    private let fetchProfileUseCase: FetchProfileUseCase?
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
@@ -95,11 +94,14 @@ class ProfileViewModel: ProfileViewModelProtocol {
     let heights: [String] = [Int](1...200).map{("\($0)")}
     let weights: [String] = [Int](1...150).map{("\($0)")}
     
-    init(firebaseStoreUseCase: FirebaseFireStoreUseCase,
-         firebaseStorageUseCase: FirebaseStorageUseCase) {
-        self.firebaseStoreUseCase = firebaseStoreUseCase
-        self.firebaseStorageUseCase = firebaseStorageUseCase
-        self.viewDidLoad()
+    init(manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase,
+         manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase,
+         fetchProfileUseCase: FetchProfileUseCase,
+         profileData: ProfileDomainModel) {
+        self.manageFirebaseStoreUseCase = manageFirebaseStoreUseCase
+        self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
+        self.profileDataRelay.accept(ProfileData(profileData))
     }
     
     func convertGenderTypeToString() -> String {
@@ -113,8 +115,8 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func passProfileData(_ data: ProfileDomainModel) {
-        firebaseStoreUseCase?.updateProfileData(data)
+    func handOverProfileDataToSave(_ data: ProfileDomainModel) {
+        manageFirebaseStoreUseCase?.updateProfileData(data)
     }
     
     func calculateScrollViewState(yPosition: CGFloat) {
@@ -125,7 +127,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func saveButtonDidTap() {
+    func switchSaveButtonRelayValue() {
         if saveButtonAnimationRelay.value == .up || saveButtonAnimationRelay.value == .none {
             saveButtonAnimationRelay.accept(.down)
         } else {
@@ -133,24 +135,9 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func passProfileImageData(_ data: UIImage) {
+    func handOverProfileImageDataToSave(_ data: UIImage) {
         guard let data = data.jpegData(compressionQuality: 0.8) else { return }
-        firebaseStorageUseCase?.updateProfileImage(data)
-    }
-    
-    private func viewDidLoad() {
-        guard let profileImage = firebaseStorageUseCase?.getProfileImage() else { return }
-        guard let profileData = firebaseStoreUseCase?.getProfileData() else { return }
-        
-        Observable.combineLatest(profileImage, profileData)
-            .subscribe(onNext: { [weak self] imageData, profileData in
-                guard let image = UIImage(data: imageData as Data) else { return }
-                let profile = ProfileData(image,
-                                          profileData)
-                self?.convertStringToGenderType(profileData.gender)
-                self?.profileDataRelay.accept(profile)
-            })
-            .disposed(by: disposeBag)
+        manageFirebaseStorageUseCase?.updateProfileImage(data)
     }
 
     private func convertStringToGenderType(_ data: String) {

@@ -92,7 +92,7 @@ protocol CoordinatorFinishDelegate {
 extension AppCoordinator: CoordinatorFinishDelegate {
     
     func switchViewController(to viewController: viewControllerType) {
-        self.navigationController.viewControllers.removeAll()
+        navigationController.viewControllers.removeAll()
         switch viewController {
         case .inputPersonalInformation:
             startInputProfile()

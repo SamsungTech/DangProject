@@ -9,7 +9,7 @@ import Foundation
 
 import RxSwift
 
-protocol FirebaseFireStoreUseCase {
+protocol ManageFirebaseFireStoreUseCase {
     var profileExistenceObservable: PublishSubject<Bool> { get }
     var yearMonthDayDataSubject: PublishSubject<GraphData> { get }
     func uploadFirebaseUID(uid: String)

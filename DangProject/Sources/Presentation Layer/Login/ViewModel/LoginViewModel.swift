@@ -26,21 +26,21 @@ protocol LoginViewModelProtocol: LoginViewModelInput, LoginViewModelOutput { }
 class LoginViewModel: LoginViewModelProtocol {
     
     // MARK: - init
-    private let firebaseAuthUseCase: FirebaseAuthUseCase
-    private let firebaseFireStoreUseCase: FirebaseFireStoreUseCase
+    private let manageFirebaseAuthUseCase: ManageFirebaseAuthUseCase
+    private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     private let disposeBag = DisposeBag()
     
-    init(firebaseAuthUseCase: FirebaseAuthUseCase,
-         firebaseFireStoreUseCase: FirebaseFireStoreUseCase) {
-        self.firebaseAuthUseCase = firebaseAuthUseCase
-        self.firebaseFireStoreUseCase = firebaseFireStoreUseCase
+    init(manageFirebaseAuthUseCase: ManageFirebaseAuthUseCase,
+         manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
+        self.manageFirebaseAuthUseCase = manageFirebaseAuthUseCase
+        self.manageFirebaseFireStoreUseCase = manageFirebaseFireStoreUseCase
     }
     
     //MARK: - Private Method
     fileprivate var currentNonce: String?
     
     private func checkProfileExistence(uid: String) {
-        firebaseFireStoreUseCase.getProfileExistence(uid: uid)
+        manageFirebaseFireStoreUseCase.getProfileExistence(uid: uid)
             .subscribe(onNext: { [weak self] isExist in
                 if isExist {
                     self?.profileExistenceObservable.accept(true)
@@ -129,7 +129,7 @@ class LoginViewModel: LoginViewModelProtocol {
                 return
             }
             
-            firebaseAuthUseCase.requireFirebaseUID(providerID: "apple.com",
+            manageFirebaseAuthUseCase.requireFirebaseUID(providerID: "apple.com",
                                                    idToken: idTokenString,
                                                    rawNonce: nonce)
             .subscribe(onNext: { [weak self] isValid, id in

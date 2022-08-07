@@ -8,13 +8,6 @@
 import UIKit
 
 class BirthDateTextFieldView: UIView {
-    private lazy var downArrowImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "chevron.down")
-        imageView.tintColor = .white
-        return imageView
-    }()
-    
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
@@ -66,7 +59,6 @@ extension BirthDateTextFieldView {
     private func configureUI() {
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
-        setUpDownArrowImageView()
         setUpProfileTextField()
     }
     
@@ -87,17 +79,6 @@ extension BirthDateTextFieldView {
             textFieldBackgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(20)),
             textFieldBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -xValueRatio(20)),
             textFieldBackgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(70))
-        ])
-    }
-    
-    private func setUpDownArrowImageView() {
-        textFieldBackgroundView.addSubview(downArrowImageView)
-        downArrowImageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            downArrowImageView.centerYAnchor.constraint(equalTo: textFieldBackgroundView.centerYAnchor),
-            downArrowImageView.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor, constant: -xValueRatio(15)),
-            downArrowImageView.widthAnchor.constraint(equalToConstant: xValueRatio(20)),
-            downArrowImageView.heightAnchor.constraint(equalToConstant: yValueRatio(20))
         ])
     }
     
