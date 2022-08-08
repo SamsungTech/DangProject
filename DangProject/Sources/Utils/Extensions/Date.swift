@@ -88,4 +88,15 @@ extension Date {
         dateFormatter.dateFormat = "a h:mm"
         return dateFormatter.date(from: dateString) ?? Date.init()
     }
+    
+    static func monthDaysCount(_ data: Int) -> Int {
+        guard let lastMonthDay = Calendar.current.date(byAdding: DateComponents(month: 0, day: -data),
+                                                       to: currentDate()) else { return 0 }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd"
+        let lastDay = dateFormatter.string(from: lastMonthDay)
+        guard let result = Int(lastDay) else { return 0 }
+        return result
+    }
 }

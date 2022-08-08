@@ -10,6 +10,12 @@ import Foundation
 import RxSwift
 import RxRelay
 
+enum DateType {
+    case year
+    case month
+    case day
+}
+
 class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
     private let fireStoreManagerRepository: FireStoreManagerRepository
     private let disposeBag = DisposeBag()
@@ -38,21 +44,22 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
             .subscribe(onNext: { [weak self] yearMonthDayData in
                 guard let strongSelf = self else { return }
                 yearMonthDayData.0.forEach { yearData in
-                    let year = strongSelf.createGraphArray(yearData, "year")
+                    let year = strongSelf.createGraphArray(yearData, .year)
                     yearArray = year
                     yearMonthDaysArray.append(yearData)
                 }
+                
                 yearMonthDayData.1.forEach { monthData in
-                    let month = strongSelf.createGraphArray(monthData, "month")
+                    let month = strongSelf.createGraphArray(monthData, .month)
                     monthArray = month
                     yearMonthDaysArray.append(monthData)
-
                 }
                 yearMonthDayData.2.forEach { dayData in
-                    let day = strongSelf.createGraphArray(dayData, "day")
+                    let day = strongSelf.createGraphArray(dayData, .day)
                     daysArray = day
                     yearMonthDaysArray.append(dayData)
                 }
+                
                 self?.yearMonthDayDataSubject.onNext(
                     GraphDomainModel(yearArray: yearArray,
                                      monthArray: monthArray,
@@ -125,41 +132,114 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
     }
     
     private func createGraphArray(_ data: [String:Any],
-                                  _ type: String) -> [String] {
-        let thisData = createThisData(type)
-        var yearArray: [String] = []
-        var array: [String] = []
+                                  _ type: DateType) -> [String] {
+        let arrayToCompare = createArrayToCompare(type)
+        var array: [String : String] = [:]
         
-        for i in 0...6 {
-            let result = thisData - i
-            yearArray.append(String(result))
-        }
-        for j in yearArray {
+        for j in arrayToCompare {
             data.forEach { (key, value) in
                 if j == key {
+                    
+                    
                     guard let value = value as? String else { return }
-                    array.append(value)
+                    array.updateValue(value, forKey: key)
                 }
             }
         }
         
-        if array.count != 7 {
-            for _ in 0..<7-array.count {
-                array.append("0")
+        var resultArray: [String] = []
+        
+        for i in arrayToCompare {
+            
+            var isExist: Bool = false
+            
+            
+            array.forEach { (key, value) in
+                if i == key {
+                    resultArray.append(value)
+                    isExist = true
+                }
             }
+            
+            if isExist == false {
+                resultArray.append("0")
+            }
+            
+            
         }
-        array = array.reversed()
+        
+        let result: [String] = resultArray.reversed()
+        
+        return result
+    }
+    
+    private func createArrayToCompare(_ type: DateType) -> [String] {
+        switch type {
+        case .year:
+            return createYearArrayToCompare()
+        case .month:
+            return createMonthArrayToCompare()
+        case .day:
+            return createDayArrayToCompare()
+        }
+    }
+    
+    private func createYearArrayToCompare() -> [String] {
+        let thisData = createThisData(.year)
+        var array: [String] = []
+        
+        for i in 0...6 {
+            let result = thisData - i
+            array.append(String(result))
+        }
+        
         return array
     }
     
-    private func createThisData(_ type: String) -> Int {
+    private func createMonthArrayToCompare() -> [String] {
+        let thisData = createThisData(.month)
+        var array: [String] = []
+        var number = 0
+
+        for i in 0...6 {
+            let result = thisData - i
+            if result <= 0 {
+                array.append(String(12-number))
+                number += 1
+            } else {
+                array.append(String(result))
+            }
+        }
+        
+        return array
+    }
+    
+    private func createDayArrayToCompare() -> [String] {
+        let thisData = createThisData(.day)
+        var array: [String] = []
+
+        for i in 0...6 {
+            let result = thisData - i
+            
+            if result <= 1 {
+                let dayCount = Date.monthDaysCount(i)
+                array.append(String(dayCount))
+            } else {
+                array.append(String(result))
+            }
+        }
+        
+        return array
+    }
+    
+    private func createThisData(_ type: DateType) -> Int {
         let today = DateComponents.currentDateTimeComponents()
         switch type {
-        case "year":
+        case .year:
             return today.year ?? 0
-        case "month":
+        case .month:
             return today.month ?? 0
-        case "day":
+        case .day:
             return today.day ?? 0
         default:
             return 0

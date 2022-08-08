@@ -43,7 +43,7 @@ extension DateComponents {
         return userCalendar.dateComponents(requestedComponents, from: currentDateTime)
     }
     
-    static func makeDateCompontents(from date: Date) -> DateComponents {
+    static func makeDateComponents(from date: Date) -> DateComponents {
         let userCalendar = Calendar.current
         let requestedComponents: Set<Calendar.Component> = [
             .year,

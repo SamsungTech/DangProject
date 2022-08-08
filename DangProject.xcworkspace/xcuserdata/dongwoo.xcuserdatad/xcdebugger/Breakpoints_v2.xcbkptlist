@@ -23,22 +23,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2BE4F8FB-A559-4E08-99CB-555684CF63FF"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Application/AppCoordinator.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "start()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "6EF1406F-4BF2-4041-8EE8-1A2E40582FAD"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -71,32 +55,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0147EC97-9682-4FFD-9B40-FFF6AAD5C510"
+            uuid = "24221F25-C4F5-4C44-967A-368FAB197634"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Presentation Layer/Home/Views/GraphView/VIewModel/GraphViewModel.swift"
+            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchGraphDataUseCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
-            landmarkName = "bindGraphDataUseCase()"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "createGraphThisYearMonthDayData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2552CEBE-3716-46AF-B280-FD37E1505355"
+            uuid = "96E0165F-F652-4687-80A5-9CBE1A37A3FB"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Presentation Layer/Home/Views/GraphView/VIewModel/GraphViewModel.swift"
+            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchGraphDataUseCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "bindGraphDataUseCase()"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "createGraphThisYearMonthDayData()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8294BDF1-9815-4F22-B031-0A24925816A2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchGraphDataUseCase.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "createGraphArray(_:_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -21,9 +21,9 @@ class HomeGraphView: UIView {
     
     init(viewModel: GraphViewModel) {
         self.viewModel = viewModel
+        super.init(frame: CGRect.zero)
         configure()
         layout()
-        bindItems()
     }
     
     override func draw(_ rect: CGRect) {
@@ -144,13 +144,5 @@ extension HomeGraphView {
             
             graphNameStackView.addArrangedSubview(label)
         }
-    }
-    
-    private func bindItems() {
-        viewModel?.items
-            .subscribe(onNext: { [weak self] in
-                self?.createGraphViews(items: $0)
-            })
-            .disposed(by: disposeBag)
     }
 }
