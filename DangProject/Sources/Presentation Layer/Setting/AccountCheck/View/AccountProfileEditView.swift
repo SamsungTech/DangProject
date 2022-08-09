@@ -20,7 +20,7 @@ class AccountProfileEditView: UIButton {
         let label = UILabel()
         label.textColor = .init(white: 1, alpha: 0.8)
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
-        label.text = "ACKFFKRk14221352VKFKR"
+        label.text = UserInfoKey.getUserDefaultsUID
         return label
     }()
     
