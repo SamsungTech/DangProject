@@ -45,7 +45,7 @@ class LoginViewModel: LoginViewModelProtocol {
                 if isExist {
                     self?.profileExistenceObservable.accept(true)
                 } else {
-                    self?.firebaseFireStoreUseCase.uploadFirebaseUID(uid: uid)
+                    self?.manageFirebaseFireStoreUseCase.uploadFirebaseUID(uid: uid)
                     self?.profileExistenceObservable.accept(false)
                 }
             })
