@@ -8,6 +8,7 @@
 import UIKit
 
 class SettingAccountView: UIButton {
+    
     private(set) lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.fill")
@@ -18,7 +19,7 @@ class SettingAccountView: UIButton {
     
     private(set) lazy var profileAccountLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .lightGray
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: xValueRatio(19), weight: .semibold)
         return label
     }()
@@ -46,9 +47,7 @@ class SettingAccountView: UIButton {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-extension SettingAccountView {
     private func configureUI() {
         setUpView()
         setUpProfileImageView()
@@ -60,6 +59,14 @@ extension SettingAccountView {
     private func setUpView() {
         self.addTarget(self, action: #selector(touchDownEvent(_:)), for: .touchDown)
         self.addTarget(self, action: #selector(touchUpEvent(_:)), for: [.touchUpInside, .touchUpOutside])
+    }
+    
+    @objc private func touchDownEvent(_ sender: UIButton) {
+        self.backgroundColor = .init(white: 1, alpha: 0.1)
+    }
+    
+    @objc private func touchUpEvent(_ sender: UIButton) {
+        self.backgroundColor = .homeBoxColor
     }
     
     private func setUpProfileImageView() {
@@ -102,11 +109,11 @@ extension SettingAccountView {
         ])
     }
     
-    @objc private func touchDownEvent(_ sender: UIButton) {
-        self.backgroundColor = .init(white: 1, alpha: 0.1)
+    func configureUserName(_ name: String) {
+        profileAccountLabel.text = name
     }
     
-    @objc private func touchUpEvent(_ sender: UIButton) {
-        self.backgroundColor = .homeBoxColor
+    func configureUserImage(_ image: UIImage) {
+        profileImageView.image = image
     }
 }

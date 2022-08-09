@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+import RxSwift
 import RxRelay
 
 enum SettingScrollState {
@@ -21,12 +22,45 @@ protocol SettingViewModelInputProtocol: AnyObject {
 
 protocol SettingViewModelOutputProtocol: AnyObject {
     var scrollStateRelay: BehaviorRelay<SettingScrollState> { get }
+    func fetchUserName() -> String
+    func fetchUserImage() -> UIImage
 }
 
 protocol SettingViewModelProtocol: SettingViewModelInputProtocol, SettingViewModelOutputProtocol {}
 
 class SettingViewModel: SettingViewModelProtocol {
+    private var disposeBag = DisposeBag()
     var scrollStateRelay = BehaviorRelay<SettingScrollState>(value: .top)
+    private let fetchProfileUseCase: FetchProfileUseCase
+    
+    init(fetchProfileUseCase: FetchProfileUseCase) {
+        self.fetchProfileUseCase = fetchProfileUseCase
+    }
+    
+    // MARK: - Output
+    func fetchUserName() -> String {
+        var result = ""
+        fetchProfileUseCase.fetchProfileData()
+            .map({ $0.name })
+            .subscribe(onNext: { name in
+                result = name
+            })
+            .disposed(by: disposeBag)
+        
+        return result
+    }
+    
+    func fetchUserImage() -> UIImage {
+        var result = UIImage()
+        fetchProfileUseCase.fetchProfileData()
+            .map({ $0.profileImage })
+            .subscribe(onNext: { image in
+                result = image
+            })
+            .disposed(by: disposeBag)
+        return result
+    }
+    
 }
 
 extension SettingViewModel {

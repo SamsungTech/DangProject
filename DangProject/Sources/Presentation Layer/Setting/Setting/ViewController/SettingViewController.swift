@@ -6,21 +6,14 @@
 //
 
 import UIKit
+
 import RxSwift
 
 class SettingViewController: UIViewController {
-    private var viewModel: SettingViewModelProtocol?
     var coordinator: SettingCoordinator?
+    private let viewModel: SettingViewModelProtocol
     private let disposeBag = DisposeBag()
     private var settingNavigationBar = SettingNavigationBar()
-    private lazy var settingLabel: UILabel = {
-        let label = UILabel()
-        label.text = "설정"
-        label.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .heavy)
-        label.textAlignment = .left
-        return label
-    }()
-    
     private lazy var settingScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.delegate = self
@@ -32,21 +25,10 @@ class SettingViewController: UIViewController {
     
     private(set) lazy var accountView: SettingAccountView = {
         let button = SettingAccountView()
-        button.profileAccountLabel.text = "김동우"
-        button.profileAccountLabel.textColor = .white
-        button.frame = CGRect(x: .zero,
-                              y: .zero,
-                              width: calculateXMax(),
-                              height: yValueRatio(80))
         button.backgroundColor = .homeBoxColor
         return button
     }()
     
-    private lazy var secessionAlertController: UIAlertController = {
-        let alert = UIAlertController(title: "탈퇴하기", message: "진짜 탈퇴할거야?", preferredStyle: .alert)
-        
-        return alert
-    }()
     private var settingFirstStackView = SettingFirstStackView()
     private var settingSecondStackView = SettingSecondStackView()
     private var settingTermsOfServiceView = SettingTermsOfServiceView()
@@ -57,12 +39,18 @@ class SettingViewController: UIViewController {
         configureUI()
         bind()
         bindUI()
+        view.bringSubviewToFront(settingNavigationBar)
+        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.bringSubviewToFront(settingNavigationBar)
-        navigationController?.navigationBar.isHidden = true
+        configureAccountView()
+    }
+    
+    private func configureAccountView() {
+        accountView.configureUserName(viewModel.fetchUserName())
+        accountView.configureUserImage(viewModel.fetchUserImage())
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -70,8 +58,8 @@ class SettingViewController: UIViewController {
     }
     
     init(viewModel: SettingViewModelProtocol) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -87,7 +75,6 @@ class SettingViewController: UIViewController {
         setUpSettingSecondStackView()
         setUpSettingTermsOfServiceView()
         setUpSettingSecessionView()
-        setUpSecessionAlert()
     }
     
     private func setUpSettingView() {
@@ -166,22 +153,13 @@ class SettingViewController: UIViewController {
             settingSecessionView.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
     }
-    
-    private func setUpSecessionAlert() {
-        secessionAlertController.addAction(UIAlertAction(title: "취소",
-                                                         style: .cancel,
-                                                         handler: nil))
-        secessionAlertController.addAction(UIAlertAction(title: "탈퇴하기",
-                                                         style: .destructive,
-                                                         handler: nil))
-    }
-    
+
     private func bind() {
         bindScrollStateValue()
     }
     
     private func bindScrollStateValue() {
-        viewModel?.scrollStateRelay
+        viewModel.scrollStateRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -229,6 +207,6 @@ class SettingViewController: UIViewController {
 extension SettingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let yValue = scrollView.contentOffset.y
-        viewModel?.checkScrollValue(yValue)
+        viewModel.checkScrollValue(yValue)
     }
 }
