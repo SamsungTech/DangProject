@@ -12,4 +12,9 @@ struct GraphDomainModel {
     var yearArray: [String]
     var monthArray: [String]
     var dayArray: [String]
+    
+    static var isLatestGraphData: Bool = false
+    static func setIsLatestGraphData(_ data: Bool) {
+        self.isLatestGraphData = data
+    }
 }

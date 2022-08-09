@@ -40,14 +40,6 @@ class GraphViewModel {
         // MARK: 캐싱작업을 따로 해놓지 않음 해야 될듯
         fetchGraphDataUseCase.createGraphThisYearMonthDayData()
         
-        fetchGraphDataUseCase.yearMonthDayDataRelay
-            .subscribe(onNext: { [weak self] in
-                
-                
-                print($0)
-            })
-            .disposed(by: disposeBag)
-        
         fetchGraphDataUseCase.yearMonthDayDataSubject
             .subscribe(onNext: { [weak self] in
                 

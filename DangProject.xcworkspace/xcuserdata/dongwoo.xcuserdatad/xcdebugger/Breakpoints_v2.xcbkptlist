@@ -55,47 +55,31 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "24221F25-C4F5-4C44-967A-368FAB197634"
+            uuid = "008BD688-DA2E-43A6-BB31-19CDAEC9C5F3"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchGraphDataUseCase.swift"
+            filePath = "DangProject/Sources/Presentation Layer/Home/Views/GraphView/VIewModel/GraphViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "createGraphThisYearMonthDayData()"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "bindGraphDataUseCase()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "96E0165F-F652-4687-80A5-9CBE1A37A3FB"
+            uuid = "E5570663-ADB9-474B-A9FF-B139DAEA6CE6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchGraphDataUseCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "createGraphThisYearMonthDayData()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8294BDF1-9815-4F22-B031-0A24925816A2"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchGraphDataUseCase.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
+            startingLineNumber = "176"
+            endingLineNumber = "176"
             landmarkName = "createGraphArray(_:_:)"
             landmarkType = "7">
          </BreakpointContent>

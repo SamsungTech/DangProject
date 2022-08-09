@@ -56,6 +56,8 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
                     guard let image = UIImage(data: profileImageData as Data) else { return }
                     var profileData: ProfileDomainModel = profileData
                     profileData.profileImage = image
+                    
+                    
                     self?.coreDataManagerRepository.updateLocalProfileData(profileData)
                     emitter.onNext(profileData)
                 })

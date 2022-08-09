@@ -19,56 +19,19 @@ enum DateType {
 class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
     private let fireStoreManagerRepository: FireStoreManagerRepository
     private let disposeBag = DisposeBag()
-    
-    
     var yearMonthDayDataSubject = PublishSubject<GraphDomainModel>()
     var yearMonthDayDataRelay = BehaviorRelay<[[String : Any]]>(value: [])
-    
-    
     
     init(fireStoreManagerRepository: FireStoreManagerRepository) {
         self.fireStoreManagerRepository = fireStoreManagerRepository
     }
     
-    func createGraphThisYearMonthDayData() {
-        var yearArray: [String] = []
-        var monthArray: [String] = []
-        var daysArray: [String] = []
-        var yearMonthDaysArray: [[String:Any]] = []
-        
-        let yearData = self.fireStoreManagerRepository.getGraphAllYearDataInFireStore()
-        let monthData = self.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore()
-        let dayData = self.fireStoreManagerRepository.getGraphAllThisDaysDataInFireStore()
-        
-        Observable.combineLatest(yearData, monthData, dayData)
-            .subscribe(onNext: { [weak self] yearMonthDayData in
-                guard let strongSelf = self else { return }
-                yearMonthDayData.0.forEach { yearData in
-                    let year = strongSelf.createGraphArray(yearData, .year)
-                    yearArray = year
-                    yearMonthDaysArray.append(yearData)
-                }
-                
-                yearMonthDayData.1.forEach { monthData in
-                    let month = strongSelf.createGraphArray(monthData, .month)
-                    monthArray = month
-                    yearMonthDaysArray.append(monthData)
-                }
-                yearMonthDayData.2.forEach { dayData in
-                    let day = strongSelf.createGraphArray(dayData, .day)
-                    daysArray = day
-                    yearMonthDaysArray.append(dayData)
-                }
-                
-                self?.yearMonthDayDataSubject.onNext(
-                    GraphDomainModel(yearArray: yearArray,
-                                     monthArray: monthArray,
-                                     dayArray: daysArray)
-                )
-                
-                self?.yearMonthDayDataRelay.accept(yearMonthDaysArray)
-            })
-            .disposed(by: disposeBag)
+    func createGraphThisYearMonthDayData() -> Observable<GraphDomainModel> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
+            
+            return Disposables.create()
+        }
     }
     
     func uploadDangAverage(_ data: Int) {
@@ -91,6 +54,52 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         let yearAverageData = calculateCalendarAverage(yearMonthDayValue[1])
         let uploadYearValue = calculateCalendarDictionary(yearMonthDayValue[0], year, yearAverageData)
         self.fireStoreManagerRepository.setGraphYearDataInFireStore(uploadYearValue)
+    }
+    
+    
+    private func fetchRemoteGraphData() -> Observable<GraphDomainModel> {
+        return Observable.create { [weak self] emitter in
+            var yearArray: [String] = []
+            var monthArray: [String] = []
+            var daysArray: [String] = []
+            var yearMonthDaysArray: [[String:Any]] = []
+            
+            guard let strongSelf = self,
+                  let yearData = self?.fireStoreManagerRepository.getGraphAllYearDataInFireStore(),
+                  let monthData = self?.fireStoreManagerRepository.getGraphAllThisMonthDataInFireStore(),
+                  let dayData = self?.fireStoreManagerRepository.getGraphAllThisDaysDataInFireStore() else { return Disposables.create() }
+            
+            Observable.combineLatest(yearData, monthData, dayData)
+                .subscribe(onNext: { [weak self] yearMonthDayData in
+                    guard let strongSelf = self else { return }
+                    yearMonthDayData.0.forEach { yearData in
+                        let year = strongSelf.createGraphArray(yearData, .year)
+                        yearArray = year
+                        yearMonthDaysArray.append(yearData)
+                    }
+                    yearMonthDayData.1.forEach { monthData in
+                        let month = strongSelf.createGraphArray(monthData, .month)
+                        monthArray = month
+                        yearMonthDaysArray.append(monthData)
+                    }
+                    yearMonthDayData.2.forEach { dayData in
+                        let day = strongSelf.createGraphArray(dayData, .day)
+                        daysArray = day
+                        yearMonthDaysArray.append(dayData)
+                    }
+                    
+                    
+                    
+                    self?.yearMonthDayDataRelay.accept(yearMonthDaysArray)
+                    emitter.onNext(
+                        GraphDomainModel(yearArray: yearArray,
+                                         monthArray: monthArray,
+                                         dayArray: daysArray)
+                    )
+                })
+                .disposed(by: strongSelf.disposeBag)
+            return Disposables.create()
+        }
     }
     
     private func calculateCalendarAverage(_ dictionaryValue: [String:Any]) -> Int {
@@ -135,12 +144,11 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
                                   _ type: DateType) -> [String] {
         let arrayToCompare = createArrayToCompare(type)
         var array: [String : String] = [:]
+    
         
         for j in arrayToCompare {
             data.forEach { (key, value) in
                 if j == key {
-                    
-                    
                     guard let value = value as? String else { return }
                     array.updateValue(value, forKey: key)
                 }
@@ -150,9 +158,7 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         var resultArray: [String] = []
         
         for i in arrayToCompare {
-            
             var isExist: Bool = false
-            
             
             array.forEach { (key, value) in
                 if i == key {
@@ -164,8 +170,6 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
             if isExist == false {
                 resultArray.append("0")
             }
-            
-            
         }
         
         let result: [String] = resultArray.reversed()
