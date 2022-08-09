@@ -20,7 +20,7 @@ enum SettingRouterPath {
 class SettingCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
-    private var diContainer = SettingDIContainer()
+    private let diContainer = SettingDIContainer()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController

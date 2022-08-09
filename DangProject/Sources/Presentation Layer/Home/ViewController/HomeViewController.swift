@@ -51,6 +51,7 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
@@ -75,10 +76,10 @@ class HomeViewController: UIViewController {
         calendarView.parentableViewController = self
         
         homeScrollView.backgroundColor = .clear
-        homeScrollView.showsVerticalScrollIndicator = true
         homeScrollView.contentInsetAdjustmentBehavior = .automatic
         homeScrollView.bounces = false
         homeScrollView.contentInsetAdjustmentBehavior = .never
+        homeScrollView.showsVerticalScrollIndicator = false
         
         homeStackView.axis = .vertical
         homeStackView.spacing = 10
