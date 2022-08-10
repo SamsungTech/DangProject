@@ -58,6 +58,5 @@ extension AccountStackView {
             myAccountLabel.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
     }
-    
-    
+
 }

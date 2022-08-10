@@ -174,8 +174,7 @@ class ProfileViewController: UIViewController {
     private func bindUI() {
         profileNavigationBar.dismissButton.rx.tap
             .bind { [weak self] in
-                guard let strongSelf = self else { return }
-                self?.coordinator?.dismissViewController(strongSelf)
+                self?.coordinator?.popViewController()
             }
             .disposed(by: disposeBag)
         
@@ -208,8 +207,7 @@ class ProfileViewController: UIViewController {
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
                 
-                guard let strongSelf = self,
-                      let nameData = self?.profileStackView.nameView.profileTextField.text,
+                guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
@@ -228,7 +226,7 @@ class ProfileViewController: UIViewController {
                 )
                 ProfileDomainModel.setIsLatestProfileImageData(false)
                 ProfileDomainModel.setIsLatestProfileData(false)
-                self?.coordinator?.dismissViewController(strongSelf)
+                self?.coordinator?.popViewController()
             }
             .disposed(by: disposeBag)
     }
@@ -245,8 +243,7 @@ class ProfileViewController: UIViewController {
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
-                guard let strongSelf = self,
-                      let nameData = self?.profileStackView.nameView.profileTextField.text,
+                guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
@@ -264,7 +261,7 @@ class ProfileViewController: UIViewController {
                 )
                 ProfileDomainModel.setIsLatestProfileImageData(false)
                 ProfileDomainModel.setIsLatestProfileData(false)
-                self?.coordinator?.dismissViewController(strongSelf)
+                self?.coordinator?.popViewController()
             }
             .disposed(by: disposeBag)
     }

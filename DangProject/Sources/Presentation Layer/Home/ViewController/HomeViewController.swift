@@ -194,7 +194,7 @@ extension HomeViewController: CalendarViewDelegate {
 
 extension HomeViewController: NavigationBarDelegate {
     func profileImageButtonDidTap() {
-        coordinator?.presentProfile(self, viewModel.profileDataRelay.value)
+        coordinator?.pushProfileEditViewController()
     }
     
     func changeViewControllerExpandation(state: ChevronButtonState) {

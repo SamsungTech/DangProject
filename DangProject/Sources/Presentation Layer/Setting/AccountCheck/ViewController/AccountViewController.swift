@@ -123,8 +123,7 @@ class AccountViewController: UIViewController {
         
         stackView.profileEditView.rx.tap
             .bind { [weak self] in
-                guard let profileData = self?.viewModel?.profileDataRelay.value else { return }
-                self?.coordinator?.pushProfileEditViewController(profileData)
+                self?.coordinator?.pushProfileEditViewController()
             }
             .disposed(by: disposeBag)
     }

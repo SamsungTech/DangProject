@@ -164,9 +164,9 @@ class SettingViewController: UIViewController {
                 guard let self = self else { return }
                 switch $0 {
                 case .top:
-                    self.settingNavigationBar.setUpSettingScrollViewTop()
+                    self.settingNavigationBar.setupSettingScrollViewTop()
                 case .scrolling:
-                    self.settingNavigationBar.setUpSettingScrollViewScrolling()
+                    self.settingNavigationBar.setupSettingScrollViewScrolling()
                 }
             })
             .disposed(by: disposeBag)

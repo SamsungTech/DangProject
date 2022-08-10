@@ -37,11 +37,11 @@ extension SettingNavigationBar {
         ])
     }
     
-    func setUpSettingScrollViewTop() {
+    func setupSettingScrollViewTop() {
         self.layer.borderWidth = 0.2
         self.layer.borderColor = UIColor.clear.cgColor
     }
-    func setUpSettingScrollViewScrolling() {
+    func setupSettingScrollViewScrolling() {
         self.layer.borderWidth = 0.2
         self.layer.borderColor = UIColor.lightGray.cgColor
     }
