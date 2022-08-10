@@ -17,4 +17,34 @@ struct GraphDomainModel {
     static func setIsLatestGraphData(_ data: Bool) {
         self.isLatestGraphData = data
     }
+    
+    init(yearArray: [String],
+         monthArray: [String],
+         dayArray: [String]) {
+        self.yearArray = yearArray
+        self.monthArray = monthArray
+        self.dayArray = dayArray
+    }
+    
+    init(allGraph: AllGraph) {
+        var dummyYearArray: [String] = []
+        var dummyMonthArray: [String] = []
+        var dummyDayArray: [String] = []
+        
+        allGraph.graphYearArray.forEach {
+            dummyYearArray.append($0.dangAverage ?? "")
+        }
+        
+        allGraph.graphMonthArray.forEach {
+            dummyMonthArray.append($0.dangAverage ?? "")
+        }
+        
+        allGraph.graphDayArray.forEach {
+            dummyDayArray.append($0.dangAverage ?? "")
+        }
+        
+        self.yearArray = dummyYearArray
+        self.monthArray = dummyMonthArray
+        self.dayArray = dummyDayArray
+    }
 }

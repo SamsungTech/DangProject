@@ -13,6 +13,6 @@ import RxRelay
 protocol FetchGraphDataUseCase {
     var yearMonthDayDataSubject: PublishSubject<GraphDomainModel> { get }
     var yearMonthDayDataRelay: BehaviorRelay<[[String : Any]]> { get }
-    func createGraphThisYearMonthDayData()
+    func createGraphThisYearMonthDayData() -> Observable<GraphDomainModel>
     func uploadDangAverage(_ data: Int)
 }

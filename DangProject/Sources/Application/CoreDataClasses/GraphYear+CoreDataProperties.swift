@@ -16,25 +16,11 @@ extension GraphYear {
         return NSFetchRequest<GraphYear>(entityName: "GraphYear")
     }
 
-    @NSManaged public var year: Int32
-    @NSManaged public var dangAverage: Int32
-    @NSManaged public var month: NSSet?
-
-}
-
-// MARK: Generated accessors for month
-extension GraphYear {
-
-    @objc(addMonthObject:)
-    @NSManaged public func addToMonth(_ value: GraphMonth)
-
-    @objc(removeMonthObject:)
-    @NSManaged public func removeFromMonth(_ value: GraphMonth)
-
-    @objc(addMonth:)
-    @NSManaged public func addToMonth(_ values: NSSet)
-
-    @objc(removeMonth:)
-    @NSManaged public func removeFromMonth(_ values: NSSet)
-
+    @NSManaged public var dangAverage: String?
+    @NSManaged public var tag: Int32
+    @NSManaged public var graph: AllGraph?
+    
+    public var unwrappedTag: Int32 {
+        tag
+    }
 }

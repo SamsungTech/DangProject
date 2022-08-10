@@ -16,8 +16,11 @@ extension GraphDay {
         return NSFetchRequest<GraphDay>(entityName: "GraphDay")
     }
 
-    @NSManaged public var dangAverage: Int32
-    @NSManaged public var day: Int32
-    @NSManaged public var month: GraphMonth?
-
+    @NSManaged public var dangAverage: String?
+    @NSManaged public var tag: Int32
+    @NSManaged public var graph: AllGraph?
+    
+    public var unwrappedTag: Int32 {
+        tag
+    }
 }

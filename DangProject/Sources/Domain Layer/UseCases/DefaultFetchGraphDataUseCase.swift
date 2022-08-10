@@ -18,18 +18,34 @@ enum DateType {
 
 class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
     private let fireStoreManagerRepository: FireStoreManagerRepository
+    private let coreDataManagerRepository: CoreDataManagerRepository
     private let disposeBag = DisposeBag()
     var yearMonthDayDataSubject = PublishSubject<GraphDomainModel>()
     var yearMonthDayDataRelay = BehaviorRelay<[[String : Any]]>(value: [])
     
-    init(fireStoreManagerRepository: FireStoreManagerRepository) {
+    init(fireStoreManagerRepository: FireStoreManagerRepository,
+         coreDataManagerRepository: CoreDataManagerRepository) {
         self.fireStoreManagerRepository = fireStoreManagerRepository
+        self.coreDataManagerRepository = coreDataManagerRepository
     }
     
     func createGraphThisYearMonthDayData() -> Observable<GraphDomainModel> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            
+            if GraphDomainModel.isLatestGraphData {
+                strongSelf.fetchLocalGraphData()
+                    .subscribe(onNext: { graph in
+                        emitter.onNext(graph)
+                    })
+                    .disposed(by: strongSelf.disposeBag)
+            } else {
+                strongSelf.fetchRemoteGraphData()
+                    .subscribe(onNext: { graph in
+                        emitter.onNext(graph)
+                    })
+                    .disposed(by: strongSelf.disposeBag)
+                GraphDomainModel.setIsLatestGraphData(true)
+            }
             return Disposables.create()
         }
     }
@@ -56,6 +72,16 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         self.fireStoreManagerRepository.setGraphYearDataInFireStore(uploadYearValue)
     }
     
+    private func fetchLocalGraphData() -> Observable<GraphDomainModel> {
+        return Observable.create { [weak self] emitter in
+            guard let result = self?.coreDataManagerRepository.fetchGraphEntityData() else { return Disposables.create() }
+            if result != .init() {
+                let graphData = GraphDomainModel.init(allGraph: result)
+                emitter.onNext(graphData)
+            }
+            return Disposables.create()
+        }
+    }
     
     private func fetchRemoteGraphData() -> Observable<GraphDomainModel> {
         return Observable.create { [weak self] emitter in
@@ -88,8 +114,11 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
                         yearMonthDaysArray.append(dayData)
                     }
                     
-                    
-                    
+                    self?.coreDataManagerRepository.updateGraphEntity(
+                        GraphDomainModel(yearArray: yearArray,
+                                         monthArray: monthArray,
+                                         dayArray: daysArray)
+                    )
                     self?.yearMonthDayDataRelay.accept(yearMonthDaysArray)
                     emitter.onNext(
                         GraphDomainModel(yearArray: yearArray,

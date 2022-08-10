@@ -16,26 +16,11 @@ extension GraphMonth {
         return NSFetchRequest<GraphMonth>(entityName: "GraphMonth")
     }
 
-    @NSManaged public var month: Int32
-    @NSManaged public var dangAverage: Int32
-    @NSManaged public var year: GraphYear?
-    @NSManaged public var day: NSSet?
-
-}
-
-// MARK: Generated accessors for day
-extension GraphMonth {
-
-    @objc(addDayObject:)
-    @NSManaged public func addToDay(_ value: GraphDay)
-
-    @objc(removeDayObject:)
-    @NSManaged public func removeFromDay(_ value: GraphDay)
-
-    @objc(addDay:)
-    @NSManaged public func addToDay(_ values: NSSet)
-
-    @objc(removeDay:)
-    @NSManaged public func removeFromDay(_ values: NSSet)
-
+    @NSManaged public var dangAverage: String?
+    @NSManaged public var tag: Int32
+    @NSManaged public var graph: AllGraph?
+    
+    public var unwrappedTag: Int32 {
+        tag
+    }
 }

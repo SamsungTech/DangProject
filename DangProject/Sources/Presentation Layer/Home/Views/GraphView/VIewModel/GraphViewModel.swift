@@ -39,8 +39,6 @@ class GraphViewModel {
         // MARK: 데이터가 한번에 오지 않고 두번에 걸쳐서 오는듯?
         // MARK: 캐싱작업을 따로 해놓지 않음 해야 될듯
         fetchGraphDataUseCase.createGraphThisYearMonthDayData()
-        
-        fetchGraphDataUseCase.yearMonthDayDataSubject
             .subscribe(onNext: { [weak self] in
                 
                 print($0)

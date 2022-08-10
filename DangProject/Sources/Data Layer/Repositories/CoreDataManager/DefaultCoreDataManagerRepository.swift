@@ -17,6 +17,10 @@ enum CoreDataName: String {
     case eatenFoodsPerDay = "EatenFoodsPerDay"
     case alarm = "Alarm"
     case profileEntity = "ProfileEntity"
+    case graphYear = "GraphYear"
+    case graphMonth = "GraphMonth"
+    case graphDay = "GraphDay"
+    case allGraph = "AllGraph"
 }
 
 class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
@@ -177,6 +181,14 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return loadArrayFromCoreData(request: Alarm.fetchRequest())
         case .profileEntity:
             return loadArrayFromCoreData(request: ProfileEntity.fetchRequest())
+        case .graphYear:
+            return loadArrayFromCoreData(request: GraphYear.fetchRequest())
+        case .graphMonth:
+            return loadArrayFromCoreData(request: GraphMonth.fetchRequest())
+        case .graphDay:
+            return loadArrayFromCoreData(request: GraphDay.fetchRequest())
+        case .allGraph:
+            return loadArrayFromCoreData(request: AllGraph.fetchRequest())
         }
     }
     
@@ -378,6 +390,72 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
+    func updateGraphEntity(_ graphData: GraphDomainModel) {
+        deleteAll(coreDataName: .allGraph)
+        createGraphEntity(graphData)
+    }
+    
+    func createGraphEntity(_ graphData: GraphDomainModel) {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(
+                forEntityName: CoreDataName.allGraph.rawValue,
+                in: context),
+              let graphEntity = NSManagedObject(entity: entity,
+                                                insertInto: context) as? AllGraph
+        else { return }
+        var tag = 1
+        
+        graphData.yearArray.forEach {
+            let data = GraphYear(context: context)
+            data.dangAverage = $0
+            data.tag = Int32(tag)
+            graphEntity.addToYear(data)
+            tag += 1
+        }
+        
+        graphData.monthArray.forEach {
+            let data = GraphMonth(context: context)
+            data.dangAverage = $0
+            data.tag = Int32(tag)
+            graphEntity.addToMonth(data)
+            tag += 1
+        }
+        
+        graphData.dayArray.forEach {
+            let data = GraphDay(context: context)
+            data.dangAverage = $0
+            data.tag = Int32(tag)
+            graphEntity.addToDay(data)
+            tag += 1
+        }
+        
+        do {
+            try context.save()
+            print("graph 저장완료")
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func fetchGraphEntityData() -> AllGraph {
+        let request = AllGraph.fetchRequest()
+        
+        do {
+            if let checkedGraphEntity = try self.context?.fetch(request) {
+                if checkedGraphEntity.count == 0 {
+                    return AllGraph.init()
+                } else {
+                    return checkedGraphEntity[0]
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+            return AllGraph.init()
+        }
+        
+        return AllGraph.init()
+    }
+    
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
         switch coreDataName {
         case .eatenFoods:
@@ -392,6 +470,14 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             return Alarm.fetchRequest()
         case .profileEntity:
             return ProfileEntity.fetchRequest()
+        case .graphYear:
+            return GraphYear.fetchRequest()
+        case .graphMonth:
+            return GraphMonth.fetchRequest()
+        case .graphDay:
+            return GraphDay.fetchRequest()
+        case .allGraph:
+            return AllGraph.fetchRequest()
         }
     }
     

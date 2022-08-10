@@ -12,7 +12,9 @@ import RxSwift
 import UIKit
 
 protocol CoreDataManagerRepository {
-        
+    func updateGraphEntity(_ graphData: GraphDomainModel)
+    func createGraphEntity(_ graphData: GraphDomainModel)
+    func fetchGraphEntityData() -> AllGraph
     func addFavoriteFood(food: FoodDomainModel)
     func addRecentQuery(keyword: String)
     func createEatenFoodPerDay(date: Date)

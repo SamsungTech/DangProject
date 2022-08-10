@@ -21,6 +21,7 @@ extension EatenFoodsPerDay {
     
     public var eatenFoodsArray: [EatenFoods] {
         let eatenFoodSet = eatenFoods as? Set<EatenFoods> ?? []
+        
         return eatenFoodSet.sorted {
             $0.unwrappedEatenTime < $1.unwrappedEatenTime
         }

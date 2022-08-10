@@ -8,6 +8,11 @@
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="AllGraph" representedClassName="AllGraph" syncable="YES">
+        <relationship name="day" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GraphDay" inverseName="graph" inverseEntity="GraphDay"/>
+        <relationship name="month" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GraphMonth" inverseName="graph" inverseEntity="GraphMonth"/>
+        <relationship name="year" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GraphYear" inverseName="graph" inverseEntity="GraphYear"/>
+    </entity>
     <entity name="EatenFoods" representedClassName="EatenFoods" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="eatenTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -26,20 +31,19 @@
         <attribute name="sugar" optional="YES" attributeType="String"/>
     </entity>
     <entity name="GraphDay" representedClassName="GraphDay" syncable="YES">
-        <attribute name="dangAverage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="day" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="month" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphMonth" inverseName="day" inverseEntity="GraphMonth"/>
+        <attribute name="dangAverage" optional="YES" attributeType="String"/>
+        <attribute name="tag" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="graph" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AllGraph" inverseName="day" inverseEntity="AllGraph"/>
     </entity>
     <entity name="GraphMonth" representedClassName="GraphMonth" syncable="YES">
-        <attribute name="dangAverage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="month" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="day" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GraphDay" inverseName="month" inverseEntity="GraphDay"/>
-        <relationship name="year" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GraphYear" inverseName="month" inverseEntity="GraphYear"/>
+        <attribute name="dangAverage" optional="YES" attributeType="String"/>
+        <attribute name="tag" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="graph" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AllGraph" inverseName="month" inverseEntity="AllGraph"/>
     </entity>
     <entity name="GraphYear" representedClassName="GraphYear" syncable="YES">
-        <attribute name="dangAverage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="year" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="month" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GraphMonth" inverseName="year" inverseEntity="GraphMonth"/>
+        <attribute name="dangAverage" optional="YES" attributeType="String"/>
+        <attribute name="tag" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="graph" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AllGraph" inverseName="year" inverseEntity="AllGraph"/>
     </entity>
     <entity name="ProfileEntity" representedClassName="ProfileEntity" syncable="YES">
         <attribute name="birthday" optional="YES" attributeType="String"/>
@@ -60,8 +64,9 @@
         <element name="FavoriteFoods" positionX="-11295.39193725586" positionY="-1298.771240234375" width="128" height="74"/>
         <element name="ProfileEntity" positionX="-11088" positionY="-1215" width="128" height="134"/>
         <element name="RecentQuery" positionX="-11138.21527099609" positionY="-1271.575317382812" width="128" height="44"/>
-        <element name="GraphYear" positionX="-11088" positionY="-1134" width="128" height="74"/>
-        <element name="GraphMonth" positionX="-11079" positionY="-1125" width="128" height="89"/>
-        <element name="GraphDay" positionX="-11070" positionY="-1116" width="128" height="74"/>
+        <element name="AllGraph" positionX="-11052" positionY="-1098" width="128" height="74"/>
+        <element name="GraphYear" positionX="-11043" positionY="-1089" width="128" height="74"/>
+        <element name="GraphMonth" positionX="-11097" positionY="-1143" width="128" height="74"/>
+        <element name="GraphDay" positionX="-11088" positionY="-1134" width="128" height="74"/>
     </elements>
 </model>

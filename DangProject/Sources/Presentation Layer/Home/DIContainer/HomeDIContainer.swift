@@ -62,7 +62,10 @@ class HomeDIContainer {
     }
     
     func makeFetchGraphDataUseCase() -> FetchGraphDataUseCase {
-        return DefaultFetchGraphDataUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+        return DefaultFetchGraphDataUseCase(
+            fireStoreManagerRepository: makeFireStoreManagerRepository(),
+            coreDataManagerRepository: makeCoreDataManagerRepository()
+        )
     }
     
     func makeFetchProfileUseCase() -> FetchProfileUseCase {
