@@ -66,20 +66,20 @@ class TabBarController: UITabBarController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpTabBar()
-        setUpTabBarBackgroundView()
-        setUpHomeItemButton()
-        setUpSettingItemButton()
-        setUpAddButton()
+        setupTabbar()
+        setupTabbarBackgroundView()
+        setupHomeItemButton()
+        setupSettingItemButton()
+        setupAddButton()
     }
     
-    private func setUpTabBar() {
+    private func setupTabbar() {
         self.viewControllers = [homeTab, UIViewController(), settingTab]
         self.delegate = self
         self.tabBar.isHidden = true
     }
     
-    private func setUpTabBarBackgroundView() {
+    private func setupTabbarBackgroundView() {
         view.addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -91,7 +91,7 @@ class TabBarController: UITabBarController {
         backgroundView.roundCorners(cornerRadius: xValueRatio(30), maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
     }
     
-    private func setUpHomeItemButton() {
+    private func setupHomeItemButton() {
         backgroundView.addSubview(homeItemButton)
         homeItemButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -102,7 +102,7 @@ class TabBarController: UITabBarController {
         ])
     }
     
-    private func setUpSettingItemButton() {
+    private func setupSettingItemButton() {
         backgroundView.addSubview(settingItemButton)
         settingItemButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -113,7 +113,7 @@ class TabBarController: UITabBarController {
         ])
     }
     
-    private func setUpAddButton() {
+    private func setupAddButton() {
         view.addSubview(addButton)
         view.bringSubviewToFront(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false

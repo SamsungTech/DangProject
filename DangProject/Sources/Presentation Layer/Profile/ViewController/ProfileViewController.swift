@@ -416,7 +416,7 @@ extension ProfileViewController {
     }
 }
 
-extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
+extension ProfileViewController: ProfileImageButtonProtocol {
     
     func profileImageButtonTapped() {
         coordinator?.presentPickerController(self)
