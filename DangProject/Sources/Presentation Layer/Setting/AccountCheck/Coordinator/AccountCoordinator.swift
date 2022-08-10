@@ -41,5 +41,13 @@ class AccountCoordinator: Coordinator {
         childCoordinators.append(coordinator)
         coordinator.start()
     }
+    
+    func returnToFirstStart() {
+        guard let rootViewController = navigationController.parent,
+              let rootNavigationViewController = rootViewController.navigationController else { return }
+        rootNavigationViewController.viewControllers.removeAll()
+        let coordinator = AppCoordinator(navigationController: rootNavigationViewController)
+        coordinator.start()
+    }
 }
 

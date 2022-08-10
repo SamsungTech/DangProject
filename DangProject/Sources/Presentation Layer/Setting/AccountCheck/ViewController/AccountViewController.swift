@@ -11,7 +11,7 @@ import RxSwift
 
 class AccountViewController: UIViewController {
     private let disposeBag = DisposeBag()
-    private var viewModel: AccountViewModel?
+    private var viewModel: AccountViewModel
     var coordinator: AccountCoordinator?
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
@@ -29,7 +29,7 @@ class AccountViewController: UIViewController {
         return stackView
     }()
     
-    private(set) lazy var logoutView: UIButton = {
+    private(set) lazy var logOutButton: UIButton = {
         let button = UIButton()
         button.setTitle("로그아웃", for: .normal)
         button.backgroundColor = .homeBoxColor
@@ -37,9 +37,14 @@ class AccountViewController: UIViewController {
         return button
     }()
     
+    private lazy var logOutAlertController: UIAlertController = {
+        let alert = UIAlertController(title: "정말 로그아웃하시겠습니까?", message: nil, preferredStyle: .alert)
+        return alert
+    }()
+    
     init(viewModel: AccountViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -54,7 +59,7 @@ class AccountViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel?.fetchProfileData()
+        viewModel.fetchProfileData()
     }
     
     private func configureUI() {
@@ -63,6 +68,7 @@ class AccountViewController: UIViewController {
         setupAccountScrollView()
         setupStackView()
         setupLogoutView()
+        setupLogOutAlertController()
     }
     
     private func setupBackgroundView() {
@@ -104,14 +110,24 @@ class AccountViewController: UIViewController {
     }
     
     private func setupLogoutView() {
-        accountScrollView.addSubview(logoutView)
-        logoutView.translatesAutoresizingMaskIntoConstraints = false
+        accountScrollView.addSubview(logOutButton)
+        logOutButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            logoutView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: yValueRatio(20)),
-            logoutView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            logoutView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            logoutView.heightAnchor.constraint(equalToConstant: yValueRatio(60))
+            logOutButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: yValueRatio(20)),
+            logOutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            logOutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            logOutButton.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
+    }
+    
+    private func setupLogOutAlertController() {
+        let no = UIAlertAction(title: "아니오", style: .default, handler: nil)
+        let yes = UIAlertAction(title: "네", style: .default) { [weak self] _ in
+            self?.viewModel.deleteUserDefaultUID()
+            self?.coordinator?.returnToFirstStart()
+        }
+        logOutAlertController.addAction(yes)
+        logOutAlertController.addAction(no)
     }
     
     private func bindUI() {
@@ -124,6 +140,13 @@ class AccountViewController: UIViewController {
         stackView.profileEditView.rx.tap
             .bind { [weak self] in
                 self?.coordinator?.pushProfileEditViewController()
+            }
+            .disposed(by: disposeBag)
+        
+        logOutButton.rx.tap
+            .bind { [weak self] in
+                guard let strongSelf = self else { return }
+                self?.present(strongSelf.logOutAlertController, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }

@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 
 protocol AccountViewModelInputProtocol: AnyObject {
-    
+    func deleteUserDefaultUID()
 }
 
 protocol AccountViewModelOutputProtocol: AnyObject {
@@ -37,5 +37,9 @@ class AccountViewModel: AccountViewModelProtocol {
                 self?.profileDataRelay.accept($0)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func deleteUserDefaultUID() {
+        UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
     }
 }
