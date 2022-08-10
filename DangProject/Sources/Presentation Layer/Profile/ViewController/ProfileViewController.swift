@@ -15,7 +15,11 @@ class ProfileViewController: UIViewController {
     var coordinator: ProfileCoordinator?
     private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
-    private var profileNavigationBar = ProfileNavigationBar()
+    private lazy var navigationBar: CommonNavigationBar = {
+        let navigationBar = CommonNavigationBar()
+        navigationBar.accountTitleLabel.text = "프로필"
+        return navigationBar
+    }()
     private var saveButtonBottomConstraint: NSLayoutConstraint?
     private var selectedTextField: UITextField?
     private lazy var dateFormatter: DateFormatter = DateFormatter.formatDate()
@@ -75,7 +79,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         bind()
-        view.bringSubviewToFront(profileNavigationBar)
+        view.bringSubviewToFront(navigationBar)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,13 +121,13 @@ class ProfileViewController: UIViewController {
     }
     
     private func setUpProfileNavigationBar() {
-        view.addSubview(profileNavigationBar)
-        profileNavigationBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(navigationBar)
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileNavigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: -yValueRatio(5)),
-            profileNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
-            profileNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
-            profileNavigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(100))
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: -yValueRatio(5)),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
+            navigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(100))
         ])
     }
     
@@ -172,12 +176,12 @@ class ProfileViewController: UIViewController {
     }
     
     private func bindUI() {
-        profileNavigationBar.dismissButton.rx.tap
+        navigationBar.backButton.rx.tap
             .bind { [weak self] in
                 self?.coordinator?.popViewController()
             }
             .disposed(by: disposeBag)
-        
+
         Observable.merge(
             profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
             profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
@@ -292,9 +296,9 @@ class ProfileViewController: UIViewController {
                 guard let self = self else { return }
                 switch $0 {
                 case .top:
-                    self.profileNavigationBar.layer.borderColor = UIColor.clear.cgColor
+                    self.navigationBar.layer.borderColor = UIColor.clear.cgColor
                 case .scrolling:
-                    self.profileNavigationBar.layer.borderColor = UIColor.lightGray.cgColor
+                    self.navigationBar.layer.borderColor = UIColor.lightGray.cgColor
                 }
             })
             .disposed(by: disposeBag)
@@ -350,6 +354,7 @@ class ProfileViewController: UIViewController {
 }
 
 extension ProfileViewController: UIScrollViewDelegate {
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         viewModel.calculateScrollViewState(
             yPosition: scrollView.contentOffset.y
@@ -362,6 +367,7 @@ extension ProfileViewController: UIScrollViewDelegate {
 }
 
 extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
@@ -376,6 +382,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
 }
 
 extension ProfileViewController {
+    
     private func animateMaleView() {
         profileStackView.genderView.leadingConstraint?.constant = xValueRatio(5)
         profileStackView.genderView.maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
@@ -410,6 +417,7 @@ extension ProfileViewController {
 }
 
 extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtocol {
+    
     func profileImageButtonTapped() {
         coordinator?.presentPickerController(self)
     }
@@ -441,6 +449,7 @@ extension ProfileViewController: ProfileImageButtonProtocol, InvisibleViewProtoc
 }
 
 extension ProfileViewController: UITextFieldDelegate {
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         viewModel.saveButtonAnimationRelay.accept(.down)
         selectedTextField = textField
