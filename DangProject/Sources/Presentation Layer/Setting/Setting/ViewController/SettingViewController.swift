@@ -67,22 +67,22 @@ class SettingViewController: UIViewController {
     }
     
     private func configureUI() {
-        setUpSettingView()
-        setUpNavigationBar()
-        setUpSettingScrollView()
-        setUpAccountView()
-        setUpSettingFirstStackView()
-        setUpSettingSecondStackView()
-        setUpSettingTermsOfServiceView()
-        setUpSettingSecessionView()
+        setupBackgroundView()
+        setupNavigationBar()
+        setupSettingScrollView()
+        setupAccountView()
+        setupSettingFirstStackView()
+        setupSettingSecondStackView()
+        setupSettingTermsOfServiceView()
+        setupSettingSecessionView()
     }
     
-    private func setUpSettingView() {
+    private func setupBackgroundView() {
         view.backgroundColor = .homeBackgroundColor
         navigationController?.navigationBar.isHidden = true
     }
     
-    private func setUpNavigationBar() {
+    private func setupNavigationBar() {
         view.addSubview(settingNavigationBar)
         settingNavigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -93,7 +93,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingScrollView() {
+    private func setupSettingScrollView() {
         view.addSubview(settingScrollView)
         settingScrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -104,7 +104,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpAccountView() {
+    private func setupAccountView() {
         settingScrollView.addSubview(accountView)
         accountView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -114,7 +114,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingFirstStackView() {
+    private func setupSettingFirstStackView() {
         settingScrollView.addSubview(settingFirstStackView)
         settingFirstStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -124,7 +124,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingSecondStackView() {
+    private func setupSettingSecondStackView() {
         settingScrollView.addSubview(settingSecondStackView)
         settingSecondStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -134,7 +134,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingTermsOfServiceView() {
+    private func setupSettingTermsOfServiceView() {
         settingScrollView.addSubview(settingTermsOfServiceView)
         settingTermsOfServiceView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -144,7 +144,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingSecessionView() {
+    private func setupSettingSecessionView() {
         settingScrollView.addSubview(settingSecessionView)
         settingSecessionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

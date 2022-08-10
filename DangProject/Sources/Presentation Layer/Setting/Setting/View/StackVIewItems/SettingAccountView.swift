@@ -49,14 +49,14 @@ class SettingAccountView: UIButton {
     }
 
     private func configureUI() {
-        setUpView()
-        setUpProfileImageView()
-        setUpProfileAccountLabel()
-        setUpProfileCheckLabel()
-        setUpProfileRightArrowImageView()
+        setupView()
+        setupProfileImageView()
+        setupProfileAccountLabel()
+        setupProfileCheckLabel()
+        setupProfileRightArrowImageView()
     }
     
-    private func setUpView() {
+    private func setupView() {
         self.addTarget(self, action: #selector(touchDownEvent(_:)), for: .touchDown)
         self.addTarget(self, action: #selector(touchUpEvent(_:)), for: [.touchUpInside, .touchUpOutside])
     }
@@ -69,7 +69,7 @@ class SettingAccountView: UIButton {
         self.backgroundColor = .homeBoxColor
     }
     
-    private func setUpProfileImageView() {
+    private func setupProfileImageView() {
         addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -80,7 +80,7 @@ class SettingAccountView: UIButton {
         ])
     }
     
-    private func setUpProfileAccountLabel() {
+    private func setupProfileAccountLabel() {
         addSubview(profileAccountLabel)
         profileAccountLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -89,7 +89,7 @@ class SettingAccountView: UIButton {
         ])
     }
     
-    private func setUpProfileCheckLabel() {
+    private func setupProfileCheckLabel() {
         addSubview(profileCheckLabel)
         profileCheckLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -98,7 +98,7 @@ class SettingAccountView: UIButton {
         ])
     }
     
-    private func setUpProfileRightArrowImageView() {
+    private func setupProfileRightArrowImageView() {
         addSubview(profileRightArrowImageView)
         profileRightArrowImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

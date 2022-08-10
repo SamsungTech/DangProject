@@ -33,11 +33,11 @@ class AccountStackView: UIView {
 
 extension AccountStackView {
     private func configureUI() {
-        setUpProfileEditView()
-        setUpMyAccountLabel()
+        setupProfileEditView()
+        setupMyAccountLabel()
     }
     
-    private func setUpProfileEditView() {
+    private func setupProfileEditView() {
         addSubview(profileEditView)
         profileEditView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -48,7 +48,7 @@ extension AccountStackView {
         ])
     }
     
-    private func setUpMyAccountLabel() {
+    private func setupMyAccountLabel() {
         addSubview(myAccountLabel)
         myAccountLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

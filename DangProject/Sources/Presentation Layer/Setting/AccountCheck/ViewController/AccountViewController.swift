@@ -58,19 +58,19 @@ class AccountViewController: UIViewController {
     }
     
     private func configureUI() {
-        setUpView()
-        setUpAccountNavigationBar()
-        setUpAccountScrollView()
-        setUpStackView()
-        setUpLogoutView()
+        setupBackgroundView()
+        setupAccountNavigationBar()
+        setupAccountScrollView()
+        setupStackView()
+        setupLogoutView()
     }
     
-    private func setUpView() {
+    private func setupBackgroundView() {
         view.backgroundColor = .homeBackgroundColor
         navigationController?.navigationBar.isHidden = true
     }
     
-    private func setUpAccountNavigationBar() {
+    private func setupAccountNavigationBar() {
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -81,7 +81,7 @@ class AccountViewController: UIViewController {
         ])
     }
     
-    private func setUpAccountScrollView() {
+    private func setupAccountScrollView() {
         view.addSubview(accountScrollView)
         accountScrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -92,7 +92,7 @@ class AccountViewController: UIViewController {
         ])
     }
     
-    private func setUpStackView() {
+    private func setupStackView() {
         accountScrollView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -103,7 +103,7 @@ class AccountViewController: UIViewController {
         ])
     }
     
-    private func setUpLogoutView() {
+    private func setupLogoutView() {
         accountScrollView.addSubview(logoutView)
         logoutView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

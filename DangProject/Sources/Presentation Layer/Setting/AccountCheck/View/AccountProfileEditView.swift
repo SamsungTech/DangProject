@@ -36,11 +36,11 @@ class AccountProfileEditView: UIButton {
 
 extension AccountProfileEditView {
     private func configureUI() {
-        setUpItemLabel()
-        setUpItemImageView()
+        setupItemLabel()
+        setupItemImageView()
     }
     
-    private func setUpItemLabel() {
+    private func setupItemLabel() {
         addSubview(itemLabel)
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -49,7 +49,7 @@ extension AccountProfileEditView {
         ])
     }
     
-    private func setUpItemImageView() {
+    private func setupItemImageView() {
         addSubview(accountLabel)
         accountLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

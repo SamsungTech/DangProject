@@ -18,7 +18,7 @@ class SettingNavigationBar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setUpLabel()
+        setupLabel()
         self.backgroundColor = .homeBoxColor
     }
     
@@ -28,7 +28,7 @@ class SettingNavigationBar: UIView {
 }
 
 extension SettingNavigationBar {
-    private func setUpLabel() {
+    private func setupLabel() {
         self.addSubview(settingLabel)
         settingLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

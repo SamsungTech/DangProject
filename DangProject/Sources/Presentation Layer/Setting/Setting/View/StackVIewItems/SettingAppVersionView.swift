@@ -34,17 +34,17 @@ class SettingAppVersionView: UIButton {
 
 extension SettingAppVersionView {
     private func configureUI() {
-        setUpView()
-        setUpItemLabel()
-        setUpItemImageView()
+        setupView()
+        setupItemLabel()
+        setupItemImageView()
     }
     
-    private func setUpView() {
+    private func setupView() {
         self.addTarget(self, action: #selector(touchDownEvent(_:)), for: .touchDown)
         self.addTarget(self, action: #selector(touchUpEvent(_:)), for: [.touchUpInside, .touchUpOutside])
     }
     
-    private func setUpItemLabel() {
+    private func setupItemLabel() {
         addSubview(itemLabel)
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -53,7 +53,7 @@ extension SettingAppVersionView {
         ])
     }
     
-    private func setUpItemImageView() {
+    private func setupItemImageView() {
         addSubview(versionLabel)
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
