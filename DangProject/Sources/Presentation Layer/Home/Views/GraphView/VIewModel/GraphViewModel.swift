@@ -9,26 +9,30 @@ import Foundation
 import RxRelay
 import RxSwift
 
-struct GraphViewEntity {
-    static let empty: Self = .init(weekDang: [],
-                                   monthDang: [],
-                                   yearDang: [])
-    var weekDang: [String]?
-    var monthDang: [Double]?
-    var yearDang: [String]?
-    
-    init(weekDang: [String],
-         monthDang: [Double],
-         yearDang: [String]) {
-        self.weekDang = weekDang
-        self.monthDang = monthDang
-        self.yearDang = yearDang
-    }
+enum GraphDataType {
+    case year
+    case month
+    case day
 }
 
-class GraphViewModel {
+protocol GraphViewModelInputProtocol {
+    func branchOutGraphDataType(_ data: Int)
+}
+
+protocol GraphViewModelOutputProtocol {
+    var graphDataRelay: BehaviorRelay<GraphDomainModel> { get }
+    var graphDataTypeRelay: BehaviorRelay<GraphDataType> { get }
+}
+
+protocol GraphViewModelProtocol: GraphViewModelInputProtocol, GraphViewModelOutputProtocol {
+    
+}
+
+class GraphViewModel: GraphViewModelProtocol {
     private let disposeBag = DisposeBag()
     private let fetchGraphDataUseCase: FetchGraphDataUseCase
+    var graphDataRelay = BehaviorRelay<GraphDomainModel>(value: .empty)
+    var graphDataTypeRelay = BehaviorRelay<GraphDataType>(value: .day)
     
     init(fetchGraphDataUseCase: FetchGraphDataUseCase) {
         self.fetchGraphDataUseCase = fetchGraphDataUseCase
@@ -36,13 +40,48 @@ class GraphViewModel {
     }
     
     private func bindGraphDataUseCase() {
-        // MARK: 데이터가 한번에 오지 않고 두번에 걸쳐서 오는듯?
-        // MARK: 캐싱작업을 따로 해놓지 않음 해야 될듯
-        fetchGraphDataUseCase.createGraphThisYearMonthDayData()
-            .subscribe(onNext: { [weak self] in
-                
-                print($0)
+        fetchGraphDataUseCase.yearMonthDayDataSubject
+            .subscribe(onNext: { [weak self] graphData in
+                self?.graphDataRelay.accept(graphData)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func branchOutGraphDataType(_ data: Int) {
+        if data == 0 {
+            graphDataTypeRelay.accept(.day)
+        } else if data == 1 {
+            graphDataTypeRelay.accept(.month)
+        } else {
+            graphDataTypeRelay.accept(.year)
+        }
+    }
+    
+    func createGraphLabelText(_ type: GraphDataType) -> [String] {
+        let currentDateNumber = createCurrentDateTimeType(type)
+        var stringArray: [String] = []
+
+        for i in 0...6 {
+            if currentDateNumber-i <= 0 {
+                let date = Date.monthDaysCount(currentDateNumber)
+                stringArray.append(String(date))
+            } else {
+                stringArray.append(String(currentDateNumber-i))
+            }
+        }
+        let reversedArray: [String] = stringArray.reversed()
+        return reversedArray
+    }
+    
+    private func createCurrentDateTimeType(_ type: GraphDataType) -> Int {
+        let currentDay = DateComponents.currentDateTimeComponents()
+        switch type {
+        case .year:
+            return currentDay.year ?? 0
+        case .month:
+            return currentDay.month ?? 0
+        case .day:
+            return currentDay.day ?? 0
+        }
     }
 }

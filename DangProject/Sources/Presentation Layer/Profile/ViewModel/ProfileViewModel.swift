@@ -88,7 +88,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
-    var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
+    var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .up)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
     let heights: [String] = [Int](1...200).map{("\($0)")}

@@ -16,6 +16,7 @@ enum CalendarScaleState {
 }
 protocol HomeViewModelInputProtocol {
     func fetchProfileData()
+    func fetchGraphData()
     func fetchCurrentMonthData(dateComponents: DateComponents)
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents)
     func fetchOnlyCalendar(_ dateComponents: DateComponents)
@@ -39,12 +40,15 @@ class HomeViewModel: HomeViewModelProtocol {
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     private let fetchProfileUseCase: FetchProfileUseCase
+    private let fetchGraphUseCase: FetchGraphDataUseCase
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
-         fetchProfileUseCase: FetchProfileUseCase) {
+         fetchProfileUseCase: FetchProfileUseCase,
+         fetchGraphUseCase: FetchGraphDataUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.fetchProfileUseCase = fetchProfileUseCase
+        self.fetchGraphUseCase = fetchGraphUseCase
     }
     
     func fetchProfileData() {
@@ -53,6 +57,10 @@ class HomeViewModel: HomeViewModelProtocol {
                 self?.profileDataRelay.accept($0)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func fetchGraphData() {
+        fetchGraphUseCase.createGraphThisYearMonthDayData()
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {

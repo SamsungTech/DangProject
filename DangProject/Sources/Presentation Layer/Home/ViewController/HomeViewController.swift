@@ -56,6 +56,7 @@ class HomeViewController: UIViewController {
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
+        viewModel.fetchGraphData()
         changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
     }
     

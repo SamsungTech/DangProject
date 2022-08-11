@@ -17,19 +17,25 @@ class HomeGraphView: UIView {
     private var graphBackgroundStackView = UIStackView()
     private var graphStackView = UIStackView()
     private var graphNameStackView = UIStackView()
-    private let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
+    private var graphViewsArray: [UIView] = [ UIView(), UIView(), UIView(), UIView(), UIView(), UIView(), UIView() ]
+    private var heightConstraintArray: [NSLayoutConstraint] = [ NSLayoutConstraint(), NSLayoutConstraint(),
+                                                                NSLayoutConstraint(), NSLayoutConstraint(), NSLayoutConstraint(),
+                                                                NSLayoutConstraint(), NSLayoutConstraint() ]
+    private var graphLabelsArray: [UILabel] = [ UILabel(), UILabel(), UILabel(), UILabel(), UILabel(), UILabel(), UILabel() ]
     
     init(viewModel: GraphViewModel) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)
         configure()
         layout()
+        createGraphViews()
     }
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         graphMainView.viewRadius(cornerRadius: xValueRatio(20))
-        
+        bindGraphDataRelay()
+        switchGraphViewAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -43,6 +49,7 @@ extension HomeGraphView {
         
         graphSegmentedControl.selectedSegmentIndex = 0
         graphSegmentedControl.tintColor = .systemYellow
+        graphSegmentedControl.addTarget(self, action: #selector(switchGraphViews(_:)), for: .valueChanged)
         
         graphBackgroundStackView.backgroundColor = .clear
         graphBackgroundStackView.distribution = .fillEqually
@@ -53,15 +60,13 @@ extension HomeGraphView {
         graphStackView.spacing = xValueRatio(20)
         graphStackView.axis = .horizontal
         graphStackView.distribution = .fillProportionally
-        graphStackView.alignment = .trailing
+        graphStackView.alignment = .bottom
         
         graphNameStackView.backgroundColor = .clear
-        graphNameStackView.spacing = xValueRatio(20)
         graphNameStackView.axis = .horizontal
         graphNameStackView.distribution = .fillEqually
-        
+        createGraphLabels()
         createGraphBackgroundViews()
-        createGraphName()
     }
     
     private func layout() {
@@ -96,8 +101,8 @@ extension HomeGraphView {
         
         graphNameStackView.translatesAutoresizingMaskIntoConstraints = false
         graphNameStackView.topAnchor.constraint(equalTo: graphStackView.bottomAnchor).isActive = true
-        graphNameStackView.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
-        graphNameStackView.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
+        graphNameStackView.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(10)).isActive = true
+        graphNameStackView.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-10)).isActive = true
         graphNameStackView.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: yValueRatio(-10)).isActive = true
         
     }
@@ -115,34 +120,111 @@ extension HomeGraphView {
         }
     }
     
-    private func createGraphViews(items: GraphViewEntity) {
-        var height: CGFloat?
-        guard let items = items.weekDang else { return }
-        for item in items {
-            if Double(item)! > 30 {
-                height = CGFloat(30)
-            } else {
-                height = CGFloat(Double(item)!)
-            }
-            let view = UIView()
-            view.backgroundColor = .white
-            view.viewRadius(cornerRadius: xValueRatio(13))
-            view.translatesAutoresizingMaskIntoConstraints = false
-            view.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
-            
-            graphStackView.addArrangedSubview(view)
+    private func createGraphViews() {
+        for i in 0...6 {
+            graphViewsArray[i].backgroundColor = .white
+            graphViewsArray[i].viewRadius(cornerRadius: xValueRatio(13))
+            graphViewsArray[i].translatesAutoresizingMaskIntoConstraints = false
+            heightConstraintArray[i] = graphViewsArray[i].heightAnchor.constraint(equalToConstant: 0)
+            heightConstraintArray[i].isActive = true
+            graphStackView.addArrangedSubview(graphViewsArray[i])
         }
     }
     
-    private func createGraphName() {
-        for item in week {
-            let label = UILabel()
-            label.textColor = .white
-            label.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
-            label.text = item
-            label.textAlignment = .center
-            
-            graphNameStackView.addArrangedSubview(label)
+    private func createGraphLabels() {
+        for i in 0...6 {
+            graphLabelsArray[i].textColor = .white
+            graphLabelsArray[i].font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
+            graphLabelsArray[i].text = "없"
+            graphLabelsArray[i].textAlignment = .center
+            graphLabelsArray[i].translatesAutoresizingMaskIntoConstraints = false
+            graphNameStackView.addArrangedSubview(graphLabelsArray[i])
         }
+    }
+    
+    private func setupGraphViews(_ stringArray: [String]) {
+        if stringArray.count != 0 {
+            var array: [CGFloat] = []
+            stringArray.forEach {
+                array.append(CGFloat(Double($0) ?? 0))
+            }
+            animateGraphViews(array)
+        } else {
+            let array: [CGFloat] = [0,0,0,0,0,0,0]
+            animateGraphViews(array)
+        }
+    }
+    
+    private func bindGraphDataRelay() {
+        viewModel.graphDataRelay
+            .subscribe(onNext: { [weak self] data in
+                guard let strongSelf = self else { return }
+                switch self?.viewModel.graphDataTypeRelay.value {
+                case .day:
+                    strongSelf.setupGraphViews(data.dayArray)
+                    guard let textArray = self?.viewModel.createGraphLabelText(.day) else { return }
+                    strongSelf.animateGraphNameLabel(textArray)
+                case .month:
+                    strongSelf.setupGraphViews(data.monthArray)
+                    guard let textArray = self?.viewModel.createGraphLabelText(.month) else { return }
+                    strongSelf.animateGraphNameLabel(textArray)
+                case .year:
+                    strongSelf.setupGraphViews(data.yearArray)
+                    guard let textArray = self?.viewModel.createGraphLabelText(.year) else { return }
+                    strongSelf.animateGraphNameLabel(textArray)
+                case .none:
+                    break
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func switchGraphViewAnimation() {
+        viewModel.graphDataTypeRelay
+            .subscribe(onNext: { [weak self] in
+                guard let strongSelf = self else { return }
+                switch $0 {
+                case .day:
+                    guard let data = self?.viewModel.graphDataRelay.value,
+                          let textArray = self?.viewModel.createGraphLabelText(.day) else { return }
+                    strongSelf.setupGraphViews(data.dayArray)
+                    strongSelf.animateGraphNameLabel(textArray)
+                case .month:
+                    guard let data = self?.viewModel.graphDataRelay.value,
+                          let textArray = self?.viewModel.createGraphLabelText(.month) else { return }
+                    strongSelf.setupGraphViews(data.monthArray)
+                    strongSelf.animateGraphNameLabel(textArray)
+                case .year:
+                    guard let data = self?.viewModel.graphDataRelay.value,
+                          let textArray = self?.viewModel.createGraphLabelText(.year)  else { return }
+                    strongSelf.setupGraphViews(data.yearArray)
+                    strongSelf.animateGraphNameLabel(textArray)
+                default:
+                    break
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    @objc private func switchGraphViews(_ sender: UISegmentedControl) {
+        viewModel.branchOutGraphDataType(sender.selectedSegmentIndex)
+    }
+    
+    private func animateGraphViews(_ dataArray: [CGFloat]) {
+        for i in 0...6 {
+            heightConstraintArray[i].constant = xValueRatio(dataArray[i])
+        }
+        
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            self?.layoutIfNeeded()
+        })
+    }
+    
+    private func animateGraphNameLabel(_ stringArray: [String]) {
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            for i in 0...6 {
+                self?.graphLabelsArray[i].text = stringArray[i]
+            }
+        })
     }
 }

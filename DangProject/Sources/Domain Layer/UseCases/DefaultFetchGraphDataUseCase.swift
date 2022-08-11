@@ -29,24 +29,20 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         self.coreDataManagerRepository = coreDataManagerRepository
     }
     
-    func createGraphThisYearMonthDayData() -> Observable<GraphDomainModel> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            if GraphDomainModel.isLatestGraphData {
-                strongSelf.fetchLocalGraphData()
-                    .subscribe(onNext: { graph in
-                        emitter.onNext(graph)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-            } else {
-                strongSelf.fetchRemoteGraphData()
-                    .subscribe(onNext: { graph in
-                        emitter.onNext(graph)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-                GraphDomainModel.setIsLatestGraphData(true)
-            }
-            return Disposables.create()
+    func createGraphThisYearMonthDayData() {
+        if GraphDomainModel.isLatestGraphData {
+            fetchLocalGraphData()
+                .subscribe(onNext: { [weak self] graph in
+                    self?.yearMonthDayDataSubject.onNext(graph)
+                })
+                .disposed(by: disposeBag)
+        } else {
+            fetchRemoteGraphData()
+                .subscribe(onNext: { [weak self] graph in
+                    self?.yearMonthDayDataSubject.onNext(graph)
+                })
+                .disposed(by: disposeBag)
+            GraphDomainModel.setIsLatestGraphData(true)
         }
     }
     
