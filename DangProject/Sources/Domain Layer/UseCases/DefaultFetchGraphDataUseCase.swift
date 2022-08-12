@@ -66,6 +66,7 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         let yearAverageData = calculateCalendarAverage(yearMonthDayValue[1])
         let uploadYearValue = calculateCalendarDictionary(yearMonthDayValue[0], year, yearAverageData)
         self.fireStoreManagerRepository.setGraphYearDataInFireStore(uploadYearValue)
+        GraphDomainModel.setIsLatestGraphData(false)
     }
     
     private func fetchLocalGraphData() -> Observable<GraphDomainModel> {

@@ -65,9 +65,14 @@ class DetailFoodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpViews()
-        
         setupBindings()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.setupGraphData()
+    }
+    
     // MARK: - Set Views
     private func setUpViews() {
         setUpBackGround()

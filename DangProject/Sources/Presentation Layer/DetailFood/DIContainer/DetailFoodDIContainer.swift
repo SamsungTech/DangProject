@@ -20,12 +20,18 @@ class DetailFoodDIContainer {
     
     func makeDetailFoodViewModel() -> DetailFoodViewModel {
         return DetailFoodViewModel(detailFood: selectedFood,
-                                   addFoodsUseCase: makeAddFoodsUseCase())
+                                   addFoodsUseCase: makeAddFoodsUseCase(),
+                                   fetchGraphDataUseCase: makeFetchGraphDataUseCase())
     }
     
     func makeAddFoodsUseCase() -> AddFoodsUseCase {
         return DefaultAddFoodsUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
-                               firebaseFireStoreUseCase: makeManageFireBaseFireStoreUseCase())
+                                      firebaseFireStoreUseCase: makeManageFireBaseFireStoreUseCase())
+    }
+    
+    func makeFetchGraphDataUseCase() -> DefaultFetchGraphDataUseCase {
+        return DefaultFetchGraphDataUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository(),
+                                            coreDataManagerRepository: makeCoreDataManagerRepository())
     }
     
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {

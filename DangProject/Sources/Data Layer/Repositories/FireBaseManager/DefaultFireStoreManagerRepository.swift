@@ -173,7 +173,9 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     func getGraphAllYearDataInFireStore() -> Observable<[[String:Any]]> {
         return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
+            let today = DateComponents.currentDateTimeComponents()
+            guard let strongSelf = self,
+                  let year = today.year else { return Disposables.create() }
             self?.database.collection("app")
                 .document(strongSelf.uid)
                 .collection("graph")
@@ -183,7 +185,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                         return
                     }
                     if let result = snapshot?.documents {
-                        emitter.onNext(result.map { $0.data() })
+                        if result.count == 0 {
+                            emitter.onNext([[String(year):"0"]])
+                        } else {
+                            emitter.onNext(result.map { $0.data() })
+                        }
                     }
                 }
             return Disposables.create()
@@ -194,7 +200,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         return Observable.create { [weak self] emitter in
             let today = DateComponents.currentDateTimeComponents()
             guard let strongSelf = self,
-                  let year = today.year else {
+                  let year = today.year,
+                  let month = today.month else {
                 return Disposables.create()
             }
             self?.database.collection("app")
@@ -208,7 +215,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                         return
                     }
                     if let result = snapshot?.documents {
-                        emitter.onNext(result.map { $0.data() })
+                        if result.count == 0 {
+                            emitter.onNext([[String(month):"0"]])
+                        } else {
+                            emitter.onNext(result.map { $0.data() })
+                        }
                     }
                 }
             return Disposables.create()
@@ -220,7 +231,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             let today = DateComponents.currentDateTimeComponents()
             guard let strongSelf = self,
                   let year = today.year,
-                  let month = today.month else {
+                  let month = today.month,
+                  let day = today.day else {
                 return Disposables.create()
             }
             
@@ -237,8 +249,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                         return
                     }
                     if let result = snapshot?.documents {
-                        emitter.onNext(result.map { $0.data() })
-                        
+                        if result.count == 0 {
+                            emitter.onNext([[String(day):"0"]])
+                        } else {
+                            emitter.onNext(result.map { $0.data() })
+                        }
                     }
                 }
             return Disposables.create()

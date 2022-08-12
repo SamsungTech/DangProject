@@ -19,6 +19,7 @@ protocol DetailFoodViewModelInput {
     func addFoods(foods: AddFoodsViewModel)
     func changePickerViewWillActivated()
     func amountChanged(amount: Int)
+    func setupGraphData()
 }
 
 protocol DetailFoodViewModelOutput {
@@ -34,10 +35,13 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     // MARK: - Init
     var detailFood: FoodViewModel
     private let addFoodsUseCase: AddFoodsUseCase
+    private let fetchGraphDataUseCase: FetchGraphDataUseCase
     init(detailFood: FoodViewModel,
-         addFoodsUseCase: AddFoodsUseCase) {
+         addFoodsUseCase: AddFoodsUseCase,
+         fetchGraphDataUseCase: FetchGraphDataUseCase) {
         self.detailFood = detailFood
         self.addFoodsUseCase = addFoodsUseCase
+        self.fetchGraphDataUseCase = fetchGraphDataUseCase
     }
 
     // MARK: - Input
@@ -53,7 +57,12 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     
     func addFoods(foods: AddFoodsViewModel) {
         addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
-        
+        fetchGraphDataUseCase.uploadDangAverage(Int(abs(FoodDomainModel.init(foods).sugar)))
+    }
+    
+    func setupGraphData() {
+        GraphDomainModel.setIsLatestGraphData(false)
+        fetchGraphDataUseCase.createGraphThisYearMonthDayData()
     }
     
     func changePickerViewWillActivated() {
