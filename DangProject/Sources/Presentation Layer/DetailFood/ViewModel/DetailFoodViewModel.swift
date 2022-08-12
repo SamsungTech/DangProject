@@ -58,10 +58,11 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     func addFoods(foods: AddFoodsViewModel) {
         addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
         fetchGraphDataUseCase.uploadDangAverage(Int(abs(FoodDomainModel.init(foods).sugar)))
+        UserDefaults.standard.set(false, forKey: UserInfoKey.graphData)
     }
     
     func setupGraphData() {
-        GraphDomainModel.setIsLatestGraphData(false)
+        UserDefaults.standard.set(false, forKey: UserInfoKey.graphData)
         fetchGraphDataUseCase.createGraphThisYearMonthDayData()
     }
     

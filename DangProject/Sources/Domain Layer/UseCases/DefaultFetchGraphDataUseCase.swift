@@ -30,7 +30,7 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
     }
     
     func createGraphThisYearMonthDayData() {
-        if GraphDomainModel.isLatestGraphData {
+        if UserDefaults.standard.bool(forKey: UserInfoKey.graphData) {
             fetchLocalGraphData()
                 .subscribe(onNext: { [weak self] graph in
                     self?.yearMonthDayDataSubject.onNext(graph)
@@ -42,7 +42,7 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
                     self?.yearMonthDayDataSubject.onNext(graph)
                 })
                 .disposed(by: disposeBag)
-            GraphDomainModel.setIsLatestGraphData(true)
+            UserDefaults.standard.set(true, forKey: UserInfoKey.graphData)
         }
     }
     
@@ -54,19 +54,20 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         let yearMonthDayValue = yearMonthDayDataRelay.value
         
         // MARK: days
-        let uploadDayValue = calculateCalendarDictionary(yearMonthDayValue[2], day, data)
+        let uploadDayValue = createCalendarDictionaryToAdd(yearMonthDayValue[2], day, data)
         self.fireStoreManagerRepository.setGraphDaysDataInFireStore(uploadDayValue)
         
         // MARK: month
         let monthAverageData = calculateCalendarAverage(yearMonthDayValue[2])
-        let uploadMonthValue = calculateCalendarDictionary(yearMonthDayValue[1], month, monthAverageData)
+        let uploadMonthValue = createCalendarDictionaryToUpdate(yearMonthDayValue[1], month, monthAverageData)
         self.fireStoreManagerRepository.setGraphMonthDataInFireStore(uploadMonthValue)
         
         // MARK: year
         let yearAverageData = calculateCalendarAverage(yearMonthDayValue[1])
-        let uploadYearValue = calculateCalendarDictionary(yearMonthDayValue[0], year, yearAverageData)
+        let uploadYearValue = createCalendarDictionaryToUpdate(yearMonthDayValue[0], year, yearAverageData)
+        
         self.fireStoreManagerRepository.setGraphYearDataInFireStore(uploadYearValue)
-        GraphDomainModel.setIsLatestGraphData(false)
+        UserDefaults.standard.set(false, forKey: UserInfoKey.graphData)
     }
     
     private func fetchLocalGraphData() -> Observable<GraphDomainModel> {
@@ -143,7 +144,7 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         return result
     }
     
-    private func calculateCalendarDictionary(_ data: [String:Any],
+    private func createCalendarDictionaryToAdd(_ data: [String:Any],
                                              _ date: Int,
                                              _ uploadValue: Int) -> [String:Any] {
         var dateData: [String:Any] = [:]
@@ -151,12 +152,43 @@ class DefaultFetchGraphDataUseCase: FetchGraphDataUseCase {
         
         data.forEach { (key, value) in
             if key == String(date) {
-                guard let value = value as? Int else { return }
-                dateData.updateValue(String(value+uploadValue), forKey: key)
+                guard let value = value as? String,
+                      let lastValue = Int(value) else {
+                    return
+                }
+                dateData.updateValue(String(lastValue+uploadValue), forKey: key)
                 dateExistence = true
             } else {
+                
                 dateData.updateValue(value, forKey: key)
             }
+            
+            
+        }
+        
+        if dateExistence == false {
+            dateData.updateValue(String(uploadValue), forKey: String(date))
+        }
+        
+        return dateData
+    }
+    
+    private func createCalendarDictionaryToUpdate(_ data: [String:Any],
+                                             _ date: Int,
+                                             _ uploadValue: Int) -> [String:Any] {
+        var dateData: [String:Any] = [:]
+        var dateExistence: Bool = false
+        
+        data.forEach { (key, value) in
+            if key == String(date) {
+                dateData.updateValue(String(uploadValue), forKey: key)
+                dateExistence = true
+            } else {
+                
+                dateData.updateValue(value, forKey: key)
+            }
+            
+            
         }
         
         if dateExistence == false {
