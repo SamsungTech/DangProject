@@ -57,7 +57,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     
     func addFoods(foods: AddFoodsViewModel) {
         addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
-        fetchGraphDataUseCase.uploadDangAverage(Int(abs(FoodDomainModel.init(foods).sugar)))
+        fetchGraphDataUseCase.uploadDangAverage(Int(abs(FoodDomainModel.init(foods).sugar*Double(foods.amount))))
         UserDefaults.standard.set(false, forKey: UserInfoKey.graphData)
     }
     
