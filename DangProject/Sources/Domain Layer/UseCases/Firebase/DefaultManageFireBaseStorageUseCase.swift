@@ -21,7 +21,7 @@ class DefaultManageFireBaseStorageUseCase: ManageFirebaseStorageUseCase {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
             self?.fireBaseStorageManagerRepository.getImageData()
-                .subscribe(onNext: { [weak self] nsData in
+                .subscribe(onNext: { nsData in
                     emitter.onNext(nsData)
                 })
                 .disposed(by: strongSelf.disposeBag)

@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 
 class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository {
+    
     private let uid = UserInfoKey.getUserDefaultsUID
     private let storage = Storage.storage()
     
