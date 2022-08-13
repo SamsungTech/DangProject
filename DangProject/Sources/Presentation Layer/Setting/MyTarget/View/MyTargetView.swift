@@ -132,4 +132,8 @@ extension MyTargetView {
             self.cheeringLabel.alpha = 1.0
         })
     }
+    
+    func setupSugarTarget(_ data: Int) {
+        self.targetNumberTextField.text = String(data)
+    }
 }

@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 
 class MyTargetViewController: UIViewController {
-    private var viewModel: MyTargetViewModel?
+    private var viewModel: MyTargetViewModel
     var coordinator: MyTargetCoordinator?
     private let disposeBag = DisposeBag()
     private lazy var targetView: MyTargetView = {
@@ -30,8 +30,13 @@ class MyTargetViewController: UIViewController {
     }
     
     init(viewModel: MyTargetViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.getCurrentTargetSugar()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -80,6 +85,7 @@ extension MyTargetViewController {
     
     private func bind() {
         bindUI()
+        bindTargetSugar()
     }
     
     private func bindUI() {
@@ -91,9 +97,20 @@ extension MyTargetViewController {
         
         targetView.toolBar.rx.tap
             .bind { [weak self] in
+                guard let targetSugar = self?.targetView.targetNumberTextField.text,
+                      let sugar = Int(targetSugar) else { return }
                 self?.targetView.animateLabel()
                 self?.targetView.targetNumberTextField.resignFirstResponder()
+                self?.viewModel.setCurrentTargetSugar(sugar)
             }
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindTargetSugar() {
+        viewModel.targetSugarRelay
+            .subscribe(onNext: { [weak self] sugar in
+                self?.targetView.setupSugarTarget(sugar)
+            })
             .disposed(by: disposeBag)
     }
 }

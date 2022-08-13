@@ -8,4 +8,5 @@ struct UserInfoKey {
     }() ?? ""
     static let userNotificationsPermission = "UserNotificationsPermission"
     static let initialAlarmDataIsNeeded = "InitialAlarmDataIsNeeded"
+    static let targetSugar = "TargetSugar"
 }
