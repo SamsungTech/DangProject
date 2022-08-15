@@ -12,6 +12,7 @@ import RxRelay
 import RxCocoa
 
 class ProfileViewController: UIViewController {
+    
     var coordinator: ProfileCoordinator?
     private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
@@ -70,10 +71,7 @@ class ProfileViewController: UIViewController {
         return imagePicker
     }()
     
-    private lazy var saveButton: SaveButton = {
-        let view = SaveButton()
-        return view
-    }()
+    private lazy var saveButton = SaveButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,7 +82,7 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        hideTabBar()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -98,6 +96,12 @@ class ProfileViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // tabBar있는뷰 없는뷰 추상화 필요
+    private func hideTabBar() {
+        guard let tabBarController = self.navigationController?.parent as? TabBarController else { return }
+        tabBarController.hideTabBar()
     }
     
     private func configureUI() {
@@ -420,31 +424,6 @@ extension ProfileViewController: ProfileImageButtonProtocol {
     
     func profileImageButtonTapped() {
         coordinator?.presentPickerController(self)
-    }
-    
-    func viewTapped() {
-        if #available(iOS 13.4, *) {
-            bringDownKeyboardWhileBirthPickerView()
-        } else {
-            bringDownKeyboardWhileBirthTextFieldView()
-        }
-    }
-    
-    @available(iOS 13.4, *)
-    private func bringDownKeyboardWhileBirthPickerView() {
-        if selectedTextField == profileStackView.birthDatePickerView.profileTextField {
-            selectedTextField?.resignFirstResponder()
-        } else {
-            selectedTextField?.resignFirstResponder()
-        }
-    }
-    
-    private func bringDownKeyboardWhileBirthTextFieldView() {
-        if selectedTextField == profileStackView.birthDateTextFieldView.profileTextField {
-            selectedTextField?.resignFirstResponder()
-        } else {
-            selectedTextField?.resignFirstResponder()
-        }
     }
 }
 

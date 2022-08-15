@@ -32,7 +32,7 @@ class TabBarController: UITabBarController {
         return button
     }()
     
-    private lazy var backgroundView: UIView = {
+     lazy var backgroundView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 0.2
         view.layer.borderColor = UIColor.gray.cgColor
@@ -66,20 +66,19 @@ class TabBarController: UITabBarController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTabbar()
-        setupTabbarBackgroundView()
+        setupTabBar()
+        setupTabBarBackgroundView()
         setupHomeItemButton()
         setupSettingItemButton()
         setupAddButton()
     }
     
-    private func setupTabbar() {
+    private func setupTabBar() {
         self.viewControllers = [homeTab, UIViewController(), settingTab]
-        self.delegate = self
         self.tabBar.isHidden = true
     }
     
-    private func setupTabbarBackgroundView() {
+    private func setupTabBarBackgroundView() {
         view.addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -146,16 +145,9 @@ class TabBarController: UITabBarController {
         }
         (coordinator as? TabBarCoordinator)?.presentSearchViewController(viewController: currentViewController)
     }
-}
-
-extension TabBarController: UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        guard let selectedIndex = tabBarController.viewControllers?.firstIndex(of: viewController) else {
-            return true
-        }
-        if selectedIndex == 1 {
-            return false
-        }
-        return true
+    
+    func hideTabBar() {
+        addButton.isHidden = true
+        backgroundView.isHidden = true
     }
 }
