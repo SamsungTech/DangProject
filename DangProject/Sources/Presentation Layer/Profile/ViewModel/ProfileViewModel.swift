@@ -10,12 +10,6 @@ import UIKit
 import RxSwift
 import RxRelay
 
-enum SaveButtonState {
-    case up
-    case down
-    case none
-}
-
 enum TextFieldType {
     case none
     case name
@@ -60,7 +54,6 @@ struct ProfileData {
 
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
-    func switchSaveButtonRelayValue()
     func handOverProfileDataToSave(_ data: ProfileDomainModel)
     func handOverProfileImageDataToSave(_ data: UIImage)
 }
@@ -68,10 +61,8 @@ protocol ProfileViewModelInputProtocol {
 protocol ProfileViewModelOutputProtocol {
     var heights: [String] { get }
     var weights: [String] { get }
-    
     var scrollValue: BehaviorRelay<ScrollState> { get }
     var genderRelay: BehaviorRelay<GenderType> { get }
-    var saveButtonAnimationRelay: BehaviorRelay<SaveButtonState> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
     var profileDataRelay: BehaviorRelay<ProfileData> { get }
     func convertGenderTypeToString() -> String
@@ -88,7 +79,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
-    var saveButtonAnimationRelay = BehaviorRelay<SaveButtonState>(value: .none)
     var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
     let heights: [String] = [Int](1...200).map{("\($0)")}
@@ -131,14 +121,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
             scrollValue.accept(.top)
         } else {
             scrollValue.accept(.scrolling)
-        }
-    }
-    
-    func switchSaveButtonRelayValue() {
-        if saveButtonAnimationRelay.value == .up || saveButtonAnimationRelay.value == .none {
-            saveButtonAnimationRelay.accept(.down)
-        } else {
-            saveButtonAnimationRelay.accept(.up)
         }
     }
     

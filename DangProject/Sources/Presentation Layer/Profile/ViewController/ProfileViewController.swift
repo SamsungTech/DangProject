@@ -7,9 +7,9 @@
 
 import UIKit
 
-import RxSwift
-import RxRelay
 import RxCocoa
+import RxRelay
+import RxSwift
 
 class ProfileViewController: CustomViewController {
     
@@ -77,7 +77,6 @@ class ProfileViewController: CustomViewController {
         super.viewDidLoad()
         configureUI()
         bind()
-        view.bringSubviewToFront(navigationBar)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -94,12 +93,13 @@ class ProfileViewController: CustomViewController {
     }
     
     private func configureUI() {
-        setUpViewController()
-        setUpProfileNavigationBar()
-        setUpScrollView()
-        setUpProfileImageButton()
-        setUpProfileStackView()
-        setUpSaveButton()
+        setupViewController()
+        setupProfileNavigationBar()
+        setupScrollView()
+        setupProfileImageButton()
+        setupProfileStackView()
+        setupSaveButton()
+        view.bringSubviewToFront(navigationBar)
     }
     
     private func bind() {
@@ -108,12 +108,12 @@ class ProfileViewController: CustomViewController {
         bindAnimationValue()
     }
     
-    private func setUpViewController() {
+    private func setupViewController() {
         navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .homeBackgroundColor
     }
     
-    private func setUpProfileNavigationBar() {
+    private func setupProfileNavigationBar() {
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -124,7 +124,7 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
-    private func setUpScrollView() {
+    private func setupScrollView() {
         view.addSubview(profileScrollView)
         profileScrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -135,7 +135,7 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
-    private func setUpProfileImageButton() {
+    private func setupProfileImageButton() {
         profileScrollView.addSubview(profileImageButton)
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -146,7 +146,7 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
-    private func setUpProfileStackView() {
+    private func setupProfileStackView() {
         profileScrollView.addSubview(profileStackView)
         profileStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -156,7 +156,7 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
-    private func setUpSaveButton() {
+    private func setupSaveButton() {
         profileScrollView.addSubview(saveButton)
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         saveButtonBottomConstraint = saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -309,30 +309,12 @@ class ProfileViewController: CustomViewController {
                 }
             })
             .disposed(by: disposeBag)
-        
-        viewModel.saveButtonAnimationRelay
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .up:
-                    self.animateSaveButtonUp()
-                case .down:
-                    self.animateSaveButtonDown()
-                case .none: break
-                }
-            })
-            .disposed(by: disposeBag)
-        
+
         viewModel.okButtonRelay
             .subscribe(onNext: { [weak self] _ in
                 self?.view.endEditing(true)
-                self?.viewModel.saveButtonAnimationRelay.accept(.up)
             })
             .disposed(by: disposeBag)
-    }
-    
-    @objc private func backgroundViewDidTap() {
-        self.animateSaveButtonDown()
     }
     
     @objc private func scrollViewDidTap(_ sender: UIScrollView) {
@@ -349,9 +331,7 @@ class ProfileViewController: CustomViewController {
 extension ProfileViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        viewModel.calculateScrollViewState(
-            yPosition: scrollView.contentOffset.y
-        )
+        viewModel.calculateScrollViewState(yPosition: scrollView.contentOffset.y)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -394,19 +374,6 @@ extension ProfileViewController {
         })
     }
     
-    private func animateSaveButtonDown() {
-        saveButtonBottomConstraint?.constant = yValueRatio(105)
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
-    }
-    
-    private func animateSaveButtonUp() {
-        saveButtonBottomConstraint?.constant = 0
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
-    }
 }
 
 extension ProfileViewController: ProfileImageButtonProtocol {
@@ -419,11 +386,6 @@ extension ProfileViewController: ProfileImageButtonProtocol {
 extension ProfileViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        viewModel.saveButtonAnimationRelay.accept(.down)
         selectedTextField = textField
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        viewModel.saveButtonAnimationRelay.accept(.up)
     }
 }
