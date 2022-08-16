@@ -123,7 +123,7 @@ class AccountViewController: CustomViewController {
     private func setupLogOutAlertController() {
         let no = UIAlertAction(title: "아니오", style: .default, handler: nil)
         let yes = UIAlertAction(title: "네", style: .default) { [weak self] _ in
-            self?.viewModel.deleteUserDefaultUID()
+            self?.viewModel.logOutUser()
             self?.coordinator?.returnToFirstStart()
         }
         logOutAlertController.addAction(yes)
