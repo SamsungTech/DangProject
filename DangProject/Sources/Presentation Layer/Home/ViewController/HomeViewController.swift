@@ -52,7 +52,6 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.hidesBottomBarWhenPushed = false
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
