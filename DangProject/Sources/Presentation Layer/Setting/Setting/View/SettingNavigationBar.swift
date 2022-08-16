@@ -11,6 +11,7 @@ class SettingNavigationBar: UIView {
     private lazy var settingLabel: UILabel = {
         let label = UILabel()
         label.text = "설정"
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .heavy)
         label.textAlignment = .left
         return label
