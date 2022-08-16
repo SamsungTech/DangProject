@@ -23,7 +23,7 @@ enum EatenTimeAlertController: String {
     case snack = "간식"
 }
 
-class AlarmViewController: UIViewController {
+class AlarmViewController: CustomViewController {
     
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()

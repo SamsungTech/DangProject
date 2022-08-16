@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 import RxCocoa
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: CustomViewController {
     
     var coordinator: ProfileCoordinator?
     private var viewModel: ProfileViewModelProtocol
@@ -80,11 +80,6 @@ class ProfileViewController: UIViewController {
         view.bringSubviewToFront(navigationBar)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        hideTabBar()
-    }
-    
     override func viewDidDisappear(_ animated: Bool) {
         coordinator?.childDidFinish(coordinator)
     }
@@ -96,12 +91,6 @@ class ProfileViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // tabBar있는뷰 없는뷰 추상화 필요
-    private func hideTabBar() {
-        guard let tabBarController = self.navigationController?.parent as? TabBarController else { return }
-        tabBarController.hideTabBar()
     }
     
     private func configureUI() {

@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class AppIntroduceViewController: UIViewController {
+class AppIntroduceViewController: CustomViewController {
     private var viewModel: AppIntroduceViewModel?
     var coordinator: AppIntroduceCoordinator?
     private let disposeBag = DisposeBag()

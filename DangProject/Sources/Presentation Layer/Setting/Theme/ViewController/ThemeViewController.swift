@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class ThemeViewController: UIViewController {
+class ThemeViewController: CustomViewController {
     private var viewModel: ThemeViewModel?
     var coordinator: ThemeCoordinator?
     private let disposeBag = DisposeBag()

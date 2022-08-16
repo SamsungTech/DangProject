@@ -9,7 +9,7 @@ import UIKit
 
 import RxSwift
 
-class SettingViewController: UIViewController {
+class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
     var coordinator: SettingCoordinator?
     private let viewModel: SettingViewModelProtocol
     private let disposeBag = DisposeBag()

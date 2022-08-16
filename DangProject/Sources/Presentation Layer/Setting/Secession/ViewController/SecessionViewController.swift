@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class SecessionViewController: UIViewController {
+class SecessionViewController: CustomViewController {
     private var viewModel: SecessionViewModel?
     var coordinator: SecessionCoordinator?
     private let disposeBag = DisposeBag()

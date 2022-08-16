@@ -9,7 +9,7 @@ import UIKit
 
 import RxSwift
 
-class AccountViewController: UIViewController {
+class AccountViewController: CustomViewController {
     private let disposeBag = DisposeBag()
     private var viewModel: AccountViewModel
     var coordinator: AccountCoordinator?

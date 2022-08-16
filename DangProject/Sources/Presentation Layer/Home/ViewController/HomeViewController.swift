@@ -10,7 +10,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-class HomeViewController: UIViewController {
+class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     
     weak var coordinator: HomeCoordinator?
     
@@ -52,6 +52,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.hidesBottomBarWhenPushed = false
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
@@ -198,8 +199,6 @@ extension HomeViewController: NavigationBarDelegate {
     }
     
     func changeViewControllerExpandation(state: ChevronButtonState) {
-        self.homeStackViewTopAnchor.isActive = false
-        self.calendarViewTopAnchor.isActive = false
         switch state {
         case .expand:
             resetCalendarViewTopAnchor()

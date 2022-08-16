@@ -8,6 +8,7 @@
 import UIKit
 
 class TabBarController: UITabBarController {
+    
     var coordinator: Coordinator?
     let homeTab: UINavigationController
     let settingTab: UINavigationController
@@ -82,10 +83,10 @@ class TabBarController: UITabBarController {
         view.addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: xValueRatio(5)),
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            backgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(90)),
             backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
-            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
-            backgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(90))
+            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5))
         ])
         backgroundView.roundCorners(cornerRadius: xValueRatio(30), maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
     }
@@ -94,8 +95,8 @@ class TabBarController: UITabBarController {
         backgroundView.addSubview(homeItemButton)
         homeItemButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            homeItemButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -xValueRatio(20)),
-            homeItemButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: xValueRatio(UIScreen.main.bounds.maxX/6)),
+            homeItemButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -xValueRatio(20)),
+            homeItemButton.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: xValueRatio(UIScreen.main.bounds.maxX/6)),
             homeItemButton.widthAnchor.constraint(equalToConstant: xValueRatio(35)),
             homeItemButton.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
@@ -105,8 +106,8 @@ class TabBarController: UITabBarController {
         backgroundView.addSubview(settingItemButton)
         settingItemButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            settingItemButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -xValueRatio(20)),
-            settingItemButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -xValueRatio(UIScreen.main.bounds.maxX/6)),
+            settingItemButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -xValueRatio(20)),
+            settingItemButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -xValueRatio(UIScreen.main.bounds.maxX/6)),
             settingItemButton.widthAnchor.constraint(equalToConstant: xValueRatio(35)),
             settingItemButton.heightAnchor.constraint(equalToConstant: yValueRatio(52.5))
         ])
@@ -117,10 +118,10 @@ class TabBarController: UITabBarController {
         view.bringSubviewToFront(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            addButton.widthAnchor.constraint(equalToConstant: xValueRatio(80)),
             addButton.heightAnchor.constraint(equalToConstant: yValueRatio(80)),
-            addButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            addButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -yValueRatio(25))
+            addButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -yValueRatio(25)),
+            addButton.widthAnchor.constraint(equalToConstant: xValueRatio(80)),
+            addButton.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor)
         ])
     }
     
@@ -147,7 +148,24 @@ class TabBarController: UITabBarController {
     }
     
     func hideTabBar() {
-        addButton.isHidden = true
-        backgroundView.isHidden = true
+        UIView.animateKeyframes(withDuration: 0.2, delay: 0.2) { [weak self] in
+            self?.backgroundView.alpha = 0
+            self?.addButton.alpha = 0
+            self?.view.layoutIfNeeded()
+        } completion: { [weak self] _ in
+            self?.backgroundView.isHidden = true
+            self?.addButton.isHidden = true
+        }
+
+    }
+    
+    func showTabBar() {
+        UIView.animate(withDuration: 0.2, delay: 0.2) { [weak self] in
+            self?.backgroundView.alpha = 1
+            self?.addButton.alpha = 1
+            self?.backgroundView.isHidden = false
+            self?.addButton.isHidden = false
+            self?.view.layoutIfNeeded()
+        }
     }
 }
