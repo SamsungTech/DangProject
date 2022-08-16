@@ -13,7 +13,7 @@ import RxSwift
 
 class ProfileViewController: CustomViewController {
     
-    var coordinator: ProfileCoordinator?
+    weak var coordinator: ProfileCoordinator?
     private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
     private lazy var navigationBar: CommonNavigationBar = {
