@@ -34,14 +34,8 @@ class SettingAppVersionView: UIButton {
 
 extension SettingAppVersionView {
     private func configureUI() {
-        setupView()
         setupItemLabel()
         setupItemImageView()
-    }
-    
-    private func setupView() {
-        self.addTarget(self, action: #selector(touchDownEvent(_:)), for: .touchDown)
-        self.addTarget(self, action: #selector(touchUpEvent(_:)), for: [.touchUpInside, .touchUpOutside])
     }
     
     private func setupItemLabel() {
@@ -62,11 +56,4 @@ extension SettingAppVersionView {
         ])
     }
     
-    @objc private func touchDownEvent(_ sender: UIButton) {
-        self.backgroundColor = .init(white: 1, alpha: 0.1)
-    }
-    
-    @objc private func touchUpEvent(_ sender: UIButton) {
-        self.backgroundColor = .homeBoxColor
-    }
 }
