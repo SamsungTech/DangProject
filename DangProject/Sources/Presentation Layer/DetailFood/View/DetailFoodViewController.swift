@@ -100,12 +100,13 @@ class DetailFoodViewController: UIViewController {
         viewModel.changeDetailFoodFavorite()
         favoriteButton.setImage(viewModel.detailFood.image, for: .normal)
     }
+    
     private func setUpIndicatorImageView() {
         view.addSubview(indicatorImageView)
         indicatorImageView.translatesAutoresizingMaskIntoConstraints = false
         indicatorImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30).isActive = true
-        indicatorImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        indicatorImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        indicatorImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: xValueRatio(10)).isActive = true
+        indicatorImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: xValueRatio(10)).isActive = true
         indicatorImageView.heightAnchor.constraint(equalToConstant: view.frame.height*0.3).isActive = true
     }
     
