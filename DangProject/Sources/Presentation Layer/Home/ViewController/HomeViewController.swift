@@ -198,6 +198,8 @@ extension HomeViewController: NavigationBarDelegate {
     }
     
     func changeViewControllerExpandation(state: ChevronButtonState) {
+        self.calendarViewTopAnchor.isActive = false
+        self.homeStackViewTopAnchor.isActive = false
         switch state {
         case .expand:
             resetCalendarViewTopAnchor()
