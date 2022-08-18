@@ -17,11 +17,12 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     private let disposeBag = DisposeBag()
     private let customNavigationBar = CustomNavigationBar()
     
-    private let eatenFoodsTitleView = EatenFoodsTitleView()
+    private let viewModel: HomeViewModelProtocol
     private let eatenFoodsView: EatenFoodsView
     private let batteryView: BatteryView
     private let calendarView: CalendarView
     
+    private let eatenFoodsTitleView = EatenFoodsTitleView()
     private let graphTitleView = GraphTitleView()
     private var homeGraphView = HomeGraphView()
     
@@ -32,8 +33,6 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         homeStackView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: yValueRatio(60))
     }()
     private lazy var calendarViewTopAnchor = NSLayoutConstraint()
-    
-    var viewModel: HomeViewModelProtocol
     
     init(viewModel: HomeViewModelProtocol,
          calendarView: CalendarView,
@@ -182,7 +181,7 @@ extension HomeViewController: CalendarViewDelegate {
     }
     
     private func changeEatenFoodsTitleViewText(dateComponents: DateComponents) {
-        let eatenFoodsTitleText = viewModel.checkEatenFoodsTitleText(dateComponents: dateComponents)
+        let eatenFoodsTitleText = viewModel.getEatenFoodsTitleText(dateComponents: dateComponents)
         eatenFoodsTitleView.changeEatenFoodsTitleLabel(text: eatenFoodsTitleText)
     }
     
