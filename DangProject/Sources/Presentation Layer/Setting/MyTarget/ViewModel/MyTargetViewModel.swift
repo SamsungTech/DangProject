@@ -11,27 +11,45 @@ import RxRelay
 
 protocol MyTargetViewModelInputProtocol: AnyObject {
     func setCurrentTargetSugar(_ data: Int)
-    func getCurrentTargetSugar()
+    func fetchProfileData()
 }
 
 protocol MyTargetViewModelOutputProtocol: AnyObject {
-    var targetSugarRelay: BehaviorRelay<Int> { get }
+    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
 }
 
 protocol MyTargetViewModelProtocol: MyTargetViewModelInputProtocol, MyTargetViewModelOutputProtocol {}
 
 class MyTargetViewModel: MyTargetViewModelProtocol {
     private let disposeBag = DisposeBag()
-    var targetSugarRelay = BehaviorRelay<Int>(value: Int())
+    private let fetchProfileUseCase: FetchProfileUseCase
+    private let fireStoreUseCase: ManageFirebaseFireStoreUseCase
+    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
-    init() {}
-    
-    func setCurrentTargetSugar(_ data: Int) {
-        UserDefaults.standard.set(data, forKey: UserInfoKey.targetSugar)
+    init(fetchProfileUseCase: FetchProfileUseCase,
+         fireStoreUseCase: ManageFirebaseFireStoreUseCase) {
+        self.fetchProfileUseCase = fetchProfileUseCase
+        self.fireStoreUseCase = fireStoreUseCase
     }
     
-    func getCurrentTargetSugar() {
-        let targetSugar = UserDefaults.standard.integer(forKey: UserInfoKey.targetSugar)
-        targetSugarRelay.accept(targetSugar)
+    func setCurrentTargetSugar(_ data: Int) {
+        let profileData = profileDataRelay.value
+        let data = ProfileDomainModel.init(uid: "",
+                                           name: profileData.name,
+                                           height: profileData.height,
+                                           weight: profileData.weight,
+                                           sugarLevel: data,
+                                           profileImage: profileData.profileImage,
+                                           gender: profileData.gender,
+                                           birthday: profileData.birthday)
+        fireStoreUseCase.updateProfileData(data)
+    }
+    
+    func fetchProfileData() {
+        fetchProfileUseCase.fetchProfileData()
+            .subscribe(onNext: { [weak self] profileData in
+                self?.profileDataRelay.accept(profileData)
+            })
+            .disposed(by: disposeBag)
     }
 }

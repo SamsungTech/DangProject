@@ -36,7 +36,7 @@ class MyTargetViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.getCurrentTargetSugar()
+        viewModel.fetchProfileData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -107,9 +107,9 @@ extension MyTargetViewController {
     }
     
     private func bindTargetSugar() {
-        viewModel.targetSugarRelay
-            .subscribe(onNext: { [weak self] sugar in
-                self?.targetView.setupSugarTarget(sugar)
+        viewModel.profileDataRelay
+            .subscribe(onNext: { [weak self] profileData in
+                self?.targetView.setupSugarTarget(profileData.sugarLevel)
             })
             .disposed(by: disposeBag)
     }

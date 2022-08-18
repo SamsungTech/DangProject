@@ -13,6 +13,33 @@ class MyTargetDIContainer {
     }
     
     func makeMyTargetViewModel() -> MyTargetViewModel {
-        return MyTargetViewModel()
+        return MyTargetViewModel(fetchProfileUseCase: makeFetchProfileUseCase(),
+                                 fireStoreUseCase: makeFireStoreUseCase())
+    }
+    
+    func makeFetchProfileUseCase() -> FetchProfileUseCase {
+        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                          manageFirebaseFireStoreUseCase: makeFireStoreUseCase(),
+                                          manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
+    }
+    
+    func makeFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFirebaseStoreManagerRepository())
+    }
+    
+    func makeFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
+    }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
+    }
+    
+    func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
+        return DefaultFirebaseStorageManagerRepository()
+    }
+    
+    func makeFirebaseStoreManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
     }
 }
