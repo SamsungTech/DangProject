@@ -146,23 +146,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         createProfileData(profileData)
     }
     
-    func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
-                                        date: Date) {
-        let request = EatenFoodsPerDay.fetchRequest()
-        request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
-        do {
-            if let checkedEatenFoodsPerDay = try context?.fetch(request) {
-                if checkedEatenFoodsPerDay.count == 0 {
-                } else {
-                    
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-            return
-        }
-    }
-    
     func fetchCoreDataArray(from coreDataName: CoreDataName) -> [NSManagedObject] {
         switch coreDataName {
         case .favoriteFoods:

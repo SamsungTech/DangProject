@@ -23,8 +23,6 @@ protocol CoreDataManagerRepository {
     func deleteAll(coreDataName: CoreDataName)
     func deleteEatenFoodsPerDay(date: Date)
     func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)>
-    func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
-                                      date: Date)
     func updateLocal(data: EatenFoodsPerDayDomainModel,
                      date: Date)
     func createAlarmEntity(_ alarm: AlarmDomainModel)
