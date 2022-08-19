@@ -33,6 +33,13 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
     }
     
     func setCurrentTargetSugar(_ data: Int) {
+        // MARK: Remote와 Local profileData 저장,
+        // MARK: fireStore에 있는 오늘날짜에 foods 데이터들 targetSugar 업데이트
+        // MARK: 오늘 날짜 foods 데이터가 없을시 그냥 넘어감
+        
+        // MARK: CoreDataProperties에 targetSugar 추가
+        // MARK: FireStore foods field에 targetSugar 추가
+
         let profileData = profileDataRelay.value
         let data = ProfileDomainModel.init(uid: "",
                                            name: profileData.name,
@@ -43,6 +50,12 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
                                            gender: profileData.gender,
                                            birthday: profileData.birthday)
         fireStoreUseCase.updateProfileData(data)
+        
+        fireStoreUseCase.getEatenFoods(dateComponents: DateComponents.currentDateTimeComponents())
+            .subscribe(onNext: { [weak self] eatenFoods in
+                
+            })
+            .disposed(by: disposeBag)
     }
     
     func fetchProfileData() {
