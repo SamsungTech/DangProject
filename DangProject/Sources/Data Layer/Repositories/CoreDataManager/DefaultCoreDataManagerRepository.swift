@@ -141,7 +141,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func updateLocalProfileData(_ profileData: ProfileDomainModel) {
+    func updateProfileData(_ profileData: ProfileDomainModel) {
         deleteProfileData()
         createProfileData(profileData)
     }

@@ -14,11 +14,11 @@ class SettingDIContainer {
     }
     
     func makeSettingViewModel() -> SettingViewModelProtocol {
-        return SettingViewModel(fetchProfileUseCase: makeFetchProfileUseCase())
+        return SettingViewModel(profileManagerUseCase: makeProfileManagerUseCase())
     }
 
-    func makeFetchProfileUseCase() -> FetchProfileUseCase {
-        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+    func makeProfileManagerUseCase() -> ProfileManagerUseCase {
+        return DefaultProfileManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
                                           manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
                                           manageFirebaseStorageUseCase: makeManageFirebaseStorageUseCase())
     }

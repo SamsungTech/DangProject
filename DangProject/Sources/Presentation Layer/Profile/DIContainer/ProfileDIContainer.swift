@@ -16,13 +16,13 @@ class ProfileDIContainer {
     func makeProfileViewModel() -> ProfileViewModel {
         return ProfileViewModel(manageFirebaseStoreUseCase: makeFirebaseStoreUseCase(),
                                 manageFirebaseStorageUseCase: makeFirebaseStorageUseCase(),
-                                fetchProfileUseCase: makeFetchProfileUseCase())
+                                profileManagerUseCase: makeProfileManagerUseCase())
     }
     
-    func makeFetchProfileUseCase() -> FetchProfileUseCase {
-        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
-                                          manageFirebaseFireStoreUseCase: makeFirebaseStoreUseCase(),
-                                          manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
+    func makeProfileManagerUseCase() -> ProfileManagerUseCase {
+        return DefaultProfileManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                            manageFirebaseFireStoreUseCase: makeFirebaseStoreUseCase(),
+                                            manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
     func makeFirebaseStoreUseCase() -> ManageFirebaseFireStoreUseCase {

@@ -24,10 +24,10 @@ protocol AccountViewModelProtocol: AccountViewModelInputProtocol, AccountViewMod
 
 class AccountViewModel: AccountViewModelProtocol {
     private let disposeBag = DisposeBag()
-    private var fetchProfileUseCase: FetchProfileUseCase
+    private var fetchProfileUseCase: ProfileManagerUseCase
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
-    init(fetchProfileUseCase: FetchProfileUseCase) {
+    init(fetchProfileUseCase: ProfileManagerUseCase) {
         self.fetchProfileUseCase = fetchProfileUseCase
     }
     

@@ -38,17 +38,17 @@ class HomeViewModel: HomeViewModelProtocol {
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
-    private let fetchProfileUseCase: FetchProfileUseCase
+    private let profileManagerUseCase: ProfileManagerUseCase
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
-         fetchProfileUseCase: FetchProfileUseCase) {
+         profileManagerUseCase: ProfileManagerUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
-        self.fetchProfileUseCase = fetchProfileUseCase
+        self.profileManagerUseCase = profileManagerUseCase
     }
     
     func fetchProfileData() {
-        fetchProfileUseCase.fetchProfileData()
+        profileManagerUseCase.fetchProfileData()
             .subscribe(onNext: { [weak self] in
                 self?.profileDataRelay.accept($0)
             })
