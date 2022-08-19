@@ -5,19 +5,14 @@ import RxSwift
 
 class BatteryView: UIView {
     private var disposeBag = DisposeBag()
-    
     private var viewModel: BatteryViewModel
-    
     private var circleProgressBarView = UIView()
-    
     private var endCount: Int = 0
     private var currentCount: Int = 0
     private var timer = Timer()
-
     private var percentNumberLabel = UILabel()
     private var percentLabel = UILabel()
     private var targetSugarLabel = UILabel()
-    
     private var animationLineLayer = CAShapeLayer()
     private var percentLineLayer = CAShapeLayer()
     private var percentLineBackgroundLayer = CAShapeLayer()
@@ -28,7 +23,7 @@ class BatteryView: UIView {
         configure()
         circleConfigure()
         layout()
-        bindTotalSugarSum()
+        bindBatteryEntity()
     }
     
     required init?(coder: NSCoder) {
@@ -109,16 +104,16 @@ class BatteryView: UIView {
         
     }
     
-    private func bindTotalSugarSum() {
-        viewModel.totalSugarSumObservable
+    private func bindBatteryEntity() {
+        viewModel.batteryEntityObservable
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] totalSugar in
-                let percentValue = Int.calculatePercentValue(dang: totalSugar, maxDang: 50)
-                self?.targetSugarLabel.text = "목표: \(totalSugar)/50.0 "
-                self?.configureLineLayerColor(totalSugar: totalSugar)
+            .subscribe(onNext: { [weak self] batteryData in
+                let percentValue = Int.calculatePercentValue(dang: batteryData.totalSugarSum,
+                                                             maxDang: Double(batteryData.targetSugar))
+                self?.targetSugarLabel.text = "목표: \(batteryData.totalSugarSum)/\(batteryData.targetSugar) "
+                self?.configureLineLayerColor(totalSugar: batteryData.totalSugarSum)
                 self?.countAnimation(endCount: percentValue)
                 self?.animatePulsatingLayer()
-                
                 self?.animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
             })
             .disposed(by: disposeBag)
@@ -133,8 +128,8 @@ extension BatteryView {
         percentLineLayer.strokeColor = lineColor
         percentLineBackgroundLayer.strokeColor = lineBackgroundColor
         animationLineLayer.strokeColor = lineAnimationColor
-        
     }
+    
     private func animateShapeLayer(circleAngleValue: CGFloat) {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.toValue = circleAngleValue
@@ -150,7 +145,6 @@ extension BatteryView {
     
     private func animatePulsatingLayer() {
         let animation = CABasicAnimation(keyPath: "transform.scale")
-        
         animation.toValue = 1.115
         animation.duration = 1
         animation.autoreverses = true
@@ -176,7 +170,6 @@ extension BatteryView {
                                               userInfo: nil,
                                               repeats: true)
         }
-        
     }
     
     @objc private func updateNumber() {

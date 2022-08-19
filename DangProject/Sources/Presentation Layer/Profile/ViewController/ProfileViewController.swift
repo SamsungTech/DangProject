@@ -207,7 +207,6 @@ class ProfileViewController: UIViewController {
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
-                
                 guard let strongSelf = self,
                       let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
@@ -226,6 +225,7 @@ class ProfileViewController: UIViewController {
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthday: birthData)
                 )
+                
                 ProfileDomainModel.setIsLatestProfileImageData(false)
                 ProfileDomainModel.setIsLatestProfileData(false)
                 self?.coordinator?.dismissViewController(strongSelf)
@@ -261,6 +261,7 @@ class ProfileViewController: UIViewController {
                                        profileImage: profileImage,
                                        gender: self?.viewModel.convertGenderTypeToString() ?? "",
                                        birthday: birthData)
+                    
                 )
                 ProfileDomainModel.setIsLatestProfileImageData(false)
                 ProfileDomainModel.setIsLatestProfileData(false)

@@ -10,31 +10,44 @@ import Foundation
 import RxSwift
 import RxRelay
 
+struct BatteryEntity {
+    static let empty: Self = .init(totalSugarSum: 0.0,
+                                   targetSugar: 0)
+    var totalSugarSum: Double
+    var targetSugar: Int
+}
+
 class BatteryViewModel {
     private let disposeBag = DisposeBag()
-    let totalSugarSumObservable: BehaviorRelay<Double> = BehaviorRelay(value: 0)
+    let batteryEntityObservable: BehaviorRelay<BatteryEntity> = BehaviorRelay(value: .empty)
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
+    private let fetchProfileUseCase: FetchProfileUseCase
     
-    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
+    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
+         fetchProfileUseCase: FetchProfileUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
-        bindTodayEatenFoodsObservable()
+        self.fetchProfileUseCase = fetchProfileUseCase
+        bindBatteryEntityObservable()
     }
     
-    private func bindTodayEatenFoodsObservable() {
-        fetchEatenFoodsUseCase.eatenFoodsObservable
-            .subscribe(onNext: { [weak self] eatenFoodsPerDay in
+    private func bindBatteryEntityObservable() {
+        let eatenFoodsObservable = fetchEatenFoodsUseCase.eatenFoodsObservable
+        let fetchProfileObservable = fetchProfileUseCase.fetchProfileData()
+        
+        Observable.zip(eatenFoodsObservable, fetchProfileObservable)
+            .subscribe(onNext: { [weak self] eatenFoodsPerDay, profileData in
                 var totalSugarSum: Double = 0
                 eatenFoodsPerDay.eatenFoods.forEach { eatenFood in
                     totalSugarSum = totalSugarSum + (Double(eatenFood.amount) * eatenFood.sugar)
                 }
-                self?.totalSugarSumObservable.accept(totalSugarSum.roundDecimal(to: 2))
+                let batteryEntity = BatteryEntity.init(totalSugarSum: totalSugarSum.roundDecimal(to: 2),
+                                                       targetSugar: profileData.sugarLevel)
+                self?.batteryEntityObservable.accept(batteryEntity)
             })
             .disposed(by: disposeBag)
     }
     
     // MARK: - Internal
-    
-    
 }

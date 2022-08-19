@@ -17,6 +17,7 @@ class MyTargetViewController: UIViewController {
         targetView.targetNumberTextField.delegate = self
         return targetView
     }()
+    
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
         navigationBar.accountTitleLabel.text = "나의 목표 설정"

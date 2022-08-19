@@ -10,6 +10,7 @@ import UIKit
 class HomeDIContainer {
     
     lazy var fetchEatenFoodsUseCase = self.makeFetchEatenFoodsUseCase()
+    lazy var fetchProfileUseCase = self.makeFetchProfileUseCase()
     
     func makeHomeViewController() -> HomeViewController {
         return HomeViewController(viewModel: makeHomeViewModel(),
@@ -20,7 +21,7 @@ class HomeDIContainer {
     
     func makeHomeViewModel() -> HomeViewModelProtocol{
         return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
-                             fetchProfileUseCase: makeFetchProfileUseCase())
+                             fetchProfileUseCase: fetchProfileUseCase)
     }
     
     func makeCalendarView() -> CalendarView {
@@ -49,7 +50,8 @@ class HomeDIContainer {
     }
     
     func makeBatteryViewModel() -> BatteryViewModel {
-        return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+        return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
+                                fetchProfileUseCase: fetchProfileUseCase)
     }
     
     func makeFetchProfileUseCase() -> FetchProfileUseCase {

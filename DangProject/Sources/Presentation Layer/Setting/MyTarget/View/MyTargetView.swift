@@ -26,7 +26,7 @@ class MyTargetView: UIButton {
         let textField = UITextField()
         textField.textColor = .white
         textField.font = UIFont.systemFont(ofSize: xValueRatio(80), weight: .semibold)
-        textField.textAlignment = .right
+        textField.textAlignment = .center
         textField.keyboardType = .numberPad
         textField.inputAccessoryView = toolBar
         textField.placeholder = "숫자"
