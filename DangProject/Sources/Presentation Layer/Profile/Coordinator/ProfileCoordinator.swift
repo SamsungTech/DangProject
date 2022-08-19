@@ -40,14 +40,4 @@ class ProfileCoordinator: Coordinator {
         navigationController.popViewController(animated: true)
     }
     
-    func presentPickerController(_ viewController: UIViewController) {
-        guard let viewController = viewController as? ProfileViewController else { return }
-        pickerController = diContainer.makeProfileImagePickerController(viewController)
-        guard let pickerController = self.pickerController else { return }        
-        viewController.present(pickerController, animated: true)
-    }
-    
-    func dismissPickerController() {
-        pickerController?.dismiss(animated: true)
-    }
 }

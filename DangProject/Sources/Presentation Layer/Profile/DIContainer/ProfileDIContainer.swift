@@ -44,12 +44,4 @@ class ProfileDIContainer {
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
     }
-    
-    func makeProfileImagePickerController(_ viewController: ProfileViewController) -> UIImagePickerController {
-        let pickerController = UIImagePickerController()
-        pickerController.sourceType = .photoLibrary
-        pickerController.delegate = viewController
-        pickerController.allowsEditing = true
-        return pickerController
-    }
 }
