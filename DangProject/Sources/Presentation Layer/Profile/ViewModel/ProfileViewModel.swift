@@ -29,6 +29,11 @@ enum GenderType {
     case female
 }
 
+enum LoadingState {
+    case startLoading
+    case finishLoading
+}
+
 struct ProfileData {
     static let empty: Self = .init(ProfileDomainModel.empty)
     var profileImage: UIImage
@@ -54,8 +59,7 @@ struct ProfileData {
 
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
-    func handOverProfileDataToSave(_ data: ProfileDomainModel)
-    func handOverProfileImageDataToSave(_ data: UIImage)
+    func saveProfile(_ data: ProfileDomainModel)
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -65,6 +69,7 @@ protocol ProfileViewModelOutputProtocol {
     var genderRelay: BehaviorRelay<GenderType> { get }
     var okButtonRelay: BehaviorRelay<TextFieldType> { get }
     var profileDataRelay: BehaviorRelay<ProfileData> { get }
+    var loadingRelay: PublishRelay<LoadingState> { get }
     func convertGenderTypeToString() -> String
 }
 
@@ -75,7 +80,7 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 class ProfileViewModel: ProfileViewModelProtocol {
     private var manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase
     private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
-    private let fetchProfileUseCase: FetchProfileUseCase
+    private let profileManagerUseCase: ProfileManagerUseCase
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
@@ -83,18 +88,19 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
     let heights: [String] = [Int](1...200).map{("\($0)")}
     let weights: [String] = [Int](1...150).map{("\($0)")}
+    let loadingRelay = PublishRelay<LoadingState>()
     
     init(manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase,
          manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase,
-         fetchProfileUseCase: FetchProfileUseCase) {
+         profileManagerUseCase: ProfileManagerUseCase) {
         self.manageFirebaseStoreUseCase = manageFirebaseStoreUseCase
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
-        self.fetchProfileUseCase = fetchProfileUseCase
+        self.profileManagerUseCase = profileManagerUseCase
         fetchProfile()
     }
     
     private func fetchProfile() {
-        fetchProfileUseCase.fetchProfileData()
+        profileManagerUseCase.fetchProfileData()
             .subscribe(onNext: { [weak self] profile in
                 self?.profileDataRelay.accept(ProfileData.init(profile))
             })
@@ -112,8 +118,18 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
     
-    func handOverProfileDataToSave(_ data: ProfileDomainModel) {
-        manageFirebaseStoreUseCase.updateProfileData(data)
+    func saveProfile(_ profile: ProfileDomainModel) {
+        loadingRelay.accept(.startLoading)
+        guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
+        manageFirebaseStoreUseCase.updateProfileData(profile)
+        manageFirebaseStorageUseCase.updateProfileImage(jpegData)
+            .subscribe(onNext: { [weak self] isUpdated in
+                if isUpdated {
+                    self?.profileManagerUseCase.saveProfileOnCoreData(profile)
+                    self?.loadingRelay.accept(.finishLoading)
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     func calculateScrollViewState(yPosition: CGFloat) {
@@ -122,11 +138,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
         } else {
             scrollValue.accept(.scrolling)
         }
-    }
-    
-    func handOverProfileImageDataToSave(_ data: UIImage) {
-        guard let data = data.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseStorageUseCase.updateProfileImage(data)
     }
 
     private func convertStringToGenderType(_ data: String) {

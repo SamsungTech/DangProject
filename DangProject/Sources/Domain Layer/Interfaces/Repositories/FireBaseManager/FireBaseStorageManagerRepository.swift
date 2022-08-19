@@ -9,6 +9,6 @@ import RxSwift
 import Foundation
 
 protocol FireBaseStorageManagerRepository {
-    func uploadImage(_ image: Data)
+    func uploadImage(_ image: Data) -> Observable<Bool>
     func getImageData() -> Observable<NSData>
 }

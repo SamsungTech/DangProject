@@ -73,6 +73,10 @@ class ProfileViewController: CustomViewController {
     
     private lazy var saveButton = SaveButton()
     
+    private lazy var loadingAlertController = UIAlertController(title: nil,
+                                                                message: "프로필 업데이트 중입니다..",
+                                                                preferredStyle: .alert)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -99,13 +103,8 @@ class ProfileViewController: CustomViewController {
         setupProfileImageButton()
         setupProfileStackView()
         setupSaveButton()
+        setupLoadingAlertController()
         view.bringSubviewToFront(navigationBar)
-    }
-    
-    private func bind() {
-        bindUI()
-        bindProfileData()
-        bindAnimationValue()
     }
     
     private func setupViewController() {
@@ -168,6 +167,27 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
+    private func setupLoadingAlertController() {
+        let loadingIndicator = UIActivityIndicatorView()
+        loadingAlertController.view.addSubview(loadingIndicator)
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingIndicator.centerYAnchor.constraint(equalTo: loadingAlertController.view.centerYAnchor),
+            loadingIndicator.leadingAnchor.constraint(equalTo: loadingAlertController.view.leadingAnchor,
+                                                      constant: xValueRatio(18))
+        ])
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = UIActivityIndicatorView.Style.medium
+        loadingIndicator.startAnimating()
+    }
+    
+    private func bind() {
+        bindUI()
+        bindProfileData()
+        bindAnimationValue()
+        bindLoadingState()
+    }
+    
     private func bindUI() {
         navigationBar.backButton.rx.tap
             .bind { [weak self] in
@@ -203,27 +223,19 @@ class ProfileViewController: CustomViewController {
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
-                
                 guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                self?.viewModel.handOverProfileImageDataToSave(profileImage)
-                
-                self?.viewModel.handOverProfileDataToSave(
-                    ProfileDomainModel(uid: "",
-                                       name: nameData,
-                                       height: Int(heightData) ?? 0,
-                                       weight: Int(weightData) ?? 0,
-                                       sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
-                                       profileImage: profileImage,
-                                       gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                       birthday: birthData)
-                )
-                ProfileDomainModel.setIsLatestProfileImageData(false)
-                ProfileDomainModel.setIsLatestProfileData(false)
-                self?.coordinator?.popViewController()
+                self?.viewModel.saveProfile(ProfileDomainModel(uid: "",
+                                                               name: nameData,
+                                                               height: Int(heightData) ?? 0,
+                                                               weight: Int(weightData) ?? 0,
+                                                               sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
+                                                               profileImage: profileImage,
+                                                               gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                                               birthday: birthData))
             }
             .disposed(by: disposeBag)
     }
@@ -245,20 +257,14 @@ class ProfileViewController: CustomViewController {
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
                       let weightData = self?.profileStackView.weightView.profileTextField.text,
                       let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
-                self?.viewModel.handOverProfileImageDataToSave(profileImage)
-                self?.viewModel.handOverProfileDataToSave(
-                    ProfileDomainModel(uid: "",
-                                       name: nameData,
-                                       height: Int(heightData) ?? 0,
-                                       weight: Int(weightData) ?? 0,
-                                       sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
-                                       profileImage: profileImage,
-                                       gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                       birthday: birthData)
-                )
-                ProfileDomainModel.setIsLatestProfileImageData(false)
-                ProfileDomainModel.setIsLatestProfileData(false)
-                self?.coordinator?.popViewController()
+                self?.viewModel.saveProfile(ProfileDomainModel(uid: "",
+                                                               name: nameData,
+                                                               height: Int(heightData) ?? 0,
+                                                               weight: Int(weightData) ?? 0,
+                                                               sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
+                                                               profileImage: profileImage,
+                                                               gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                                               birthday: birthData))
             }
             .disposed(by: disposeBag)
     }
@@ -313,6 +319,21 @@ class ProfileViewController: CustomViewController {
         viewModel.okButtonRelay
             .subscribe(onNext: { [weak self] _ in
                 self?.view.endEditing(true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindLoadingState() {
+        viewModel.loadingRelay
+            .subscribe(onNext: { [weak self] loading in
+                guard let strongSelf = self else { return }
+                switch loading {
+                case .startLoading:
+                    self?.present(strongSelf.loadingAlertController, animated: true, completion: nil)
+                case .finishLoading:
+                    self?.dismiss(animated: true)
+                    self?.coordinator?.popViewController()
+                }
             })
             .disposed(by: disposeBag)
     }
