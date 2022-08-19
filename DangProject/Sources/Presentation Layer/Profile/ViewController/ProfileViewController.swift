@@ -196,45 +196,25 @@ class ProfileViewController: CustomViewController {
         .bind(to: viewModel.genderRelay)
         .disposed(by: disposeBag)
         
-        if #available(iOS 13.4, *) {
-            newVersionBindUI()
-        } else {
-            lowerVersionBindUI()
-        }
+        bindSaveButton()
     }
     
-    
-    @available(iOS 13.4, *)
-    private func newVersionBindUI() {
-        
+    private func bindSaveButton() {
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
                 guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
-                      let weightData = self?.profileStackView.weightView.profileTextField.text,
-                      let birthData = self?.profileStackView.birthDatePickerView.profileTextField.text else { return }
-                self?.viewModel.saveProfile(ProfileDomainModel(uid: "",
-                                                               name: nameData,
-                                                               height: Int(heightData) ?? 0,
-                                                               weight: Int(weightData) ?? 0,
-                                                               sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
-                                                               profileImage: profileImage,
-                                                               gender: self?.viewModel.convertGenderTypeToString() ?? "",
-                                                               birthday: birthData))
-            }
-            .disposed(by: disposeBag)
-    }
-    
-    private func lowerVersionBindUI() {
-        
-        saveButton.saveButton.rx.tap
-            .bind { [weak self] in
-                guard let nameData = self?.profileStackView.nameView.profileTextField.text,
-                      let profileImage = self?.profileImageButton.profileImageView.image,
-                      let heightData = self?.profileStackView.heightView.profileTextField.text,
-                      let weightData = self?.profileStackView.weightView.profileTextField.text,
-                      let birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text else { return }
+                      let weightData = self?.profileStackView.weightView.profileTextField.text
+                       else { return }
+                
+                var birthData = ""
+                if #available(iOS 13.4, *) {
+                    birthData = self?.profileStackView.birthDatePickerView.profileTextField.text ?? ""
+                } else {
+                    birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text ?? ""
+                }
+                
                 self?.viewModel.saveProfile(ProfileDomainModel(uid: "",
                                                                name: nameData,
                                                                height: Int(heightData) ?? 0,
@@ -250,11 +230,13 @@ class ProfileViewController: CustomViewController {
     private func bindProfileData() {
         viewModel.profileDataRelay
             .subscribe(onNext: { [weak self] in
+                guard let heightIndex = self?.viewModel.getHeightSelectRowIndex($0.height),
+                      let weightIndex = self?.viewModel.getWeightSelectRowIndex($0.weight) else { return }
                 self?.profileStackView.nameView.profileTextField.text = $0.name
                 self?.profileStackView.heightView.profileTextField.text = String($0.height)
-                self?.profileStackView.heightPickerView.selectRow($0.height-1, inComponent: 0, animated: false)
+                self?.profileStackView.heightPickerView.selectRow(heightIndex, inComponent: 0, animated: false)
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
-                self?.profileStackView.weightPickerView.selectRow($0.weight-1, inComponent: 0, animated: false)
+                self?.profileStackView.weightPickerView.selectRow(weightIndex, inComponent: 0, animated: false)
                 if #available(iOS 13.4, *) {
                     guard let date = self?.dateFormatter.date(from: $0.birthday) else { return }
                     self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthday

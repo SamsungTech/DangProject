@@ -62,6 +62,8 @@ protocol ProfileViewModelOutputProtocol {
     var profileDataRelay: BehaviorRelay<ProfileData> { get }
     var loadingRelay: PublishRelay<LoadingState> { get }
     func convertGenderTypeToString() -> String
+    func getHeightSelectRowIndex(_ height: Int) -> Int
+    func getWeightSelectRowIndex(_ weight: Int) -> Int
 }
 
 protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewModelOutputProtocol {
@@ -76,8 +78,8 @@ class ProfileViewModel: ProfileViewModelProtocol {
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
-    let heights: [String] = [Int](1...200).map{("\($0)")}
-    let weights: [String] = [Int](1...150).map{("\($0)")}
+    let heights: [String] = [Int](50...200).map{("\($0)")}
+    let weights: [String] = [Int](30...150).map{("\($0)")}
     let loadingRelay = PublishRelay<LoadingState>()
     
     init(manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase,
@@ -95,6 +97,14 @@ class ProfileViewModel: ProfileViewModelProtocol {
                 self?.profileDataRelay.accept(ProfileData.init(profile))
             })
             .disposed(by: disposeBag)
+    }
+    
+    func getHeightSelectRowIndex(_ height: Int) -> Int {
+        return heights.firstIndex(of: String(height)) ?? 0
+    }
+    
+    func getWeightSelectRowIndex(_ weight: Int) -> Int {
+        return weights.firstIndex(of: String(weight)) ?? 0
     }
     
     func convertGenderTypeToString() -> String {
