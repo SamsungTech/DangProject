@@ -15,7 +15,6 @@ class ProfileCoordinator: Coordinator {
     var navigationController: UINavigationController
     var childCoordinators: [Coordinator] = []
     var diContainer = ProfileDIContainer()
-    private var pickerController: UIImagePickerController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController

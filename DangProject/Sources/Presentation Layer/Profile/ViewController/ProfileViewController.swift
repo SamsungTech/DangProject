@@ -48,18 +48,12 @@ class ProfileViewController: CustomViewController {
     private lazy var profileStackView: ProfileInformationStackView = {
         let stackView = ProfileInformationStackView(frame: .zero, viewModel: viewModel)
         if #available(iOS 13.4, *) {
-            stackView.birthDatePickerView.profileTextField.delegate = self
             stackView.birthDatePickerView.pickerView.addTarget(
                 self,
                 action: #selector(datePickerValueChanged(_:)),
                 for: UIControl.Event.valueChanged
             )
-        } else {
-            stackView.birthDateTextFieldView.profileTextField.delegate = self
         }
-        stackView.weightView.profileTextField.delegate = self
-        stackView.heightView.profileTextField.delegate = self
-        stackView.nameView.profileTextField.delegate = self
         return stackView
     }()
     
@@ -212,14 +206,6 @@ class ProfileViewController: CustomViewController {
     
     @available(iOS 13.4, *)
     private func newVersionBindUI() {
-        Observable.merge(
-            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
-            profileStackView.birthDatePickerView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
-            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
-        )
-        .bind(to: viewModel.okButtonRelay)
-        .disposed(by: disposeBag)
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
@@ -241,14 +227,6 @@ class ProfileViewController: CustomViewController {
     }
     
     private func lowerVersionBindUI() {
-        Observable.merge(
-            profileStackView.nameView.toolBarButton.rx.tap.map { TextFieldType.name },
-            profileStackView.birthDateTextFieldView.toolBarButton.rx.tap.map { TextFieldType.birthDate },
-            profileStackView.weightView.toolBarButton.rx.tap.map { TextFieldType.weight },
-            profileStackView.heightView.toolBarButton.rx.tap.map { TextFieldType.height }
-        )
-        .bind(to: viewModel.okButtonRelay)
-        .disposed(by: disposeBag)
         
         saveButton.saveButton.rx.tap
             .bind { [weak self] in
@@ -313,12 +291,6 @@ class ProfileViewController: CustomViewController {
                 case .female:
                     self.animateFemaleView()
                 }
-            })
-            .disposed(by: disposeBag)
-
-        viewModel.okButtonRelay
-            .subscribe(onNext: { [weak self] _ in
-                self?.view.endEditing(true)
             })
             .disposed(by: disposeBag)
     }
@@ -404,9 +376,3 @@ extension ProfileViewController: ProfileImageButtonProtocol {
     }
 }
 
-extension ProfileViewController: UITextFieldDelegate {
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        selectedTextField = textField
-    }
-}

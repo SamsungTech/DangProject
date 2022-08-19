@@ -10,14 +10,6 @@ import UIKit
 import RxSwift
 import RxRelay
 
-enum TextFieldType {
-    case none
-    case name
-    case birthDate
-    case height
-    case weight
-}
-
 enum ScrollState {
     case top
     case scrolling
@@ -67,7 +59,6 @@ protocol ProfileViewModelOutputProtocol {
     var weights: [String] { get }
     var scrollValue: BehaviorRelay<ScrollState> { get }
     var genderRelay: BehaviorRelay<GenderType> { get }
-    var okButtonRelay: BehaviorRelay<TextFieldType> { get }
     var profileDataRelay: BehaviorRelay<ProfileData> { get }
     var loadingRelay: PublishRelay<LoadingState> { get }
     func convertGenderTypeToString() -> String
@@ -84,7 +75,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
-    var okButtonRelay = BehaviorRelay<TextFieldType>(value: .none)
     var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
     let heights: [String] = [Int](1...200).map{("\($0)")}
     let weights: [String] = [Int](1...150).map{("\($0)")}
