@@ -50,8 +50,9 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
     }
     
     private func configureAccountView() {
-        accountView.configureUserName(viewModel.fetchUserName())
-        accountView.configureUserImage(viewModel.fetchUserImage())
+        let profileNameAndImage = viewModel.fetchUserNameAndImage()
+        accountView.configureUserName(profileNameAndImage.0)
+        accountView.configureUserImage(profileNameAndImage.1)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

@@ -22,8 +22,7 @@ protocol SettingViewModelInputProtocol: AnyObject {
 
 protocol SettingViewModelOutputProtocol: AnyObject {
     var scrollStateRelay: BehaviorRelay<SettingScrollState> { get }
-    func fetchUserName() -> String
-    func fetchUserImage() -> UIImage
+    func fetchUserNameAndImage() -> (String, UIImage)
 }
 
 protocol SettingViewModelProtocol: SettingViewModelInputProtocol, SettingViewModelOutputProtocol {}
@@ -31,31 +30,19 @@ protocol SettingViewModelProtocol: SettingViewModelInputProtocol, SettingViewMod
 class SettingViewModel: SettingViewModelProtocol {
     private var disposeBag = DisposeBag()
     var scrollStateRelay = BehaviorRelay<SettingScrollState>(value: .top)
-    private let fetchProfileUseCase: FetchProfileUseCase
+    private let profileManagerUseCase: ProfileManagerUseCase
     
-    init(fetchProfileUseCase: FetchProfileUseCase) {
-        self.fetchProfileUseCase = fetchProfileUseCase
+    init(profileManagerUseCase: ProfileManagerUseCase) {
+        self.profileManagerUseCase = profileManagerUseCase
     }
     
     // MARK: - Output
-    func fetchUserName() -> String {
-        var result = ""
-        fetchProfileUseCase.fetchProfileData()
-            .map({ $0.name })
-            .subscribe(onNext: { name in
-                result = name
-            })
-            .disposed(by: disposeBag)
-        
-        return result
-    }
     
-    func fetchUserImage() -> UIImage {
-        var result = UIImage()
-        fetchProfileUseCase.fetchProfileData()
-            .map({ $0.profileImage })
-            .subscribe(onNext: { image in
-                result = image
+    func fetchUserNameAndImage() -> (String, UIImage) {
+        var result: (String, UIImage) = ("", UIImage())
+        profileManagerUseCase.fetchProfileData()
+            .subscribe(onNext: { profile in
+                result = (profile.name, profile.profileImage)
             })
             .disposed(by: disposeBag)
         return result
