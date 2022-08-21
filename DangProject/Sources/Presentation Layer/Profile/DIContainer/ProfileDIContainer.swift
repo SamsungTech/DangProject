@@ -9,21 +9,20 @@ import Foundation
 import UIKit
 
 class ProfileDIContainer {
-    func makeProfileViewController(_ profileData: ProfileDomainModel) -> ProfileViewController {
-        return ProfileViewController(viewModel: makeProfileViewModel(profileData))
+    func makeProfileViewController() -> ProfileViewController {
+        return ProfileViewController(viewModel: makeProfileViewModel())
     }
     
-    func makeProfileViewModel(_ profileData: ProfileDomainModel) -> ProfileViewModel {
+    func makeProfileViewModel() -> ProfileViewModel {
         return ProfileViewModel(manageFirebaseStoreUseCase: makeFirebaseStoreUseCase(),
                                 manageFirebaseStorageUseCase: makeFirebaseStorageUseCase(),
-                                fetchProfileUseCase: makeFetchProfileUseCase(),
-                                profileData: profileData)
+                                profileManagerUseCase: makeProfileManagerUseCase())
     }
     
-    func makeFetchProfileUseCase() -> FetchProfileUseCase {
-        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
-                                          manageFirebaseFireStoreUseCase: makeFirebaseStoreUseCase(),
-                                          manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
+    func makeProfileManagerUseCase() -> ProfileManagerUseCase {
+        return DefaultProfileManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                            manageFirebaseFireStoreUseCase: makeFirebaseStoreUseCase(),
+                                            manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
     func makeFirebaseStoreUseCase() -> ManageFirebaseFireStoreUseCase {
@@ -44,13 +43,5 @@ class ProfileDIContainer {
     
     func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
         return DefaultCoreDataManagerRepository()
-    }
-    
-    func makeProfileImagePickerController(_ viewController: ProfileViewController) -> UIImagePickerController {
-        let pickerController = UIImagePickerController()
-        pickerController.sourceType = .photoLibrary
-        pickerController.delegate = viewController
-        pickerController.allowsEditing = true
-        return pickerController
     }
 }

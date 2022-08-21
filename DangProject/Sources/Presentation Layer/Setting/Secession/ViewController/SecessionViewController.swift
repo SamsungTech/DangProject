@@ -8,10 +8,12 @@
 import UIKit
 import RxSwift
 
-class SecessionViewController: UIViewController {
-    private var viewModel: SecessionViewModel?
-    var coordinator: SecessionCoordinator?
+class SecessionViewController: CustomViewController {
+    
     private let disposeBag = DisposeBag()
+    private let viewModel: SecessionViewModel
+    weak var coordinator: SecessionCoordinator?
+    
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
         navigationBar.accountTitleLabel.text = "탈퇴"
@@ -20,7 +22,7 @@ class SecessionViewController: UIViewController {
     
     private var waningView = WarningView()
     
-    private lazy var deleteButton: UIButton = {
+    private lazy var resignButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .homeBoxColor
         button.setTitleColor(UIColor.systemRed, for: .normal)
@@ -28,9 +30,14 @@ class SecessionViewController: UIViewController {
         return button
     }()
     
+    private lazy var resignAlertController: UIAlertController = {
+        let alert = UIAlertController(title: "정말 탈퇴하시겠습니까?", message: nil, preferredStyle: .alert)
+        return alert
+    }()
+    
     init(viewModel: SecessionViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -50,6 +57,7 @@ extension SecessionViewController {
         setUpNavigationBar()
         setUpWaningView()
         setUpDeleteButton()
+        setupResignAlertController()
     }
     
     private func setUpView() {
@@ -79,20 +87,37 @@ extension SecessionViewController {
     }
     
     private func setUpDeleteButton() {
-        view.addSubview(deleteButton)
-        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(resignButton)
+        resignButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            deleteButton.topAnchor.constraint(equalTo: waningView.bottomAnchor, constant: yValueRatio(30)),
-            deleteButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            deleteButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            deleteButton.heightAnchor.constraint(equalToConstant: yValueRatio(60))
+            resignButton.topAnchor.constraint(equalTo: waningView.bottomAnchor, constant: yValueRatio(30)),
+            resignButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            resignButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            resignButton.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
+    }
+    
+    private func setupResignAlertController() {
+        let no = UIAlertAction(title: "취소", style: .default, handler: nil)
+        let yes = UIAlertAction(title: "탈퇴", style: .destructive) { [weak self] _ in
+            self?.viewModel.resignUser()
+            self?.coordinator?.returnToFirstStart()
+        }
+        resignAlertController.addAction(yes)
+        resignAlertController.addAction(no)
     }
     
     private func bindUI() {
         navigationBar.backButton.rx.tap
             .bind { [weak self] in
                 self?.coordinator?.popSecessionViewController()
+            }
+            .disposed(by: disposeBag)
+        
+        resignButton.rx.tap
+            .bind { [weak self] in
+                guard let strongSelf = self else { return }
+                self?.present(strongSelf.resignAlertController, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }

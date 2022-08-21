@@ -6,21 +6,15 @@
 //
 
 import UIKit
+
 import RxSwift
 
-class SettingViewController: UIViewController {
-    private var viewModel: SettingViewModelProtocol?
+class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
+    
     var coordinator: SettingCoordinator?
+    private let viewModel: SettingViewModelProtocol
     private let disposeBag = DisposeBag()
     private var settingNavigationBar = SettingNavigationBar()
-    private lazy var settingLabel: UILabel = {
-        let label = UILabel()
-        label.text = "설정"
-        label.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .heavy)
-        label.textAlignment = .left
-        return label
-    }()
-    
     private lazy var settingScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.delegate = self
@@ -32,21 +26,10 @@ class SettingViewController: UIViewController {
     
     private(set) lazy var accountView: SettingAccountView = {
         let button = SettingAccountView()
-        button.profileAccountLabel.text = "김동우"
-        button.profileAccountLabel.textColor = .white
-        button.frame = CGRect(x: .zero,
-                              y: .zero,
-                              width: calculateXMax(),
-                              height: yValueRatio(80))
         button.backgroundColor = .homeBoxColor
         return button
     }()
     
-    private lazy var secessionAlertController: UIAlertController = {
-        let alert = UIAlertController(title: "탈퇴하기", message: "진짜 탈퇴할거야?", preferredStyle: .alert)
-        
-        return alert
-    }()
     private var settingFirstStackView = SettingFirstStackView()
     private var settingSecondStackView = SettingSecondStackView()
     private var settingTermsOfServiceView = SettingTermsOfServiceView()
@@ -57,12 +40,19 @@ class SettingViewController: UIViewController {
         configureUI()
         bind()
         bindUI()
+        view.bringSubviewToFront(settingNavigationBar)
+        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.bringSubviewToFront(settingNavigationBar)
-        navigationController?.navigationBar.isHidden = true
+        configureAccountView()
+    }
+    
+    private func configureAccountView() {
+        let profileNameAndImage = viewModel.fetchUserNameAndImage()
+        accountView.configureUserName(profileNameAndImage.0)
+        accountView.configureUserImage(profileNameAndImage.1)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -70,8 +60,8 @@ class SettingViewController: UIViewController {
     }
     
     init(viewModel: SettingViewModelProtocol) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -79,23 +69,22 @@ class SettingViewController: UIViewController {
     }
     
     private func configureUI() {
-        setUpSettingView()
-        setUpNavigationBar()
-        setUpSettingScrollView()
-        setUpAccountView()
-        setUpSettingFirstStackView()
-        setUpSettingSecondStackView()
-        setUpSettingTermsOfServiceView()
-        setUpSettingSecessionView()
-        setUpSecessionAlert()
+        setupBackgroundView()
+        setupNavigationBar()
+        setupSettingScrollView()
+        setupAccountView()
+        setupSettingFirstStackView()
+        setupSettingSecondStackView()
+        setupSettingTermsOfServiceView()
+        setupSettingSecessionView()
     }
     
-    private func setUpSettingView() {
+    private func setupBackgroundView() {
         view.backgroundColor = .homeBackgroundColor
         navigationController?.navigationBar.isHidden = true
     }
     
-    private func setUpNavigationBar() {
+    private func setupNavigationBar() {
         view.addSubview(settingNavigationBar)
         settingNavigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -106,7 +95,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingScrollView() {
+    private func setupSettingScrollView() {
         view.addSubview(settingScrollView)
         settingScrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -117,7 +106,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpAccountView() {
+    private func setupAccountView() {
         settingScrollView.addSubview(accountView)
         accountView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -127,7 +116,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingFirstStackView() {
+    private func setupSettingFirstStackView() {
         settingScrollView.addSubview(settingFirstStackView)
         settingFirstStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -137,7 +126,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingSecondStackView() {
+    private func setupSettingSecondStackView() {
         settingScrollView.addSubview(settingSecondStackView)
         settingSecondStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -147,7 +136,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingTermsOfServiceView() {
+    private func setupSettingTermsOfServiceView() {
         settingScrollView.addSubview(settingTermsOfServiceView)
         settingTermsOfServiceView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -157,7 +146,7 @@ class SettingViewController: UIViewController {
         ])
     }
     
-    private func setUpSettingSecessionView() {
+    private func setupSettingSecessionView() {
         settingScrollView.addSubview(settingSecessionView)
         settingSecessionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -166,29 +155,20 @@ class SettingViewController: UIViewController {
             settingSecessionView.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
     }
-    
-    private func setUpSecessionAlert() {
-        secessionAlertController.addAction(UIAlertAction(title: "취소",
-                                                         style: .cancel,
-                                                         handler: nil))
-        secessionAlertController.addAction(UIAlertAction(title: "탈퇴하기",
-                                                         style: .destructive,
-                                                         handler: nil))
-    }
-    
+
     private func bind() {
         bindScrollStateValue()
     }
     
     private func bindScrollStateValue() {
-        viewModel?.scrollStateRelay
+        viewModel.scrollStateRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
                 case .top:
-                    self.settingNavigationBar.setUpSettingScrollViewTop()
+                    self.settingNavigationBar.setupSettingScrollViewTop()
                 case .scrolling:
-                    self.settingNavigationBar.setUpSettingScrollViewScrolling()
+                    self.settingNavigationBar.setupSettingScrollViewScrolling()
                 }
             })
             .disposed(by: disposeBag)
@@ -229,6 +209,6 @@ class SettingViewController: UIViewController {
 extension SettingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let yValue = scrollView.contentOffset.y
-        viewModel?.checkScrollValue(yValue)
+        viewModel.checkScrollValue(yValue)
     }
 }

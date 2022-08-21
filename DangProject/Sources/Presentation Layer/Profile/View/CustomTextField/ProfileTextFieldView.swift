@@ -41,8 +41,13 @@ class ProfileTextFieldView: UIView {
                               y: .zero,
                               width: calculateXMax(),
                               height: yValueRatio(50))
+        button.addTarget(self, action: #selector(okButtonDidTap), for: .touchUpInside)
         return button
     }()
+    
+    @objc func okButtonDidTap() {
+        self.endEditing(true)
+    }
     
     private(set) lazy var profileTextField: UITextField = {
         let textField = UITextField()

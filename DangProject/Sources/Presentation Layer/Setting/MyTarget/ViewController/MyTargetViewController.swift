@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class MyTargetViewController: UIViewController {
+class MyTargetViewController: CustomViewController {
     private var viewModel: MyTargetViewModel?
     var coordinator: MyTargetCoordinator?
     private let disposeBag = DisposeBag()

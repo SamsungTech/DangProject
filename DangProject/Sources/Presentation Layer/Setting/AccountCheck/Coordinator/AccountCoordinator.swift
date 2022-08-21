@@ -36,10 +36,17 @@ class AccountCoordinator: Coordinator {
         self.navigationController.popViewController(animated: true)
     }
     
-    func pushProfileEditViewController(_ profileData: ProfileDomainModel) {
-        let coordinator = ProfileCoordinator(navigationController: self.navigationController,
-                                             profileData: profileData)
+    func pushProfileEditViewController() {
+        let coordinator = ProfileCoordinator(navigationController: navigationController)
         childCoordinators.append(coordinator)
+        coordinator.start()
+    }
+    
+    func returnToFirstStart() {
+        guard let rootViewController = navigationController.parent,
+              let rootNavigationViewController = rootViewController.navigationController else { return }
+        rootNavigationViewController.viewControllers.removeAll()
+        let coordinator = AppCoordinator(navigationController: rootNavigationViewController)
         coordinator.start()
     }
 }

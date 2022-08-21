@@ -35,16 +35,16 @@ class SettingSecessionView: UIButton {
 
 extension SettingSecessionView {
     private func configureUI() {
-        setUpSettingSecessionView()
-        setUpProfileAccountLabel()
-        setUpProfileRightArrowImageView()
+        setupSettingSecessionView()
+        setupProfileAccountLabel()
+        setupProfileRightArrowImageView()
     }
     
-    private func setUpSettingSecessionView() {
+    private func setupSettingSecessionView() {
         self.backgroundColor = .homeBoxColor
     }
     
-    private func setUpProfileAccountLabel() {
+    private func setupProfileAccountLabel() {
         addSubview(profileAccountLabel)
         profileAccountLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -53,7 +53,7 @@ extension SettingSecessionView {
         ])
     }
     
-    private func setUpProfileRightArrowImageView() {
+    private func setupProfileRightArrowImageView() {
         addSubview(profileRightArrowImageView)
         profileRightArrowImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

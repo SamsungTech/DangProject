@@ -35,16 +35,16 @@ class SettingTermsOfServiceView: UIButton {
 
 extension SettingTermsOfServiceView {
     private func configureUI() {
-        setUpSettingTermsOfServiceView()
-        setUpProfileAccountLabel()
-        setUpProfileRightArrowImageView()
+        setupSettingTermsOfServiceView()
+        setupProfileAccountLabel()
+        setupProfileRightArrowImageView()
     }
     
-    private func setUpSettingTermsOfServiceView() {
+    private func setupSettingTermsOfServiceView() {
         self.backgroundColor = .homeBoxColor
     }
     
-    private func setUpProfileAccountLabel() {
+    private func setupProfileAccountLabel() {
         addSubview(settingTermLabel)
         settingTermLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -53,7 +53,7 @@ extension SettingTermsOfServiceView {
         ])
     }
     
-    private func setUpProfileRightArrowImageView() {
+    private func setupProfileRightArrowImageView() {
         addSubview(profileRightArrowImageView)
         profileRightArrowImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

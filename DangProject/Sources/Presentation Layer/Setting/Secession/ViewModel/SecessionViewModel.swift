@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol SecessionViewModelInputProtocol: AnyObject {
-    
+protocol SecessionViewModelInputProtocol {
+    func resignUser()
 }
 
-protocol SecessionViewModelOutputProtocol: AnyObject {
+protocol SecessionViewModelOutputProtocol {
     
 }
 
@@ -20,5 +20,12 @@ protocol SecessionViewModelProtocol: SecessionViewModelInputProtocol, SecessionV
 }
 
 class SecessionViewModel: SecessionViewModelProtocol {
-    init() {}
+    func resignUser() {
+        // 유저 탈퇴시 해야할 행동들 (로컬데이터, 리모트데이터 삭제)
+        deleteAllUserDefaultsDatas()
+    }
+    
+    private func deleteAllUserDefaultsDatas() {
+        UserInfoKey.removeAllUserDefaultsDatas()
+    }
 }

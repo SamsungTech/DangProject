@@ -141,26 +141,9 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         }
     }
     
-    func updateLocalProfileData(_ profileData: ProfileDomainModel) {
+    func updateProfileData(_ profileData: ProfileDomainModel) {
         deleteProfileData()
         createProfileData(profileData)
-    }
-    
-    func updateCoreDataEatenFoodsPerDay(data: EatenFoodsPerDayDomainModel,
-                                        date: Date) {
-        let request = EatenFoodsPerDay.fetchRequest()
-        request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
-        do {
-            if let checkedEatenFoodsPerDay = try context?.fetch(request) {
-                if checkedEatenFoodsPerDay.count == 0 {
-                } else {
-                    
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-            return
-        }
     }
     
     func fetchCoreDataArray(from coreDataName: CoreDataName) -> [NSManagedObject] {
@@ -211,7 +194,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         
         profileEntity.name = data.name
         profileEntity.birthday = data.birthday
-        profileEntity.gender = data.gender
+        profileEntity.gender = data.gender.rawValue
         profileEntity.sugarLevel = Int32(data.sugarLevel)
         profileEntity.weight = Int32(data.weight)
         profileEntity.height = Int32(data.height)

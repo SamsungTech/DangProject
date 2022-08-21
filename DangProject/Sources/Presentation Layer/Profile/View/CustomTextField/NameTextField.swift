@@ -42,8 +42,13 @@ class NameTextField: UIView {
                               y: .zero,
                               width: calculateXMax(),
                               height: yValueRatio(50))
+        button.addTarget(self, action: #selector(okButtonDidTap), for: .touchUpInside)
         return button
     }()
+    
+    @objc func okButtonDidTap() {
+        self.endEditing(true)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)

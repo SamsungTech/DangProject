@@ -20,7 +20,7 @@ class HomeDIContainer {
     
     func makeHomeViewModel() -> HomeViewModelProtocol{
         return HomeViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase,
-                             fetchProfileUseCase: makeFetchProfileUseCase())
+                             profileManagerUseCase: makeProfileManagerUseCase())
     }
     
     func makeCalendarView() -> CalendarView {
@@ -52,8 +52,8 @@ class HomeDIContainer {
         return BatteryViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
-    func makeFetchProfileUseCase() -> FetchProfileUseCase {
-        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+    func makeProfileManagerUseCase() -> ProfileManagerUseCase {
+        return DefaultProfileManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
                                           manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
                                           manageFirebaseStorageUseCase: makeManageFirebaseStorageUseCase())
     }

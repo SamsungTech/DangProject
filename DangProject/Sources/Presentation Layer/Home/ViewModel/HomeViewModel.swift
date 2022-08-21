@@ -27,7 +27,7 @@ protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
     var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
-    func checkEatenFoodsTitleText(dateComponents: DateComponents) -> String
+    func getEatenFoodsTitleText(dateComponents: DateComponents) -> String
 }
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
@@ -38,17 +38,17 @@ class HomeViewModel: HomeViewModelProtocol {
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
-    private let fetchProfileUseCase: FetchProfileUseCase
+    private let profileManagerUseCase: ProfileManagerUseCase
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
-         fetchProfileUseCase: FetchProfileUseCase) {
+         profileManagerUseCase: ProfileManagerUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
-        self.fetchProfileUseCase = fetchProfileUseCase
+        self.profileManagerUseCase = profileManagerUseCase
     }
     
     func fetchProfileData() {
-        fetchProfileUseCase.fetchProfileData()
+        profileManagerUseCase.fetchProfileData()
             .subscribe(onNext: { [weak self] in
                 self?.profileDataRelay.accept($0)
             })
@@ -88,7 +88,7 @@ class HomeViewModel: HomeViewModelProtocol {
         return dateToString
     }
     
-    func checkEatenFoodsTitleText(dateComponents: DateComponents) -> String {
+    func getEatenFoodsTitleText(dateComponents: DateComponents) -> String {
         let todayDateComponents = DateComponents.currentDateComponents()
         let yesterdayDateComponents: DateComponents = {
             var today = DateComponents.currentDateComponents()
