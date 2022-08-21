@@ -173,6 +173,7 @@ class ProfileViewController: CustomViewController {
     
     private func bind() {
         bindUI()
+        bindSaveButton()
         bindProfileData()
         bindAnimationValue()
         bindLoadingState()
@@ -184,15 +185,18 @@ class ProfileViewController: CustomViewController {
                 self?.coordinator?.popViewController()
             }
             .disposed(by: disposeBag)
-
-        Observable.merge(
-            profileStackView.genderView.maleButton.rx.tap.map { GenderType.male },
-            profileStackView.genderView.femaleButton.rx.tap.map { GenderType.female }
-        )
-        .bind(to: viewModel.genderRelay)
-        .disposed(by: disposeBag)
         
-        bindSaveButton()
+        profileStackView.genderView.maleButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.genderButtonDidTap(.male)
+            }
+            .disposed(by: disposeBag)
+        
+        profileStackView.genderView.femaleButton.rx.tap
+            .bind { [weak self] in
+                self?.viewModel.genderButtonDidTap(.female)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func bindSaveButton() {
@@ -201,8 +205,8 @@ class ProfileViewController: CustomViewController {
                 guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
-                      let weightData = self?.profileStackView.weightView.profileTextField.text
-                       else { return }
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let gender = self?.viewModel.profileGender else { return }
                 
                 var birthData = ""
                 if #available(iOS 13.4, *) {
@@ -217,7 +221,7 @@ class ProfileViewController: CustomViewController {
                                                                weight: Int(weightData) ?? 0,
                                                                sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                                                profileImage: profileImage,
-                                                               gender: self?.viewModel.convertGenderTypeToString() ?? "",
+                                                               gender: gender,
                                                                birthday: birthData))
             }
             .disposed(by: disposeBag)
@@ -241,6 +245,7 @@ class ProfileViewController: CustomViewController {
                     self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthday
                 }
                 self?.profileImageButton.profileImageView.image = $0.profileImage
+                self?.configureGenderView($0.gender)
             })
             .disposed(by: disposeBag)
     }
@@ -257,20 +262,14 @@ class ProfileViewController: CustomViewController {
                 }
             })
             .disposed(by: disposeBag)
-        
-        viewModel.genderRelay
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                switch $0 {
-                case .none:
-                    break
-                case .male:
-                    self.animateMaleView()
-                case .female:
-                    self.animateFemaleView()
-                }
-            })
-            .disposed(by: disposeBag)
+    }
+    
+    private func configureGenderView(_ gender: GenderType) {
+        if viewModel.profileIsFirstShowing {
+            profileStackView.genderView.drawGenderView(gender)
+        } else {
+            profileStackView.genderView.animateGenderView(gender)
+        }
     }
     
     private func bindLoadingState() {
@@ -322,28 +321,6 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         profileImagePicker.dismiss(animated: true)
     }
-}
-
-extension ProfileViewController {
-    
-    private func animateMaleView() {
-        profileStackView.genderView.leadingConstraint?.constant = xValueRatio(5)
-        profileStackView.genderView.maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
-        profileStackView.genderView.femaleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
-    }
-    
-    private func animateFemaleView() {
-        profileStackView.genderView.leadingConstraint?.constant = xValueRatio(180)
-        profileStackView.genderView.femaleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
-        profileStackView.genderView.maleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
-            self?.view.layoutIfNeeded()
-        })
-    }
-    
 }
 
 extension ProfileViewController: ProfileImageButtonProtocol {

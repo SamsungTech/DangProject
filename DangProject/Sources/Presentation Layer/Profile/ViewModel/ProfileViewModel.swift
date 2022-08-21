@@ -15,12 +15,6 @@ enum ScrollState {
     case scrolling
 }
 
-enum GenderType {
-    case none
-    case male
-    case female
-}
-
 enum LoadingState {
     case startLoading
     case finishLoading
@@ -29,16 +23,17 @@ enum LoadingState {
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
     func saveProfile(_ data: ProfileDomainModel)
+    func genderButtonDidTap(_ gender: GenderType)
 }
 
 protocol ProfileViewModelOutputProtocol {
     var heights: [String] { get }
     var weights: [String] { get }
     var scrollValue: BehaviorRelay<ScrollState> { get }
-    var genderRelay: BehaviorRelay<GenderType> { get }
+    var profileGender: GenderType { get }
     var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
     var loadingRelay: PublishRelay<LoadingState> { get }
-    func convertGenderTypeToString() -> String
+    var profileIsFirstShowing: Bool { get }
     func getHeightSelectRowIndex(_ height: Int) -> Int
     func getWeightSelectRowIndex(_ weight: Int) -> Int
     func convertBirthDateToString(_ date: Date) -> String
@@ -56,11 +51,12 @@ class ProfileViewModel: ProfileViewModelProtocol {
     private let profileManagerUseCase: ProfileManagerUseCase
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
-    var genderRelay = BehaviorRelay<GenderType>(value: .none)
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
+    lazy var profileGender: GenderType = profileDataRelay.value.gender
     let heights: [String] = [Int](50...200).map{("\($0)")}
     let weights: [String] = [Int](30...150).map{("\($0)")}
     let loadingRelay = PublishRelay<LoadingState>()
+    var profileIsFirstShowing: Bool = true
     
     init(manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase,
          manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase,
@@ -99,24 +95,15 @@ class ProfileViewModel: ProfileViewModelProtocol {
         return dateFormatter.date(from: dateString) ?? Date.init()
     }
     
-    func convertGenderTypeToString() -> String {
-        switch genderRelay.value {
-        case .none:
-            return "에러"
-        case .male:
-            return "남자"
-        case .female:
-            return "여자"
-        }
-    }
+    // MARK: - Input
     
     func saveProfile(_ profile: ProfileDomainModel) {
         loadingRelay.accept(.startLoading)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
         manageFirebaseStoreUseCase.updateProfileData(profile)
         manageFirebaseStorageUseCase.updateProfileImage(jpegData)
-            .subscribe(onNext: { [weak self] isUpdated in
-                if isUpdated {
+            .subscribe(onNext: { [weak self] updateIsDone in
+                if updateIsDone {
                     self?.profileManagerUseCase.saveProfileOnCoreData(profile)
                     self?.loadingRelay.accept(.finishLoading)
                 }
@@ -132,14 +119,12 @@ class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
 
-    private func convertStringToGenderType(_ data: String) {
-        switch data {
-        case "남자":
-            genderRelay.accept(.male)
-        case "여자":
-            genderRelay.accept(.female)
-        default:
-            break
-        }
+    func genderButtonDidTap(_ gender: GenderType) {
+        profileIsFirstShowing = false
+        profileGender = gender
+        var changedProfile = profileDataRelay.value
+        changedProfile.gender = profileGender
+        profileDataRelay.accept(changedProfile)
     }
+    
 }
