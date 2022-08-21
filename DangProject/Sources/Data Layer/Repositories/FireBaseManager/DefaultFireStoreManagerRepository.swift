@@ -44,7 +44,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "height": profile.height,
             "weight": profile.weight,
             "sugarLevel": profile.sugarLevel,
-            "gender": "\(profile.gender)",
+            "gender": "\(profile.gender.rawValue)",
             "birthDay": "\(profile.birthday)"
         ] as [String : Any]
         

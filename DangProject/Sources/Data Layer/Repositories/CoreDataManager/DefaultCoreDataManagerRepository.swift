@@ -194,7 +194,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         
         profileEntity.name = data.name
         profileEntity.birthday = data.birthday
-        profileEntity.gender = data.gender
+        profileEntity.gender = data.gender.rawValue
         profileEntity.sugarLevel = Int32(data.sugarLevel)
         profileEntity.weight = Int32(data.weight)
         profileEntity.height = Int32(data.height)

@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum GenderType: String {
+    case male = "남자"
+    case female = "여자"
+}
+
 struct ProfileDomainModel {
     static let empty: Self = .init(uid: "",
                                    name: "",
@@ -14,18 +19,8 @@ struct ProfileDomainModel {
                                    weight: 0,
                                    sugarLevel: 0,
                                    profileImage: UIImage(),
-                                   gender: "",
+                                   gender: .male,
                                    birthday: "")
-    static var isLatestProfileDataValue: Bool = false
-    static var isLatestProfileImageDataValue: Bool = false
-    
-    static func setIsLatestProfileData(_ data: Bool) {
-        self.isLatestProfileDataValue = data
-    }
-    
-    static func setIsLatestProfileImageData(_ data: Bool) {
-        self.isLatestProfileImageDataValue = data
-    }
     
     var uid: String
     var name: String
@@ -33,7 +28,7 @@ struct ProfileDomainModel {
     var weight: Int
     var sugarLevel: Int
     var profileImage: UIImage
-    var gender: String
+    var gender: GenderType
     var birthday: String
     
     init(uid: String,
@@ -42,7 +37,7 @@ struct ProfileDomainModel {
          weight: Int,
          sugarLevel: Int,
          profileImage: UIImage,
-         gender: String,
+         gender: GenderType,
          birthday: String) {
         self.uid = uid
         self.name = name
@@ -61,7 +56,29 @@ struct ProfileDomainModel {
         self.height = Int(profileEntity.height)
         self.weight = Int(profileEntity.weight)
         self.sugarLevel = Int(profileEntity.sugarLevel)
-        self.gender = profileEntity.gender ?? ""
+        self.gender = Self.convertStringToGenderType(profileEntity.gender!)
         self.birthday = profileEntity.birthday ?? ""
+    }
+    
+}
+
+extension ProfileDomainModel {
+    static var isLatestProfileDataValue: Bool = false
+    static var isLatestProfileImageDataValue: Bool = false
+    
+    static func setIsLatestProfileData(_ data: Bool) {
+        self.isLatestProfileDataValue = data
+    }
+    
+    static func setIsLatestProfileImageData(_ data: Bool) {
+        self.isLatestProfileImageDataValue = data
+    }
+
+    static func convertStringToGenderType(_ gender: String) -> GenderType {
+        if gender == GenderType.male.rawValue {
+            return GenderType.male
+        } else {
+            return GenderType.female
+        }
     }
 }
