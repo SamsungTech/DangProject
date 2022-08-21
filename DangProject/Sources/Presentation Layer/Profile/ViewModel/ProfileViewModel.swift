@@ -26,29 +26,6 @@ enum LoadingState {
     case finishLoading
 }
 
-struct ProfileData {
-    static let empty: Self = .init(ProfileDomainModel.empty)
-    var profileImage: UIImage
-    var uid: String
-    var name: String
-    var height: Int
-    var weight: Int
-    var sugarLevel: Int
-    var gender: String
-    var birthday: String
-
-    init(_ profileDomainModel: ProfileDomainModel) {
-        self.profileImage = profileDomainModel.profileImage
-        self.uid = profileDomainModel.uid
-        self.name = profileDomainModel.name
-        self.height = profileDomainModel.height
-        self.weight = profileDomainModel.weight
-        self.sugarLevel = profileDomainModel.sugarLevel
-        self.gender = profileDomainModel.gender
-        self.birthday = profileDomainModel.birthday
-    }
-}
-
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
     func saveProfile(_ data: ProfileDomainModel)
@@ -59,11 +36,13 @@ protocol ProfileViewModelOutputProtocol {
     var weights: [String] { get }
     var scrollValue: BehaviorRelay<ScrollState> { get }
     var genderRelay: BehaviorRelay<GenderType> { get }
-    var profileDataRelay: BehaviorRelay<ProfileData> { get }
+    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
     var loadingRelay: PublishRelay<LoadingState> { get }
     func convertGenderTypeToString() -> String
     func getHeightSelectRowIndex(_ height: Int) -> Int
     func getWeightSelectRowIndex(_ weight: Int) -> Int
+    func convertBirthDateToString(_ date: Date) -> String
+    func convertBirthStringToDate(_ dateString: String) -> Date
 }
 
 protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewModelOutputProtocol {
@@ -71,13 +50,14 @@ protocol ProfileViewModelProtocol: ProfileViewModelInputProtocol, ProfileViewMod
 }
 
 class ProfileViewModel: ProfileViewModelProtocol {
+    
     private var manageFirebaseStoreUseCase: ManageFirebaseFireStoreUseCase
     private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
     private let profileManagerUseCase: ProfileManagerUseCase
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var genderRelay = BehaviorRelay<GenderType>(value: .none)
-    var profileDataRelay = BehaviorRelay<ProfileData>(value: .empty)
+    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     let heights: [String] = [Int](50...200).map{("\($0)")}
     let weights: [String] = [Int](30...150).map{("\($0)")}
     let loadingRelay = PublishRelay<LoadingState>()
@@ -94,7 +74,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
     private func fetchProfile() {
         profileManagerUseCase.fetchProfileData()
             .subscribe(onNext: { [weak self] profile in
-                self?.profileDataRelay.accept(ProfileData.init(profile))
+                self?.profileDataRelay.accept(profile)
             })
             .disposed(by: disposeBag)
     }
@@ -105,6 +85,18 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     func getWeightSelectRowIndex(_ weight: Int) -> Int {
         return weights.firstIndex(of: String(weight)) ?? 0
+    }
+    
+    func convertBirthDateToString(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+        return dateFormatter.string(from: date)
+    }
+    
+    func convertBirthStringToDate(_ dateString: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+        return dateFormatter.date(from: dateString) ?? Date.init()
     }
     
     func convertGenderTypeToString() -> String {
