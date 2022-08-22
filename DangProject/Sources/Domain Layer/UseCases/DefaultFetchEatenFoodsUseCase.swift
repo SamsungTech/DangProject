@@ -12,14 +12,10 @@ import RxSwift
 class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     
     private let disposeBag = DisposeBag()
-    private let twoMonthBeforeEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
-    
     let totalMonthsDataObservable = PublishSubject<[[EatenFoodsPerDayDomainModel]]>()
-    
-    var cachedMonth: [DateComponents] = []
-    
     let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
-    var monthlyTotalSugarObservable = PublishSubject<[TotalSugarPerMonthDomainModel]>()
+    var sixMonthsTotalSugarObservable = PublishSubject<[TotalSugarPerMonthDomainModel]>()
+    var cachedMonth: [DateComponents] = []
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
@@ -46,13 +42,13 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 []
             ])
         }
-        if cachedMonth.count == monthIndex + 2 {
-            var twoMonthBefore = dateComponents
-            twoMonthBefore.month = twoMonthBefore.month! - 2
+        if cachedMonth.count == monthIndex + 5 {
+            var fiveMonthBefore = dateComponents
+            fiveMonthBefore.month = fiveMonthBefore.month! - 5
  
-            fetchMonthData(dateComponents: twoMonthBefore)
+            fetchMonthData(dateComponents: fiveMonthBefore)
                 .subscribe(onNext: { [weak self] monthData in
-                    self?.cachedMonth.append(twoMonthBefore)
+                    self?.cachedMonth.append(fiveMonthBefore)
 
                 })
                 .disposed(by: disposeBag)
@@ -69,32 +65,27 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         var currentMonth: DateComponents = .currentYearMonth()
         currentMonth.day = 1
                 
-        let oneMonthBeforeEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
-        let currentMonthEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
+        lazy var oneMonthBeforeEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
+        lazy var currentMonthEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
+        lazy var twoMonthBeforeEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
+        
         lazy var totalMonthsZipObservable = Observable.zip(oneMonthBeforeEatenFoodsObservable, currentMonthEatenFoodsObservable, twoMonthBeforeEatenFoodsObservable)
         
-        var oneMonthBefore = currentMonth
-        oneMonthBefore.month = oneMonthBefore.month! - 1
-        var twoMonthBefore = currentMonth
-        twoMonthBefore.month = twoMonthBefore.month! - 2
-        
-        fetchMonthData(dateComponents: twoMonthBefore)
-            .subscribe(onNext: { [weak self] monthData in
-                self?.twoMonthBeforeEatenFoodsObservable.onNext(monthData)
-            })
-            .disposed(by: disposeBag)
-        
-        fetchMonthData(dateComponents: oneMonthBefore)
-            .subscribe(onNext: { monthData in
-                oneMonthBeforeEatenFoodsObservable.onNext(monthData)
-            })
-            .disposed(by: disposeBag)
-        
-        fetchMonthData(dateComponents: currentMonth)
-            .subscribe(onNext: { monthData in
-                currentMonthEatenFoodsObservable.onNext(monthData)
-            })
-            .disposed(by: disposeBag)
+        for i in 0 ..< 6 {
+            fetchMonthData(dateComponents: currentMonth)
+                .subscribe(onNext: { monthData in
+                    if i == 0 {
+                        currentMonthEatenFoodsObservable.onNext(monthData)
+                    } else if i == 1 {
+                        oneMonthBeforeEatenFoodsObservable.onNext(monthData)
+                    } else if i == 2 {
+                        twoMonthBeforeEatenFoodsObservable.onNext(monthData)
+                    }
+                })
+                .disposed(by: disposeBag)
+            cachedMonth.append(currentMonth)
+            currentMonth.month = currentMonth.month! - 1
+        }
         
         totalMonthsZipObservable
             .subscribe(onNext: { [weak self] monthData in
@@ -102,11 +93,9 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 self?.emitEatenFoodsObservable(eatenFoods: monthData.1)
             })
             .disposed(by: disposeBag)
-        
-        cachedMonth = [currentMonth, oneMonthBefore, twoMonthBefore]
-        
+
         // test
-        fetchMonthlyTotalSugar(.currentYearMonth())
+        fetchSixMonthsTotalSugar(from: .currentYearMonth())
     }
     
     func fetchNextMonthData(month: DateComponents) {
@@ -183,35 +172,18 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             .disposed(by: disposeBag)
     }
     
-    func fetchMonthlyTotalSugar(_ dateComponents: DateComponents) {
+    func fetchSixMonthsTotalSugar(from dateComponents: DateComponents) {
         guard let year = dateComponents.year,
               let month = dateComponents.month else { return }
-        var firstDay: DateComponents = .init(year: year, month: 1, day: 1)
-        var totalSugarPerMonth = [TotalSugarPerMonthDomainModel]()
-        
-        for i in 1...month {
-            fetchMonthData(dateComponents: firstDay)
-                .subscribe(onNext: { [weak self] monthData in
-                    guard let result = self?.getMonthlyTotalSugar(monthData) else { return }
-                    totalSugarPerMonth.append(TotalSugarPerMonthDomainModel.init(month: i, totalSugarPerMonth: result))
-                    
-                    if totalSugarPerMonth.count == month {
-                        let sortedResult = totalSugarPerMonth.sorted {
-                            $0.month < $1.month
-                        }
-                        self?.monthlyTotalSugarObservable.onNext(sortedResult)
-                        
-                        // test
-                        sortedResult.forEach {
-                            print($0.month, $0.totalSugarPerMonth)
-                        }
-                        
-                    }
-                })
-                .disposed(by: disposeBag)
-            firstDay.month = firstDay.month! + 1
+        var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month-5, day: 1)
+        var totalSugarPerSixMonths = [TotalSugarPerMonthDomainModel]()
+        for _ in 1...6 {
+            let monthData = fetchMonthDataFromCoreData(yearMonth: sixMonthBeforeDateComponents)
+            let result = getMonthlyTotalSugar(monthData)
+            totalSugarPerSixMonths.append(TotalSugarPerMonthDomainModel.init(month: sixMonthBeforeDateComponents, totalSugarPerMonth: result))
+            sixMonthBeforeDateComponents.month = sixMonthBeforeDateComponents.month! + 1
         }
-        
+        sixMonthsTotalSugarObservable.onNext(totalSugarPerSixMonths)
     }
     
     // MARK: - Private

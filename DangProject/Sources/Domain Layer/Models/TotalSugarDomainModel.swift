@@ -19,10 +19,10 @@ struct TotalSugarPerDayDomainModel {
 }
 
 struct TotalSugarPerMonthDomainModel {
-    var month: Int
+    var month: DateComponents
     var totalSugarPerMonth: [TotalSugarPerDayDomainModel]
     
-    init(month: Int, totalSugarPerMonth: [TotalSugarPerDayDomainModel]) {
+    init(month: DateComponents, totalSugarPerMonth: [TotalSugarPerDayDomainModel]) {
         self.month = month
         self.totalSugarPerMonth = totalSugarPerMonth
     }
