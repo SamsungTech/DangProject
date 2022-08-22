@@ -6,29 +6,27 @@
 //
 
 import Foundation
+
+import RxSwift
 import RxRelay
 
-struct GraphViewEntity {
-    static let empty: Self = .init(weekDang: [],
-                                   monthDang: [],
-                                   yearDang: [])
-    var weekDang: [String]?
-    var monthDang: [Double]?
-    var yearDang: [String]?
+protocol GraphViewModelInputProtocol {
     
-    init(weekDang: [String],
-         monthDang: [Double],
-         yearDang: [String]) {
-        self.weekDang = weekDang
-        self.monthDang = monthDang
-        self.yearDang = yearDang
-    }
 }
 
-class GraphViewModel {
-    var items = BehaviorRelay<GraphViewEntity>(value: .empty)
+protocol GraphViewModelOutputProtocol {
     
-    init(item: GraphViewEntity) {
-        self.items.accept(item)
+}
+
+protocol GraphViewModelProtocol: GraphViewModelInputProtocol, GraphViewModelOutputProtocol { }
+
+class GraphViewModel: GraphViewModelProtocol {
+    
+    private let disposeBag = DisposeBag()
+    private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
+    
+    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
+        self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
     }
+    
 }

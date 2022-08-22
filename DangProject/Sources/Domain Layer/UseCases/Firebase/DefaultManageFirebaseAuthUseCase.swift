@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 
 class DefaultManageFirebaseAuthUseCase: ManageFirebaseAuthUseCase {
+    
     private let disposeBag = DisposeBag()
     
     //MARK: - Init

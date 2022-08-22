@@ -105,6 +105,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         
         cachedMonth = [currentMonth, oneMonthBefore, twoMonthBefore]
         
+        // test
         fetchMonthlyTotalSugar(.currentYearMonth())
     }
     

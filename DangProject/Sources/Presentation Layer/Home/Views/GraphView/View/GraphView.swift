@@ -1,16 +1,17 @@
 //
-//  HomeGraphCell.swift
+//  GraphView.swift
 //  DangProject
 //
 //  Created by 김동우 on 2022/01/20.
 //
 
 import UIKit
+
 import RxSwift
 
-class HomeGraphView: UIView {
-    static let identifier = "HomeGraphCell"
-    private var viewModel: GraphViewModel?
+class GraphView: UIView {
+    
+    private var viewModel: GraphViewModelProtocol
     private var disposeBag = DisposeBag()
     private var graphMainView = UIView()
     private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Month", "Year"])
@@ -19,10 +20,11 @@ class HomeGraphView: UIView {
     private var graphNameStackView = UIStackView()
     private let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configure()
+    init(viewModel: GraphViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(frame: CGRect.zero)
         layout()
+        configure()
     }
     
     override func draw(_ rect: CGRect) {
@@ -35,13 +37,6 @@ class HomeGraphView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(viewModel: GraphViewModel) {
-        self.viewModel = viewModel
-        subscribe()
-    }
-}
-
-extension HomeGraphView {
     private func configure() {
         graphMainView.backgroundColor = .homeBoxColor
         
@@ -119,24 +114,24 @@ extension HomeGraphView {
         }
     }
     
-    private func createGraphViews(items: GraphViewEntity) {
-        var height: CGFloat?
-        guard let items = items.weekDang else { return }
-        for item in items {
-            if Double(item)! > 30 {
-                height = CGFloat(30)
-            } else {
-                height = CGFloat(Double(item)!)
-            }
-            let view = UIView()
-            view.backgroundColor = .white
-            view.viewRadius(cornerRadius: xValueRatio(13))
-            view.translatesAutoresizingMaskIntoConstraints = false
-            view.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
-            
-            graphStackView.addArrangedSubview(view)
-        }
-    }
+//    private func createGraphViews(items: GraphViewEntity) {
+//        var height: CGFloat?
+//        guard let items = items.weekDang else { return }
+//        for item in items {
+//            if Double(item)! > 30 {
+//                height = CGFloat(30)
+//            } else {
+//                height = CGFloat(Double(item)!)
+//            }
+//            let view = UIView()
+//            view.backgroundColor = .white
+//            view.viewRadius(cornerRadius: xValueRatio(13))
+//            view.translatesAutoresizingMaskIntoConstraints = false
+//            view.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
+//            
+//            graphStackView.addArrangedSubview(view)
+//        }
+//    }
     
     private func createGraphName() {
         for item in week {
@@ -150,11 +145,11 @@ extension HomeGraphView {
         }
     }
     
-    private func subscribe() {
-        viewModel?.items
-            .subscribe(onNext: { [weak self] in
-                self?.createGraphViews(items: $0)
-            })
-            .disposed(by: disposeBag)
-    }
+//    private func subscribe() {
+//        viewModel?.items
+//            .subscribe(onNext: { [weak self] in
+//                self?.createGraphViews(items: $0)
+//            })
+//            .disposed(by: disposeBag)
+//    }
 }
