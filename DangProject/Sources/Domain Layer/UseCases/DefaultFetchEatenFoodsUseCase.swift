@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 
 class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
+    
     private let disposeBag = DisposeBag()
     private let twoMonthBeforeEatenFoodsObservable = PublishSubject<[EatenFoodsPerDayDomainModel]>()
     
@@ -18,6 +19,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     var cachedMonth: [DateComponents] = []
     
     let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
+    var monthlyTotalSugarObservable = PublishSubject<[TotalSugarPerMonthDomainModel]>()
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
@@ -102,6 +104,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             .disposed(by: disposeBag)
         
         cachedMonth = [currentMonth, oneMonthBefore, twoMonthBefore]
+        
+        fetchMonthlyTotalSugar(.currentYearMonth())
     }
     
     func fetchNextMonthData(month: DateComponents) {
@@ -178,6 +182,37 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             .disposed(by: disposeBag)
     }
     
+    func fetchMonthlyTotalSugar(_ dateComponents: DateComponents) {
+        guard let year = dateComponents.year,
+              let month = dateComponents.month else { return }
+        var firstDay: DateComponents = .init(year: year, month: 1, day: 1)
+        var totalSugarPerMonth = [TotalSugarPerMonthDomainModel]()
+        
+        for i in 1...month {
+            fetchMonthData(dateComponents: firstDay)
+                .subscribe(onNext: { [weak self] monthData in
+                    guard let result = self?.getMonthlyTotalSugar(monthData) else { return }
+                    totalSugarPerMonth.append(TotalSugarPerMonthDomainModel.init(month: i, totalSugarPerMonth: result))
+                    
+                    if totalSugarPerMonth.count == month {
+                        let sortedResult = totalSugarPerMonth.sorted {
+                            $0.month < $1.month
+                        }
+                        self?.monthlyTotalSugarObservable.onNext(sortedResult)
+                        
+                        // test
+                        sortedResult.forEach {
+                            print($0.month, $0.totalSugarPerMonth)
+                        }
+                        
+                    }
+                })
+                .disposed(by: disposeBag)
+            firstDay.month = firstDay.month! + 1
+        }
+        
+    }
+    
     // MARK: - Private
     private func fetchEatenFoodsPerDayFromFireBase(dateComponents: DateComponents) -> Observable<EatenFoodsPerDayDomainModel> {
         return Observable.create() { [weak self] emitter in
@@ -200,5 +235,18 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     private func emitEatenFoodsObservable(eatenFoods: [EatenFoodsPerDayDomainModel]) {
         let currentIndex = DateComponents.currentDateComponents().day! - 1
         eatenFoodsObservable.onNext(eatenFoods[currentIndex])
+    }
+    
+    private func getMonthlyTotalSugar(_ monthData: [EatenFoodsPerDayDomainModel]) -> [TotalSugarPerDayDomainModel] {
+        var result = [TotalSugarPerDayDomainModel]()
+        monthData.forEach { eatenFoodsPerDay in
+            var totalSugar: Double = 0
+            eatenFoodsPerDay.eatenFoods.forEach { eatenFoods in
+                totalSugar = totalSugar + (Double(eatenFoods.amount) * eatenFoods.sugar)
+            }
+            result.append(TotalSugarPerDayDomainModel.init(date: eatenFoodsPerDay.date ?? Date.init(),
+                                                           totalSugar: totalSugar))
+        }
+        return result
     }
 }
