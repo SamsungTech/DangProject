@@ -22,6 +22,7 @@ extension EatenFoods {
     @NSManaged public var name: String?
     @NSManaged public var sugar: Double
     @NSManaged public var day: EatenFoodsPerDay?
+    @NSManaged public var targetSugar: Double
     
     public var unwrappedEatenTime: Date {
         eatenTime ?? Date.init()

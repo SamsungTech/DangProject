@@ -68,6 +68,7 @@ class DetailFoodViewController: UIViewController {
         
         setupBindings()
     }
+    
     // MARK: - Set Views
     private func setUpViews() {
         setUpBackGround()
@@ -227,7 +228,6 @@ class DetailFoodViewController: UIViewController {
     
     @objc private func addButtonTapped() {
         guard let amount = Int(amountTextField.text!) else { return }
-        
         viewModel.addFoods(foods: .init(amount: amount,
                                         foodModel: viewModel.detailFood))
         parentableViewController?.addFoodsAfter(food: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))

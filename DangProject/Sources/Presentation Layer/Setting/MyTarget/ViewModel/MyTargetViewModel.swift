@@ -41,7 +41,7 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
         // MARK: FireStore foods field에 targetSugar 추가
 
         let profileData = profileDataRelay.value
-        let data = ProfileDomainModel.init(uid: "",
+        let profileDomainData = ProfileDomainModel.init(uid: "",
                                            name: profileData.name,
                                            height: profileData.height,
                                            weight: profileData.weight,
@@ -49,11 +49,19 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
                                            profileImage: profileData.profileImage,
                                            gender: profileData.gender,
                                            birthday: profileData.birthday)
-        fireStoreUseCase.updateProfileData(data)
+        fireStoreUseCase.updateProfileData(profileDomainData)
         
         fireStoreUseCase.getEatenFoods(dateComponents: DateComponents.currentDateTimeComponents())
             .subscribe(onNext: { [weak self] eatenFoods in
-                
+                if eatenFoods.count != 0 {
+                    for i in eatenFoods {
+                        var food = i
+                        food.targetSugar = Double(data)
+                        self?.fireStoreUseCase.uploadEatenFood(eatenFood: food)
+                    }
+                } else {
+                    print("eatenFoods 데이터 없음")
+                }
             })
             .disposed(by: disposeBag)
     }

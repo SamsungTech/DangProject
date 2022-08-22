@@ -94,8 +94,8 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                             case "amount": foodModel.amount = value as? Int ?? 0
                             case "favorite": foodModel.favorite = value as? Bool ?? false
                             case "eatenTime": foodModel.eatenTime = value as? Timestamp ?? Timestamp.init()
-                            default:
-                                break
+                            case "targetSugar": foodModel.targetSugar = value as? Double ?? 0.0
+                            default: break
                             }
                         }
                         addedFoodDomainModel.append(foodModel)

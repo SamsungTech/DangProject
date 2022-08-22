@@ -3,13 +3,17 @@ import UIKit
 import FirebaseFirestore
 
 struct FoodDomainModel: Equatable {
-    static let empty: Self = .init(name: "", sugar: 0, foodCode: "", eatenTime: Timestamp.init())
+    static let empty: Self = .init(name: "",
+                                   sugar: 0,
+                                   foodCode: "",
+                                   eatenTime: Timestamp.init())
     var name: String
     var sugar: Double
     var foodCode: String
     var favorite: Bool = false
     var amount: Int = 1
     var eatenTime: Timestamp
+    var targetSugar: Double = 0.0
     
     init(name: String,
          sugar: Double,
@@ -20,7 +24,7 @@ struct FoodDomainModel: Equatable {
         self.foodCode = foodCode
         self.eatenTime = eatenTime
     }
-        
+    
     init(_ foodInfoFromAPI: FoodInfo) {
         self.name = foodInfoFromAPI.nameContent ?? ""
         self.sugar = Double(foodInfoFromAPI.sugarContent ?? "0") ?? 0
@@ -60,6 +64,7 @@ struct FoodDomainModel: Equatable {
         self.foodCode = eatenFoods.foodCode ?? ""
         self.amount = Int(eatenFoods.amount)
         self.eatenTime = Timestamp.init()
+        self.targetSugar = eatenFoods.targetSugar
     }
 }
 

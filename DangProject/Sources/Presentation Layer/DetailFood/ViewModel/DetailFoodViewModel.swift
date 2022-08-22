@@ -65,8 +65,8 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
         self.amount = amount
         detailFoodObservable.accept(detailFood)
     }
-    // MARK: - Output
     
+    // MARK: - Output
     var pickerList: [String] = [Int](0...10).map{("\($0)")}
     
     func setSugarArrowAngle(amount: Double) -> CGFloat {

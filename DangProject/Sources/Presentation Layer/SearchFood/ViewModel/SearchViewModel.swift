@@ -33,6 +33,7 @@ class SearchViewModel: SearchViewModelProtocol {
     private let changeFavoriteUseCase: ChangeFavoriteUseCase
     private let fetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase
     private let manageQueryUseCase: ManageQueryUseCase
+    
     init(searchFoodUseCase: SearchUseCase,
          changeFavoriteUseCase: ChangeFavoriteUseCase,
          fetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase,
@@ -76,7 +77,8 @@ class SearchViewModel: SearchViewModelProtocol {
         searchFoodViewModelObservable.accept(currentFoodViewModels)
     }
     
-    func changeFavorite(indexPath: IndexPath?, foodModel: FoodViewModel?) {
+    func changeFavorite(indexPath: IndexPath?,
+                        foodModel: FoodViewModel?) {
         if indexPath != nil {
             if scopeState == .searchResult {
                 changeFavoriteUseCase.changeFavorite(food: FoodDomainModel.init(currentFoodViewModels[indexPath!.row]))
