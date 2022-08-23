@@ -56,6 +56,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
+        viewModel.fetchGraphData(from: .currentDateComponents())
         changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
     }
     
@@ -163,6 +164,7 @@ extension HomeViewController: CalendarViewDelegate {
         viewModel.fetchSelectedEatenFoods(dateComponents)
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
         changeEatenFoodsTitleViewText(dateComponents: dateComponents)
+        viewModel.fetchGraphData(from: dateComponents)
     }
     
     func changeCalendarView(_ dateComponents: DateComponents, fetchIsNeeded: Bool) {
