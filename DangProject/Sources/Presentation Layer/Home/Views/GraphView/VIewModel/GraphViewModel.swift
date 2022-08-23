@@ -23,7 +23,6 @@ protocol GraphViewModelProtocol: GraphViewModelInputProtocol, GraphViewModelOutp
 class GraphViewModel: GraphViewModelProtocol {
     
     private let disposeBag = DisposeBag()
-    
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
@@ -34,10 +33,45 @@ class GraphViewModel: GraphViewModelProtocol {
     private func bindMonthlyTotalSugarObservable() {
         fetchEatenFoodsUseCase.sixMonthsTotalSugarObservable
             .subscribe(onNext: { [weak self] dateComponents, monthlyTotalSugar in
+                let currentMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 1]
+                let previousMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 2]
+                
                 let monthlyAverage = self?.calculateMonthlySugarAverage(monthlyTotalSugar)
-                let dailyAverage = self?.calculateDailySugarAverage(monthlyTotalSugar: monthlyTotalSugar, selectedDateComponents: dateComponents)
+                let dailyAverage = self?.calculateDailySugar(currentMonthTotalSugar: currentMonthData,
+                                                             previousMonthTotalSugar: previousMonthData,
+                                                             selectedDateComponents: dateComponents)
+                let weeklyAverage = self?.calculateWeeklySugarAverage(monthlyTotalSugar: monthlyTotalSugar, selectedDateComponents: dateComponents)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func calculateWeeklySugarAverage(monthlyTotalSugar: [TotalSugarPerMonthDomainModel],
+                                             selectedDateComponents: DateComponents) -> [Double] {
+        let currentMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 1]
+        let previousMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 2]
+        
+        var weeklySugarAverage = [Double]()
+        var dateComponents = selectedDateComponents
+        for _ in 0 ... 6 {
+            dateComponents.day! = dateComponents.day! - 7
+            let weeklyData = calculateDailySugar(currentMonthTotalSugar: currentMonthData,
+                                                  previousMonthTotalSugar: previousMonthData,
+                                                  selectedDateComponents: dateComponents)
+            let weeklySugarAverageData = calculateWeeklyAverage(weeklyData: weeklyData)
+            weeklySugarAverage.append(weeklySugarAverageData)
+        }
+        // 이전 3달치가 필요한 경우 터짐 -> calculateDailSugar 메서드를 현재, 이전달만 받아 사용하도록 수정하고 - 완료
+        //        3달치가 필요할 경우를 분기처리해서 이때는 전달, 전전달 을 전달해야함
+        print(weeklySugarAverage)
+        return weeklySugarAverage
+    }
+    
+    private func calculateWeeklyAverage(weeklyData: [Double]) -> Double {
+        var totalSugar: Double = 0
+        weeklyData.forEach {
+            totalSugar = totalSugar + $0
+        }
+        return (totalSugar / Double(weeklyData.count)).roundDecimal(to: 1)
     }
     
     private func calculateMonthlySugarAverage(_ monthlyTotalSugar: [TotalSugarPerMonthDomainModel]) -> [Double] {
@@ -67,10 +101,10 @@ class GraphViewModel: GraphViewModelProtocol {
         return monthlySugarAverage
     }
     
-    private func calculateDailySugarAverage(monthlyTotalSugar: [TotalSugarPerMonthDomainModel],
-                                            selectedDateComponents: DateComponents) -> [Double] {
-        guard let selectedMonthTotalSugar = monthlyTotalSugar.last,
-              let day = selectedDateComponents.day else { return [] }
+    private func calculateDailySugar(currentMonthTotalSugar: TotalSugarPerMonthDomainModel,
+                                      previousMonthTotalSugar: TotalSugarPerMonthDomainModel,
+                                      selectedDateComponents: DateComponents) -> [Double] {
+        guard let day = selectedDateComponents.day else { return [] }
         var dailySugarAverage = [Double]()
         let selectedWeekday = getSelectedDateComponentsWeekday(selectedDateComponents)
         let sundayIndex = day - selectedWeekday
@@ -83,11 +117,11 @@ class GraphViewModel: GraphViewModelProtocol {
         for i in 0 ..< resultCount {
             var weekdaySugar: Double = 0
             if sundayIndex + i < 0 {
-                let previousMonthTotalSugar = monthlyTotalSugar[monthlyTotalSugar.count - 2].totalSugarPerMonth
+                let previousMonthTotalSugar = previousMonthTotalSugar.totalSugarPerMonth
                 let previousMonthindex = sundayIndex + i
                 weekdaySugar = previousMonthTotalSugar[previousMonthTotalSugar.count + previousMonthindex].totalSugar
             } else {
-                weekdaySugar = selectedMonthTotalSugar.totalSugarPerMonth[sundayIndex + i].totalSugar
+                weekdaySugar = currentMonthTotalSugar.totalSugarPerMonth[sundayIndex + i].totalSugar
             }
             dailySugarAverage.append(weekdaySugar)
         }
