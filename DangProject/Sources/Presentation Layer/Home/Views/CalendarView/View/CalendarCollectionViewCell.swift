@@ -126,6 +126,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         }
         
         let animation = CABasicAnimation(keyPath: "strokeEnd")
+        
         animation.toValue = circleAngleValue
         if circleAngleValue < 0.4 {
             animation.duration = 1
@@ -140,6 +141,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     func configureLayer(data: CalendarCellViewModelEntity) {
         let circleAngleValue = Double.calculateCircleLineAngle(percent: data.percentValue)
         let endAngle = (-CGFloat.pi / 2) + ((450 * circleAngleValue * .pi)/180)
+        
         lazy var newCircleAngle = UIBezierPath(arcCenter: .zero,
                                                radius: 15,
                                                startAngle: -CGFloat.pi / 2,

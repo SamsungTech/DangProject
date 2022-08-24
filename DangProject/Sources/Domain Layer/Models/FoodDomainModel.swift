@@ -40,6 +40,7 @@ struct FoodDomainModel: Equatable {
             self.favorite = true
         }
         self.eatenTime = Timestamp.init()
+        self.targetSugar = foodViewModel.targetSugar ?? 0.0
     }
     
     init(_ addFoodsViewModel: AddFoodsViewModel) {
@@ -48,6 +49,7 @@ struct FoodDomainModel: Equatable {
         self.foodCode = addFoodsViewModel.foodModel?.code ?? ""
         self.amount = addFoodsViewModel.amount
         self.eatenTime = Timestamp.init()
+        self.targetSugar = addFoodsViewModel.foodModel?.targetSugar ?? 0.0
     }
     
     init(_ coreDataFood: FavoriteFoods) {

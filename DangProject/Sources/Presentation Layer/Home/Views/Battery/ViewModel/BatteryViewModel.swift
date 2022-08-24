@@ -33,6 +33,8 @@ class BatteryViewModel {
     }
     
     private func bindBatteryEntityObservable() {
+        // MARK: eatenfoods를 subscribe 를 하고 있질 않아서 배터리 링이 반응을 안한다. subscribe로 바꾸던지 해야겠다!
+        
         let eatenFoodsObservable = fetchEatenFoodsUseCase.eatenFoodsObservable
         let fetchProfileObservable = fetchProfileUseCase.fetchProfileData()
         
@@ -42,6 +44,7 @@ class BatteryViewModel {
                 eatenFoodsPerDay.eatenFoods.forEach { eatenFood in
                     totalSugarSum = totalSugarSum + (Double(eatenFood.amount) * eatenFood.sugar)
                 }
+                
                 let batteryEntity = BatteryEntity.init(totalSugarSum: totalSugarSum.roundDecimal(to: 2),
                                                        targetSugar: profileData.sugarLevel)
                 self?.batteryEntityObservable.accept(batteryEntity)

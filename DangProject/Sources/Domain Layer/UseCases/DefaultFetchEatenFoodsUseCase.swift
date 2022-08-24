@@ -34,9 +34,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         let tempMonth = DateComponents.init(year: dateComponents.year!,
                                             month: dateComponents.month!,
                                             day: 1)
-        guard let monthIndex = cachedMonth.firstIndex(of: tempMonth) else {
-            return
-        }
+        guard let monthIndex = cachedMonth.firstIndex(of: tempMonth) else { return }
+        
         if monthIndex == 0 {
             return totalMonthsDataObservable.onNext([
                 fetchMonthDataFromCoreData(yearMonth: cachedMonth[monthIndex+1]),
@@ -44,6 +43,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 []
             ])
         }
+        
         if cachedMonth.count == monthIndex + 2 {
             var twoMonthBefore = dateComponents
             twoMonthBefore.month = twoMonthBefore.month! - 2
@@ -55,7 +55,6 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 })
                 .disposed(by: disposeBag)
         }
-        
         totalMonthsDataObservable.onNext([
             fetchMonthDataFromCoreData(yearMonth: cachedMonth[monthIndex+1]),
             fetchMonthDataFromCoreData(yearMonth: cachedMonth[monthIndex]),
@@ -125,6 +124,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         }
         let dayCounts: Int = .calculateDaysCount(year: year, month: month)
         var eatenFoodsData: [EatenFoodsPerDayDomainModel] = []
+        
         for i in 1 ... dayCounts {
             let tempDate: Date = .makeDate(year: year,
                                            month: month,
@@ -132,6 +132,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             let result = coreDataManagerRepository.fetchEatenFoodsPerDay(date: tempDate)
             eatenFoodsData.append(EatenFoodsPerDayDomainModel.init(result))
         }
+        
         return eatenFoodsData
     }
     

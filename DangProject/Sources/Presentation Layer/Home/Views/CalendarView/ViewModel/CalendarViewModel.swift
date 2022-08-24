@@ -101,6 +101,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
                 } else {
                     nextMonth = self?.mergeCalendarAndEatenFoods(calendar: nextCalendar, with: totalMonths[2]) ?? []
                 }
+                
                 self?.previousDataObservable.accept(oneMonthBefore)
                 self?.currentDataObservable.accept(currentMonth)
                 self?.nextDataObservable.accept(nextMonth)
@@ -125,7 +126,8 @@ class CalendarViewModel: CalendarViewModelProtocol {
         var index = 0
         for i in 0 ..< 42 {
             if calendarDayEntity[i].isHidden {
-                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i], eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
+                                                               eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
             } else {
                 result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
                                                                eatenFoodsPerDayEntity: eatenFoods[index]))
@@ -141,9 +143,10 @@ class CalendarViewModel: CalendarViewModelProtocol {
         var index = 0
         for i in 0 ..< 42 {
             if calendarDayEntity[i].isHidden {
-                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i], eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
+                                                               eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
             } else {
-                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i] ))
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i]))
                 index += 1
             }
         }

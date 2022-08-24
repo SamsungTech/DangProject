@@ -12,7 +12,6 @@ import RxSwift
 
 class SearchViewController: UIViewController {
     private let disposeBag = DisposeBag()
-    
     var coordinator: SearchCoordinator?
     private let viewModel: SearchViewModel
     private let searchController = UISearchController(searchResultsController: nil)
@@ -39,7 +38,11 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         setUpDefaultView()
         setUpSearchingPreferenceViews()
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.fetchTargetSugarData()
     }
     
     // MARK: - Set Views
@@ -217,6 +220,8 @@ class SearchViewController: UIViewController {
         searchResultTableView.rx
             .modelSelected(FoodViewModel.self)
             .subscribe(onNext: { [weak self] food in
+                var food = food
+                food.targetSugar = self?.viewModel.targetSugarRelay.value
                 self?.searchController.searchBar.resignFirstResponder()
                 self?.coordinator?.pushDetailFoodView(food: food, from: self!)
             })

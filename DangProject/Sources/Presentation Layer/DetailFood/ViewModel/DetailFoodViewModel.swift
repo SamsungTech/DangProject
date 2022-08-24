@@ -53,7 +53,6 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     
     func addFoods(foods: AddFoodsViewModel) {
         addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
-        
     }
     
     func changePickerViewWillActivated() {

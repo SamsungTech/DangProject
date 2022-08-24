@@ -15,11 +15,13 @@ protocol SearchViewModelInput {
     func cancelButtonTapped()
     func changeFavorite(indexPath: IndexPath?, foodModel: FoodViewModel?)
     func eraseQueryResult()
+    func fetchTargetSugarData()
 }
 
 protocol SearchViewModelOutput {
     var searchFoodViewModelObservable: PublishRelay<[FoodViewModel]> { get }
     var searchQueryObservable: PublishRelay<[String]> { get }
+    var targetSugarRelay: BehaviorRelay<Double> { get }
     func updateRecentQuery()
 }
 
@@ -33,15 +35,19 @@ class SearchViewModel: SearchViewModelProtocol {
     private let changeFavoriteUseCase: ChangeFavoriteUseCase
     private let fetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase
     private let manageQueryUseCase: ManageQueryUseCase
+    private let fetchProfileUseCase: FetchProfileUseCase
+    var targetSugarRelay = BehaviorRelay<Double>(value: 0.0)
     
     init(searchFoodUseCase: SearchUseCase,
          changeFavoriteUseCase: ChangeFavoriteUseCase,
          fetchFavoriteFoodsUseCase: FetchFavoriteFoodsUseCase,
-         manageQueryUseCase: ManageQueryUseCase) {
+         manageQueryUseCase: ManageQueryUseCase,
+         fetchProfileUseCase: FetchProfileUseCase) {
         self.searchFoodUseCase = searchFoodUseCase
         self.changeFavoriteUseCase = changeFavoriteUseCase
         self.fetchFavoriteFoodsUseCase = fetchFavoriteFoodsUseCase
         self.manageQueryUseCase = manageQueryUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
         bindFoodResultModelObservable()
         bindQueryUseCase()
     }
@@ -71,6 +77,14 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     // MARK: - Input
     var currentKeyword: String = ""
+    
+    func fetchTargetSugarData() {
+        fetchProfileUseCase.fetchProfileData()
+            .subscribe(onNext: { [weak self] profileData in
+                self?.targetSugarRelay.accept(Double(profileData.sugarLevel))
+            })
+            .disposed(by: disposeBag)
+    }
     
     func cancelButtonTapped() {
         currentFoodViewModels = []

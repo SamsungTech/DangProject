@@ -108,10 +108,12 @@ class BatteryView: UIView {
         viewModel.batteryEntityObservable
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] batteryData in
+                
                 let percentValue = Int.calculatePercentValue(dang: batteryData.totalSugarSum,
                                                              maxDang: Double(batteryData.targetSugar))
                 self?.targetSugarLabel.text = "목표: \(batteryData.totalSugarSum)/\(batteryData.targetSugar) "
-                self?.configureLineLayerColor(totalSugar: batteryData.totalSugarSum)
+                self?.configureLineLayerColor(batteryData.totalSugarSum,
+                                              Double(batteryData.targetSugar))
                 self?.countAnimation(endCount: percentValue)
                 self?.animatePulsatingLayer()
                 self?.animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
@@ -121,10 +123,11 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    private func configureLineLayerColor(totalSugar: Double) {
-        let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: 50)
-        let lineColor = CGColor.calculateCirclePercentLineColor(dang: totalSugar, maxDang: 50)
-        let lineAnimationColor = CGColor.calculateCircleProgressBarColor(dang: totalSugar, maxDang: 50)
+    private func configureLineLayerColor(_ totalSugar: Double,
+                                         _ targetSugar: Double) {
+        let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: targetSugar)
+        let lineColor = CGColor.calculateCirclePercentLineColor(dang: totalSugar, maxDang: targetSugar)
+        let lineAnimationColor = CGColor.calculateCircleProgressBarColor(dang: totalSugar, maxDang: targetSugar)
         percentLineLayer.strokeColor = lineColor
         percentLineBackgroundLayer.strokeColor = lineBackgroundColor
         animationLineLayer.strokeColor = lineAnimationColor

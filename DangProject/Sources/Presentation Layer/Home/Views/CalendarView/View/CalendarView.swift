@@ -72,12 +72,11 @@ class CalendarView: UIView {
     }
     
     private func binding() {
-        
         viewModel.currentDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier,
+                                                             cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
-                
                 if self.viewModel.animationIsNeeded {
                     cell.configureLayerWithAnimation(data: data)
                 } else {
@@ -88,7 +87,8 @@ class CalendarView: UIView {
         
         viewModel.previousDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: previousCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: previousCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier,
+                                                              cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)

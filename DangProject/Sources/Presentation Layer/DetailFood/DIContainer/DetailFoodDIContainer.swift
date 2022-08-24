@@ -10,6 +10,7 @@ import Foundation
 class DetailFoodDIContainer {
     
     var selectedFood: FoodViewModel
+    
     init(selectedFood: FoodViewModel) {
         self.selectedFood = selectedFood
     }

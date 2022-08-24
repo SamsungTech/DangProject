@@ -153,6 +153,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         do {
             if let checkedEatenFoodsPerDay = try context?.fetch(request) {
                 if checkedEatenFoodsPerDay.count == 0 {
+                    
                 } else {
                     
                 }
@@ -246,9 +247,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     
     func deleteFavoriteFood(code: String) {
         let request = self.getRequest(coreDataName: .favoriteFoods)
-        
         request.predicate = NSPredicate(format: "foodCode == %@", code)
-        
         do {
             if let favoriteFoods = try context?.fetch(request) {
                 if favoriteFoods.count == 0 { return }
