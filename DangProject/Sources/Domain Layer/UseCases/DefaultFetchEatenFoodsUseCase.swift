@@ -174,13 +174,13 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
               let month = dateComponents.month else { return }
         var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month-5, day: 1)
         var totalSugarPerSixMonths = [TotalSugarPerMonthDomainModel]()
-        for _ in 1...6 {
+        for _ in 1...7 {
             let monthData = fetchMonthDataFromCoreData(yearMonth: sixMonthBeforeDateComponents)
             let result = getMonthlyTotalSugar(monthData)
-            totalSugarPerSixMonths.append(TotalSugarPerMonthDomainModel.init(month: sixMonthBeforeDateComponents, totalSugarPerMonth: result))
+            totalSugarPerSixMonths.append(TotalSugarPerMonthDomainModel.init(month: .configureDateComponents(sixMonthBeforeDateComponents), totalSugarPerMonth: result))
             sixMonthBeforeDateComponents.month = sixMonthBeforeDateComponents.month! + 1
         }
-        sixMonthsTotalSugarObservable.onNext((dateComponents, totalSugarPerSixMonths))
+        sixMonthsTotalSugarObservable.onNext((.configureDateComponents(dateComponents), totalSugarPerSixMonths))
     }
     
     // MARK: - Private
