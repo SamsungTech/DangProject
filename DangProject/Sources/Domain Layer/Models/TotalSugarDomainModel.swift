@@ -19,6 +19,7 @@ struct TotalSugarPerDayDomainModel {
 }
 
 struct TotalSugarPerMonthDomainModel {
+    static let empty: Self = .init(month: DateComponents.init(), totalSugarPerMonth: [])
     var month: DateComponents
     var totalSugarPerMonth: [TotalSugarPerDayDomainModel]
     

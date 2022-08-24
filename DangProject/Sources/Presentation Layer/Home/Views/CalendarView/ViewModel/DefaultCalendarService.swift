@@ -85,7 +85,7 @@ class DefaultCalendarService: CalendarService {
     
     private func calculation(dateComponents: DateComponents) -> CalendarMonthEntity {
         guard let firstDayOfMonth = calendar.date(from: dateComponents) else { return CalendarMonthEntity.empty }
-        /// 0: Sunday ~ 7: Saturday
+        /// 1: Sunday ~ 7: Saturday
         let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
         /// For indexing
         let weekdayAdding: Int = 2 - firstWeekday
