@@ -8,12 +8,9 @@
 import UIKit
 
 class SettingAccountView: UIButton {
-    private(set) lazy var profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person.fill")
-        imageView.tintColor = .white
-        imageView.viewRadius(cornerRadius: xValueRatio(25))
-        return imageView
+    private(set) lazy var profileImageView: SettingProfileImageButton = {
+        let button = SettingProfileImageButton()
+        return button
     }()
     
     private(set) lazy var profileAccountLabel: UILabel = {
@@ -68,8 +65,8 @@ extension SettingAccountView {
         NSLayoutConstraint.activate([
             profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(10)),
             profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            profileImageView.widthAnchor.constraint(equalToConstant: xValueRatio(50)),
-            profileImageView.heightAnchor.constraint(equalToConstant: yValueRatio(50))
+            profileImageView.widthAnchor.constraint(equalToConstant: xValueRatio(60)),
+            profileImageView.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
     }
     

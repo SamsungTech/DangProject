@@ -4,9 +4,8 @@
 //
 //  Created by 김성원 on 2022/06/20.
 //
-import Foundation
-import UIKit
 
+import UIKit
 import RxCocoa
 import RxSwift
 import RxRelay
@@ -96,20 +95,23 @@ class CalendarView: UIView {
         viewModel.nextDataObservable
             .observe(on: MainScheduler.instance)
             .bind(to: nextCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+                
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: selectedLeadingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: selectedLeadingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier,
+                                                                     cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: selectedTrailingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: selectedTrailingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier,
+                                                                      cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)

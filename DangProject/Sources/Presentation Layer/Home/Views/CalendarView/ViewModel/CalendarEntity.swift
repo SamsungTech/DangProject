@@ -36,7 +36,7 @@ struct CalendarCellViewModelEntity {
             }
             return totalSugar
         }()
-        self.targetSugar = eatenFoodsPerDayEntity.eatenFoods.first?.targetSugar ?? 0.0
+        self.targetSugar = .calculateIsTargetSugarExistence(eatenFoodsPerDayEntity.eatenFoods)
         self.percentValue = .calculatePercentValue(dang: self.totalSugar, maxDang: self.targetSugar)
         self.layerColor = CGColor.calculateCirclePercentLineColor(dang: self.totalSugar, maxDang: self.targetSugar)
     }

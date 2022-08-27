@@ -27,4 +27,12 @@ extension Double {
     static func calculateCircleLineAngle(percent: Int) -> Double {
         return minimum(Double(percent) * 0.008, 0.8)
     }
+    
+    static func calculateIsTargetSugarExistence(_ array: [FoodDomainModel]) -> Double {
+        if array.isEmpty {
+            return 0.0
+        } else {
+            return array.first?.targetSugar ?? 0.0
+        }
+    }
 }

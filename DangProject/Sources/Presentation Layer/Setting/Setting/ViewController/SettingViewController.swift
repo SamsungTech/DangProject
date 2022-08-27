@@ -61,8 +61,7 @@ class SettingViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.bringSubviewToFront(settingNavigationBar)
-        navigationController?.navigationBar.isHidden = true
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -91,6 +90,7 @@ class SettingViewController: UIViewController {
     }
     
     private func setUpSettingView() {
+        view.bringSubviewToFront(settingNavigationBar)
         view.backgroundColor = .homeBackgroundColor
         navigationController?.navigationBar.isHidden = true
     }
