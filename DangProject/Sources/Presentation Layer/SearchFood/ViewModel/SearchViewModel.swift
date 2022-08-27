@@ -50,6 +50,7 @@ class SearchViewModel: SearchViewModelProtocol {
         self.fetchProfileUseCase = fetchProfileUseCase
         bindFoodResultModelObservable()
         bindQueryUseCase()
+        bindTargetSugarData()
     }
     
     private func bindFoodResultModelObservable() {
@@ -73,17 +74,20 @@ class SearchViewModel: SearchViewModelProtocol {
                 self?.searchQueryObservable.accept(query)
             })
             .disposed(by: disposeBag)
-        
+    }
+    
+    private func bindTargetSugarData() {
+        fetchProfileUseCase.profileDataSubject
+            .subscribe(onNext: { [weak self] profileData in
+                self?.targetSugarRelay.accept(Double(profileData.sugarLevel))
+            })
+            .disposed(by: disposeBag)
     }
     // MARK: - Input
     var currentKeyword: String = ""
     
     func fetchTargetSugarData() {
         fetchProfileUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] profileData in
-                self?.targetSugarRelay.accept(Double(profileData.sugarLevel))
-            })
-            .disposed(by: disposeBag)
     }
     
     func cancelButtonTapped() {

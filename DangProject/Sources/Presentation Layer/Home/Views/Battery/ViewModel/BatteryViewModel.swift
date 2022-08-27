@@ -32,13 +32,24 @@ class BatteryViewModel {
         bindBatteryEntityObservable()
     }
     
+    // MARK: - Internal
     private func bindBatteryEntityObservable() {
-        // MARK: eatenfoods를 subscribe 를 하고 있질 않아서 배터리 링이 반응을 안한다. subscribe로 바꾸던지 해야겠다!
+        let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
+        let profileObservable = PublishSubject<ProfileDomainModel>()
         
-        let eatenFoodsObservable = fetchEatenFoodsUseCase.eatenFoodsObservable
-        let fetchProfileObservable = fetchProfileUseCase.fetchProfileData()
+        fetchEatenFoodsUseCase.eatenFoodsObservable
+            .subscribe(onNext: { eatenFoods in
+                eatenFoodsObservable.onNext(eatenFoods)
+            })
+            .disposed(by: disposeBag)
         
-        Observable.zip(eatenFoodsObservable, fetchProfileObservable)
+        fetchProfileUseCase.profileDataSubject
+            .subscribe(onNext: { profileData in
+                profileObservable.onNext(profileData)
+            })
+            .disposed(by: disposeBag)
+
+        Observable.zip(eatenFoodsObservable, profileObservable)
             .subscribe(onNext: { [weak self] eatenFoodsPerDay, profileData in
                 var totalSugarSum: Double = 0
                 eatenFoodsPerDay.eatenFoods.forEach { eatenFood in
@@ -51,6 +62,4 @@ class BatteryViewModel {
             })
             .disposed(by: disposeBag)
     }
-    
-    // MARK: - Internal
 }

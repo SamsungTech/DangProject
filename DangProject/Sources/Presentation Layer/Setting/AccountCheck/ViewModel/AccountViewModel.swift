@@ -29,12 +29,17 @@ class AccountViewModel: AccountViewModelProtocol {
     
     init(fetchProfileUseCase: FetchProfileUseCase) {
         self.fetchProfileUseCase = fetchProfileUseCase
+        bindProfileData()
     }
     
     func fetchProfileData() {
         fetchProfileUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] in
-                self?.profileDataRelay.accept($0)
+    }
+    
+    private func bindProfileData() {
+        fetchProfileUseCase.profileDataSubject
+            .subscribe(onNext: { [weak self] profileData in
+                self?.profileDataRelay.accept(profileData)
             })
             .disposed(by: disposeBag)
     }

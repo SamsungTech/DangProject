@@ -14,6 +14,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
     private var coreDataManagerRepository: CoreDataManagerRepository
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
+    var profileDataSubject = PublishSubject<ProfileDomainModel>()
     
     init(coreDataManagerRepository: CoreDataManagerRepository,
          manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase,
@@ -23,24 +24,20 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
     }
     
-    func fetchProfileData() -> Observable<ProfileDomainModel> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            if ProfileDomainModel.isLatestProfileDataValue {
-                strongSelf.fetchLocalProfileData()
-                    .subscribe(onNext: { profileData in
-                        emitter.onNext(profileData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-            } else {
-                strongSelf.fetchRemoteProfileData()
-                    .subscribe(onNext: { profileData in
-                        emitter.onNext(profileData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-                ProfileDomainModel.setIsLatestProfileData(true)
-            }
-            return Disposables.create()
+    func fetchProfileData() {
+        if ProfileDomainModel.isLatestProfileDataValue {
+            fetchLocalProfileData()
+                .subscribe(onNext: { profileData in
+                    self.profileDataSubject.onNext(profileData)
+                })
+                .disposed(by: disposeBag)
+        } else {
+            fetchRemoteProfileData()
+                .subscribe(onNext: { profileData in
+                    self.profileDataSubject.onNext(profileData)
+                })
+                .disposed(by: disposeBag)
+            ProfileDomainModel.setIsLatestProfileData(true)
         }
     }
     

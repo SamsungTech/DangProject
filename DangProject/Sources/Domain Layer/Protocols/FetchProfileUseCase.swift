@@ -10,5 +10,6 @@ import Foundation
 import RxSwift
 
 protocol FetchProfileUseCase {
-    func fetchProfileData() -> Observable<ProfileDomainModel>
+    func fetchProfileData()
+    var profileDataSubject: PublishSubject<ProfileDomainModel> { get }
 }
