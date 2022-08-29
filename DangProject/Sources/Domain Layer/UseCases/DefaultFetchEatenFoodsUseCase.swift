@@ -42,9 +42,9 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 []
             ])
         }
-        if cachedMonth.count == monthIndex + 5 {
+        if cachedMonth.count == monthIndex + 6 {
             var fiveMonthBefore = dateComponents
-            fiveMonthBefore.month = fiveMonthBefore.month! - 5
+            fiveMonthBefore.month = fiveMonthBefore.month! - 6
  
             fetchMonthData(dateComponents: fiveMonthBefore)
                 .subscribe(onNext: { [weak self] monthData in
@@ -71,7 +71,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         
         lazy var totalMonthsZipObservable = Observable.zip(oneMonthBeforeEatenFoodsObservable, currentMonthEatenFoodsObservable, twoMonthBeforeEatenFoodsObservable)
         
-        for i in 0 ..< 6 {
+        for i in 0 ..< 7 {
             fetchMonthData(dateComponents: currentMonth)
                 .subscribe(onNext: { monthData in
                     if i == 0 {
@@ -172,9 +172,9 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     func fetchSixMonthsTotalSugar(from dateComponents: DateComponents) {
         guard let year = dateComponents.year,
               let month = dateComponents.month else { return }
-        var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month-5, day: 1)
+        var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month - 6, day: 1)
         var totalSugarPerSixMonths = [TotalSugarPerMonthDomainModel]()
-        for _ in 1...7 {
+        for _ in 0 ..< 8 {
             let monthData = fetchMonthDataFromCoreData(yearMonth: sixMonthBeforeDateComponents)
             let result = getMonthlyTotalSugar(monthData)
             totalSugarPerSixMonths.append(TotalSugarPerMonthDomainModel.init(month: .configureDateComponents(sixMonthBeforeDateComponents), totalSugarPerMonth: result))

@@ -144,8 +144,8 @@ class GraphView: UIView {
         for _ in 0 ..< 7 {
             let label = UILabel()
             label.textColor = .white
-            label.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
             label.textAlignment = .center
+            label.numberOfLines = 0
             graphLabels.append(label)
             graphNameStackView.addArrangedSubview(label)
         }
@@ -161,14 +161,25 @@ class GraphView: UIView {
     
     private func animateGraphView(_ graphData: [(String, CGFloat)]) {
         for i in 0 ..< graphData.count {
-            graphViews.forEach { view in
-                graphLabels[i].text = graphData[i].0
+            graphViews.forEach { _ in
                 graphHeightConstants[i].constant = graphData[i].1
+                graphLabels[i].text = graphData[i].0
+                graphLabels[i].font = configureGraphLabelFontSize(graphData[i].0)
             }
         }
         
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.layoutIfNeeded()
         })
+    }
+    
+    private func configureGraphLabelFontSize(_ graphDataString: String) -> UIFont {
+        if graphDataString.count < 2 {
+            return UIFont.boldSystemFont(ofSize: xValueRatio(15))
+        } else if graphDataString.count > 3 {
+            return UIFont.boldSystemFont(ofSize: xValueRatio(10))
+        } else {
+            return UIFont.boldSystemFont(ofSize: xValueRatio(13))
+        }
     }
 }

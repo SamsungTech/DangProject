@@ -28,9 +28,7 @@ protocol GraphViewModelOutputProtocol {
 protocol GraphViewModelProtocol: GraphViewModelInputProtocol, GraphViewModelOutputProtocol { }
 
 class GraphViewModel: GraphViewModelProtocol {
-    
-    
-    
+      
     private let disposeBag = DisposeBag()
     var graphDataRelay = PublishRelay<[(String, CGFloat)]>()
     lazy var weekdayString = [ "일", "월", "화", "수", "목", "금", "토" ]
@@ -69,30 +67,46 @@ class GraphViewModel: GraphViewModelProtocol {
                 let currentMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 2]
                 let previousMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 3]
                 
-                guard let strongSelf = self,
-                      let monthlyAverage = self?.calculateMonthlySugarAverage(monthlyTotalSugar),
+                guard let monthlyAverage = self?.calculateMonthlySugarAverage(monthlyTotalSugar),
                       let weeklyAverage = self?.calculateWeeklySugarAverage(monthlyTotalSugar: monthlyTotalSugar, selectedDateComponents: dateComponents),
                       let dailyAverage = self?.calculateDailySugar(currentMonthTotalSugar: currentMonthData,
                                                                    previousMonthTotalSugar: previousMonthData,
                                                                    nextMonthTotalSugar: nextMonthData,
-                                                                   selectedDateComponents: dateComponents) else { return }
-                
-                var dailyData = [(String, CGFloat)]()
-                for i in 0 ..< strongSelf.weekdayString.count {
-                    if i < dailyAverage.count {
-                        dailyData.append((strongSelf.weekdayString[i], dailyAverage[i]))
-                    } else {
-                        dailyData.append((strongSelf.weekdayString[i], 0))
-                    }
-                }
+                                                                   selectedDateComponents: dateComponents),
+                      let dailyData = self?.configureDailyGraphData(dailyAverage: dailyAverage),
+                      let monthlyData = self?.configureMonthlyGraphData(graphData: monthlyTotalSugar,
+                                                                        monthlyAverage: monthlyAverage) else { return }
+            
+                self?.monthlyGraphData = monthlyData
                 self?.dailyGraphData = dailyData
-                self?.graphDataRelay.accept(dailyData)
                 
-                self?.monthlyGraphData = [("d",40),("c",70),("b",50),("e",10),("a",20),("g",30),("z",60)]
+                self?.graphDataRelay.accept(dailyData)
                 self?.weeklyGraphData = [("d",40),("c",70),("b",50),("e",10),("a",20),("g",30),("z",60)].reversed()
                 
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func configureDailyGraphData(dailyAverage: [Double]) -> [(String, CGFloat)] {
+        var dailyData = [(String, CGFloat)]()
+        for i in 0 ..< weekdayString.count {
+            if i < dailyAverage.count {
+                dailyData.append((weekdayString[i], dailyAverage[i]))
+            } else {
+                dailyData.append((weekdayString[i], 0))
+            }
+        }
+        return dailyData
+    }
+    
+    private func configureMonthlyGraphData(graphData: [TotalSugarPerMonthDomainModel],
+                                           monthlyAverage: [Double]) -> [(String, CGFloat)] {
+        var monthlyData = [(String, CGFloat)]()
+        let monthlyString = getMonthlyString(graphData)
+        for i in 0 ..< monthlyString.count {
+            monthlyData.append((monthlyString[i], monthlyAverage[i]))
+        }
+        return monthlyData
     }
     
     private func calculateWeeklySugarAverage(monthlyTotalSugar: [TotalSugarPerMonthDomainModel],
@@ -244,13 +258,23 @@ class GraphViewModel: GraphViewModelProtocol {
     
     private func getMonthlyString(_ monthlyTotalSugar: [TotalSugarPerMonthDomainModel]) -> [String] {
         var result = [String]()
-        monthlyTotalSugar.forEach { monthlyData in
-            guard let year = monthlyData.month.year,
-                  let month = monthlyData.month.month else { return }
-            if monthlyData.month.month == 1 {
-                result.append("\(year)년"+"\n"+"\(month)월")
+        for i in 0 ..< monthlyTotalSugar.count-1 {
+            guard let year = monthlyTotalSugar[i].month.year,
+                  let month = monthlyTotalSugar[i].month.month else { return [] }
+            if monthlyTotalSugar[i].month.month == 1 {
+                result.append("\(year)\n\(month)월")
+            } else {
+                result.append("\(month)월")
             }
-            result.append("\(month)월")
+        }
+        return result
+    }
+    
+    private func getWeeklyString(_ monthlyTotalSugar: [TotalSugarPerMonthDomainModel]) -> [String] {
+        var result = [String]()
+        for i in 0 ..< monthlyTotalSugar.count-1 {
+            guard let month = monthlyTotalSugar[i].month.month else { return [] }
+            
         }
         return result
     }
