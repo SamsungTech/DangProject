@@ -70,7 +70,6 @@ class HomeViewModel: HomeViewModelProtocol {
                                    day: dateComponents.day)
         
         fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
-        
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
         
     }

@@ -101,23 +101,27 @@ class BatteryView: UIView {
         percentLineLayer.lineCap = .round
         percentLineLayer.strokeEnd = 0
         percentLineLayer.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
-        
     }
     
     private func bindBatteryEntity() {
         viewModel.batteryEntityObservable
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] batteryData in
-                let percentValue = Int.calculatePercentValue(dang: batteryData.totalSugarSum,
-                                                             maxDang: Double(batteryData.targetSugar))
-                self?.targetSugarLabel.text = "목표: \(batteryData.totalSugarSum)/\(batteryData.targetSugar) "
-                self?.configureLineLayerColor(batteryData.totalSugarSum,
-                                              Double(batteryData.targetSugar))
-                self?.countAnimation(endCount: percentValue)
-                self?.animatePulsatingLayer()
-                self?.animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
+                guard let strongSelf = self else { return }
+                strongSelf.setupBatteryViewAnimationValue(batteryData)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func setupBatteryViewAnimationValue(_ batteryData: BatteryEntity) {
+        let percentValue = Int.calculatePercentValue(dang: batteryData.totalSugarSum,
+                                                     maxDang: Double(batteryData.targetSugar))
+        self.targetSugarLabel.text = "목표: \(batteryData.totalSugarSum)/\(batteryData.targetSugar)"
+        self.configureLineLayerColor(batteryData.totalSugarSum,
+                                      Double(batteryData.targetSugar))
+        self.countAnimation(endCount: percentValue)
+        self.animatePulsatingLayer()
+        self.animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
     }
 }
 

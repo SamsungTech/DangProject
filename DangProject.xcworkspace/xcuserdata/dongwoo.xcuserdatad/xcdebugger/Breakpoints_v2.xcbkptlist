@@ -103,16 +103,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "692DB19B-99F4-4B83-9A2E-3E91001D792C"
+            uuid = "9EEEE7F6-B0EE-463B-848C-DE3ABC0498BF"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "DangProject/Sources/Domain Layer/UseCases/DefaultFetchEatenFoodsUseCase.swift"
+            filePath = "DangProject/Sources/Presentation Layer/Home/Views/Battery/ViewModel/BatteryViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "fetchMonthsData(month:)"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "bindEatenFoodsObservable()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

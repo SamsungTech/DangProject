@@ -12,13 +12,14 @@ import RxRelay
 
 struct BatteryEntity {
     static let empty: Self = .init(totalSugarSum: 0.0,
-                                   targetSugar: 0)
+                                   targetSugar: 0.0)
     var totalSugarSum: Double
-    var targetSugar: Int
+    var targetSugar: Double
 }
 
 class BatteryViewModel {
     private let disposeBag = DisposeBag()
+    private var targetSugar: Double = 0.0
     let batteryEntityObservable: BehaviorRelay<BatteryEntity> = BehaviorRelay(value: .empty)
     
     // MARK: - Init
@@ -29,11 +30,11 @@ class BatteryViewModel {
          fetchProfileUseCase: FetchProfileUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.fetchProfileUseCase = fetchProfileUseCase
-        bindBatteryEntityObservable()
+        bindEatenFoodsProfileDataObservable()
     }
     
     // MARK: - Internal
-    private func bindBatteryEntityObservable() {
+    private func bindEatenFoodsProfileDataObservable() {
         let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
         let profileObservable = PublishSubject<ProfileDomainModel>()
         
@@ -48,18 +49,41 @@ class BatteryViewModel {
                 profileObservable.onNext(profileData)
             })
             .disposed(by: disposeBag)
-
+        
         Observable.zip(eatenFoodsObservable, profileObservable)
             .subscribe(onNext: { [weak self] eatenFoodsPerDay, profileData in
-                var totalSugarSum: Double = 0
-                eatenFoodsPerDay.eatenFoods.forEach { eatenFood in
-                    totalSugarSum = totalSugarSum + (Double(eatenFood.amount) * eatenFood.sugar)
+                guard let strongSelf = self else { return }
+                let batteryEntity = strongSelf.createBatteryEntity(eatenFoodsPerDay,
+                                                                   Double(profileData.sugarLevel))
+                self?.batteryEntityObservable.accept(batteryEntity)
+                self?.targetSugar = Double(profileData.sugarLevel)
+                self?.bindEatenFoodsObservable()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindEatenFoodsObservable() {
+        fetchEatenFoodsUseCase.eatenFoodsObservable
+            .subscribe(onNext: { [weak self] eatenFoods in
+                guard let targetSugar = eatenFoods.eatenFoods.first?.targetSugar ?? self?.targetSugar,
+                      let batteryEntity = self?.createBatteryEntity(eatenFoods,
+                                                                    targetSugar) else {
+                    return
                 }
                 
-                let batteryEntity = BatteryEntity.init(totalSugarSum: totalSugarSum.roundDecimal(to: 2),
-                                                       targetSugar: profileData.sugarLevel)
                 self?.batteryEntityObservable.accept(batteryEntity)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func createBatteryEntity(_ eatenFoodsPerDay: EatenFoodsPerDayDomainModel,
+                                     _ targetSugar: Double) -> BatteryEntity {
+        var totalSugarSum: Double = 0
+        eatenFoodsPerDay.eatenFoods.forEach { eatenFood in
+            totalSugarSum = totalSugarSum + (Double(eatenFood.amount) * eatenFood.sugar)
+        }
+        let batteryEntity = BatteryEntity.init(totalSugarSum: totalSugarSum.roundDecimal(to: 2),
+                                               targetSugar: targetSugar)
+        return batteryEntity
     }
 }

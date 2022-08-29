@@ -408,6 +408,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         eatenFoods.foodCode = food.foodCode
         eatenFoods.amount = Double(food.amount)
         eatenFoods.eatenTime = eatenTime
+        eatenFoods.targetSugar = food.targetSugar
         
         do {
             try context.save()
