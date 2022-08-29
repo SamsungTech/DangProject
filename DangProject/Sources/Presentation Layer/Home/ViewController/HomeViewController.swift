@@ -11,9 +11,7 @@ import RxCocoa
 import RxSwift
 
 class HomeViewController: UIViewController {
-    
     weak var coordinator: HomeCoordinator?
-    
     private let disposeBag = DisposeBag()
     private let customNavigationBar = CustomNavigationBar()
     
@@ -158,8 +156,11 @@ class HomeViewController: UIViewController {
 extension HomeViewController: CalendarViewDelegate {
     func cellDidSelected(dateComponents: DateComponents,
                          cellIndexColumn: Int) {
+        
         viewModel.fetchSelectedEatenFoods(dateComponents)
+        
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
+        
         changeEatenFoodsTitleViewText(dateComponents: dateComponents)
     }
     

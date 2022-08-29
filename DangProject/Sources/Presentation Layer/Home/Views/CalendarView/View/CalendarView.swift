@@ -120,7 +120,6 @@ class CalendarView: UIView {
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
                 guard let strongSelf = self else { return }
-                
                 if strongSelf.viewModel.selectedCellIsValid(index: indexPath.item) {
                     guard let dateComponents = self?.viewModel.selectedDateComponents else { return }
                         self?.parentableViewController?.cellDidSelected(dateComponents: dateComponents,
@@ -193,13 +192,17 @@ extension CalendarView: UICollectionViewDelegateFlowLayout {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
 
 extension CalendarView: UIScrollViewDelegate {
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let page = targetContentOffset.pointee.x / screenWidthSize
         switch page {
         case 1:

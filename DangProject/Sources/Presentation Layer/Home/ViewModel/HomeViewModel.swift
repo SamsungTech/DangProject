@@ -70,7 +70,9 @@ class HomeViewModel: HomeViewModelProtocol {
                                    day: dateComponents.day)
         
         fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
+        
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
+        
     }
     
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents) {
@@ -83,6 +85,7 @@ class HomeViewModel: HomeViewModelProtocol {
     
     func changeCellIndexColumn(cellIndexColumn: Int) {
         self.calendarViewColumn = cellIndexColumn
+        
     }
     
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String {

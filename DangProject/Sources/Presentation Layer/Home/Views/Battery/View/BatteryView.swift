@@ -108,7 +108,6 @@ class BatteryView: UIView {
         viewModel.batteryEntityObservable
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] batteryData in
-                
                 let percentValue = Int.calculatePercentValue(dang: batteryData.totalSugarSum,
                                                              maxDang: Double(batteryData.targetSugar))
                 self?.targetSugarLabel.text = "목표: \(batteryData.totalSugarSum)/\(batteryData.targetSugar) "
