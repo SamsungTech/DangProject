@@ -20,6 +20,32 @@ class SettingDIContainer {
     }
     
     func makeSettingViewModel() -> SettingViewModelProtocol {
-        return SettingViewModel()
+        return SettingViewModel(fetchProfileUseCase: makeFetchProfileUseCase())
+    }
+    
+    func makeFetchProfileUseCase() -> FetchProfileUseCase {
+        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManageRepository(),
+                                          manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
+                                          manageFirebaseStorageUseCase: makeManageFirebaseStorageUseCase())
+    }
+    
+    func makeManageFirebaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManageRepository())
+    }
+    
+    func makeManageFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
+        return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
+    }
+    
+    func makeCoreDataManageRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
+    }
+    
+    func makeFireStoreManageRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
+    }
+    
+    func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
+        return DefaultFirebaseStorageManagerRepository()
     }
 }

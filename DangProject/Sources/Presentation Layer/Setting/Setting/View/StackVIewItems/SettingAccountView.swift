@@ -106,4 +106,8 @@ extension SettingAccountView {
     @objc private func touchUpEvent(_ sender: UIButton) {
         self.backgroundColor = .homeBoxColor
     }
+    
+    func setupProfileImage(_ data: UIImage) {
+        self.profileImageView.frontProfileImageButton.image = data
+    }
 }

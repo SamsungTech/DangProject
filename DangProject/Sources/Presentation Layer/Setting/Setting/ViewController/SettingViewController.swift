@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 
 class SettingViewController: UIViewController {
-    private var viewModel: SettingViewModelProtocol?
+    private var viewModel: SettingViewModelProtocol
     var coordinator: SettingCoordinator?
     private let disposeBag = DisposeBag()
     private var settingNavigationBar = SettingNavigationBar()
@@ -44,9 +44,9 @@ class SettingViewController: UIViewController {
     
     private lazy var secessionAlertController: UIAlertController = {
         let alert = UIAlertController(title: "탈퇴하기", message: "진짜 탈퇴할거야?", preferredStyle: .alert)
-        
         return alert
     }()
+    
     private var settingFirstStackView = SettingFirstStackView()
     private var settingSecondStackView = SettingSecondStackView()
     private var settingTermsOfServiceView = SettingTermsOfServiceView()
@@ -61,7 +61,7 @@ class SettingViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        viewModel.fetchProfileData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -69,8 +69,8 @@ class SettingViewController: UIViewController {
     }
     
     init(viewModel: SettingViewModelProtocol) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -178,10 +178,11 @@ class SettingViewController: UIViewController {
     
     private func bind() {
         bindScrollStateValue()
+        bindProfileImageData()
     }
     
     private func bindScrollStateValue() {
-        viewModel?.scrollStateRelay
+        viewModel.scrollStateRelay
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 switch $0 {
@@ -190,6 +191,14 @@ class SettingViewController: UIViewController {
                 case .scrolling:
                     self.settingNavigationBar.setUpSettingScrollViewScrolling()
                 }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindProfileImageData() {
+        viewModel.profileDataRelay
+            .subscribe(onNext: { [weak self] profileData in
+                self?.accountView.setupProfileImage(profileData.profileImage)
             })
             .disposed(by: disposeBag)
     }
@@ -229,6 +238,6 @@ class SettingViewController: UIViewController {
 extension SettingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let yValue = scrollView.contentOffset.y
-        viewModel?.checkScrollValue(yValue)
+        viewModel.checkScrollValue(yValue)
     }
 }
