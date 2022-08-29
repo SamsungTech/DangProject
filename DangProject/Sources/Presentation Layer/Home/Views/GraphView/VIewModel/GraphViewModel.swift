@@ -23,6 +23,8 @@ protocol GraphViewModelInputProtocol {
 protocol GraphViewModelOutputProtocol {
     var weekdayString: [String] { get }
     var graphDataRelay: PublishRelay<[(String, CGFloat)]> { get }
+    func configureGraphLabelFontSize(_ view: UIView, graphDataString: String) -> UIFont
+    func configureGraphHeightConstant(_ view: UIView, sugarValue: CGFloat) -> CGFloat
 }
 
 protocol GraphViewModelProtocol: GraphViewModelInputProtocol, GraphViewModelOutputProtocol { }
@@ -317,5 +319,19 @@ class GraphViewModel: GraphViewModelProtocol {
             result.append("\(month)월\n\(weekNumber)주차")
         }
         return result.reversed()
+    }
+    
+    func configureGraphLabelFontSize(_ view: UIView, graphDataString: String) -> UIFont {
+        if graphDataString.count < 2 {
+            return UIFont.boldSystemFont(ofSize: view.xValueRatio(15))
+        } else if graphDataString.count > 3 {
+            return UIFont.boldSystemFont(ofSize: view.xValueRatio(10))
+        } else {
+            return UIFont.boldSystemFont(ofSize: view.xValueRatio(13))
+        }
+    }
+    
+    func configureGraphHeightConstant(_ view: UIView, sugarValue: CGFloat) -> CGFloat {
+        return min(view.yValueRatio(sugarValue * 2), view.yValueRatio(180))
     }
 }

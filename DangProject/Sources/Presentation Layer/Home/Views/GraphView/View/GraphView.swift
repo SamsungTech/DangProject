@@ -161,11 +161,9 @@ class GraphView: UIView {
     
     private func animateGraphView(_ graphData: [(String, CGFloat)]) {
         for i in 0 ..< graphData.count {
-            graphViews.forEach { _ in
-                graphHeightConstants[i].constant = graphData[i].1
-                graphLabels[i].text = graphData[i].0
-                graphLabels[i].font = configureGraphLabelFontSize(graphData[i].0)
-            }
+            graphHeightConstants[i].constant = viewModel.configureGraphHeightConstant(self, sugarValue: graphData[i].1)
+            graphLabels[i].text = graphData[i].0
+            graphLabels[i].font = viewModel.configureGraphLabelFontSize(self, graphDataString: graphData[i].0)
         }
         
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
@@ -173,13 +171,4 @@ class GraphView: UIView {
         })
     }
     
-    private func configureGraphLabelFontSize(_ graphDataString: String) -> UIFont {
-        if graphDataString.count < 2 {
-            return UIFont.boldSystemFont(ofSize: xValueRatio(15))
-        } else if graphDataString.count > 3 {
-            return UIFont.boldSystemFont(ofSize: xValueRatio(10))
-        } else {
-            return UIFont.boldSystemFont(ofSize: xValueRatio(13))
-        }
-    }
 }
