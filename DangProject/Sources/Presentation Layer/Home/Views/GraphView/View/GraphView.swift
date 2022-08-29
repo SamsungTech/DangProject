@@ -8,29 +8,35 @@
 import UIKit
 
 import RxSwift
+import RxRelay
 
 class GraphView: UIView {
     
     private var viewModel: GraphViewModelProtocol
     private var disposeBag = DisposeBag()
     private var graphMainView = UIView()
-    private var graphSegmentedControl = UISegmentedControl(items: ["Week", "Month", "Year"])
+    private var graphSegmentedControl = UISegmentedControl(items: ["Daily", "Weekly", "Monthly"])
     private var graphBackgroundStackView = UIStackView()
     private var graphStackView = UIStackView()
     private var graphNameStackView = UIStackView()
-    private let week = [ "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" ]
+    
+    private var graphHeightConstants: [NSLayoutConstraint] = []
+    private var graphBackgroundViews: [UIView] = []
+    private var graphViews: [UIView] = []
+    private var graphLabels: [UILabel] = []
     
     init(viewModel: GraphViewModelProtocol) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)
         layout()
         configure()
+        createDefaultGraph()
+        bindingGraphDatas()
     }
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         graphMainView.viewRadius(cornerRadius: xValueRatio(20))
-        
     }
     
     required init?(coder: NSCoder) {
@@ -42,6 +48,7 @@ class GraphView: UIView {
         
         graphSegmentedControl.selectedSegmentIndex = 0
         graphSegmentedControl.tintColor = .systemYellow
+        graphSegmentedControl.addTarget(self, action: #selector(graphSegmentedControlDidChange(_:)), for: .valueChanged)
         
         graphBackgroundStackView.backgroundColor = .clear
         graphBackgroundStackView.distribution = .fillEqually
@@ -52,15 +59,16 @@ class GraphView: UIView {
         graphStackView.spacing = xValueRatio(20)
         graphStackView.axis = .horizontal
         graphStackView.distribution = .fillProportionally
-        graphStackView.alignment = .trailing
+        graphStackView.alignment = .bottom
         
         graphNameStackView.backgroundColor = .clear
         graphNameStackView.spacing = xValueRatio(20)
         graphNameStackView.axis = .horizontal
         graphNameStackView.distribution = .fillEqually
-        
-        createGraphBackgroundViews()
-        createGraphName()
+    }
+    
+    @objc private func graphSegmentedControlDidChange(_ sender: UISegmentedControl) {
+        viewModel.changeGraphView(to: sender.selectedSegmentIndex)
     }
     
     private func layout() {
@@ -98,58 +106,69 @@ class GraphView: UIView {
         graphNameStackView.leadingAnchor.constraint(equalTo: graphMainView.leadingAnchor, constant: xValueRatio(20)).isActive = true
         graphNameStackView.trailingAnchor.constraint(equalTo: graphMainView.trailingAnchor, constant: xValueRatio(-20)).isActive = true
         graphNameStackView.bottomAnchor.constraint(equalTo: graphMainView.bottomAnchor, constant: yValueRatio(-10)).isActive = true
-        
     }
     
+    private func createDefaultGraph() {
+        createGraphBackgroundViews()
+        createGraphViews()
+        createGraphLabel()
+    }
+
     private func createGraphBackgroundViews() {
-        for _ in 0..<7 {
-            let view = UIView()
-            view.backgroundColor = .init(red: 0,
+        for _ in 0 ..< 7 {
+            let backgroundView = UIView()
+            backgroundView.backgroundColor = .init(red: 0,
                                          green: 0,
                                          blue: 0,
-                                         alpha: 0.05)
-            view.viewRadius(cornerRadius: xValueRatio(13))
-            
-            graphBackgroundStackView.addArrangedSubview(view)
+                                         alpha: 0.1)
+            backgroundView.viewRadius(cornerRadius: xValueRatio(13))
+            graphBackgroundViews.append(backgroundView)
+            graphBackgroundStackView.addArrangedSubview(backgroundView)
         }
     }
     
-//    private func createGraphViews(items: GraphViewEntity) {
-//        var height: CGFloat?
-//        guard let items = items.weekDang else { return }
-//        for item in items {
-//            if Double(item)! > 30 {
-//                height = CGFloat(30)
-//            } else {
-//                height = CGFloat(Double(item)!)
-//            }
-//            let view = UIView()
-//            view.backgroundColor = .white
-//            view.viewRadius(cornerRadius: xValueRatio(13))
-//            view.translatesAutoresizingMaskIntoConstraints = false
-//            view.heightAnchor.constraint(equalToConstant: (height ?? 0)*5).isActive = true
-//            
-//            graphStackView.addArrangedSubview(view)
-//        }
-//    }
+    private func createGraphViews() {
+        for i in 0 ..< 7 {
+            let graphView = UIView()
+            graphView.backgroundColor = .white
+            graphView.viewRadius(cornerRadius: xValueRatio(13))
+            graphView.translatesAutoresizingMaskIntoConstraints = false
+            graphViews.append(graphView)
+            graphHeightConstants.append(graphView.heightAnchor.constraint(equalToConstant: 0))
+            graphHeightConstants[i].isActive = true
+            graphStackView.addArrangedSubview(graphView)
+        }
+    }
     
-    private func createGraphName() {
-        for item in week {
+    private func createGraphLabel() {
+        for _ in 0 ..< 7 {
             let label = UILabel()
             label.textColor = .white
             label.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
-            label.text = item
             label.textAlignment = .center
-            
+            graphLabels.append(label)
             graphNameStackView.addArrangedSubview(label)
         }
     }
     
-//    private func subscribe() {
-//        viewModel?.items
-//            .subscribe(onNext: { [weak self] in
-//                self?.createGraphViews(items: $0)
-//            })
-//            .disposed(by: disposeBag)
-//    }
+    private func bindingGraphDatas() {
+        viewModel.graphDataRelay
+            .subscribe(onNext: { [weak self] dailyData in
+                self?.animateGraphView(dailyData)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func animateGraphView(_ graphData: [(String, CGFloat)]) {
+        for i in 0 ..< graphData.count {
+            graphViews.forEach { view in
+                graphLabels[i].text = graphData[i].0
+                graphHeightConstants[i].constant = graphData[i].1
+            }
+        }
+        
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            self?.layoutIfNeeded()
+        })
+    }
 }
