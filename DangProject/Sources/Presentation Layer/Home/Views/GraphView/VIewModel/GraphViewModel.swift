@@ -35,6 +35,7 @@ class GraphViewModel: GraphViewModelProtocol {
     private lazy var dailyGraphData: [(String, CGFloat)] = []
     private lazy var weeklyGraphData: [(String, CGFloat)] = []
     private lazy var monthlyGraphData: [(String, CGFloat)] = []
+    private lazy var currentSegmentedState: GraphSegmentedControlItem = .daily
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
@@ -45,13 +46,21 @@ class GraphViewModel: GraphViewModelProtocol {
     // MARK: - Input
     
     func changeGraphView(to index: Int) {
+        guard currentSegmentedState.rawValue != index else { return }
+
         switch index {
         case GraphSegmentedControlItem.daily.rawValue:
+            currentSegmentedState = .daily
             graphDataRelay.accept(dailyGraphData)
+            
         case GraphSegmentedControlItem.weekly.rawValue:
+            currentSegmentedState = .weekly
             graphDataRelay.accept(weeklyGraphData)
-        case GraphSegmentedControlItem.monthly.rawValue: 
+            
+        case GraphSegmentedControlItem.monthly.rawValue:
+            currentSegmentedState = .monthly
             graphDataRelay.accept(monthlyGraphData)
+            
         default:
             break
         }
@@ -62,29 +71,50 @@ class GraphViewModel: GraphViewModelProtocol {
     
     private func bindMonthlyTotalSugarObservable() {
         fetchEatenFoodsUseCase.sixMonthsTotalSugarObservable
-            .subscribe(onNext: { [weak self] dateComponents, monthlyTotalSugar in
+            .subscribe(onNext: { [weak self] selectedDateComponents, monthlyTotalSugar in
                 let nextMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 1]
                 let currentMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 2]
                 let previousMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 3]
                 
                 guard let monthlyAverage = self?.calculateMonthlySugarAverage(monthlyTotalSugar),
-                      let weeklyAverage = self?.calculateWeeklySugarAverage(monthlyTotalSugar: monthlyTotalSugar, selectedDateComponents: dateComponents),
+                      let weeklyAverage = self?.calculateWeeklySugarAverage(monthlyTotalSugar: monthlyTotalSugar, selectedDateComponents: selectedDateComponents),
                       let dailyAverage = self?.calculateDailySugar(currentMonthTotalSugar: currentMonthData,
                                                                    previousMonthTotalSugar: previousMonthData,
                                                                    nextMonthTotalSugar: nextMonthData,
-                                                                   selectedDateComponents: dateComponents),
+                                                                   selectedDateComponents: selectedDateComponents),
                       let dailyData = self?.configureDailyGraphData(dailyAverage: dailyAverage),
+                      let weeklyData = self?.configureWeeklyGraphData(selectedDateComponents: selectedDateComponents,
+                                                                      weeklyAverage: weeklyAverage),
                       let monthlyData = self?.configureMonthlyGraphData(graphData: monthlyTotalSugar,
                                                                         monthlyAverage: monthlyAverage) else { return }
             
                 self?.monthlyGraphData = monthlyData
                 self?.dailyGraphData = dailyData
+                self?.weeklyGraphData = weeklyData
                 
-                self?.graphDataRelay.accept(dailyData)
-                self?.weeklyGraphData = [("d",40),("c",70),("b",50),("e",10),("a",20),("g",30),("z",60)].reversed()
+                switch self?.currentSegmentedState {
+                case .daily:
+                    self?.graphDataRelay.accept(dailyData)
+                case .weekly:
+                    self?.graphDataRelay.accept(weeklyData)
+                case .monthly:
+                    self?.graphDataRelay.accept(monthlyData)
+                case .none:
+                    break
+                }
                 
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func configureWeeklyGraphData(selectedDateComponents: DateComponents,
+                                          weeklyAverage: [Double]) -> [(String, CGFloat)] {
+        var weeklyData = [(String, CGFloat)]()
+        let weeklyString = getWeeklyString(selectedDateComponents)
+        for i in 0 ..< weeklyString.count {
+            weeklyData.append((weeklyString[i], weeklyAverage[i]))
+        }
+        return weeklyData
     }
     
     private func configureDailyGraphData(dailyAverage: [Double]) -> [(String, CGFloat)] {
@@ -120,18 +150,19 @@ class GraphViewModel: GraphViewModelProtocol {
                 dc.day = 1
                 return .configureDateComponents(dc)
             }()
+            
             let previousMonth: DateComponents = {
-                var dc: DateComponents = .configureDateComponents(dateComponents)
+                var dc = currentMonth
                 dc.month = dc.month! - 1
-                dc.day = 1
-                return dc
+                return .configureDateComponents(dc)
             }()
+            
             let nextMonth: DateComponents = {
-                var dc: DateComponents = .configureDateComponents(dateComponents)
+                var dc = currentMonth
                 dc.month = dc.month! + 1
-                dc.day = 1
-                return dc
+                return .configureDateComponents(dc)
             }()
+            
             let currentMonthData = getMonthTotalSugarData(with: currentMonth,
                                                           from: monthlyTotalSugar)
             let previousMonthData = getMonthTotalSugarData(with: previousMonth,
@@ -270,12 +301,21 @@ class GraphViewModel: GraphViewModelProtocol {
         return result
     }
     
-    private func getWeeklyString(_ monthlyTotalSugar: [TotalSugarPerMonthDomainModel]) -> [String] {
+    private func getWeeklyString(_ selectedDateComponents: DateComponents) -> [String] {
         var result = [String]()
-        for i in 0 ..< monthlyTotalSugar.count-1 {
-            guard let month = monthlyTotalSugar[i].month.month else { return [] }
-            
+        var dateComponents = selectedDateComponents
+        for _ in 0 ..< 7 {
+            let weekday = getSelectedDateComponentsWeekday(dateComponents)
+            let thursdayIndex = 5 - weekday
+            var thursDateComponents: DateComponents = dateComponents
+            thursDateComponents.day = thursDateComponents.day! + thursdayIndex
+            let configuredDateComponents = DateComponents.configureDateComponents(thursDateComponents)
+            dateComponents.day = dateComponents.day! - 7
+            guard let month = configuredDateComponents.month,
+                  let day = configuredDateComponents.day else { return [] }
+            let weekNumber = (day / 7) + 1
+            result.append("\(month)월\n\(weekNumber)주차")
         }
-        return result
+        return result.reversed()
     }
 }
