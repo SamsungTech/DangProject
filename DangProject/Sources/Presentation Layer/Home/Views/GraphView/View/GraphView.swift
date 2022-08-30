@@ -159,7 +159,6 @@ class GraphView: UIView {
             let label = UILabel()
             label.textColor = .white
             label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 10)
             graphBackgroundViews[i].addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
             averageGramBottomAnchorConstants.append(label.bottomAnchor.constraint(equalTo: graphBackgroundViews[i].bottomAnchor, constant: 0))
@@ -178,10 +177,12 @@ class GraphView: UIView {
     
     private func animateGraphView(_ graphData: [(String, CGFloat)]) {
         for i in 0 ..< graphData.count {
+            let averageGramString = "\(Double(graphData[i].1).roundDecimal(to: 1))g"
             graphHeightConstants[i].constant = viewModel.configureGraphHeightConstant(self, sugarValue: graphData[i].1)
             graphLabels[i].text = graphData[i].0
             graphLabels[i].font = viewModel.configureGraphLabelFontSize(self, graphDataString: graphData[i].0)
-            averageGramLabels[i].text = "\(Double(graphData[i].1).roundDecimal(to: 1))g"
+            averageGramLabels[i].text = averageGramString
+            averageGramLabels[i].font = viewModel.configureAverageGramLabelFontSize(self, graphDataString: averageGramString)
             averageGramBottomAnchorConstants[i].constant = -(viewModel.configureGraphHeightConstant(self, sugarValue: graphData[i].1) + yValueRatio(5))
         }
         

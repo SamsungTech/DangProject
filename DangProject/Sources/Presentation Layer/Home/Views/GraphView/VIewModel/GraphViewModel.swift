@@ -24,6 +24,7 @@ protocol GraphViewModelOutputProtocol {
     var weekdayString: [String] { get }
     var graphDataRelay: PublishRelay<[(String, CGFloat)]> { get }
     func configureGraphLabelFontSize(_ view: UIView, graphDataString: String) -> UIFont
+    func configureAverageGramLabelFontSize(_ view: UIView, graphDataString: String) -> UIFont
     func configureGraphHeightConstant(_ view: UIView, sugarValue: CGFloat) -> CGFloat
 }
 
@@ -331,7 +332,15 @@ class GraphViewModel: GraphViewModelProtocol {
         }
     }
     
+    func configureAverageGramLabelFontSize(_ view: UIView, graphDataString: String) -> UIFont {
+        if graphDataString.count < 6 {
+            return UIFont.systemFont(ofSize: 10)
+        } else {
+            return UIFont.systemFont(ofSize: 8)
+        }
+    }
+    
     func configureGraphHeightConstant(_ view: UIView, sugarValue: CGFloat) -> CGFloat {
-        return min(view.yValueRatio(sugarValue * 2), view.yValueRatio(180))
+        return min(view.yValueRatio(sugarValue * 2), view.yValueRatio(170))
     }
 }
