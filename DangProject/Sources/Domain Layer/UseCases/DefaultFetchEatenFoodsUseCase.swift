@@ -43,12 +43,11 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             ])
         }
         if cachedMonth.count == monthIndex + 6 {
-            var fiveMonthBefore = dateComponents
-            fiveMonthBefore.month = fiveMonthBefore.month! - 6
- 
-            fetchMonthData(dateComponents: fiveMonthBefore)
+            var sixMonthBefore = dateComponents
+            sixMonthBefore.month = sixMonthBefore.month! - 6
+            fetchMonthData(dateComponents: sixMonthBefore)
                 .subscribe(onNext: { [weak self] monthData in
-                    self?.cachedMonth.append(fiveMonthBefore)
+                    self?.cachedMonth.append(sixMonthBefore)
 
                 })
                 .disposed(by: disposeBag)
