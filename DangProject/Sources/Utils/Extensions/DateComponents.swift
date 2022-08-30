@@ -52,4 +52,12 @@ extension DateComponents {
         ]
         return userCalendar.dateComponents(requestedComponents, from: date)
     }
+    
+    static func configureDateComponents(_ dateComponents: DateComponents) -> DateComponents {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        guard let changedDate = calendar.date(from: dateComponents) else { return DateComponents.init() }
+        
+        return DateComponents.makeDateCompontents(from: changedDate)
+    }
 }

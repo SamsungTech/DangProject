@@ -15,7 +15,8 @@ class HomeDIContainer {
         return HomeViewController(viewModel: makeHomeViewModel(),
                                   calendarView: makeCalendarView(),
                                   eatenFoodsView: makeEatenFoodsView(),
-                                  batteryView: makeBatteryView())
+                                  batteryView: makeBatteryView(),
+                                  graphView: makeGraphView())
     }
     
     func makeHomeViewModel() -> HomeViewModelProtocol{
@@ -35,9 +36,17 @@ class HomeDIContainer {
         return BatteryView(viewModel: makeBatteryViewModel())
     }
     
+    func makeGraphView() -> GraphView {
+        return GraphView(viewModel: makeGraphViewModel())
+    }
+    
     func makeCalendarViewModel() -> CalendarViewModel {
         return CalendarViewModel(calendarService: makeCalendarService(),
                                  fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
+    }
+    
+    func makeGraphViewModel() -> GraphViewModelProtocol {
+        return GraphViewModel(fetchEatenFoodsUseCase: fetchEatenFoodsUseCase)
     }
     
     func makeCalendarService() -> CalendarService {

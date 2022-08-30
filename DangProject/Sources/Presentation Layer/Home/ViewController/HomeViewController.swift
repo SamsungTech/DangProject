@@ -21,10 +21,10 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     private let eatenFoodsView: EatenFoodsView
     private let batteryView: BatteryView
     private let calendarView: CalendarView
+    private var graphView: GraphView
     
     private let eatenFoodsTitleView = EatenFoodsTitleView()
     private let graphTitleView = GraphTitleView()
-    private var homeGraphView = HomeGraphView()
     
     private var homeScrollView = UIScrollView()
     private var homeStackView = UIStackView()
@@ -37,10 +37,12 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     init(viewModel: HomeViewModelProtocol,
          calendarView: CalendarView,
          eatenFoodsView: EatenFoodsView,
-         batteryView: BatteryView) {
+         batteryView: BatteryView,
+         graphView: GraphView) {
         self.calendarView = calendarView
         self.eatenFoodsView = eatenFoodsView
         self.batteryView = batteryView
+        self.graphView = graphView
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -97,7 +99,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         [ homeScrollView ].forEach() { view.addSubview($0) }
         [ customNavigationBar, calendarView, homeStackView ].forEach() { homeScrollView.addSubview($0) }
         [ batteryView, eatenFoodsTitleView, eatenFoodsView,
-          graphTitleView, homeGraphView ].forEach() { viewsInStackView.append($0) }
+          graphTitleView, graphView ].forEach() { viewsInStackView.append($0) }
         viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         
         homeScrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -142,9 +144,9 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         graphTitleView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
         graphTitleView.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
         
-        homeGraphView.translatesAutoresizingMaskIntoConstraints = false
-        homeGraphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
-        homeGraphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
+        graphView.translatesAutoresizingMaskIntoConstraints = false
+        graphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
+        graphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
     }
     
     private func bindProfileImageData() {
@@ -161,6 +163,7 @@ extension HomeViewController: CalendarViewDelegate {
         viewModel.fetchSelectedEatenFoods(dateComponents)
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
         changeEatenFoodsTitleViewText(dateComponents: dateComponents)
+        viewModel.fetchGraphData(from: dateComponents)
     }
     
     func changeCalendarView(_ dateComponents: DateComponents, fetchIsNeeded: Bool) {

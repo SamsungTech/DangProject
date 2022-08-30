@@ -10,8 +10,8 @@ import Foundation
 import RxSwift
 
 protocol ManageFirebaseFireStoreUseCase {
+    
     var profileExistenceObservable: PublishSubject<Bool> { get }
-    var yearMonthDayDataSubject: PublishSubject<GraphData> { get }
     func uploadFirebaseUID(uid: String)
     func uploadProfile(profile: ProfileDomainModel)
     func getProfileExistence(uid: String) -> Observable<Bool>
@@ -19,6 +19,4 @@ protocol ManageFirebaseFireStoreUseCase {
     func getEatenFoods(dateComponents : DateComponents) -> Observable<[FoodDomainModel]>
     func getProfileData() -> Observable<ProfileDomainModel>
     func updateProfileData(_ data: ProfileDomainModel)
-    func createGraphThisYearMonthDayData()
-    func uploadDangAverage(_ data: Int)
 }
