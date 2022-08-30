@@ -169,7 +169,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             .disposed(by: disposeBag)
     }
     
-    func fetchSixMonthsTotalSugar(from dateComponents: DateComponents) {
+    func fetchSevenMonthsTotalSugar(from dateComponents: DateComponents) {
         guard let year = dateComponents.year,
               let month = dateComponents.month else { return }
         var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month - 6, day: 1)

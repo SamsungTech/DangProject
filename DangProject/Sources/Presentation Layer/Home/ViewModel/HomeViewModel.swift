@@ -70,7 +70,7 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func fetchGraphData(from dateComponents: DateComponents) {
-        fetchEatenFoodsUseCase.fetchSixMonthsTotalSugar(from: dateComponents)
+        fetchEatenFoodsUseCase.fetchSevenMonthsTotalSugar(from: dateComponents)
     }
     
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents) {

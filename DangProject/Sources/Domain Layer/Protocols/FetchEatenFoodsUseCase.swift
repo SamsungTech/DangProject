@@ -17,5 +17,5 @@ protocol FetchEatenFoodsUseCase {
     func fetchCurrentMonthsData()
     func fetchMonthsData(month: DateComponents)
     func fetchNextMonthData(month: DateComponents)
-    func fetchSixMonthsTotalSugar(from dateComponents: DateComponents)
+    func fetchSevenMonthsTotalSugar(from dateComponents: DateComponents)
 }
