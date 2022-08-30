@@ -21,10 +21,11 @@ class GraphView: UIView {
     private var graphNameStackView = UIStackView()
     
     private var graphHeightConstants: [NSLayoutConstraint] = []
+    private var averageGramBottomAnchorConstants: [NSLayoutConstraint] = []
     private var graphBackgroundViews: [UIView] = []
     private var graphViews: [UIView] = []
     private var graphLabels: [UILabel] = []
-    private var gramLabels: [UILabel] = []
+    private var averageGramLabels: [UILabel] = []
     
     init(viewModel: GraphViewModelProtocol) {
         self.viewModel = viewModel
@@ -113,6 +114,7 @@ class GraphView: UIView {
         createGraphBackgroundViews()
         createGraphViews()
         createGraphLabel()
+        createAverageGramLabel()
     }
 
     private func createGraphBackgroundViews() {
@@ -152,23 +154,17 @@ class GraphView: UIView {
         }
     }
     
-    private func createAverageGramLabel(_ graphData: [(String, CGFloat)]) {
-        if gramLabels.isEmpty == false {
-            gramLabels.forEach { gramLabel in
-                gramLabel.removeFromSuperview()
-            }
-            gramLabels.removeAll()
-        }
+    private func createAverageGramLabel() {
         for i in 0 ..< 7 {
             let label = UILabel()
             label.textColor = .white
             label.textAlignment = .center
             label.font = UIFont.systemFont(ofSize: 10)
-            label.text = "\(Double(graphData[i].1).roundDecimal(to: 1))g"
             graphBackgroundViews[i].addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.bottomAnchor.constraint(equalTo: graphViews[i].topAnchor, constant: -yValueRatio(5)).isActive = true
-            gramLabels.append(label)
+            averageGramBottomAnchorConstants.append(label.bottomAnchor.constraint(equalTo: graphBackgroundViews[i].bottomAnchor, constant: 0))
+            averageGramBottomAnchorConstants[i].isActive = true
+            averageGramLabels.append(label)
         }
     }
     
@@ -185,14 +181,13 @@ class GraphView: UIView {
             graphHeightConstants[i].constant = viewModel.configureGraphHeightConstant(self, sugarValue: graphData[i].1)
             graphLabels[i].text = graphData[i].0
             graphLabels[i].font = viewModel.configureGraphLabelFontSize(self, graphDataString: graphData[i].0)
+            averageGramLabels[i].text = "\(Double(graphData[i].1).roundDecimal(to: 1))g"
+            averageGramBottomAnchorConstants[i].constant = -(viewModel.configureGraphHeightConstant(self, sugarValue: graphData[i].1) + yValueRatio(5))
         }
         
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.layoutIfNeeded()
         })
-        { [weak self] _ in
-            self?.createAverageGramLabel(graphData)
-        }
     }
     
 }
