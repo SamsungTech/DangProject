@@ -24,6 +24,7 @@ class GraphView: UIView {
     private var graphBackgroundViews: [UIView] = []
     private var graphViews: [UIView] = []
     private var graphLabels: [UILabel] = []
+    private var gramLabels: [UILabel] = []
     
     init(viewModel: GraphViewModelProtocol) {
         self.viewModel = viewModel
@@ -151,6 +152,26 @@ class GraphView: UIView {
         }
     }
     
+    private func createAverageGramLabel(_ graphData: [(String, CGFloat)]) {
+        if gramLabels.isEmpty == false {
+            gramLabels.forEach { gramLabel in
+                gramLabel.removeFromSuperview()
+            }
+            gramLabels.removeAll()
+        }
+        for i in 0 ..< 7 {
+            let label = UILabel()
+            label.textColor = .white
+            label.textAlignment = .center
+            label.font = UIFont.systemFont(ofSize: 10)
+            label.text = "\(Double(graphData[i].1).roundDecimal(to: 1))g"
+            graphBackgroundViews[i].addSubview(label)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.bottomAnchor.constraint(equalTo: graphViews[i].topAnchor, constant: -yValueRatio(5)).isActive = true
+            gramLabels.append(label)
+        }
+    }
+    
     private func bindingGraphDatas() {
         viewModel.graphDataRelay
             .subscribe(onNext: { [weak self] dailyData in
@@ -169,6 +190,9 @@ class GraphView: UIView {
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.layoutIfNeeded()
         })
+        { [weak self] _ in
+            self?.createAverageGramLabel(graphData)
+        }
     }
     
 }
