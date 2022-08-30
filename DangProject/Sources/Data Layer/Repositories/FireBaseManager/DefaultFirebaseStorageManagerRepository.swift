@@ -33,19 +33,24 @@ class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository 
         }
     }
     
-    func uploadImage(_ image: Data) {
-        let metaData = StorageMetadata()
-        metaData.contentType = "image/png"
-        storage
-            .reference()
-            .child("\(self.uid)"+"/profileImage.jpg")
-            .putData(image, metadata: metaData) { (metaData, error) in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                } else {
-                    print("프로필이미지 업로드 성공")
-                }
+    func uploadImage(_ image: Data) -> Observable<Bool> {
+        return Observable.create { [weak self] emitter in
+            let metaData = StorageMetadata()
+            metaData.contentType = "image/png"
+            self?.storage
+                .reference()
+                .child("\(String(describing: self?.uid))"+"/profileImage.jpg")
+                .putData(image, metadata: metaData) { (metaData, error) in
+                    if let error = error {
+                        print(error.localizedDescription)
+                        emitter.onNext(false)
+                        return
+                    } else {
+                        print("프로필이미지 업로드 성공")
+                        emitter.onNext(true)
+                    }
+            }
+            return Disposables.create()
         }
     }
 }

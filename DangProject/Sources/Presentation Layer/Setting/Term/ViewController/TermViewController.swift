@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-class TermViewController: UIViewController {
+class TermViewController: CustomViewController {
     var coordinator: TermCoordinator?
     private var viewModel: TermViewModel?
     private let disposeBag = DisposeBag()

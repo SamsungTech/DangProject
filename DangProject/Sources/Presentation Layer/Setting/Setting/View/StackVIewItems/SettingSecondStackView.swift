@@ -27,7 +27,7 @@ class SettingSecondStackView: UIStackView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setUpStackView()
+        setupStackView()
     }
     
     required init(coder: NSCoder) {
@@ -36,7 +36,7 @@ class SettingSecondStackView: UIStackView {
 }
 
 extension SettingSecondStackView {
-    private func setUpStackView() {
+    private func setupStackView() {
         self.backgroundColor = .homeBackgroundColor
         let views = [
             introductionView, versionView

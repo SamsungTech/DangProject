@@ -11,6 +11,7 @@ class SettingNavigationBar: UIView {
     private lazy var settingLabel: UILabel = {
         let label = UILabel()
         label.text = "설정"
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .heavy)
         label.textAlignment = .left
         return label
@@ -18,7 +19,7 @@ class SettingNavigationBar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setUpLabel()
+        setupLabel()
         self.backgroundColor = .homeBoxColor
     }
     
@@ -28,7 +29,7 @@ class SettingNavigationBar: UIView {
 }
 
 extension SettingNavigationBar {
-    private func setUpLabel() {
+    private func setupLabel() {
         self.addSubview(settingLabel)
         settingLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -37,11 +38,11 @@ extension SettingNavigationBar {
         ])
     }
     
-    func setUpSettingScrollViewTop() {
+    func setupSettingScrollViewTop() {
         self.layer.borderWidth = 0.2
         self.layer.borderColor = UIColor.clear.cgColor
     }
-    func setUpSettingScrollViewScrolling() {
+    func setupSettingScrollViewScrolling() {
         self.layer.borderWidth = 0.2
         self.layer.borderColor = UIColor.lightGray.cgColor
     }

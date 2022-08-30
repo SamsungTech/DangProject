@@ -10,18 +10,19 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-class HomeViewController: UIViewController {
+class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     
     weak var coordinator: HomeCoordinator?
     
     private let disposeBag = DisposeBag()
     private let customNavigationBar = CustomNavigationBar()
     
-    private let eatenFoodsTitleView = EatenFoodsTitleView()
+    private let viewModel: HomeViewModelProtocol
     private let eatenFoodsView: EatenFoodsView
     private let batteryView: BatteryView
     private let calendarView: CalendarView
     
+    private let eatenFoodsTitleView = EatenFoodsTitleView()
     private let graphTitleView = GraphTitleView()
     private var homeGraphView = HomeGraphView()
     
@@ -32,8 +33,6 @@ class HomeViewController: UIViewController {
         homeStackView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: yValueRatio(60))
     }()
     private lazy var calendarViewTopAnchor = NSLayoutConstraint()
-    
-    var viewModel: HomeViewModelProtocol
     
     init(viewModel: HomeViewModelProtocol,
          calendarView: CalendarView,
@@ -51,6 +50,7 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
@@ -75,10 +75,10 @@ class HomeViewController: UIViewController {
         calendarView.parentableViewController = self
         
         homeScrollView.backgroundColor = .clear
-        homeScrollView.showsVerticalScrollIndicator = true
         homeScrollView.contentInsetAdjustmentBehavior = .automatic
         homeScrollView.bounces = false
         homeScrollView.contentInsetAdjustmentBehavior = .never
+        homeScrollView.showsVerticalScrollIndicator = false
         
         homeStackView.axis = .vertical
         homeStackView.spacing = 10
@@ -181,7 +181,7 @@ extension HomeViewController: CalendarViewDelegate {
     }
     
     private func changeEatenFoodsTitleViewText(dateComponents: DateComponents) {
-        let eatenFoodsTitleText = viewModel.checkEatenFoodsTitleText(dateComponents: dateComponents)
+        let eatenFoodsTitleText = viewModel.getEatenFoodsTitleText(dateComponents: dateComponents)
         eatenFoodsTitleView.changeEatenFoodsTitleLabel(text: eatenFoodsTitleText)
     }
     
@@ -193,12 +193,12 @@ extension HomeViewController: CalendarViewDelegate {
 
 extension HomeViewController: NavigationBarDelegate {
     func profileImageButtonDidTap() {
-        coordinator?.presentProfile(self, viewModel.profileDataRelay.value)
+        coordinator?.pushProfileEditViewController()
     }
     
     func changeViewControllerExpandation(state: ChevronButtonState) {
-        self.homeStackViewTopAnchor.isActive = false
         self.calendarViewTopAnchor.isActive = false
+        self.homeStackViewTopAnchor.isActive = false
         switch state {
         case .expand:
             resetCalendarViewTopAnchor()

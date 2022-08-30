@@ -20,7 +20,7 @@ class AccountProfileEditView: UIButton {
         let label = UILabel()
         label.textColor = .init(white: 1, alpha: 0.8)
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
-        label.text = "ACKFFKRk14221352VKFKR"
+        label.text = UserInfoKey.getUserDefaultsUID
         return label
     }()
     
@@ -36,11 +36,11 @@ class AccountProfileEditView: UIButton {
 
 extension AccountProfileEditView {
     private func configureUI() {
-        setUpItemLabel()
-        setUpItemImageView()
+        setupItemLabel()
+        setupItemImageView()
     }
     
-    private func setUpItemLabel() {
+    private func setupItemLabel() {
         addSubview(itemLabel)
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -49,7 +49,7 @@ extension AccountProfileEditView {
         ])
     }
     
-    private func setUpItemImageView() {
+    private func setupItemImageView() {
         addSubview(accountLabel)
         accountLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

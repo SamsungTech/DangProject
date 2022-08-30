@@ -122,4 +122,54 @@ extension GenderView {
             femaleButton.bottomAnchor.constraint(equalTo: genderBackgroundView.bottomAnchor)
         ])
     }
+    
+    func drawGenderView(_ gender: GenderType) {
+        switch gender {
+        case .male:
+            drawMaleView()
+        case .female:
+            drawFemaleView()
+        }
+    }
+    
+    private func drawMaleView() {
+        leadingConstraint?.constant = xValueRatio(5)
+        leadingConstraint?.isActive = true
+        maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
+        femaleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+    }
+    
+    private func drawFemaleView() {
+        leadingConstraint?.constant = xValueRatio(180)
+        leadingConstraint?.isActive = true
+        femaleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
+        maleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+    }
+    
+    func animateGenderView(_ gender: GenderType) {
+        switch gender {
+        case .male:
+            animateMaleView()
+        case .female:
+            animateFemaleView()
+        }
+    }
+    
+    private func animateMaleView() {
+        leadingConstraint?.constant = xValueRatio(5)
+        maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
+        femaleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.layoutIfNeeded()
+        })
+    }
+    
+    private func animateFemaleView() {
+        leadingConstraint?.constant = xValueRatio(180)
+        femaleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
+        maleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.layoutIfNeeded()
+        })
+    }
 }

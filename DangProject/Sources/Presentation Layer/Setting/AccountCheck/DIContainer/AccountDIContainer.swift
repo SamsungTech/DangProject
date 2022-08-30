@@ -16,8 +16,8 @@ class AccountDIContainer {
         return AccountViewModel(fetchProfileUseCase: makeFetchProfileUseCase())
     }
     
-    func makeFetchProfileUseCase() -> FetchProfileUseCase {
-        return DefaultFetchProfileUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+    func makeFetchProfileUseCase() -> ProfileManagerUseCase {
+        return DefaultProfileManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
                                           manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
                                           manageFirebaseStorageUseCase: makeManageFirebaseStorageUseCase())
     }

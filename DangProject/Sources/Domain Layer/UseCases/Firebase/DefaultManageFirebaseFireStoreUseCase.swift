@@ -58,7 +58,7 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                     for (key, value) in profileData {
                         switch key {
                         case "name": domainProfileData.name = value as? String ?? ""
-                        case "gender": domainProfileData.gender = value as? String ?? ""
+                        case "gender": domainProfileData.gender = ProfileDomainModel.convertStringToGenderType(value as? String ?? "")
                         case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
                         case "uid": domainProfileData.uid = value as? String ?? ""
                         case "weight": domainProfileData.weight = value as? Int ?? 0

@@ -1,5 +1,5 @@
 //
-//  DefaultFetchProfileUseCase.swift
+//  DefaultProfileManagerUseCase.swift
 //  DangProject
 //
 //  Created by 김동우 on 2022/07/21.
@@ -9,7 +9,7 @@ import UIKit
 
 import RxSwift
 
-class DefaultFetchProfileUseCase: FetchProfileUseCase {
+class DefaultProfileManagerUseCase: ProfileManagerUseCase {
     private let disposeBag = DisposeBag()
     private var coreDataManagerRepository: CoreDataManagerRepository
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
@@ -44,6 +44,10 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
         }
     }
     
+    func saveProfileOnCoreData(_ profile: ProfileDomainModel) {
+        coreDataManagerRepository.updateProfileData(profile)
+    }
+    
     // MARK: - Private
     private func fetchRemoteProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
@@ -56,7 +60,7 @@ class DefaultFetchProfileUseCase: FetchProfileUseCase {
                     guard let image = UIImage(data: profileImageData as Data) else { return }
                     var profileData: ProfileDomainModel = profileData
                     profileData.profileImage = image
-                    self?.coreDataManagerRepository.updateLocalProfileData(profileData)
+                    self?.coreDataManagerRepository.updateProfileData(profileData)
                     emitter.onNext(profileData)
                 })
                 .disposed(by: strongSelf.disposeBag)

@@ -44,10 +44,10 @@ class SettingFirstStackView: UIStackView {
 
 extension SettingFirstStackView {
     private func configureUI() {
-        setUpSettingStackView()
+        setupSettingStackView()
     }
     
-    private func setUpSettingStackView() {
+    private func setupSettingStackView() {
         self.backgroundColor = .homeBackgroundColor
         let views = [
              myTargetView, themeView, alarmView

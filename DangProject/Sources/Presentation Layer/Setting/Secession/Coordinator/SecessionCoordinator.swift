@@ -25,4 +25,12 @@ class SecessionCoordinator: Coordinator {
     func popSecessionViewController() {
         navigationController.popViewController(animated: true)
     }
+    
+    func returnToFirstStart() {
+        guard let rootViewController = navigationController.parent,
+              let rootNavigationViewController = rootViewController.navigationController else { return }
+        rootNavigationViewController.viewControllers.removeAll()
+        let coordinator = AppCoordinator(navigationController: rootNavigationViewController)
+        coordinator.start()
+    }
 }

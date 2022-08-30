@@ -23,7 +23,7 @@ enum EatenTimeAlertController: String {
     case snack = "간식"
 }
 
-class AlarmViewController: UIViewController {
+class AlarmViewController: CustomViewController {
     
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
@@ -238,8 +238,6 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmTableViewCell.identifier, for: indexPath) as? AlarmTableViewCell else { return UITableViewCell() }
-        let alarmItemData = viewModel.alarmDataArrayRelay.value[indexPath.item]
-        cell.setupCell(data: alarmItemData)
         cell.parentableViewController = self
         cell.selectionStyle = .none
         return cell

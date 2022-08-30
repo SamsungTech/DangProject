@@ -10,5 +10,5 @@ import RxSwift
 
 protocol ManageFirebaseStorageUseCase {
     func getProfileImage() -> Observable<NSData>
-    func updateProfileImage(_ data: Data)
+    func updateProfileImage(_ data: Data) -> Observable<Bool>
 }

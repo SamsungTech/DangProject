@@ -29,7 +29,19 @@ class DefaultManageFireBaseStorageUseCase: ManageFirebaseStorageUseCase {
         }
     }
     
-    func updateProfileImage(_ data: Data) {
-        fireBaseStorageManagerRepository.uploadImage(data)
+    func updateProfileImage(_ data: Data) -> Observable<Bool> {
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
+            self?.fireBaseStorageManagerRepository.uploadImage(data)
+                .subscribe(onNext: { isUploaded in
+                    if isUploaded {
+                        emitter.onNext(true)
+                    } else {
+                        emitter.onNext(false)
+                    }
+                })
+                .disposed(by: strongSelf.disposeBag)
+            return Disposables.create()
+        }
     }
 }

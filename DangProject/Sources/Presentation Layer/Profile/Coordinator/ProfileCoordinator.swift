@@ -15,18 +15,13 @@ class ProfileCoordinator: Coordinator {
     var navigationController: UINavigationController
     var childCoordinators: [Coordinator] = []
     var diContainer = ProfileDIContainer()
-    private var pickerController: UIImagePickerController?
-    private var profileData: ProfileDomainModel?
     
-    init(navigationController: UINavigationController,
-         profileData: ProfileDomainModel) {
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        self.profileData = profileData
     }
     
     func start() {
-        guard let profileData = profileData else { return }
-        let viewController = diContainer.makeProfileViewController(profileData)
+        let viewController = diContainer.makeProfileViewController()
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
     }
@@ -40,18 +35,8 @@ class ProfileCoordinator: Coordinator {
         }
     }
     
-    func dismissViewController(_ viewController: UIViewController) {
-        viewController.dismiss(animated: true)
+    func popViewController() {
+        navigationController.popViewController(animated: true)
     }
     
-    func presentPickerController(_ viewController: UIViewController) {
-        guard let viewController = viewController as? ProfileViewController else { return }
-        pickerController = diContainer.makeProfileImagePickerController(viewController)
-        guard let pickerController = self.pickerController else { return }        
-        viewController.present(pickerController, animated: true)
-    }
-    
-    func dismissPickerController() {
-        pickerController?.dismiss(animated: true)
-    }
 }
