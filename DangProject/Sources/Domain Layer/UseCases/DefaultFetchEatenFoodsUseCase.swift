@@ -14,7 +14,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     private let disposeBag = DisposeBag()
     let totalMonthsDataObservable = PublishSubject<[[EatenFoodsPerDayDomainModel]]>()
     let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
-    var sixMonthsTotalSugarObservable = PublishSubject<(DateComponents, [TotalSugarPerMonthDomainModel])>()
+    var sevenMonthsTotalSugarObservable = PublishSubject<(DateComponents, [TotalSugarPerMonthDomainModel])>()
     var cachedMonth: [DateComponents] = []
     // MARK: - Init
     private let coreDataManagerRepository: CoreDataManagerRepository
@@ -91,6 +91,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             .subscribe(onNext: { [weak self] monthData in
                 self?.totalMonthsDataObservable.onNext([monthData.0, monthData.1, []])
                 self?.emitEatenFoodsObservable(eatenFoods: monthData.1)
+                self?.fetchSevenMonthsTotalSugar(from: .currentDateComponents())
             })
             .disposed(by: disposeBag)
     }
@@ -180,7 +181,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             totalSugarPerSixMonths.append(TotalSugarPerMonthDomainModel.init(month: .configureDateComponents(sixMonthBeforeDateComponents), totalSugarPerMonth: result))
             sixMonthBeforeDateComponents.month = sixMonthBeforeDateComponents.month! + 1
         }
-        sixMonthsTotalSugarObservable.onNext((.configureDateComponents(dateComponents), totalSugarPerSixMonths))
+        sevenMonthsTotalSugarObservable.onNext((.configureDateComponents(dateComponents), totalSugarPerSixMonths))
     }
     
     // MARK: - Private

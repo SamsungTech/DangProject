@@ -56,7 +56,6 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         viewModel.fetchProfileData()
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
-        viewModel.fetchGraphData(from: .currentDateComponents())
         changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
     }
     

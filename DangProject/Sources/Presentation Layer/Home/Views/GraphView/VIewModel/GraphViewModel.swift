@@ -72,7 +72,7 @@ class GraphViewModel: GraphViewModelProtocol {
     //MARK: - Output
     
     private func bindMonthlyTotalSugarObservable() {
-        fetchEatenFoodsUseCase.sixMonthsTotalSugarObservable
+        fetchEatenFoodsUseCase.sevenMonthsTotalSugarObservable
             .subscribe(onNext: { [weak self] selectedDateComponents, monthlyTotalSugar in
                 let nextMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 1]
                 let currentMonthData = monthlyTotalSugar[monthlyTotalSugar.count - 2]
