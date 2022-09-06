@@ -112,10 +112,10 @@ class BatteryView: UIView {
     private func bindTotalSugarSum() {
         viewModel.totalSugarSumObservable
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] totalSugar in
-                let percentValue = Int.calculatePercentValue(dang: totalSugar, maxDang: 50)
-                self?.targetSugarLabel.text = "목표: \(totalSugar)/50.0 "
-                self?.configureLineLayerColor(totalSugar: totalSugar)
+            .subscribe(onNext: { [weak self] totalSugar, targetSugar in
+                let percentValue = Int.calculatePercentValue(dang: totalSugar, maxDang: targetSugar)
+                self?.targetSugarLabel.text = "목표: \(totalSugar)/\(targetSugar)"
+                self?.configureLineLayerColor(totalSugar: totalSugar, targetSugar: targetSugar)
                 self?.countAnimation(endCount: percentValue)
                 self?.animatePulsatingLayer()
                 
@@ -126,10 +126,11 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    private func configureLineLayerColor(totalSugar: Double) {
-        let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: 50)
-        let lineColor = CGColor.calculateCirclePercentLineColor(dang: totalSugar, maxDang: 50)
-        let lineAnimationColor = CGColor.calculateCircleProgressBarColor(dang: totalSugar, maxDang: 50)
+    private func configureLineLayerColor(totalSugar: Double,
+                                         targetSugar: Double) {
+        let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: targetSugar)
+        let lineColor = CGColor.calculateCirclePercentLineColor(dang: totalSugar, maxDang: targetSugar)
+        let lineAnimationColor = CGColor.calculateCircleProgressBarColor(dang: totalSugar, maxDang: targetSugar)
         percentLineLayer.strokeColor = lineColor
         percentLineBackgroundLayer.strokeColor = lineBackgroundColor
         animationLineLayer.strokeColor = lineAnimationColor

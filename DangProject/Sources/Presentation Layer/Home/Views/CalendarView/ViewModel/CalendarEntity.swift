@@ -9,7 +9,8 @@ import UIKit
 
 struct CalendarCellViewModelEntity {
     static let empty: Self = .init(calendarDayEntity: CalendarDayEntity.empty,
-                            eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty)
+                                   eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty,
+                                   targetSugar: 0.0)
     let year: Int
     let month: Int
     let day: Int
@@ -21,7 +22,8 @@ struct CalendarCellViewModelEntity {
     var layerColor: CGColor = UIColor.circleColorGray.cgColor
     
     init(calendarDayEntity: CalendarDayEntity,
-         eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel) {
+         eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel,
+         targetSugar: Double) {
         self.year = calendarDayEntity.year
         self.month = calendarDayEntity.month
         self.day = calendarDayEntity.day
@@ -35,8 +37,8 @@ struct CalendarCellViewModelEntity {
             }
             return totalSugar
         }()
-        self.percentValue = .calculatePercentValue(dang: self.totalSugar, maxDang: 50)
-        self.layerColor = CGColor.calculateCirclePercentLineColor(dang: self.totalSugar, maxDang: 50)
+        self.percentValue = .calculatePercentValue(dang: self.totalSugar, maxDang: targetSugar)
+        self.layerColor = CGColor.calculateCirclePercentLineColor(dang: self.totalSugar, maxDang: targetSugar)
     }
     
     init(calendarDayEntity: CalendarDayEntity) {

@@ -42,6 +42,7 @@ class CalendarView: UIView {
     lazy var todayCellColumn: Int = {
         viewModel.checkTodayCellColumn()
     }()
+    
     init(viewModel: CalendarViewModelProtocol) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)
@@ -72,16 +73,15 @@ class CalendarView: UIView {
     }
     
     private func binding() {
-        
         viewModel.currentDataObservable
             .observe(on: MainScheduler.instance)
             .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
                 
                 if self.viewModel.animationIsNeeded {
-                    cell.configureLayerWithAnimation(data: data)
+                    cell.configureLayerWithAnimation(data)
                 } else {
-                    cell.configureLayer(data: data)
+                    cell.configureLayer(data)
                 }
             }
             .disposed(by: disposeBag)

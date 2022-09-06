@@ -116,7 +116,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configureLayerWithAnimation(data: CalendarCellViewModelEntity) {
+    func configureLayerWithAnimation(_ data: CalendarCellViewModelEntity) {
         let circleAngleValue = Double.calculateCircleLineAngle(percent: data.percentValue)
         if data.percentValue != 0 {
             layer.insertSublayer(animatingPercentLineLayer, at: 0)
@@ -139,7 +139,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         animatingPercentLineLayer.add(animation, forKey: "urSoBasic")
     }
     
-    func configureLayer(data: CalendarCellViewModelEntity) {
+    func configureLayer(_ data: CalendarCellViewModelEntity) {
         let circleAngleValue = Double.calculateCircleLineAngle(percent: data.percentValue)
         let endAngle = (-CGFloat.pi / 2) + ((450 * circleAngleValue * .pi)/180)
         lazy var newCircleAngle = UIBezierPath(arcCenter: .zero,

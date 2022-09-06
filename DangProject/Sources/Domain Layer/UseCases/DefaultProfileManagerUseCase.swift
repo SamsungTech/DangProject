@@ -26,7 +26,7 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
     func fetchProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
-            if ProfileDomainModel.isLatestProfileDataValue {
+            if UserDefaults.standard.bool(forKey: UserInfoKey.profile) {
                 strongSelf.fetchLocalProfileData()
                     .subscribe(onNext: { profileData in
                         emitter.onNext(profileData)
@@ -38,7 +38,7 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
                         emitter.onNext(profileData)
                     })
                     .disposed(by: strongSelf.disposeBag)
-                ProfileDomainModel.setIsLatestProfileData(true)
+                UserDefaults.standard.set(true, forKey: UserInfoKey.profile)
             }
             return Disposables.create()
         }
@@ -46,6 +46,7 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
     
     func saveProfileOnCoreData(_ profile: ProfileDomainModel) {
         coreDataManagerRepository.updateProfileData(profile)
+        UserDefaults.standard.set(false, forKey: UserInfoKey.profile)
     }
     
     // MARK: - Private
