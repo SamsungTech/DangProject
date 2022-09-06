@@ -20,6 +20,7 @@ protocol HomeViewModelInputProtocol {
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents)
     func fetchOnlyCalendar(_ dateComponents: DateComponents)
     func fetchSelectedEatenFoods(_ dateComponents: DateComponents)
+    func fetchGraphData(from dateComponents: DateComponents)
     func changeCellIndexColumn(cellIndexColumn: Int)
 }
 
@@ -66,6 +67,10 @@ class HomeViewModel: HomeViewModelProtocol {
         
         fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
+    }
+    
+    func fetchGraphData(from dateComponents: DateComponents) {
+        fetchEatenFoodsUseCase.fetchSevenMonthsTotalSugar(from: dateComponents)
     }
     
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents) {
