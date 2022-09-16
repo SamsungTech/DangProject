@@ -12,7 +12,9 @@ import RxRelay
 
 class BatteryViewModel {
     private let disposeBag = DisposeBag()
-    let totalSugarSumObservable: BehaviorRelay<(Double, Double)> = BehaviorRelay(value: (0.0,0.0))
+    let totalSugarSumObservable: BehaviorRelay<Double> = BehaviorRelay(value: 0.0)
+    let profileSugarLevelObservable: BehaviorRelay<Double> = BehaviorRelay(value: 0.0)
+    let batteryDataObservable: BehaviorRelay<(Double, Double)> = BehaviorRelay(value: (0.0, 0.0))
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
@@ -25,30 +27,33 @@ class BatteryViewModel {
         bindTodayEatenFoodsObservable()
     }
     
+    // MARK: 한번은 다같이 데이터 보내기, 두번째부턴 각각의 데이터 변경사항에 맞게 보내기
+    // MARK: 
+    
+    
     private func bindTodayEatenFoodsObservable() {
-        let fetchEatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
-        let profileDataObservable = PublishSubject<ProfileDomainModel>()
+        let totalSugarSumObservable = PublishSubject<Double>()
+        let profileSugarLevelObservable = PublishSubject<Double>()
         
         fetchEatenFoodsUseCase.eatenFoodsObservable
             .subscribe(onNext: { eatenFoodsPerDay in
-                fetchEatenFoodsObservable.onNext(eatenFoodsPerDay)
-            })
-            .disposed(by: disposeBag)
-        
-        profileManageUseCase.fetchProfileData()
-            .subscribe(onNext: { profileData in
-                profileDataObservable.onNext(profileData)
-            })
-            .disposed(by: disposeBag)
-        
-        Observable.zip(fetchEatenFoodsObservable, profileDataObservable)
-            .subscribe(onNext: { [weak self] eatenFoodsPerDay, profileData in
                 var totalSugarSum: Double = 0
                 eatenFoodsPerDay.eatenFoods.forEach { eatenFood in
                     totalSugarSum = totalSugarSum + (Double(eatenFood.amount) * eatenFood.sugar)
                 }
-                self?.totalSugarSumObservable.accept((totalSugarSum.roundDecimal(to: 2),
-                                                      Double(profileData.sugarLevel)))
+                totalSugarSumObservable.onNext(totalSugarSum.roundDecimal(to: 2))
+            })
+            .disposed(by: disposeBag)
+        
+        profileManageUseCase.profileDataObservable
+            .subscribe(onNext: { profileData in
+                profileSugarLevelObservable.onNext(Double(profileData.sugarLevel))
+            })
+            .disposed(by: disposeBag)
+        
+        Observable.zip(totalSugarSumObservable, profileSugarLevelObservable)
+            .subscribe(onNext: { [weak self] totalSugarSum, profileSugarLevel in
+                self?.batteryDataObservable.accept((totalSugarSum, profileSugarLevel))
             })
             .disposed(by: disposeBag)
     }

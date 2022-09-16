@@ -5,19 +5,14 @@ import RxSwift
 
 class BatteryView: UIView {
     private var disposeBag = DisposeBag()
-    
     private var viewModel: BatteryViewModel
-    
     private var circleProgressBarView = UIView()
-    
     private var endCount: Int = 0
     private var currentCount: Int = 0
     private var timer = Timer()
-
     private var percentNumberLabel = UILabel()
     private var percentLabel = UILabel()
     private var targetSugarLabel = UILabel()
-    
     private var animationLineLayer = CAShapeLayer()
     private var percentLineLayer = CAShapeLayer()
     private var percentLineBackgroundLayer = CAShapeLayer()
@@ -28,7 +23,7 @@ class BatteryView: UIView {
         configure()
         circleConfigure()
         layout()
-        bindTotalSugarSum()
+        bindTotalSugarSumAndSugarLevel()
     }
     
     required init?(coder: NSCoder) {
@@ -109,23 +104,38 @@ class BatteryView: UIView {
         
     }
     
-    private func bindTotalSugarSum() {
+    private func bindTotalSugarSumAndSugarLevel() {
+        viewModel.profileSugarLevelObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] targetSugar in
+                guard let strongSelf = self,
+                      let totalSugar = self?.viewModel.totalSugarSumObservable.value else { return }
+                strongSelf.animateAllBatteryUI(totalSugar, targetSugar)
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.totalSugarSumObservable
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] totalSugar, targetSugar in
-                let percentValue = Int.calculatePercentValue(dang: totalSugar, maxDang: targetSugar)
-                self?.targetSugarLabel.text = "목표: \(totalSugar)/\(targetSugar)"
-                self?.configureLineLayerColor(totalSugar: totalSugar, targetSugar: targetSugar)
-                self?.countAnimation(endCount: percentValue)
-                self?.animatePulsatingLayer()
-                
-                self?.animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
+            .subscribe(onNext: { [weak self] totalSugar in
+                guard let strongSelf = self,
+                      let targetSugar = self?.viewModel.profileSugarLevelObservable.value else { return }
+                strongSelf.animateAllBatteryUI(totalSugar, targetSugar)
             })
             .disposed(by: disposeBag)
     }
 }
 
 extension BatteryView {
+    private func animateAllBatteryUI(_ totalSugar: Double,
+                                        _ targetSugar: Double) {
+        let percentValue = Int.calculatePercentValue(dang: totalSugar, maxDang: targetSugar)
+        targetSugarLabel.text = "목표: \(totalSugar)/\(targetSugar)"
+        configureLineLayerColor(totalSugar: totalSugar, targetSugar: targetSugar)
+        countAnimation(endCount: percentValue)
+        animatePulsatingLayer()
+        animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
+    }
+    
     private func configureLineLayerColor(totalSugar: Double,
                                          targetSugar: Double) {
         let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: targetSugar)
@@ -134,7 +144,6 @@ extension BatteryView {
         percentLineLayer.strokeColor = lineColor
         percentLineBackgroundLayer.strokeColor = lineBackgroundColor
         animationLineLayer.strokeColor = lineAnimationColor
-        
     }
     private func animateShapeLayer(circleAngleValue: CGFloat) {
         let animation = CABasicAnimation(keyPath: "strokeEnd")

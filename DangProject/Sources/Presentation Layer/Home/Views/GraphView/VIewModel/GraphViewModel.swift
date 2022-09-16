@@ -50,7 +50,7 @@ class GraphViewModel: GraphViewModelProtocol {
     
     func changeGraphView(to index: Int) {
         guard currentSegmentedState.rawValue != index else { return }
-
+        
         switch index {
         case GraphSegmentedControlItem.daily.rawValue:
             currentSegmentedState = .daily
@@ -90,7 +90,7 @@ class GraphViewModel: GraphViewModelProtocol {
                                                                       weeklyAverage: weeklyAverage),
                       let monthlyData = self?.configureMonthlyGraphData(graphData: monthlyTotalSugar,
                                                                         monthlyAverage: monthlyAverage) else { return }
-            
+                
                 self?.monthlyGraphData = monthlyData
                 self?.dailyGraphData = dailyData
                 self?.weeklyGraphData = weeklyData
@@ -105,7 +105,6 @@ class GraphViewModel: GraphViewModelProtocol {
                 case .none:
                     break
                 }
-                
             })
             .disposed(by: disposeBag)
     }

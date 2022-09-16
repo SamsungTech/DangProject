@@ -25,6 +25,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     private lazy var context = appDelegate?.persistentContainer.viewContext
     
     func checkEatenFoodsPerDay(date: Date) -> Observable<(Bool, EatenFoodsPerDay)> {
+        
         return Observable.create { [weak self] emitter in
             
             let request = EatenFoodsPerDay.fetchRequest()
@@ -43,9 +44,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
                 print(error.localizedDescription)
                 return Disposables.create()
             }
-            
             return Disposables.create()
-
         }
     }
     
@@ -381,6 +380,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
     private func updateEatenFood(food: FoodDomainModel,
                                  parentEatenFoodsPerDay: EatenFoodsPerDay,
                                  eatenTime: Date) {
+        
         guard let context = self.context,
               let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoods.rawValue,
                                                       in: context),

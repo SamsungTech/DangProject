@@ -93,6 +93,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 self?.fetchSevenMonthsTotalSugar(from: .currentDateComponents())
             })
             .disposed(by: disposeBag)
+        
     }
     
     func fetchNextMonthData(month: DateComponents) {
@@ -153,6 +154,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                     })
                     .disposed(by: strongSelf.disposeBag)
             }
+            
             return Disposables.create()
         }
     }

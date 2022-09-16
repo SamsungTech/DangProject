@@ -18,36 +18,40 @@ enum SettingScrollState {
 
 protocol SettingViewModelInputProtocol: AnyObject {
     func checkScrollValue(_ yValue: CGFloat)
+    func fetchUserNameAndImage()
 }
 
 protocol SettingViewModelOutputProtocol: AnyObject {
     var scrollStateRelay: BehaviorRelay<SettingScrollState> { get }
-    func fetchUserNameAndImage() -> (String, UIImage)
+    var settingDataRelay: BehaviorRelay<(String, UIImage)> { get }
 }
 
 protocol SettingViewModelProtocol: SettingViewModelInputProtocol, SettingViewModelOutputProtocol {}
 
 class SettingViewModel: SettingViewModelProtocol {
     private var disposeBag = DisposeBag()
-    var scrollStateRelay = BehaviorRelay<SettingScrollState>(value: .top)
     private let profileManagerUseCase: ProfileManagerUseCase
+    
+    var settingDataRelay = BehaviorRelay<(String, UIImage)>(value: ("", UIImage()))
+    var scrollStateRelay = BehaviorRelay<SettingScrollState>(value: .top)
     
     init(profileManagerUseCase: ProfileManagerUseCase) {
         self.profileManagerUseCase = profileManagerUseCase
+        self.bindUserNameAndImage()
     }
     
-    // MARK: - Output
-    
-    func fetchUserNameAndImage() -> (String, UIImage) {
-        var result: (String, UIImage) = ("", UIImage())
+    func fetchUserNameAndImage() {
         profileManagerUseCase.fetchProfileData()
-            .subscribe(onNext: { profile in
-                result = (profile.name, profile.profileImage)
+    }
+    
+    private func bindUserNameAndImage() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profile in
+                let result = (profile.name, profile.profileImage)
+                self?.settingDataRelay.accept(result)
             })
             .disposed(by: disposeBag)
-        return result
     }
-    
 }
 
 extension SettingViewModel {

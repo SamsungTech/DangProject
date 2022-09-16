@@ -14,7 +14,11 @@ extension Int {
         let division: Double = 100*(dangValueNumber/100)
         let result = abs(division)
         let num = Swift.min(result, 100.0)
-        return Int(num)
+        if num.isNaN {
+            return Int(0)
+        } else {
+            return Int(num)
+        }
     }
 
     static func calculateDaysCount(year: Int, month: Int) -> Int {
@@ -22,5 +26,4 @@ extension Int {
         guard let calendarRange = Calendar.current.range(of: .day, in: .month, for: date)?.count else { return 0 } // 해당 월의 일수 계산
         return calendarRange
     }
-    
 }

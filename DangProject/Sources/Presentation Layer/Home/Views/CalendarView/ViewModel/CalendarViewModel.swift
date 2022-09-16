@@ -72,24 +72,16 @@ class CalendarViewModel: CalendarViewModelProtocol {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.profileManageUseCase = profileManageUseCase
         bindTotalMonthEatenFoods()
-        bindProfileData()
-    }
-    
-    private func bindProfileData() {
-        profileManageUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] profileData in
-                self?.sugarLevelRelay.accept(Double(profileData.sugarLevel))
-            })
-            .disposed(by: disposeBag)
     }
     
     private func bindTotalMonthEatenFoods() {
         let profileDataObservable = PublishSubject<ProfileDomainModel>()
         let eatenFoodsObservable = PublishSubject<[[EatenFoodsPerDayDomainModel]]>()
         
-        profileManageUseCase.fetchProfileData()
-            .subscribe(onNext: { profileData in
+        profileManageUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profileData in
                 profileDataObservable.onNext(profileData)
+                self?.sugarLevelRelay.accept(Double(profileData.sugarLevel))
             })
             .disposed(by: disposeBag)
         
@@ -111,6 +103,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
                 else {
                     return
                 }
+                
                 var oneMonthBefore: [CalendarCellViewModelEntity] = []
                 var currentMonth: [CalendarCellViewModelEntity] = []
                 var nextMonth: [CalendarCellViewModelEntity] = []
@@ -139,6 +132,7 @@ class CalendarViewModel: CalendarViewModelProtocol {
                                                                  with: totalMonths[2],
                                                                  targetSugar: Double(profileData.sugarLevel)) ?? []
                 }
+                
                 self?.previousDataObservable.accept(oneMonthBefore)
                 self?.currentDataObservable.accept(currentMonth)
                 self?.nextDataObservable.accept(nextMonth)

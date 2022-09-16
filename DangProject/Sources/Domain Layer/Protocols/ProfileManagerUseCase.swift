@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 
 protocol ProfileManagerUseCase {
-    func fetchProfileData() -> Observable<ProfileDomainModel>
+    var profileDataObservable: PublishSubject<ProfileDomainModel> { get }
+    func fetchProfileData()
     func saveProfileOnCoreData(_ profile: ProfileDomainModel)
 }
