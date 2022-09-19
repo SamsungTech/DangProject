@@ -12,7 +12,6 @@ import RxRelay
 import RxSwift
 
 class ProfileViewController: CustomViewController {
-    
     weak var coordinator: ProfileCoordinator?
     private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
@@ -72,6 +71,11 @@ class ProfileViewController: CustomViewController {
         super.viewDidLoad()
         configureUI()
         bind()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.fetchProfileData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

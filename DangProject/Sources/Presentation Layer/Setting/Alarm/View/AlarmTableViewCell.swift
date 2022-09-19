@@ -92,11 +92,14 @@ class AlarmTableViewCell: UITableViewCell {
         parentableViewController?.textFieldWillStartEditing(cell: self)
     }
     
-    @available(iOS 13.4, *)
     private lazy var wheelsTimePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .time
-        datePicker.preferredDatePickerStyle = .wheels
+        if #available(iOS 13.4, *) {
+            datePicker.preferredDatePickerStyle = .wheels
+        } else {
+            // Fallback on earlier versions
+        }
         datePicker.locale = Locale(identifier: "ko-KR")
         return datePicker
     }()

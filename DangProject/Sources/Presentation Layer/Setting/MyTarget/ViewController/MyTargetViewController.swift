@@ -108,7 +108,6 @@ extension MyTargetViewController {
                 self?.targetView.bindTargetSugar(Double(profileData.sugarLevel))
             })
             .disposed(by: disposeBag)
-        
     }
 }
 

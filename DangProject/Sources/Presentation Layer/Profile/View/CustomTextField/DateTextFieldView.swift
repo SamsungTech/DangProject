@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(iOS 13.4, *)
 class DateTextFieldView: UIView {
     private lazy var dateFormatter: DateFormatter = DateFormatter.formatDate()
     private lazy var downArrowImageView: UIImageView = {
@@ -21,7 +20,11 @@ class DateTextFieldView: UIView {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.locale = Locale(identifier: "ko-KR")
-        picker.preferredDatePickerStyle = .wheels
+        if #available(iOS 13.4, *) {
+            picker.preferredDatePickerStyle = .wheels
+        } else {
+            // Fallback on earlier versions
+        }
         return picker
     }()
     
@@ -78,7 +81,6 @@ class DateTextFieldView: UIView {
     }
 }
 
-@available(iOS 13.4, *)
 extension DateTextFieldView {
     private func configureUI() {
         setUpProfileLabel()

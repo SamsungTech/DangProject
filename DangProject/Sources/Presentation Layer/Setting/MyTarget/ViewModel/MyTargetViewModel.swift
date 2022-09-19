@@ -27,14 +27,11 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
     
     init(profileManageUseCase: ProfileManagerUseCase) {
         self.profileManageUseCase = profileManageUseCase
+        self.bindSugarLevel()
     }
     
     func fetchSugarLevel() {
         profileManageUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] profileData in
-                self?.profileDataRelay.accept(profileData)
-            })
-            .disposed(by: disposeBag)
     }
     
     func saveTargetSugarLevel(_ data: Double) {
@@ -47,5 +44,13 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
                                                     gender: profileDataRelay.value.gender,
                                                     birthday: profileDataRelay.value.birthday)
         profileManageUseCase.saveProfileOnCoreData(profileData)
+    }
+    
+    private func bindSugarLevel() {
+        profileManageUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profileData in
+                self?.profileDataRelay.accept(profileData)
+            })
+            .disposed(by: disposeBag)
     }
 }
