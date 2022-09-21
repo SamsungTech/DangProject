@@ -23,7 +23,7 @@ class ProfileInformationStackView: UIStackView {
         return pickerView
     }()
     
-    @available(iOS 13.4, *)
+//    @available(iOS 13.4, *)
     lazy var birthDatePickerView: DateTextFieldView = {
         let view = DateTextFieldView()
         view.profileLabel.text = "생년월일"
