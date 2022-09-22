@@ -116,6 +116,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         }
         let dayCounts: Int = .calculateDaysCount(year: year, month: month)
         var eatenFoodsData: [EatenFoodsPerDayDomainModel] = []
+        
         for i in 1 ... dayCounts {
             let tempDate: Date = .makeDate(year: year,
                                            month: month,
@@ -135,6 +136,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             }
             let dayCounts: Int = .calculateDaysCount(year: year, month: month)
             var eatenFoodsData: [EatenFoodsPerDayDomainModel] = []
+            
             for i in 1 ... dayCounts {
                 let tempDateComponents: DateComponents = .init(year: year,
                                                                month: month,
@@ -174,6 +176,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
               let month = dateComponents.month else { return }
         var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month - 6, day: 1)
         var totalSugarPerSixMonths = [TotalSugarPerMonthDomainModel]()
+        
         for _ in 0 ..< 8 {
             let monthData = fetchMonthDataFromCoreData(yearMonth: sixMonthBeforeDateComponents)
             let result = getMonthlyTotalSugar(monthData)

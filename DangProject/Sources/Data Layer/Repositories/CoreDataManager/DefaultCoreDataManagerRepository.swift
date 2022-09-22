@@ -57,8 +57,9 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         do {
             if let checkedEatenFoodsPerDay = try self.context?.fetch(request) {
                 if checkedEatenFoodsPerDay.count == 0 {
-                    return EatenFoodsPerDay.init()
+                    return createEmptyEatenFoodsPerDay(date)
                 } else {
+                    
                     return checkedEatenFoodsPerDay[0]
                 }
             }
@@ -66,7 +67,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
             return EatenFoodsPerDay.init()
         }
-        
         return EatenFoodsPerDay.init()
     }
     
@@ -133,6 +133,7 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         createEatenFoodPerDay(date: date)
         data.eatenFoods.forEach { food in
             let eatenFoodsPerDay = self.fetchEatenFoodsPerDay(date: date)
+            
             updateEatenFood(
                 food: food,
                 parentEatenFoodsPerDay: eatenFoodsPerDay,
@@ -359,6 +360,15 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
             print(error.localizedDescription)
             return
         }
+    }
+    
+    private func createEmptyEatenFoodsPerDay(_ date: Date) -> EatenFoodsPerDay {
+        guard let context = self.context,
+              let entity = NSEntityDescription.entity(forEntityName: CoreDataName.eatenFoodsPerDay.rawValue, in: context),
+              let eatenFoodsPerDay = NSManagedObject(entity: entity, insertInto: context) as? EatenFoodsPerDay else { return EatenFoodsPerDay.init() }
+        eatenFoodsPerDay.date = date
+        
+        return eatenFoodsPerDay
     }
     
     private func getRequest(coreDataName: CoreDataName) -> NSFetchRequest<NSFetchRequestResult> {
