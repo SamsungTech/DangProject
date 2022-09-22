@@ -11,9 +11,7 @@ import RxCocoa
 import RxSwift
 
 class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
-    
     weak var coordinator: HomeCoordinator?
-    
     private let disposeBag = DisposeBag()
     private let customNavigationBar = CustomNavigationBar()
     

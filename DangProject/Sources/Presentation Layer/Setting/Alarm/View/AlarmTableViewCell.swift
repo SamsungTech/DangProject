@@ -78,21 +78,16 @@ class AlarmTableViewCell: UITableViewCell {
         textField.font = UIFont.systemFont(ofSize: xValueRatio(45), weight: .medium)
         textField.tintColor = .clear
         textField.addTarget(self, action: #selector(timeTextFieldDidTap), for: .editingDidBegin)
-        if #available(iOS 13.4, *) {
-            textField.inputView = wheelsTimePicker
-        } else {
-            textField.inputView = defaultTimePickerBackgroundView
-        }
+        textField.inputView = wheelsTimePicker
         self.inputToolbar(into: textField)
         return textField
     }()
-        
+    
     @objc private func timeTextFieldDidTap() {
         self.textFieldType = .time
         parentableViewController?.textFieldWillStartEditing(cell: self)
     }
     
-    @available(iOS 13.4, *)
     private lazy var wheelsTimePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .time
