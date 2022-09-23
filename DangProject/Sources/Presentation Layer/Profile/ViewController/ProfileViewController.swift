@@ -78,6 +78,11 @@ class ProfileViewController: CustomViewController {
         coordinator?.childDidFinish(coordinator)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.fetchProfileData()
+    }
+    
     init(viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

@@ -24,6 +24,7 @@ protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
     func saveProfile(_ data: ProfileDomainModel)
     func genderButtonDidTap(_ gender: GenderType)
+    func fetchProfileData()
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -64,15 +65,11 @@ class ProfileViewModel: ProfileViewModelProtocol {
         self.manageFirebaseStoreUseCase = manageFirebaseStoreUseCase
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
         self.profileManagerUseCase = profileManagerUseCase
-        fetchProfile()
+        bindProfileData()
     }
     
-    private func fetchProfile() {
+    func fetchProfileData() {
         profileManagerUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] profile in
-                self?.profileDataRelay.accept(profile)
-            })
-            .disposed(by: disposeBag)
     }
     
     func getHeightSelectRowIndex(_ height: Int) -> Int {
@@ -125,6 +122,14 @@ class ProfileViewModel: ProfileViewModelProtocol {
         var changedProfile = profileDataRelay.value
         changedProfile.gender = profileGender
         profileDataRelay.accept(changedProfile)
+    }
+    
+    private func bindProfileData() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profile in
+                self?.profileDataRelay.accept(profile)
+            })
+            .disposed(by: disposeBag)
     }
     
 }

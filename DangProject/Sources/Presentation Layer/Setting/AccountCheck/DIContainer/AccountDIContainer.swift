@@ -13,7 +13,7 @@ class AccountDIContainer {
     }
     
     func makeAccountViewModel() -> AccountViewModel {
-        return AccountViewModel(fetchProfileUseCase: makeFetchProfileUseCase())
+        return AccountViewModel()
     }
     
     func makeFetchProfileUseCase() -> ProfileManagerUseCase {
