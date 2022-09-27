@@ -5,9 +5,7 @@ import RxSwift
 
 class BatteryView: UIView {
     private var disposeBag = DisposeBag()
-    
     private var viewModel: BatteryViewModel
-    
     private var circleProgressBarView = UIView()
     
     private var endCount: Int = 0
@@ -106,19 +104,17 @@ class BatteryView: UIView {
         percentLineLayer.lineCap = .round
         percentLineLayer.strokeEnd = 0
         percentLineLayer.position = CGPoint(x: xValueRatio(200), y: yValueRatio(150))
-        
     }
     
     private func bindTotalSugarSum() {
-        viewModel.totalSugarSumObservable
+        viewModel.batteryEntityObservable
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] totalSugar in
-                let percentValue = Int.calculatePercentValue(dang: totalSugar, maxDang: 50)
-                self?.targetSugarLabel.text = "목표: \(totalSugar)/50.0 "
-                self?.configureLineLayerColor(totalSugar: totalSugar)
+            .subscribe(onNext: { [weak self] totalSugarSum, targetSugar in
+                let percentValue = Int.calculatePercentValue(dang: totalSugarSum, maxDang: Double(targetSugar))
+                self?.targetSugarLabel.text = "목표: \(totalSugarSum)/\(targetSugar)"
+                self?.configureLineLayerColor(totalSugar: totalSugarSum, targetSugar: targetSugar)
                 self?.countAnimation(endCount: percentValue)
                 self?.animatePulsatingLayer()
-                
                 self?.animateShapeLayer(circleAngleValue: Double.calculateCircleLineAngle(percent: percentValue))
             })
             .disposed(by: disposeBag)
@@ -126,10 +122,11 @@ class BatteryView: UIView {
 }
 
 extension BatteryView {
-    private func configureLineLayerColor(totalSugar: Double) {
-        let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: 50)
-        let lineColor = CGColor.calculateCirclePercentLineColor(dang: totalSugar, maxDang: 50)
-        let lineAnimationColor = CGColor.calculateCircleProgressBarColor(dang: totalSugar, maxDang: 50)
+    private func configureLineLayerColor(totalSugar: Double,
+                                         targetSugar: Int) {
+        let lineBackgroundColor = CGColor.calculateCircleProgressBackgroundColor(dang: totalSugar, maxDang: Double(targetSugar))
+        let lineColor = CGColor.calculateCirclePercentLineColor(dang: totalSugar, maxDang: Double(targetSugar))
+        let lineAnimationColor = CGColor.calculateCircleProgressBarColor(dang: totalSugar, maxDang: Double(targetSugar))
         percentLineLayer.strokeColor = lineColor
         percentLineBackgroundLayer.strokeColor = lineBackgroundColor
         animationLineLayer.strokeColor = lineAnimationColor

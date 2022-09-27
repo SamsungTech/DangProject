@@ -4,7 +4,7 @@
 //
 //  Created by 김동우 on 2022/02/26.
 //
-import Foundation
+
 import UIKit
 
 import RxSwift
@@ -51,22 +51,36 @@ class CalendarViewModel: CalendarViewModelProtocol {
     var scrollDirection: ScrollDirection = .center
     lazy var currentDateComponents = calendarService.dateComponents
     var selectedDateComponents: DateComponents = .currentDateTimeComponents()
-    
     var animationIsNeeded: Bool = true
+    
     private var selectedCellChanged: Bool = false
     private var selectedCalendarWillShow: Bool = false
     private var currentCalendarWillShow: Bool = false
+    
+    private var targetSugarRelay = BehaviorRelay<Int>(value: 0)
     
     var monthlyEatenFoodsDatas: [EatenFoodsPerDayDomainModel] = []
     // MARK: - Init
     let calendarService: CalendarService
     let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
+    let profileManagerUseCase: ProfileManagerUseCase
     
     init(calendarService: CalendarService,
-         fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
+         fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
+         profileManagerUseCase: ProfileManagerUseCase) {
         self.calendarService = calendarService
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
+        self.profileManagerUseCase = profileManagerUseCase
+        bindTargetSugarData()
         bindTotalMonthEatenFoods()
+    }
+    
+    private func bindTargetSugarData() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profileData in
+                self?.targetSugarRelay.accept(profileData.sugarLevel)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindTotalMonthEatenFoods() {
@@ -125,10 +139,13 @@ class CalendarViewModel: CalendarViewModelProtocol {
         var index = 0
         for i in 0 ..< 42 {
             if calendarDayEntity[i].isHidden {
-                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i], eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
+                                                               eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty,
+                                                               targetSugar: targetSugarRelay.value))
             } else {
                 result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
-                                                               eatenFoodsPerDayEntity: eatenFoods[index]))
+                                                               eatenFoodsPerDayEntity: eatenFoods[index],
+                                                               targetSugar: targetSugarRelay.value))
                 index += 1
             }
         }
@@ -141,7 +158,9 @@ class CalendarViewModel: CalendarViewModelProtocol {
         var index = 0
         for i in 0 ..< 42 {
             if calendarDayEntity[i].isHidden {
-                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i], eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty))
+                result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i],
+                                                               eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel.empty,
+                                                               targetSugar: targetSugarRelay.value))
             } else {
                 result.append(CalendarCellViewModelEntity.init(calendarDayEntity: calendarDayEntity[i] ))
                 index += 1

@@ -30,14 +30,12 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
             fetchLocalProfileData()
                 .subscribe(onNext: { [weak self] profileData in
                     self?.profileDataObservable.onNext(profileData)
-                    
                 })
                 .disposed(by: disposeBag)
         } else {
             fetchRemoteProfileData()
                 .subscribe(onNext: { [weak self] profileData in
                     self?.profileDataObservable.onNext(profileData)
-                    
                 })
                 .disposed(by: disposeBag)
             ProfileDomainModel.setIsLatestProfileData(true)
@@ -45,7 +43,8 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
     }
     
     func saveProfileOnCoreData(_ profile: ProfileDomainModel) {
-        coreDataManagerRepository.updateProfileData(profile)
+        manageFirebaseFireStoreUseCase.updateProfileData(profile)
+        ProfileDomainModel.setIsLatestProfileData(false)
     }
     
     // MARK: - Private

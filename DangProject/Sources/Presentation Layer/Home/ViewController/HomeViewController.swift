@@ -158,6 +158,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
 extension HomeViewController: CalendarViewDelegate {
     func cellDidSelected(dateComponents: DateComponents,
                          cellIndexColumn: Int) {
+        viewModel.fetchProfileData()
         viewModel.fetchSelectedEatenFoods(dateComponents)
         viewModel.changeCellIndexColumn(cellIndexColumn: cellIndexColumn)
         changeEatenFoodsTitleViewText(dateComponents: dateComponents)
