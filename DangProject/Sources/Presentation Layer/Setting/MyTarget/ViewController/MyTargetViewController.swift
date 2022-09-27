@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 
 class MyTargetViewController: CustomViewController {
-    private var viewModel: MyTargetViewModel?
+    private var viewModel: MyTargetViewModel
     var coordinator: MyTargetCoordinator?
     private let disposeBag = DisposeBag()
     private lazy var targetView: MyTargetView = {
@@ -30,8 +30,13 @@ class MyTargetViewController: CustomViewController {
     }
     
     init(viewModel: MyTargetViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.fetchProfileData()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -53,7 +58,6 @@ extension MyTargetViewController {
     
     private func setUpView() {
         view.backgroundColor = .homeBoxColor
-        
     }
     
     private func setUpNavigationBar() {
@@ -80,6 +84,7 @@ extension MyTargetViewController {
     
     private func bind() {
         bindUI()
+        bindTargetSugar()
     }
     
     private func bindUI() {
@@ -91,9 +96,19 @@ extension MyTargetViewController {
         
         targetView.toolBar.rx.tap
             .bind { [weak self] in
+                guard let targetSugar = Double(self?.targetView.targetNumberTextField.text ?? "") else { return }
                 self?.targetView.animateLabel()
+                self?.viewModel.passTargetSugarForUpdate(targetSugar)
                 self?.targetView.targetNumberTextField.resignFirstResponder()
             }
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindTargetSugar() {
+        viewModel.targetSugarRelay
+            .subscribe(onNext: { [weak self] targetSugar in
+                self?.targetView.setUpTargetSugarNumber(targetSugar)
+            })
             .disposed(by: disposeBag)
     }
 }

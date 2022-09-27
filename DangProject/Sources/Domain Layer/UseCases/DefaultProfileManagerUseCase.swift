@@ -30,12 +30,14 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
             fetchLocalProfileData()
                 .subscribe(onNext: { [weak self] profileData in
                     self?.profileDataObservable.onNext(profileData)
+                    
                 })
                 .disposed(by: disposeBag)
         } else {
             fetchRemoteProfileData()
                 .subscribe(onNext: { [weak self] profileData in
                     self?.profileDataObservable.onNext(profileData)
+                    
                 })
                 .disposed(by: disposeBag)
             ProfileDomainModel.setIsLatestProfileData(true)

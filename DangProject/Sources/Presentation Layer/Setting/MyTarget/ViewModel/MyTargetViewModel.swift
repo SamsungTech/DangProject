@@ -7,23 +7,52 @@
 
 import Foundation
 import RxSwift
+import RxRelay
 
 protocol MyTargetViewModelInputProtocol: AnyObject {
-    
+    func fetchProfileData()
+    func passTargetSugarForUpdate(_ targetSugar: Double)
 }
 
 protocol MyTargetViewModelOutputProtocol: AnyObject {
-    
+    var targetSugarRelay: BehaviorRelay<Double> { get }
 }
 
 protocol MyTargetViewModelProtocol: MyTargetViewModelInputProtocol, MyTargetViewModelOutputProtocol {}
 
 class MyTargetViewModel: MyTargetViewModelProtocol {
     private let disposeBag = DisposeBag()
+    private let profileManagerUseCase: ProfileManagerUseCase
+    private var profileData: ProfileDomainModel = .empty
+    var targetSugarRelay = BehaviorRelay<Double>(value: 0.0)
     
-    init() {}
-}
-
-extension MyTargetViewModel {
+    init(profileManagerUseCase: ProfileManagerUseCase) {
+        self.profileManagerUseCase = profileManagerUseCase
+        self.bindProfileData()
+    }
     
+    func fetchProfileData() {
+        profileManagerUseCase.fetchProfileData()
+    }
+    
+    func passTargetSugarForUpdate(_ targetSugar: Double) {
+        let profileData: ProfileDomainModel = .init(uid: self.profileData.uid,
+                                                    name: self.profileData.name,
+                                                    height: self.profileData.height,
+                                                    weight: self.profileData.weight,
+                                                    sugarLevel: Int(targetSugar),
+                                                    profileImage: self.profileData.profileImage,
+                                                    gender: self.profileData.gender,
+                                                    birthday: self.profileData.birthday)
+        profileManagerUseCase.saveProfileOnCoreData(profileData)
+    }
+    
+    private func bindProfileData() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profileData in
+                self?.profileData = profileData
+                self?.targetSugarRelay.accept(Double(profileData.sugarLevel))
+            })
+            .disposed(by: disposeBag)
+    }
 }
