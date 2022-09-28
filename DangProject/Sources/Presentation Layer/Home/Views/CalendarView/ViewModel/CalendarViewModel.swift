@@ -65,71 +65,76 @@ class CalendarViewModel: CalendarViewModelProtocol {
     let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     let profileManagerUseCase: ProfileManagerUseCase
     
+    private var totalMonthRelay = BehaviorRelay<[[EatenFoodsPerDayDomainModel]]>(value: [])
+    
     init(calendarService: CalendarService,
          fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
          profileManagerUseCase: ProfileManagerUseCase) {
         self.calendarService = calendarService
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.profileManagerUseCase = profileManagerUseCase
-        bindTargetSugarData()
-        bindTotalMonthEatenFoods()
+        bindTotalMonthEatenFoodsAndTargetSugar()
     }
     
-    private func bindTargetSugarData() {
-        profileManagerUseCase.profileDataObservable
-            .subscribe(onNext: { [weak self] profileData in
-                self?.targetSugarRelay.accept(profileData.sugarLevel)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindTotalMonthEatenFoods() {
+    private func bindTotalMonthEatenFoodsAndTargetSugar() {
         fetchEatenFoodsUseCase.totalMonthsDataObservable
             .subscribe(onNext: { [weak self] totalMonths in
-                self?.checkSelectedCalendarWillShow()
-                self?.checkCurrentCalendarWillShow()
-                
-                guard let strongSelf = self,
-                      let previousCalendar = self?.calendarService.previousMonthData(),
-                      let currentCalendar = self?.calendarService.currentMonthData(),
-                      let nextCalendar = self?.calendarService.nextMonthData()
-                else {
-                    return
-                }
-                var oneMonthBefore: [CalendarCellViewModelEntity] = []
-                var currentMonth: [CalendarCellViewModelEntity] = []
-                var nextMonth: [CalendarCellViewModelEntity] = []
-                
-                if totalMonths[0].isEmpty {
-                    oneMonthBefore = self?.returnCalendarEntity(calendar: previousCalendar) ?? []
-                } else {
-                    oneMonthBefore = self?.mergeCalendarAndEatenFoods(calendar: previousCalendar, with: totalMonths[0]) ?? []
-                }
-                if totalMonths[1].isEmpty {
-                    currentMonth = self?.returnCalendarEntity(calendar: currentCalendar) ?? []
-                } else {
-                    currentMonth = self?.mergeCalendarAndEatenFoods(calendar: currentCalendar, with: totalMonths[1]) ?? []
-                }
-                if totalMonths[2].isEmpty {
-                    nextMonth = self?.returnCalendarEntity(calendar: nextCalendar) ?? []
-                } else {
-                    nextMonth = self?.mergeCalendarAndEatenFoods(calendar: nextCalendar, with: totalMonths[2]) ?? []
-                }
-                self?.previousDataObservable.accept(oneMonthBefore)
-                self?.currentDataObservable.accept(currentMonth)
-                self?.nextDataObservable.accept(nextMonth)
-                
-                if strongSelf.initailizeSelectedDataObservable {
-                    self?.selectedDataObservable.accept(currentMonth)
-                    self?.initailizeSelectedDataObservable = false
-                }
-                
-                if strongSelf.selectedCellChanged {
-                    self?.selectedDataObservable.accept(currentMonth)
-                    self?.selectedCellChanged = false
-                }
+                guard let strongSelf = self else { return }
+                strongSelf.acceptCalendarDataObservable(totalMonths)
+                strongSelf.totalMonthRelay.accept(totalMonths)
+                self?.targetSugarRelay.accept(strongSelf.targetSugarRelay.value)
             })
             .disposed(by: disposeBag)
+        
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profileData in
+                guard let strongSelf = self else { return }
+                self?.targetSugarRelay.accept(profileData.sugarLevel)
+                strongSelf.acceptCalendarDataObservable(strongSelf.totalMonthRelay.value)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func acceptCalendarDataObservable(_ totalMonths: [[EatenFoodsPerDayDomainModel]]) {
+        self.checkSelectedCalendarWillShow()
+        self.checkCurrentCalendarWillShow()
+        
+        let previousCalendar = self.calendarService.previousMonthData()
+        let currentCalendar = self.calendarService.currentMonthData()
+        let nextCalendar = self.calendarService.nextMonthData()
+        
+        var oneMonthBefore: [CalendarCellViewModelEntity] = []
+        var currentMonth: [CalendarCellViewModelEntity] = []
+        var nextMonth: [CalendarCellViewModelEntity] = []
+        
+        if totalMonths[0].isEmpty {
+            oneMonthBefore = self.returnCalendarEntity(calendar: previousCalendar)
+        } else {
+            oneMonthBefore = self.mergeCalendarAndEatenFoods(calendar: previousCalendar, with: totalMonths[0])
+        }
+        if totalMonths[1].isEmpty {
+            currentMonth = self.returnCalendarEntity(calendar: currentCalendar)
+        } else {
+            currentMonth = self.mergeCalendarAndEatenFoods(calendar: currentCalendar, with: totalMonths[1])
+        }
+        if totalMonths[2].isEmpty {
+            nextMonth = self.returnCalendarEntity(calendar: nextCalendar)
+        } else {
+            nextMonth = self.mergeCalendarAndEatenFoods(calendar: nextCalendar, with: totalMonths[2])
+        }
+        self.previousDataObservable.accept(oneMonthBefore)
+        self.currentDataObservable.accept(currentMonth)
+        self.nextDataObservable.accept(nextMonth)
+        
+        if initailizeSelectedDataObservable {
+            self.selectedDataObservable.accept(currentMonth)
+            self.initailizeSelectedDataObservable = false
+        }
+        
+        if selectedCellChanged {
+            self.selectedDataObservable.accept(currentMonth)
+            self.selectedCellChanged = false
+        }
     }
     
     private func mergeCalendarAndEatenFoods(calendar: CalendarMonthEntity,

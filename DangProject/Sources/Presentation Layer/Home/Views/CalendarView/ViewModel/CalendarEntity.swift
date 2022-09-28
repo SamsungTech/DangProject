@@ -25,6 +25,7 @@ struct CalendarCellViewModelEntity {
     init(calendarDayEntity: CalendarDayEntity,
          eatenFoodsPerDayEntity: EatenFoodsPerDayDomainModel,
          targetSugar: Int) {
+        self.targetSugar = targetSugar
         self.year = calendarDayEntity.year
         self.month = calendarDayEntity.month
         self.day = calendarDayEntity.day
@@ -38,9 +39,8 @@ struct CalendarCellViewModelEntity {
             }
             return totalSugar
         }()
-        self.percentValue = .calculatePercentValue(dang: self.totalSugar, maxDang: 50)
-        self.layerColor = CGColor.calculateCirclePercentLineColor(dang: self.totalSugar, maxDang: 50)
-        self.targetSugar = targetSugar
+        self.percentValue = .calculatePercentValue(dang: self.totalSugar, maxDang: Double(self.targetSugar))
+        self.layerColor = CGColor.calculateCirclePercentLineColor(dang: self.totalSugar, maxDang: Double(self.targetSugar))
     }
     
     init(calendarDayEntity: CalendarDayEntity) {
