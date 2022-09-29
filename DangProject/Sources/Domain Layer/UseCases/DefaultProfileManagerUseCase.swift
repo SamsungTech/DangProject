@@ -42,8 +42,8 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
         }
     }
     
-    func saveProfileOnCoreData(_ profile: ProfileDomainModel) {
-        manageFirebaseFireStoreUseCase.updateProfileData(profile)
+    func saveProfileOnRemoteData(_ profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
+        manageFirebaseFireStoreUseCase.updateProfileData(profile, completion: completion)
         ProfileDomainModel.setIsLatestProfileData(false)
     }
     

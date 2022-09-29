@@ -227,7 +227,11 @@ class ProfileViewController: CustomViewController {
                                                                sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                                                profileImage: profileImage,
                                                                gender: gender,
-                                                               birthday: birthData))
+                                                               birthday: birthData)) { data in
+                    if data {
+                        self?.coordinator?.popViewController()
+                    }
+                }
             }
             .disposed(by: disposeBag)
     }

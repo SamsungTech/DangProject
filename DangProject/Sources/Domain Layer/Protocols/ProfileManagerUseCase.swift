@@ -11,7 +11,7 @@ import RxSwift
 
 protocol ProfileManagerUseCase {
     func fetchProfileData()
-    func saveProfileOnCoreData(_ profile: ProfileDomainModel)
+    func saveProfileOnRemoteData(_ profile: ProfileDomainModel, completion: @escaping (Bool) -> Void)
     
     var profileDataObservable: PublishSubject<ProfileDomainModel> { get }
 }

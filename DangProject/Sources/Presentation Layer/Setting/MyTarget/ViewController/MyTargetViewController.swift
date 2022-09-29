@@ -11,6 +11,7 @@ import RxSwift
 class MyTargetViewController: CustomViewController {
     private var viewModel: MyTargetViewModel
     var coordinator: MyTargetCoordinator?
+    private lazy var timer = Timer()
     private let disposeBag = DisposeBag()
     private lazy var targetView: MyTargetView = {
         let targetView = MyTargetView()
@@ -96,9 +97,10 @@ extension MyTargetViewController {
         
         targetView.toolBar.rx.tap
             .bind { [weak self] in
-                guard let targetSugar = Double(self?.targetView.targetNumberTextField.text ?? "") else { return }
+                guard let strongSelf = self,
+                      let targetSugar = Double(self?.targetView.targetNumberTextField.text ?? "") else { return }
                 self?.targetView.animateLabel()
-                self?.viewModel.passTargetSugarForUpdate(targetSugar)
+                strongSelf.passTargetSugarData(targetSugar: targetSugar)
                 self?.targetView.targetNumberTextField.resignFirstResponder()
             }
             .disposed(by: disposeBag)
@@ -110,6 +112,16 @@ extension MyTargetViewController {
                 self?.targetView.setUpTargetSugarNumber(targetSugar)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func passTargetSugarData(targetSugar: Double) {
+        viewModel.passTargetSugarForUpdate(targetSugar) { [weak self] data in
+            if data == true {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1) {
+                    self?.coordinator?.popMyTargetViewController()
+                }
+            }
+        }
     }
 }
 

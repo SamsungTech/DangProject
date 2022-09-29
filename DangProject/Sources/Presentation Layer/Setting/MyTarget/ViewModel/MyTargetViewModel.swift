@@ -11,7 +11,7 @@ import RxRelay
 
 protocol MyTargetViewModelInputProtocol: AnyObject {
     func fetchProfileData()
-    func passTargetSugarForUpdate(_ targetSugar: Double)
+    func passTargetSugarForUpdate(_ targetSugar: Double, completion: @escaping (Bool) -> Void)
 }
 
 protocol MyTargetViewModelOutputProtocol: AnyObject {
@@ -35,7 +35,7 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
         profileManagerUseCase.fetchProfileData()
     }
     
-    func passTargetSugarForUpdate(_ targetSugar: Double) {
+    func passTargetSugarForUpdate(_ targetSugar: Double, completion: @escaping (Bool) -> Void) {
         let profileData: ProfileDomainModel = .init(uid: self.profileData.uid,
                                                     name: self.profileData.name,
                                                     height: self.profileData.height,
@@ -44,7 +44,7 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
                                                     profileImage: self.profileData.profileImage,
                                                     gender: self.profileData.gender,
                                                     birthday: self.profileData.birthday)
-        profileManagerUseCase.saveProfileOnCoreData(profileData)
+        profileManagerUseCase.saveProfileOnRemoteData(profileData, completion: completion)
     }
     
     private func bindProfileData() {

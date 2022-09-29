@@ -22,7 +22,8 @@ enum LoadingState {
 
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
-    func saveProfile(_ data: ProfileDomainModel)
+    func saveProfile(_ data: ProfileDomainModel,
+                     completion: @escaping (Bool) -> Void)
     func genderButtonDidTap(_ gender: GenderType)
     func fetchProfileData()
 }
@@ -94,14 +95,15 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     // MARK: - Input
     
-    func saveProfile(_ profile: ProfileDomainModel) {
+    func saveProfile(_ profile: ProfileDomainModel,
+                     completion: @escaping (Bool) -> Void) {
         loadingRelay.accept(.startLoading)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseStoreUseCase.updateProfileData(profile)
+        manageFirebaseStoreUseCase.updateProfileData(profile, completion: completion)
         manageFirebaseStorageUseCase.updateProfileImage(jpegData)
             .subscribe(onNext: { [weak self] updateIsDone in
                 if updateIsDone {
-                    self?.profileManagerUseCase.saveProfileOnCoreData(profile)
+                    self?.profileManagerUseCase.saveProfileOnRemoteData(profile, completion: completion)
                     self?.loadingRelay.accept(.finishLoading)
                 }
             })
