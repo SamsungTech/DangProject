@@ -46,13 +46,7 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureAccountView()
-    }
-    
-    private func configureAccountView() {
-        let profileNameAndImage = viewModel.fetchUserNameAndImage()
-        accountView.configureUserName(profileNameAndImage.0)
-        accountView.configureUserImage(profileNameAndImage.1)
+        viewModel.fetchUserNameAndImage()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -158,6 +152,16 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
 
     private func bind() {
         bindScrollStateValue()
+        bindAccountViewData()
+    }
+    
+    private func bindAccountViewData() {
+        viewModel.profileDataRelay
+            .subscribe(onNext: { [weak self] accountViewData in
+                self?.accountView.configureUserImage(accountViewData.0)
+                self?.accountView.configureUserName(accountViewData.1)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindScrollStateValue() {

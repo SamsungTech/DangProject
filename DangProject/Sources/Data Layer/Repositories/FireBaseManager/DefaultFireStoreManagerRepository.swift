@@ -36,8 +36,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func saveProfileDocument(profile: ProfileDomainModel) {
-        
+    func saveProfileDocument(profile: ProfileDomainModel,
+                             completion: @escaping (Bool) -> Void) {
         let profileData = [
             "uid": self.uid,
             "name": profile.name,
@@ -55,8 +55,10 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .setData(profileData) { error in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
                     return
                 }
+                completion(true)
             }
     }
     
@@ -114,7 +116,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
-    func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void) {
+    func checkProfileField(with fieldName: String, uid: String,
+                           completion: @escaping(Bool)->Void) {
         database.collection("users").document(uid).getDocument { snapshot, error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
@@ -134,7 +137,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
 
     }
     
-    func readUIDInFirestore(uid: String, completion: @escaping(String)->Void) {
+    func readUIDInFirestore(uid: String,
+                            completion: @escaping(String)->Void) {
         database.collection("users").document(uid).getDocument { snapshot, error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")

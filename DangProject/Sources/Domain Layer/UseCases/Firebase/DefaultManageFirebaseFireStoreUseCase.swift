@@ -29,9 +29,9 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
         fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid, ProfileExistence: false)
     }
     
-    func uploadProfile(profile: ProfileDomainModel) {
+    func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
         fireStoreManagerRepository.saveFirebaseUserDocument(uid: profile.uid, ProfileExistence: true)
-        fireStoreManagerRepository.saveProfileDocument(profile: profile)
+        fireStoreManagerRepository.saveProfileDocument(profile: profile, completion: completion)
     }
     
     func getProfileExistence(uid: String) -> Observable<Bool> {
@@ -73,8 +73,8 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
         }
     }
     
-    func updateProfileData(_ data: ProfileDomainModel) {
-        fireStoreManagerRepository.saveProfileDocument(profile: data)
+    func updateProfileData(_ data: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
+        fireStoreManagerRepository.saveProfileDocument(profile: data, completion: completion)
     }
     
     func getEatenFoods(dateComponents: DateComponents) -> Observable<[FoodDomainModel]> {

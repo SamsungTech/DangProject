@@ -46,14 +46,11 @@ class HomeViewModel: HomeViewModelProtocol {
          profileManagerUseCase: ProfileManagerUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.profileManagerUseCase = profileManagerUseCase
+        self.bindProfileData()
     }
     
     func fetchProfileData() {
         profileManagerUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] in
-                self?.profileDataRelay.accept($0)
-            })
-            .disposed(by: disposeBag)
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {
@@ -114,4 +111,11 @@ class HomeViewModel: HomeViewModelProtocol {
         }
     }
     
+    private func bindProfileData() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] in
+                self?.profileDataRelay.accept($0)
+            })
+            .disposed(by: disposeBag)
+    }
 }

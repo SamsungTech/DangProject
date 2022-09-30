@@ -9,11 +9,9 @@ import UIKit
 import RxSwift
 
 class CalendarCollectionViewCell: UICollectionViewCell {
-    
     private var dayLabel = UILabel()
     private var selectedView = UIView()
     private var currentLineView = UIView()
-    
     private let animatingPercentLineLayer = CAShapeLayer()
     private let nonAnimatingPercentLineLayer = CAShapeLayer()
     private let smallPercentLineBackgroundLayer = CAShapeLayer()

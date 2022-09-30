@@ -14,6 +14,9 @@ extension Int {
         let division: Double = 100*(dangValueNumber/100)
         let result = abs(division)
         let num = Swift.min(result, 100.0)
+        if num.isNaN {
+            return 0
+        }
         return Int(num)
     }
 

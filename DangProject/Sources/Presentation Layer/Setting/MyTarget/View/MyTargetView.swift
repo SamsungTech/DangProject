@@ -26,7 +26,7 @@ class MyTargetView: UIButton {
         let textField = UITextField()
         textField.textColor = .white
         textField.font = UIFont.systemFont(ofSize: xValueRatio(80), weight: .semibold)
-        textField.textAlignment = .right
+        textField.textAlignment = .center
         textField.keyboardType = .numberPad
         textField.inputAccessoryView = toolBar
         textField.placeholder = "숫자"
@@ -131,5 +131,9 @@ extension MyTargetView {
             guard let self = self else { return }
             self.cheeringLabel.alpha = 1.0
         })
+    }
+    
+    func setUpTargetSugarNumber(_ targetSugar: Double) {
+        self.targetNumberTextField.text = String(targetSugar)
     }
 }

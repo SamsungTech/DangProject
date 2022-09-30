@@ -78,6 +78,11 @@ class ProfileViewController: CustomViewController {
         coordinator?.childDidFinish(coordinator)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.fetchProfileData()
+    }
+    
     init(viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -222,7 +227,11 @@ class ProfileViewController: CustomViewController {
                                                                sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                                                profileImage: profileImage,
                                                                gender: gender,
-                                                               birthday: birthData))
+                                                               birthday: birthData)) { data in
+                    if data {
+                        self?.coordinator?.popViewController()
+                    }
+                }
             }
             .disposed(by: disposeBag)
     }

@@ -18,7 +18,7 @@ protocol InputProfileViewModelInput {
     var readyButtonIsValid: BehaviorRelay<Bool> { get }
     
     func pickerValueChanged(textFieldTag: Int, row: Int)
-    func submitButtonTapped(name: String)
+    func submitButtonTapped(name: String, completion: @escaping (Bool) -> Void)
 }
 
 protocol InputProfileViewModelOutput {
@@ -105,7 +105,7 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
         }
     }
     
-    func submitButtonTapped(name: String) {
+    func submitButtonTapped(name: String, completion: @escaping (Bool) -> Void) {
         guard let userDefaultsUid = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
         let profile = ProfileDomainModel(uid: userDefaultsUid,
                                          name: name,
@@ -116,6 +116,6 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          gender: .male,
                                          birthday: "")
         
-        manageFirebaseFireStoreUseCase.uploadProfile(profile: profile)
+        manageFirebaseFireStoreUseCase.uploadProfile(profile: profile, completion: completion)
     }
 }

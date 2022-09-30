@@ -57,11 +57,6 @@ class AccountViewController: CustomViewController {
         bindUI()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.fetchProfileData()
-    }
-    
     private func configureUI() {
         setupBackgroundView()
         setupAccountNavigationBar()
