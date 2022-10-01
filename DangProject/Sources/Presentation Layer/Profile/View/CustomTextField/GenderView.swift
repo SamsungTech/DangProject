@@ -12,29 +12,31 @@ class GenderView: UIView {
     lazy var genderLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
-        label.textColor = .init(white: 1, alpha: 0.8)
+        label.textColor = .customLabelColorBlack2
         label.text = "성별"
         return label
     }()
     
     private lazy var genderBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .genderBackgroundViewColor
+        view.backgroundColor = .homeBackgroundColor
         view.viewRadius(cornerRadius: xValueRatio(35))
+        view.layer.borderWidth = 0.2
+        view.layer.borderColor = UIColor.darkGray.cgColor
         return view
     }()
     
     private(set) lazy var selectedBackgroundView: UIView = {
         let view = UIView()
         view.viewRadius(cornerRadius: xValueRatio(30))
-        view.backgroundColor = .genderSelectedBackgroundColor
+        view.backgroundColor = .homeBoxColor
         return view
     }()
     
     private(set) lazy var maleButton: UIButton = {
         let button = UIButton()
         button.setTitle("남", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.customLabelColorBlack2, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .heavy)
         
         return button
@@ -43,7 +45,7 @@ class GenderView: UIView {
     private(set) lazy var femaleButton: UIButton = {
         let button = UIButton()
         button.setTitle("여", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.customLabelColorBlack2, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .heavy)
         
         return button
@@ -135,15 +137,15 @@ extension GenderView {
     private func drawMaleView() {
         leadingConstraint?.constant = xValueRatio(5)
         leadingConstraint?.isActive = true
-        maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
-        femaleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        maleButton.setTitleColor(.customLabelColorBlack3, for: .normal)
+        femaleButton.setTitleColor(.customLabelColorBlack, for: .normal)
     }
     
     private func drawFemaleView() {
         leadingConstraint?.constant = xValueRatio(180)
         leadingConstraint?.isActive = true
-        femaleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
-        maleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        femaleButton.setTitleColor(.customLabelColorBlack3, for: .normal)
+        maleButton.setTitleColor(.customLabelColorBlack, for: .normal)
     }
     
     func animateGenderView(_ gender: GenderType) {
@@ -157,8 +159,8 @@ extension GenderView {
     
     private func animateMaleView() {
         leadingConstraint?.constant = xValueRatio(5)
-        maleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
-        femaleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        maleButton.setTitleColor(.customLabelColorBlack3, for: .normal)
+        femaleButton.setTitleColor(.customLabelColorBlack, for: .normal)
         UIView.animate(withDuration: 0.2, animations: { [weak self] in
             self?.layoutIfNeeded()
         })
@@ -166,8 +168,8 @@ extension GenderView {
     
     private func animateFemaleView() {
         leadingConstraint?.constant = xValueRatio(180)
-        femaleButton.setTitleColor(.init(white: 1, alpha: 1), for: .normal)
-        maleButton.setTitleColor(.init(white: 1, alpha: 0.5), for: .normal)
+        femaleButton.setTitleColor(.customLabelColorBlack3, for: .normal)
+        maleButton.setTitleColor(.customLabelColorBlack, for: .normal)
         UIView.animate(withDuration: 0.2, animations: { [weak self] in
             self?.layoutIfNeeded()
         })

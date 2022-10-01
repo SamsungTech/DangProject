@@ -10,7 +10,6 @@ import UIKit
 class EatenFoodsTitleView: UIView {
     private let eatenFoodsTitleLabel = UILabel()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
@@ -27,7 +26,7 @@ class EatenFoodsTitleView: UIView {
     // MARK: - Private
     private func configure() {
         eatenFoodsTitleLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
-        eatenFoodsTitleLabel.textColor = .white
+        eatenFoodsTitleLabel.textColor = .customFontColorBlack
         eatenFoodsTitleLabel.text = "🍲 오늘 먹은것들"
     }
     

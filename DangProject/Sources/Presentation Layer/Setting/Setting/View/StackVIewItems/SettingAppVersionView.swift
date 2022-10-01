@@ -10,14 +10,14 @@ import UIKit
 class SettingAppVersionView: UIButton {
     private(set) lazy var itemLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customLabelColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
         return label
     }()
     
     private(set) lazy var versionLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.8)
+        label.textColor = .customLabelColorBlack2
         label.font = UIFont.systemFont(ofSize: xValueRatio(17), weight: .semibold)
         return label
     }()

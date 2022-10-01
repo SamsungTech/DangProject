@@ -12,7 +12,6 @@ import RxRelay
 import RxSwift
 
 class ProfileViewController: CustomViewController {
-    
     weak var coordinator: ProfileCoordinator?
     private var viewModel: ProfileViewModelProtocol
     private let disposeBag = DisposeBag()
@@ -105,7 +104,7 @@ class ProfileViewController: CustomViewController {
     
     private func setupViewController() {
         navigationController?.navigationBar.isHidden = true
-        view.backgroundColor = .homeBackgroundColor
+        view.backgroundColor = .homeBoxColor
     }
     
     private func setupProfileNavigationBar() {
@@ -227,10 +226,7 @@ class ProfileViewController: CustomViewController {
                                                                sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
                                                                profileImage: profileImage,
                                                                gender: gender,
-                                                               birthday: birthData)) { data in
-                    if data {
-                        self?.coordinator?.popViewController()
-                    }
+                                                               birthday: birthData)) { _ in
                 }
             }
             .disposed(by: disposeBag)

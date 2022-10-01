@@ -11,7 +11,7 @@ class SettingSecessionView: UIButton {
     private(set) lazy var profileAccountLabel: UILabel = {
         let label = UILabel()
         label.text = "탈퇴하기"
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customLabelColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
         return label
     }()

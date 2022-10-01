@@ -10,7 +10,7 @@ import UIKit
 class WarningView: UIView {
     private lazy var warningTitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customLabelColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(17), weight: .semibold)
         label.text = "경고"
         return label
@@ -18,7 +18,7 @@ class WarningView: UIView {
     
     private lazy var warningContentLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.8)
+        label.textColor = .customFontColorGray
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .regular)
         label.numberOfLines = 3
         label.text = "계정을 탈퇴하시면 귀하의 모든 체중, 식사 및 검색 \n데이터들이 모두 제거 됩니다. 귀하의 프로필에도 \n더이상 접근할 수 없게 됩니다."

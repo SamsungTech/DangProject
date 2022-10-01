@@ -67,7 +67,7 @@ class CustomNavigationBar: UIView {
     
     private func setupDateLabel() {
         addSubview(dateLabel)
-        dateLabel.textColor = .white
+        dateLabel.textColor = .customFontColorBlack
         dateLabel.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .bold)
         dateLabel.textAlignment = .center
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +78,7 @@ class CustomNavigationBar: UIView {
     private func setupChevronButton() {
         addSubview(chevronButton)
         chevronButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-        chevronButton.tintColor = .white
+        chevronButton.tintColor = .customFontColorBlack
         chevronButton.translatesAutoresizingMaskIntoConstraints = false
         chevronButton.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: xValueRatio(5)).isActive = true
         chevronButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor).isActive = true
@@ -112,7 +112,7 @@ class CustomNavigationBar: UIView {
         for item in week {
             let label = UILabel()
             label.textAlignment = .center
-            label.textColor = .white
+            label.textColor = .customFontColorBlack
             label.font = UIFont.boldSystemFont(ofSize: xValueRatio(13))
             label.text = "\(item)"
             

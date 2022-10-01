@@ -12,13 +12,13 @@ class CommonNavigationBar: UIView {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.viewRadius(cornerRadius: xValueRatio(15))
-        button.tintColor = .white
+        button.tintColor = .customFontColorGray
         return button
     }()
     
     private(set) lazy var accountTitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .customFontColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .bold)
         return label
     }()

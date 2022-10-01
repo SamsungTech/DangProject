@@ -13,14 +13,14 @@ class AlarmNavigationBar: UIView {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.viewRadius(cornerRadius: xValueRatio(15))
-        button.tintColor = .white
+        button.tintColor = .customLabelColorBlack
         return button
     }()
     
     private lazy var alarmLabel: UILabel = {
         let label = UILabel()
         label.text = "알림"
-        label.textColor = .white
+        label.textColor = .customFontColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .bold)
         return label
     }()
@@ -29,7 +29,7 @@ class AlarmNavigationBar: UIView {
         let button = UIButton()
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.viewRadius(cornerRadius: xValueRatio(15))
-        button.tintColor = .white
+        button.tintColor = .customLabelColorBlack
         return button
     }()
     

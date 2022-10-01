@@ -12,14 +12,14 @@ class SettingAccountView: UIButton {
     private(set) lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.fill")
-        imageView.tintColor = .white
+        imageView.tintColor = .customFontColorBlack
         imageView.viewRadius(cornerRadius: xValueRatio(25))
         return imageView
     }()
     
     private(set) lazy var profileAccountLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .customFontColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(19), weight: .semibold)
         return label
     }()

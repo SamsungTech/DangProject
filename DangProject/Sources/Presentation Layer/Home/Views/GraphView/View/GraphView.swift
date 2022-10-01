@@ -11,7 +11,6 @@ import RxSwift
 import RxRelay
 
 class GraphView: UIView {
-    
     private var viewModel: GraphViewModelProtocol
     private var disposeBag = DisposeBag()
     private var graphMainView = UIView()
@@ -19,7 +18,6 @@ class GraphView: UIView {
     private var graphBackgroundStackView = UIStackView()
     private var graphStackView = UIStackView()
     private var graphNameStackView = UIStackView()
-    
     private var graphHeightConstants: [NSLayoutConstraint] = []
     private var averageGramBottomAnchorConstants: [NSLayoutConstraint] = []
     private var graphBackgroundViews: [UIView] = []
@@ -116,14 +114,14 @@ class GraphView: UIView {
         createGraphLabel()
         createAverageGramLabel()
     }
-
+    
     private func createGraphBackgroundViews() {
         for _ in 0 ..< 7 {
             let backgroundView = UIView()
             backgroundView.backgroundColor = .init(red: 0,
-                                         green: 0,
-                                         blue: 0,
-                                         alpha: 0.1)
+                                                   green: 0,
+                                                   blue: 0,
+                                                   alpha: 0.1)
             backgroundView.viewRadius(cornerRadius: xValueRatio(13))
             graphBackgroundViews.append(backgroundView)
             graphBackgroundStackView.addArrangedSubview(backgroundView)
@@ -146,7 +144,7 @@ class GraphView: UIView {
     private func createGraphLabel() {
         for _ in 0 ..< 7 {
             let label = UILabel()
-            label.textColor = .white
+            label.textColor = .customFontColorBlack
             label.textAlignment = .center
             label.numberOfLines = 0
             graphLabels.append(label)
@@ -157,7 +155,7 @@ class GraphView: UIView {
     private func createAverageGramLabel() {
         for i in 0 ..< 7 {
             let label = UILabel()
-            label.textColor = .white
+            label.textColor = .customFontColorGray
             label.textAlignment = .center
             graphBackgroundViews[i].addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -185,10 +183,10 @@ class GraphView: UIView {
             averageGramLabels[i].font = viewModel.configureAverageGramLabelFontSize(self, graphDataString: averageGramString)
             averageGramBottomAnchorConstants[i].constant = -(viewModel.configureGraphHeightConstant(self, sugarValue: graphData[i].1) + yValueRatio(5))
         }
+        self.bringSubviewToFront(graphStackView)
         
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             self?.layoutIfNeeded()
         })
     }
-    
 }
