@@ -48,7 +48,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         
         dayLabel.textAlignment = .center
         dayLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
-        dayLabel.textColor = .customFontColorBlack
+        dayLabel.textColor = .customLabelColorBlack
         
         animatingPercentLineLayer.fillColor = UIColor.clear.cgColor
         animatingPercentLineLayer.lineCap = .round

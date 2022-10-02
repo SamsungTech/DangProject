@@ -131,7 +131,7 @@ class GraphView: UIView {
     private func createGraphViews() {
         for i in 0 ..< 7 {
             let graphView = UIView()
-            graphView.backgroundColor = .white
+            graphView.backgroundColor = .customLabelColorBlack
             graphView.viewRadius(cornerRadius: xValueRatio(13))
             graphView.translatesAutoresizingMaskIntoConstraints = false
             graphViews.append(graphView)
