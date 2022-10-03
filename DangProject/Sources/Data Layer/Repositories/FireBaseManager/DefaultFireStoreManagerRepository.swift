@@ -18,22 +18,42 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     
     private lazy var uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
-
+    
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
-
+        
         let uidData = ["firebaseUID": uid,
                        "profileExistence": ProfileExistence
         ] as [String : Any]
-
+        
         database.collection("users")
             .document(uid)
             .setData(uidData) { error in
-
-            if let error = error {
-                print("DEBUG: \(error.localizedDescription)")
-                return
+                
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
             }
-        }
+    }
+    
+    func deleteFirebaseUserDocument() {
+        database.collection("users")
+            .document(uid)
+            .delete { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+            }
+        
+        database.collection("app")
+            .document(uid)
+            .delete { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+            }
     }
     
     func saveProfileDocument(profile: ProfileDomainModel) {
@@ -61,27 +81,27 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func getProfileDataInFireStore() -> Observable<[String: Any]> {
-            return Observable.create { [weak self] emitter in
-                guard let strongSelf = self else {
-                    return Disposables.create()
-                }
-                
-                self?.database.collection("app")
-                    .document(strongSelf.uid)
-                    .collection("personal")
-                    .document("profile")
-                    .getDocument() { snapshot, error  in
-                        if let error = error {
-                            print("DEBUG: \(error.localizedDescription)")
-                            return
-                        }
-                        if let result = snapshot?.data() {
-                            emitter.onNext(result)
-                        }
-                    }
+        return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else {
                 return Disposables.create()
             }
+            
+            self?.database.collection("app")
+                .document(strongSelf.uid)
+                .collection("personal")
+                .document("profile")
+                .getDocument() { snapshot, error  in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        return
+                    }
+                    if let result = snapshot?.data() {
+                        emitter.onNext(result)
+                    }
+                }
+            return Disposables.create()
         }
+    }
     
     func saveEatenFood(eatenFood: FoodDomainModel) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
@@ -131,7 +151,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 completion(false)
             }
         }
-
+        
     }
     
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void) {

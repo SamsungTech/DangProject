@@ -16,6 +16,7 @@ let target = Target(name: projectName,
                         .package(product: "RxCocoa"),
                         .package(product: "RxRelay"),
                         .package(product: "FirebaseAuth"),
+                        .package(product: "FirebaseAnalytics"),
                         .package(product: "FirebaseFirestore"),
                         .package(product: "FirebaseStorage"),
                         .package(product: "GTMSessionFetcherFull")
