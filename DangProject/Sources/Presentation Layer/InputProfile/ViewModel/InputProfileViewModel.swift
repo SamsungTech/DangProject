@@ -43,9 +43,12 @@ protocol InputProfileViewModelProtocol: InputProfileViewModelInput, InputProfile
 class InputProfileViewModel: InputProfileViewModelProtocol {
     // MARK: - Init
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
+    private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
     
-    init(manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
+    init(manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase,
+         manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase) {
         self.manageFirebaseFireStoreUseCase = manageFirebaseFireStoreUseCase
+        self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
         checkReadyButtonIsValid()
     }
     
@@ -115,7 +118,8 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          profileImage: imageValue,
                                          gender: .male,
                                          birthday: "")
-        
+        guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
         manageFirebaseFireStoreUseCase.uploadProfile(profile: profile)
+        manageFirebaseStorageUseCase.uploadProfileImage(jpegData)
     }
 }
