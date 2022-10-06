@@ -56,10 +56,8 @@ class CalendarViewModel: CalendarViewModelProtocol {
     private var selectedCellChanged: Bool = false
     private var selectedCalendarWillShow: Bool = false
     private var currentCalendarWillShow: Bool = false
-    
     private var targetSugarRelay = BehaviorRelay<Int>(value: 0)
     
-    var monthlyEatenFoodsDatas: [EatenFoodsPerDayDomainModel] = []
     // MARK: - Init
     let calendarService: CalendarService
     let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
