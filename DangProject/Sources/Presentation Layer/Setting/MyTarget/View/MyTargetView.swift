@@ -50,7 +50,7 @@ class MyTargetView: UIButton {
     
     private lazy var cheeringLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .customFontColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(18), weight: .semibold)
         label.text = "You Can Do Anything!😉"
         label.alpha = 0
