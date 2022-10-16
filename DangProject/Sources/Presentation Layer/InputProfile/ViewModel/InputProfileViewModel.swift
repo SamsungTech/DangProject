@@ -119,7 +119,7 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          gender: .male,
                                          birthday: "")
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseFireStoreUseCase.uploadProfile(profile: profile)
+        manageFirebaseFireStoreUseCase.uploadProfile(profile: profile, completion: completion)
         manageFirebaseStorageUseCase.uploadProfileImage(jpegData)
     }
 }
