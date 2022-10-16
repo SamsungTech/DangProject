@@ -46,4 +46,8 @@ class DefaultManageFireBaseStorageUseCase: ManageFirebaseStorageUseCase {
             return Disposables.create()
         }
     }
+    
+    func uploadProfileImage(_ data: Data) {
+        fireBaseStorageManagerRepository.uploadImage(data)
+    }
 }

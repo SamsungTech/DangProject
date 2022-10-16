@@ -20,12 +20,14 @@ protocol SecessionViewModelProtocol: SecessionViewModelInputProtocol, SecessionV
 }
 
 class SecessionViewModel: SecessionViewModelProtocol {
-    func resignUser() {
-        // 유저 탈퇴시 해야할 행동들 (로컬데이터, 리모트데이터 삭제)
-        deleteAllUserDefaultsDatas()
+    
+    let resignUseCase: ResignUseCase
+    
+    init(resignUseCase: ResignUseCase) {
+        self.resignUseCase = resignUseCase
     }
     
-    private func deleteAllUserDefaultsDatas() {
-        UserInfoKey.removeAllUserDefaultsDatas()
+    func resignUser() {
+        resignUseCase.deleteAllUserData()
     }
 }
