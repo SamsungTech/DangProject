@@ -13,7 +13,6 @@ enum TextFieldCase {
 }
 
 protocol AlarmTableViewCellDelegate: AnyObject {
-    
     func middleAndBottomButtonDidTap(cell: UITableViewCell)
     func deleteButtonDidTap(cell: UITableViewCell)
     func changeEverydayValue(cell: UITableViewCell)
@@ -27,7 +26,6 @@ protocol AlarmTableViewCellDelegate: AnyObject {
 }
 
 class AlarmTableViewCell: UITableViewCell {
-    
     var parentableViewController: AlarmTableViewCellDelegate?
     private var messageViewHeightConstant: NSLayoutConstraint?
     private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
@@ -62,14 +60,14 @@ class AlarmTableViewCell: UITableViewCell {
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(24), weight: .semibold)
-        label.textColor = .lightGray
+        label.textColor = .customFontColorGray
         return label
     }()
     
     private(set) lazy var amPmLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(23), weight: .semibold)
-        label.textColor = .lightGray
+        label.textColor = .customFontColorGray
         return label
     }()
     
@@ -117,7 +115,7 @@ class AlarmTableViewCell: UITableViewCell {
     private(set) lazy var selectedDayLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(18), weight: .heavy)
-        label.textColor = .lightGray
+        label.textColor = .customFontColorGray
         return label
     }()
     
@@ -429,11 +427,11 @@ class AlarmTableViewCell: UITableViewCell {
     
     private func setupAlarmIsValid() {
         self.isOnSwitch.isOn = true
-        self.titleLabel.textColor = .white
-        self.amPmLabel.textColor = .white
-        self.timeTextField.textColor = UIColor.white
-        self.selectedDayLabel.textColor = .white
-        self.arrowButton.tintColor = .white
+        self.titleLabel.textColor = .customLabelColorBlack
+        self.amPmLabel.textColor = .customLabelColorBlack
+        self.timeTextField.textColor = UIColor.customLabelColorBlack
+        self.selectedDayLabel.textColor = .customLabelColorBlack
+        self.arrowButton.tintColor = .customLabelColorBlack
     }
     
     private func setupAlarmIsInvalid() {
@@ -542,7 +540,6 @@ class AlarmTableViewCell: UITableViewCell {
 }
 
 extension AlarmTableViewCell: AlarmDaySelectionDelegate {
-    
     func dayOfTheWeekButtonDidTap(tag: Int) {
         parentableViewController?.dayOfTheWeekButtonDidTap(cell: self , tag: tag)
     }

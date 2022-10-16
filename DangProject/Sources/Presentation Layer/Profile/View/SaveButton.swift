@@ -13,8 +13,8 @@ class SaveButton: UIView {
         let gradient = CAGradientLayer()
         gradient.frame.size = CGSize(width: calculateXMax(), height: yValueRatio(25))
         gradient.colors = [
-            UIColor.homeBackgroundColorAlphaZero.cgColor,
-            UIColor.homeBackgroundColor.cgColor
+            UIColor.init(white: 1, alpha: 0).cgColor,
+            UIColor.homeBoxColor.cgColor
         ]
         view.layer.addSublayer(gradient)
         
@@ -23,7 +23,7 @@ class SaveButton: UIView {
     
     private lazy var backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .homeBackgroundColor
+        view.backgroundColor = .homeBoxColor
         return view
     }()
     

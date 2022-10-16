@@ -61,7 +61,7 @@ class CalendarView: UIView {
         calendarScrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         calendarScrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         calendarScrollView.contentLayoutGuide.widthAnchor.constraint(equalToConstant: screenWidthSize*5).isActive = true
-        calendarScrollView.backgroundColor = .black
+        calendarScrollView.backgroundColor = .customFontColorBlack
         calendarScrollView.delegate = self
         
         configureCollectionView(collectionView: selectedLeadingCalendarCollectionView, section: 0)

@@ -12,7 +12,7 @@ class DateTextFieldView: UIView {
     private lazy var downArrowImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.down")
-        imageView.tintColor = .white
+        imageView.tintColor = .customFontColorBlack
         return imageView
     }()
     
@@ -27,13 +27,13 @@ class DateTextFieldView: UIView {
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
-        label.textColor = .init(white: 1, alpha: 0.8)
+        label.textColor = .customFontColorGray
         return label
     }()
     
     private lazy var textFieldBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .profileTextFieldBackgroundColor
+        view.backgroundColor = .homeBackgroundColor
         view.viewRadius(cornerRadius: xValueRatio(15))
         view.layer.borderColor = UIColor.darkGray.cgColor
         view.layer.borderWidth = 0.2
@@ -45,7 +45,7 @@ class DateTextFieldView: UIView {
         textField.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .semibold)
         textField.inputView = pickerView
         textField.inputAccessoryView = toolBarButton
-        textField.textColor = .white
+        textField.textColor = .customLabelColorBlack3
         return textField
     }()
     

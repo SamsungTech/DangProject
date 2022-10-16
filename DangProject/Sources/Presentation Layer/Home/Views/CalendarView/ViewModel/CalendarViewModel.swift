@@ -56,10 +56,8 @@ class CalendarViewModel: CalendarViewModelProtocol {
     private var selectedCellChanged: Bool = false
     private var selectedCalendarWillShow: Bool = false
     private var currentCalendarWillShow: Bool = false
-    
     private var targetSugarRelay = BehaviorRelay<Int>(value: 0)
     
-    var monthlyEatenFoodsDatas: [EatenFoodsPerDayDomainModel] = []
     // MARK: - Init
     let calendarService: CalendarService
     let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
@@ -77,20 +75,26 @@ class CalendarViewModel: CalendarViewModelProtocol {
     }
     
     private func bindTotalMonthEatenFoodsAndTargetSugar() {
+        let targetSugarObservable = PublishSubject<Int>()
+        let eatenFoodsObservable = PublishSubject<[[EatenFoodsPerDayDomainModel]]>()
+        
         fetchEatenFoodsUseCase.totalMonthsDataObservable
-            .subscribe(onNext: { [weak self] totalMonths in
-                guard let strongSelf = self else { return }
-                strongSelf.acceptCalendarDataObservable(totalMonths)
-                strongSelf.totalMonthRelay.accept(totalMonths)
-                self?.targetSugarRelay.accept(strongSelf.targetSugarRelay.value)
+            .subscribe(onNext: { totalMonths in
+                eatenFoodsObservable.onNext(totalMonths)
             })
             .disposed(by: disposeBag)
         
         profileManagerUseCase.profileDataObservable
-            .subscribe(onNext: { [weak self] profileData in
+            .subscribe(onNext: { profileData in
+                targetSugarObservable.onNext(profileData.sugarLevel)
+            })
+            .disposed(by: disposeBag)
+        
+        Observable.combineLatest(eatenFoodsObservable, targetSugarObservable)
+            .subscribe(onNext: { [weak self] totalMonths, targetSugar in
                 guard let strongSelf = self else { return }
-                self?.targetSugarRelay.accept(profileData.sugarLevel)
-                strongSelf.acceptCalendarDataObservable(strongSelf.totalMonthRelay.value)
+                self?.targetSugarRelay.accept(targetSugar)
+                strongSelf.acceptCalendarDataObservable(totalMonths)
             })
             .disposed(by: disposeBag)
     }
