@@ -11,13 +11,13 @@ class BirthDateTextFieldView: UIView {
     private(set) lazy var profileLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
-        label.textColor = .init(white: 1, alpha: 0.8)
+        label.textColor = .customFontColorGray
         return label
     }()
     
     private lazy var textFieldBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .profileTextFieldBackgroundColor
+        view.backgroundColor = .homeBackgroundColor
         view.viewRadius(cornerRadius: xValueRatio(15))
         view.layer.borderColor = UIColor.darkGray.cgColor
         view.layer.borderWidth = 0.2
@@ -27,7 +27,7 @@ class BirthDateTextFieldView: UIView {
     private(set) lazy var toolBarButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .circleColorGreen
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         button.setTitle("확인", for: .normal)
         button.frame = CGRect(x: .zero,

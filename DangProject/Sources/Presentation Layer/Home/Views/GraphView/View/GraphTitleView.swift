@@ -22,7 +22,7 @@ class GraphTitleView: UIView {
     
     private func configure() {
         GraphCellTitle.font = UIFont.boldSystemFont(ofSize: xValueRatio(25))
-        GraphCellTitle.textColor = .white
+        GraphCellTitle.textColor = .customFontColorBlack
         GraphCellTitle.text = "🍯 당수치 그래프입니다."
         
     }

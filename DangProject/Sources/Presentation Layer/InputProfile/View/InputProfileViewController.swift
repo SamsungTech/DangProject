@@ -275,9 +275,12 @@ class InputProfileViewController: UIViewController {
     
     @objc private func submitInformation() {
         if let name = nameTextField.text {
-            viewModel.submitButtonTapped(name: name)
+            viewModel.submitButtonTapped(name: name) { [weak self] data in
+                if data {
+                    self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
+                }
+            }
         }
-        coordinatorFinishDelegate?.switchViewController(to: .tabBar)
     }
     
     // MARK: - Create Method

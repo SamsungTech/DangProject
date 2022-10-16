@@ -10,7 +10,7 @@ import UIKit
 class SettingStackViewItemsButton: UIButton {
     private(set) lazy var itemLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customLabelColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
         return label
     }()

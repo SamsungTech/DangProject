@@ -9,11 +9,9 @@ import UIKit
 import RxSwift
 
 class CalendarCollectionViewCell: UICollectionViewCell {
-    
     private var dayLabel = UILabel()
     private var selectedView = UIView()
     private var currentLineView = UIView()
-    
     private let animatingPercentLineLayer = CAShapeLayer()
     private let nonAnimatingPercentLineLayer = CAShapeLayer()
     private let smallPercentLineBackgroundLayer = CAShapeLayer()
@@ -50,7 +48,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         
         dayLabel.textAlignment = .center
         dayLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
-        dayLabel.textColor = .white
+        dayLabel.textColor = .customLabelColorBlack
         
         animatingPercentLineLayer.fillColor = UIColor.clear.cgColor
         animatingPercentLineLayer.lineCap = .round

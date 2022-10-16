@@ -15,10 +15,23 @@ class EatenFoodsViewModel {
     let eatenFoodsViewModelObservable: BehaviorRelay<EatenFoodsPerDayViewModelEntity> = BehaviorRelay(value: EatenFoodsPerDayViewModelEntity.empty)
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
+    private let profileManagerUseCase: ProfileManagerUseCase
+    private var targetSugarRelay = BehaviorRelay<Int>(value: 0)
     
-    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase) {
+    init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
+         profileManagerUseCase: ProfileManagerUseCase) {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
+        self.profileManagerUseCase = profileManagerUseCase
         bindTodayEatenFoodsObservable()
+        bindTargetSugar()
+    }
+    
+    private func bindTargetSugar() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profileData in
+                self?.targetSugarRelay.accept(profileData.sugarLevel)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindTodayEatenFoodsObservable() {

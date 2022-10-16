@@ -15,6 +15,8 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
     
+    var profileDataObservable = PublishSubject<ProfileDomainModel>()
+    
     init(coreDataManagerRepository: CoreDataManagerRepository,
          manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase,
          manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase) {
@@ -23,29 +25,26 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
     }
     
-    func fetchProfileData() -> Observable<ProfileDomainModel> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            if ProfileDomainModel.isLatestProfileDataValue {
-                strongSelf.fetchLocalProfileData()
-                    .subscribe(onNext: { profileData in
-                        emitter.onNext(profileData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-            } else {
-                strongSelf.fetchRemoteProfileData()
-                    .subscribe(onNext: { profileData in
-                        emitter.onNext(profileData)
-                    })
-                    .disposed(by: strongSelf.disposeBag)
-                ProfileDomainModel.setIsLatestProfileData(true)
-            }
-            return Disposables.create()
+    func fetchProfileData() {
+        if ProfileDomainModel.isLatestProfileDataValue {
+            fetchLocalProfileData()
+                .subscribe(onNext: { [weak self] profileData in
+                    self?.profileDataObservable.onNext(profileData)
+                })
+                .disposed(by: disposeBag)
+        } else {
+            fetchRemoteProfileData()
+                .subscribe(onNext: { [weak self] profileData in
+                    self?.profileDataObservable.onNext(profileData)
+                })
+                .disposed(by: disposeBag)
+            ProfileDomainModel.setIsLatestProfileData(true)
         }
     }
     
-    func saveProfileOnCoreData(_ profile: ProfileDomainModel) {
-        coreDataManagerRepository.updateProfileData(profile)
+    func saveProfileOnRemoteData(_ profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
+        manageFirebaseFireStoreUseCase.updateProfileData(profile, completion: completion)
+        ProfileDomainModel.setIsLatestProfileData(false)
     }
     
     // MARK: - Private

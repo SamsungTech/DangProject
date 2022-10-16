@@ -22,8 +22,10 @@ enum LoadingState {
 
 protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
-    func saveProfile(_ data: ProfileDomainModel)
+    func saveProfile(_ data: ProfileDomainModel,
+                     completion: @escaping (Bool) -> Void)
     func genderButtonDidTap(_ gender: GenderType)
+    func fetchProfileData()
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -64,15 +66,11 @@ class ProfileViewModel: ProfileViewModelProtocol {
         self.manageFirebaseStoreUseCase = manageFirebaseStoreUseCase
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
         self.profileManagerUseCase = profileManagerUseCase
-        fetchProfile()
+        bindProfileData()
     }
     
-    private func fetchProfile() {
+    func fetchProfileData() {
         profileManagerUseCase.fetchProfileData()
-            .subscribe(onNext: { [weak self] profile in
-                self?.profileDataRelay.accept(profile)
-            })
-            .disposed(by: disposeBag)
     }
     
     func getHeightSelectRowIndex(_ height: Int) -> Int {
@@ -97,14 +95,15 @@ class ProfileViewModel: ProfileViewModelProtocol {
     
     // MARK: - Input
     
-    func saveProfile(_ profile: ProfileDomainModel) {
+    func saveProfile(_ profile: ProfileDomainModel,
+                     completion: @escaping (Bool) -> Void) {
         loadingRelay.accept(.startLoading)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseStoreUseCase.updateProfileData(profile)
+        manageFirebaseStoreUseCase.updateProfileData(profile, completion: completion)
         manageFirebaseStorageUseCase.updateProfileImage(jpegData)
             .subscribe(onNext: { [weak self] updateIsDone in
                 if updateIsDone {
-                    self?.profileManagerUseCase.saveProfileOnCoreData(profile)
+                    self?.profileManagerUseCase.saveProfileOnRemoteData(profile, completion: completion)
                     self?.loadingRelay.accept(.finishLoading)
                 }
             })
@@ -125,6 +124,14 @@ class ProfileViewModel: ProfileViewModelProtocol {
         var changedProfile = profileDataRelay.value
         changedProfile.gender = profileGender
         profileDataRelay.accept(changedProfile)
+    }
+    
+    private func bindProfileData() {
+        profileManagerUseCase.profileDataObservable
+            .subscribe(onNext: { [weak self] profile in
+                self?.profileDataRelay.accept(profile)
+            })
+            .disposed(by: disposeBag)
     }
     
 }
