@@ -35,11 +35,12 @@ class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository 
     
     func uploadImage(_ image: Data) -> Observable<Bool> {
         return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
             let metaData = StorageMetadata()
             metaData.contentType = "image/png"
             self?.storage
                 .reference()
-                .child("\(String(describing: self?.uid))"+"/profileImage.jpg")
+                .child("\(String(describing: strongSelf.uid))"+"/profileImage.jpg")
                 .putData(image, metadata: metaData) { (metaData, error) in
                     if let error = error {
                         print(error.localizedDescription)
