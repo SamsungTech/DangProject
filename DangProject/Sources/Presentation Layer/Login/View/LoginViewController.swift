@@ -13,7 +13,7 @@ import RxSwift
 import RxCocoa
 
 class LoginViewController: UIViewController {
-    private let disposBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     weak var coordinator: LoginCoordinator?
     private let viewModel: LoginViewModel
     
@@ -61,7 +61,7 @@ class LoginViewController: UIViewController {
                     self?.coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation)
                 }
             })
-            .disposed(by: disposBag)
+            .disposed(by: disposeBag)
     }
     
     @objc func handleAuthorizationAppleIDButtonPress() {

@@ -411,6 +411,7 @@ extension InputProfileViewController: UIPickerViewDelegate, UIPickerViewDataSour
         self.view.endEditing(true)
     }
 }
+
 extension InputProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
