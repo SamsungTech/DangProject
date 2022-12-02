@@ -267,7 +267,7 @@ class InputProfileViewController: UIViewController {
         viewModel.readyButtonIsValid
             .bind(onNext: { [unowned self] isReady in
                 if isReady && !nameTextField.text!.isEmpty {
-                    readyButton.backgroundColor = .purple
+                    readyButton.backgroundColor = .circleColorGreen
                     readyButton.isEnabled = true
                 }
             })
