@@ -41,9 +41,7 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
                                                     height: self.profileData.height,
                                                     weight: self.profileData.weight,
                                                     sugarLevel: Int(targetSugar),
-                                                    profileImage: self.profileData.profileImage,
-                                                    gender: self.profileData.gender,
-                                                    birthday: self.profileData.birthday)
+                                                    profileImage: self.profileData.profileImage)
         profileManagerUseCase.saveProfileOnRemoteData(profileData, completion: completion)
     }
     

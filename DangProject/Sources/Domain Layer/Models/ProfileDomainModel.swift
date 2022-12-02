@@ -7,20 +7,13 @@
 
 import UIKit
 
-enum GenderType: String {
-    case male = "남자"
-    case female = "여자"
-}
-
 struct ProfileDomainModel {
     static let empty: Self = .init(uid: "",
                                    name: "",
                                    height: 0,
                                    weight: 0,
                                    sugarLevel: 0,
-                                   profileImage: UIImage(),
-                                   gender: .male,
-                                   birthday: "")
+                                   profileImage: UIImage())
     
     var uid: String
     var name: String
@@ -28,25 +21,19 @@ struct ProfileDomainModel {
     var weight: Int
     var sugarLevel: Int
     var profileImage: UIImage
-    var gender: GenderType
-    var birthday: String
     
     init(uid: String,
          name: String,
          height: Int,
          weight: Int,
          sugarLevel: Int,
-         profileImage: UIImage,
-         gender: GenderType,
-         birthday: String) {
+         profileImage: UIImage) {
         self.uid = uid
         self.name = name
         self.height = height
         self.weight = weight
         self.sugarLevel = sugarLevel
         self.profileImage = profileImage
-        self.gender = gender
-        self.birthday = birthday
     }
     
     init(_ profileEntity: ProfileEntity) {
@@ -56,8 +43,6 @@ struct ProfileDomainModel {
         self.height = Int(profileEntity.height)
         self.weight = Int(profileEntity.weight)
         self.sugarLevel = Int(profileEntity.sugarLevel)
-        self.gender = Self.convertStringToGenderType(profileEntity.gender!)
-        self.birthday = profileEntity.birthday ?? ""
     }
     
 }
@@ -72,13 +57,5 @@ extension ProfileDomainModel {
     
     static func setIsLatestProfileImageData(_ data: Bool) {
         self.isLatestProfileImageDataValue = data
-    }
-
-    static func convertStringToGenderType(_ gender: String) -> GenderType {
-        if gender == GenderType.male.rawValue {
-            return GenderType.male
-        } else {
-            return GenderType.female
-        }
     }
 }

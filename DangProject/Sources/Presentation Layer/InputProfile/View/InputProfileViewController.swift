@@ -21,13 +21,9 @@ class InputProfileViewController: UIViewController {
         return label
     }()
     
-    private lazy var changeProfileButton: UIButton = {
-        let button = UIButton()
-        let changeProfileButtonConfiguration = UIImage.SymbolConfiguration(pointSize: 100, weight: .light, scale: .large)
-        let profileImage = UIImage(systemName: "person.crop.circle.badge.plus", withConfiguration: changeProfileButtonConfiguration)
-        button.setImage(profileImage, for: .normal)
-        button.tintColor = .purple
-        button.addTarget(self, action: #selector(changeProfileButtonTapped), for: .touchUpInside)
+    private lazy var profileImageButton: ProfileImageButton = {
+        let button = ProfileImageButton()
+        button.delegate = self
         return button
     }()
     
@@ -36,6 +32,14 @@ class InputProfileViewController: UIViewController {
         picker.sourceType = .photoLibrary
         picker.allowsEditing = true
         return picker
+    }()
+    
+    private lazy var birthdayPickerView: UIDatePicker = {
+       let pickerView = UIDatePicker()
+        pickerView.datePickerMode = .date
+        pickerView.locale = Locale(identifier: "ko-KR")
+        pickerView.preferredDatePickerStyle = .wheels
+        return pickerView
     }()
     
     private lazy var heightPickerView: UIPickerView = {
@@ -53,6 +57,7 @@ class InputProfileViewController: UIViewController {
         pickerView.tag = 2
         return pickerView
     }()
+    
     private lazy var nameTextField = self.createTextField()
     private lazy var heightTextField = self.createTextField()
     private lazy var weightTextField = self.createTextField()
@@ -61,12 +66,15 @@ class InputProfileViewController: UIViewController {
     private lazy var nameInputSection = self.createInputSection(text: "이름",
                                                                 withTextField: nameTextField,
                                                                 withPickerView: nil)
+    
     private lazy var heightInputSection = self.createInputSection(text: "키",
                                                                   withTextField: heightTextField,
                                                                   withPickerView: heightPickerView)
     private lazy var weightInputSection = self.createInputSection(text: "몸무게",
                                                                   withTextField: weightTextField,
                                                                   withPickerView: weightPickerView)
+    
+    
     private lazy var sugarInputSection = self.createInputSection(text: "목표 당 수치",
                                                                  withTextField: sugarTextField,
                                                                  withPickerView: sugarLevelPickerView)
@@ -116,7 +124,7 @@ class InputProfileViewController: UIViewController {
     // MARK: - layoutViews
     private func layoutViews() {
         layoutWelcomeLabel()
-        layoutChangeProfileButton()
+        layoutProfileImageButton()
         layoutNameInputSection()
         layoutHeightInputSection()
         layoutWeightInputSection()
@@ -135,15 +143,14 @@ class InputProfileViewController: UIViewController {
         ])
     }
     
-    private func layoutChangeProfileButton() {
-        view.addSubview(changeProfileButton)
-        changeProfileButton.translatesAutoresizingMaskIntoConstraints = false
+    private func layoutProfileImageButton() {
+        view.addSubview(profileImageButton)
+        profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            changeProfileButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor,
-                                                     constant: self.view.yValueRatio(10)),
-            changeProfileButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            changeProfileButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(140)),
-            changeProfileButton.widthAnchor.constraint(equalToConstant: self.view.yValueRatio(140))
+            profileImageButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: yValueRatio(30)),
+            profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(125)),
+            profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
         ])
     }
     
@@ -151,7 +158,7 @@ class InputProfileViewController: UIViewController {
         view.addSubview(nameInputSection)
         nameInputSection.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            nameInputSection.topAnchor.constraint(equalTo:changeProfileButton.bottomAnchor),
+            nameInputSection.topAnchor.constraint(equalTo:profileImageButton.bottomAnchor),
             nameInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             nameInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
             nameInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
@@ -250,8 +257,7 @@ class InputProfileViewController: UIViewController {
     private func bindProfileImageView() {
         viewModel.profileImageObservable
             .bind(onNext: { [unowned self] image in
-                changeProfileButton.roundCorners(cornerRadius: changeProfileButton.frame.width/2)
-                self.changeProfileButton.setImage(image, for: .normal)
+                self.profileImageButton.profileImageView.image = image
                 imagePicker.dismiss(animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
@@ -296,8 +302,8 @@ class InputProfileViewController: UIViewController {
     private func createTextField() -> UITextField {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
-        textField.tintColor = .purple
-        textField.backgroundColor = .systemGray6
+        textField.tintColor = .darkGray
+        textField.backgroundColor = .profileImageBackgroundColor
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         textField.addPadding(left: 5)
@@ -424,5 +430,15 @@ extension InputProfileViewController: UIImagePickerControllerDelegate, UINavigat
             newImage = possibleImage
         }
         viewModel.changeProfileImage(image: newImage)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        imagePicker.dismiss(animated: true)
+    }
+}
+
+extension InputProfileViewController: ProfileImageButtonProtocol {
+    func profileImageButtonTapped() {
+        self.present(imagePicker, animated: true)
     }
 }

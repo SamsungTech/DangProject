@@ -107,7 +107,7 @@ extension UIColor {
     
     // MARK: ProfileTextField
     static var profileImageBackgroundColor: UIColor {
-        return UIColor.init(red: 35/255, green: 36/255, blue: 41/255, alpha: 1.0)
+        return UIColor.init(red: 35/255, green: 36/255, blue: 41/255, alpha: 0.1)
     }
     
     static var profileTextFieldBackgroundColor: UIColor {
@@ -116,14 +116,6 @@ extension UIColor {
     
     static var profileLineColor: UIColor {
         return UIColor.init(red: 33/255, green: 31/255, blue: 38/255, alpha: 1.0)
-    }
-    
-    static var genderBackgroundViewColor: UIColor {
-        return UIColor.init(red: 32/255, green: 33/255, blue: 40/255, alpha: 1.0)
-    }
-    
-    static var genderSelectedBackgroundColor: UIColor {
-        return UIColor.init(red: 60/255, green: 60/255, blue: 70/255, alpha: 1.0)
     }
     
     // MARK: ButtonColor

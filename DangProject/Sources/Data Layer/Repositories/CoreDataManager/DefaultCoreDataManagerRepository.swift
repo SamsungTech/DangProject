@@ -194,8 +194,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         let image = data.profileImage.pngData()
         
         profileEntity.name = data.name
-        profileEntity.birthday = data.birthday
-        profileEntity.gender = data.gender.rawValue
         profileEntity.sugarLevel = Int32(data.sugarLevel)
         profileEntity.weight = Int32(data.weight)
         profileEntity.height = Int32(data.height)

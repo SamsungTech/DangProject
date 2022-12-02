@@ -43,13 +43,6 @@ class ProfileViewController: CustomViewController {
     
     private lazy var profileStackView: ProfileInformationStackView = {
         let stackView = ProfileInformationStackView(frame: .zero, viewModel: viewModel)
-        if #available(iOS 13.4, *) {
-            stackView.birthDatePickerView.pickerView.addTarget(
-                self,
-                action: #selector(datePickerValueChanged(_:)),
-                for: UIControl.Event.valueChanged
-            )
-        }
         return stackView
     }()
     
@@ -189,18 +182,6 @@ class ProfileViewController: CustomViewController {
                 self?.coordinator?.popViewController()
             }
             .disposed(by: disposeBag)
-        
-        profileStackView.genderView.maleButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.genderButtonDidTap(.male)
-            }
-            .disposed(by: disposeBag)
-        
-        profileStackView.genderView.femaleButton.rx.tap
-            .bind { [weak self] in
-                self?.viewModel.genderButtonDidTap(.female)
-            }
-            .disposed(by: disposeBag)
     }
     
     private func bindSaveButton() {
@@ -209,24 +190,14 @@ class ProfileViewController: CustomViewController {
                 guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
-                      let weightData = self?.profileStackView.weightView.profileTextField.text,
-                      let gender = self?.viewModel.profileGender else { return }
-                
-                var birthData = ""
-                if #available(iOS 13.4, *) {
-                    birthData = self?.profileStackView.birthDatePickerView.profileTextField.text ?? ""
-                } else {
-                    birthData = self?.profileStackView.birthDateTextFieldView.profileTextField.text ?? ""
-                }
+                      let weightData = self?.profileStackView.weightView.profileTextField.text else { return }
                 
                 self?.viewModel.saveProfile(ProfileDomainModel(uid: "",
                                                                name: nameData,
                                                                height: Int(heightData) ?? 0,
                                                                weight: Int(weightData) ?? 0,
                                                                sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
-                                                               profileImage: profileImage,
-                                                               gender: gender,
-                                                               birthday: birthData)) { _ in
+                                                               profileImage: profileImage)) { _ in
                 }
             }
             .disposed(by: disposeBag)
@@ -242,15 +213,7 @@ class ProfileViewController: CustomViewController {
                 self?.profileStackView.heightPickerView.selectRow(heightIndex, inComponent: 0, animated: false)
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
                 self?.profileStackView.weightPickerView.selectRow(weightIndex, inComponent: 0, animated: false)
-                if #available(iOS 13.4, *) {
-                    guard let date = self?.viewModel.convertBirthStringToDate($0.birthday) else { return }
-                    self?.profileStackView.birthDatePickerView.profileTextField.text = $0.birthday
-                    self?.profileStackView.birthDatePickerView.pickerView.date = date
-                } else {
-                    self?.profileStackView.birthDateTextFieldView.profileTextField.text = $0.birthday
-                }
                 self?.profileImageButton.profileImageView.image = $0.profileImage
-                self?.configureGenderView($0.gender)
             })
             .disposed(by: disposeBag)
     }
@@ -267,14 +230,6 @@ class ProfileViewController: CustomViewController {
                 }
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func configureGenderView(_ gender: GenderType) {
-        if viewModel.profileIsFirstShowing {
-            profileStackView.genderView.drawGenderView(gender)
-        } else {
-            profileStackView.genderView.animateGenderView(gender)
-        }
     }
     
     private func bindLoadingState() {
@@ -294,11 +249,6 @@ class ProfileViewController: CustomViewController {
     
     @objc private func scrollViewDidTap(_ sender: UIScrollView) {
         self.view.endEditing(true)
-    }
-    
-    @available(iOS 13.4, *)
-    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
-        profileStackView.birthDatePickerView.profileTextField.text = viewModel.convertBirthDateToString(profileStackView.birthDatePickerView.pickerView.date)
     }
 }
 

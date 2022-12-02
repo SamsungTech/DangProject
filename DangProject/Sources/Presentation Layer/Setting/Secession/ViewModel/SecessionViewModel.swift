@@ -20,7 +20,6 @@ protocol SecessionViewModelProtocol: SecessionViewModelInputProtocol, SecessionV
 }
 
 class SecessionViewModel: SecessionViewModelProtocol {
-    
     let resignUseCase: ResignUseCase
     
     init(resignUseCase: ResignUseCase) {

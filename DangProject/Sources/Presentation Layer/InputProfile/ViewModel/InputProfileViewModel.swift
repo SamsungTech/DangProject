@@ -56,8 +56,8 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
     
     private func checkReadyButtonIsValid() {
         PublishRelay.combineLatest(heightObservable.asObservable(),
-                                                weightObservable.asObservable(),
-                                                sugarObservable.asObservable())
+                                   weightObservable.asObservable(),
+                                   sugarObservable.asObservable())
         .bind(onNext: { [weak self] (height, weight, sugar) in
             self?.readyButtonIsValid.accept(true)
         })
@@ -108,16 +108,15 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
         }
     }
     
-    func submitButtonTapped(name: String, completion: @escaping (Bool) -> Void) {
+    func submitButtonTapped(name: String,
+                            completion: @escaping (Bool) -> Void) {
         guard let userDefaultsUid = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
         let profile = ProfileDomainModel(uid: userDefaultsUid,
                                          name: name,
                                          height: heightValue,
                                          weight: weightValue,
                                          sugarLevel: sugarValue,
-                                         profileImage: imageValue,
-                                         gender: .male,
-                                         birthday: "")
+                                         profileImage: imageValue)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
         manageFirebaseFireStoreUseCase.uploadProfile(profile: profile, completion: completion)
         manageFirebaseStorageUseCase.uploadProfileImage(jpegData)

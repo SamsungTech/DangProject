@@ -24,7 +24,6 @@ protocol ProfileViewModelInputProtocol {
     func calculateScrollViewState(yPosition: CGFloat)
     func saveProfile(_ data: ProfileDomainModel,
                      completion: @escaping (Bool) -> Void)
-    func genderButtonDidTap(_ gender: GenderType)
     func fetchProfileData()
 }
 
@@ -32,7 +31,6 @@ protocol ProfileViewModelOutputProtocol {
     var heights: [String] { get }
     var weights: [String] { get }
     var scrollValue: BehaviorRelay<ScrollState> { get }
-    var profileGender: GenderType { get }
     var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
     var loadingRelay: PublishRelay<LoadingState> { get }
     var profileIsFirstShowing: Bool { get }
@@ -54,7 +52,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
     private let disposeBag = DisposeBag()
     var scrollValue = BehaviorRelay<ScrollState>(value: .top)
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
-    lazy var profileGender: GenderType = profileDataRelay.value.gender
     let heights: [String] = [Int](50...200).map{("\($0)")}
     let weights: [String] = [Int](30...150).map{("\($0)")}
     let loadingRelay = PublishRelay<LoadingState>()
@@ -116,14 +113,6 @@ class ProfileViewModel: ProfileViewModelProtocol {
         } else {
             scrollValue.accept(.scrolling)
         }
-    }
-
-    func genderButtonDidTap(_ gender: GenderType) {
-        profileIsFirstShowing = false
-        profileGender = gender
-        var changedProfile = profileDataRelay.value
-        changedProfile.gender = profileGender
-        profileDataRelay.accept(changedProfile)
     }
     
     private func bindProfileData() {

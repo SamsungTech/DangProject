@@ -23,39 +23,9 @@ class ProfileInformationStackView: UIStackView {
         return pickerView
     }()
     
-    lazy var birthDatePickerView: DateTextFieldView = {
-        let view = DateTextFieldView()
-        view.profileLabel.text = "생년월일"
-        view.frame = CGRect(x: .zero,
-                            y: .zero,
-                            width: calculateXMax(),
-                            height: yValueRatio(100))
-        return view
-    }()
-    
     lazy var nameView: NameTextField = {
         let view = NameTextField()
         view.profileLabel.text = "이름"
-        view.frame = CGRect(x: .zero,
-                            y: .zero,
-                            width: calculateXMax(),
-                            height: yValueRatio(100))
-        return view
-    }()
-    
-    lazy var birthDateTextFieldView: BirthDateTextFieldView = {
-        let view = BirthDateTextFieldView()
-        view.profileLabel.text = "생년월일"
-        view.profileTextField.placeholder = "예) 19960609"
-        view.frame = CGRect(x: .zero,
-                            y: .zero,
-                            width: calculateXMax(),
-                            height: yValueRatio(100))
-        return view
-    }()
-    
-    lazy var genderView: GenderView = {
-        let view = GenderView()
         view.frame = CGRect(x: .zero,
                             y: .zero,
                             width: calculateXMax(),
@@ -103,12 +73,7 @@ extension ProfileInformationStackView {
     }
     
     private func setUpStackView() {
-        if #available(iOS 13.4, *) {
-            views = [ nameView, birthDatePickerView, genderView, heightView, weightView ]
-        } else {
-            views = [ nameView, birthDateTextFieldView, genderView, heightView, weightView ]
-        }
-        
+        views = [ nameView, heightView, weightView ]
         self.axis = .vertical
         self.distribution = .fillEqually
         self.spacing = 10

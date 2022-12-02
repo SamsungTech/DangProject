@@ -147,15 +147,7 @@ extension GenderView {
         femaleButton.setTitleColor(.customLabelColorBlack3, for: .normal)
         maleButton.setTitleColor(.customLabelColorBlack, for: .normal)
     }
-    
-    func animateGenderView(_ gender: GenderType) {
-        switch gender {
-        case .male:
-            animateMaleView()
-        case .female:
-            animateFemaleView()
-        }
-    }
+
     
     private func animateMaleView() {
         leadingConstraint?.constant = xValueRatio(5)
