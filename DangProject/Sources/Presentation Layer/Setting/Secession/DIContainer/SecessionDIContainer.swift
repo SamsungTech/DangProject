@@ -13,6 +13,19 @@ class SecessionDIContainer {
     }
     
     func makeSecessionViewModel() -> SecessionViewModel {
-        return SecessionViewModel()
+        return SecessionViewModel(resignUseCase: makeResignUseCase())
+    }
+    
+    func makeResignUseCase() -> ResignUseCase {
+        return DefaultResignUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                    fireStoreManagerRepository: makeFireStoreManagerRepository())
+    }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
+    }
+    
+    func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
+        return DefaultFireStoreManagerRepository()
     }
 }

@@ -24,7 +24,6 @@ enum EatenTimeAlertController: String {
 }
 
 class AlarmViewController: CustomViewController {
-    
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
     private var viewModel: AlarmViewModelProtocol

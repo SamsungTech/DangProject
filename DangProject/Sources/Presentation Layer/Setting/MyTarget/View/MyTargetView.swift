@@ -10,7 +10,7 @@ import UIKit
 class MyTargetView: UIButton {
     private lazy var targetLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customFontColorGray
         label.font = UIFont.systemFont(ofSize: xValueRatio(18), weight: .semibold)
         label.text = "당신이 원하는 당 수치를 적어주세요."
         return label
@@ -24,7 +24,7 @@ class MyTargetView: UIButton {
     
     lazy var targetNumberTextField: UITextField = {
         let textField = UITextField()
-        textField.textColor = .white
+        textField.textColor = .customFontColorBlack
         textField.font = UIFont.systemFont(ofSize: xValueRatio(80), weight: .semibold)
         textField.textAlignment = .center
         textField.keyboardType = .numberPad
@@ -36,13 +36,13 @@ class MyTargetView: UIButton {
     
     private lazy var textFieldUnderLine: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .customFontColorBlack
         return view
     }()
     
     private lazy var numericalUnit: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .customFontColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(18), weight: .semibold)
         label.text = "그램"
         return label
@@ -50,7 +50,7 @@ class MyTargetView: UIButton {
     
     private lazy var cheeringLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = .customFontColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(18), weight: .semibold)
         label.text = "You Can Do Anything!😉"
         label.alpha = 0

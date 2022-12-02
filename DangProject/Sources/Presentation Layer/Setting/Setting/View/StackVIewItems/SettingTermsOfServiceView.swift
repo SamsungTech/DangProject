@@ -11,7 +11,7 @@ class SettingTermsOfServiceView: UIButton {
     private(set) lazy var settingTermLabel: UILabel = {
         let label = UILabel()
         label.text = "이용약관"
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customLabelColorBlack
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
         return label
     }()

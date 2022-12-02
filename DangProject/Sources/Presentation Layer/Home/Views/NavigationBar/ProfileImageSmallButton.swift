@@ -31,8 +31,8 @@ class ProfileImageSmallButton: UIButton {
     private func setupProfileImageSmallButton() {
         self.viewRadius(cornerRadius: xValueRatio(20))
         self.setImage(UIImage(systemName: "person.fill"), for: .normal)
-        self.tintColor = .white
-        self.layer.borderColor = UIColor.white.cgColor
+        self.tintColor = .customFontColorBlack
+        self.layer.borderColor = UIColor.black.cgColor
         self.layer.borderWidth = 0.2
     }
     

@@ -39,16 +39,16 @@ class BatteryView: UIView {
         self.roundCorners(cornerRadius: xValueRatio(30),
                           maskedCorners: [.layerMaxXMaxYCorner, .layerMinXMaxYCorner])
         
-        percentNumberLabel.textColor = .white
+        percentNumberLabel.textColor = .customFontColorBlack
         percentNumberLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(50))
         percentNumberLabel.textAlignment = .right
         
-        percentLabel.textColor = .white
+        percentLabel.textColor = .customFontColorBlack
         percentLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(30))
         percentLabel.textAlignment = .center
         percentLabel.text = "%"
         
-        targetSugarLabel.textColor = .white
+        targetSugarLabel.textColor = .customFontColorBlack
         targetSugarLabel.font = UIFont.systemFont(ofSize: xValueRatio(20))
     }
     

@@ -29,16 +29,16 @@ class EatenFoodsCollectionViewCell: UICollectionViewCell {
         contentView.layer.masksToBounds = true
         contentView.layer.cornerRadius = xValueRatio(20)
         
-        foodNameLabel.textColor = .white
+        foodNameLabel.textColor = .customFontColorBlack
         foodNameLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
         foodNameLabel.numberOfLines = 0
         foodNameLabel.textAlignment = .center
         
-        amountLabel.textColor = .white
+        amountLabel.textColor = .customFontColorBlack
         amountLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(13))
         amountLabel.textAlignment = .center
         
-        dangLabel.textColor = .white
+        dangLabel.textColor = .customFontColorBlack
         dangLabel.font = UIFont.systemFont(ofSize: xValueRatio(13))
         dangLabel.textAlignment = .center
     }

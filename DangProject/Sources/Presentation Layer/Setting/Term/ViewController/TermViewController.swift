@@ -10,7 +10,7 @@ import RxSwift
 
 class TermViewController: CustomViewController {
     var coordinator: TermCoordinator?
-    private var viewModel: TermViewModel?
+    private var viewModel: TermViewModel
     private let disposeBag = DisposeBag()
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
@@ -18,9 +18,19 @@ class TermViewController: CustomViewController {
         return navigationBar
     }()
     
+    private lazy var termsAndConditionsTextField: UITextView = {
+        let textView = UITextView()
+        textView.font = UIFont.systemFont(ofSize: xValueRatio(18), weight: .bold)
+        textView.textColor = UIColor.customLabelColorBlack2
+        textView.textAlignment = .left
+        textView.text = viewModel.personalInformation
+        textView.isEditable = false
+        return textView
+    }()
+    
     init(viewModel: TermViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -36,15 +46,16 @@ class TermViewController: CustomViewController {
 
 extension TermViewController {
     private func configureUI() {
-        setUpView()
-        setUpNavigationBar()
+        setupView()
+        setupNavigationBar()
+        setupTermsAndConditionsLabel()
     }
     
-    private func setUpView() {
+    private func setupView() {
         view.backgroundColor = .homeBoxColor
     }
     
-    private func setUpNavigationBar() {
+    private func setupNavigationBar() {
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -52,6 +63,17 @@ extension TermViewController {
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(90))
+        ])
+    }
+    
+    private func setupTermsAndConditionsLabel() {
+        view.addSubview(termsAndConditionsTextField)
+        termsAndConditionsTextField.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            termsAndConditionsTextField.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            termsAndConditionsTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            termsAndConditionsTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            termsAndConditionsTextField.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     

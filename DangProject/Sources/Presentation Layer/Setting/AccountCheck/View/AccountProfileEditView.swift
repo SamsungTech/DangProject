@@ -10,7 +10,7 @@ import UIKit
 class AccountProfileEditView: UIButton {
     private lazy var itemLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.7)
+        label.textColor = .customFontColorGray
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
         label.text = "계정"
         return label
@@ -18,7 +18,7 @@ class AccountProfileEditView: UIButton {
     
     private(set) lazy var accountLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .init(white: 1, alpha: 0.8)
+        label.textColor = .customFontColorGray
         label.font = UIFont.systemFont(ofSize: xValueRatio(16), weight: .semibold)
         label.text = UserInfoKey.getUserDefaultsUID
         return label

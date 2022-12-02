@@ -16,7 +16,7 @@ class TabBarController: UITabBarController {
     private lazy var homeItemButton: TabBarItem = {
         let button = TabBarItem()
         button.tag = 0
-        button.tintColor = .white
+        button.tintColor = .black
         button.itemImageView.image = UIImage(systemName: "house.fill")
         button.itemTitleLabel.text = "홈"
         button.addTarget(self, action: #selector(itemTapped(_:)), for: .touchUpInside)
@@ -25,7 +25,7 @@ class TabBarController: UITabBarController {
     
     private lazy var settingItemButton: TabBarItem = {
         let button = TabBarItem()
-        button.tintColor = .white
+        button.tintColor = .black
         button.tag = 2
         button.itemImageView.image = UIImage(systemName: "gearshape")
         button.itemTitleLabel.text = "설정"
@@ -36,7 +36,7 @@ class TabBarController: UITabBarController {
      lazy var backgroundView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 0.2
-        view.layer.borderColor = UIColor.gray.cgColor
+        view.layer.borderColor = UIColor.white.cgColor
         view.backgroundColor = .homeBoxColor
         return view
     }()

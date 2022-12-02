@@ -18,7 +18,7 @@ class ProfileImageButton: UIView {
         view.backgroundColor = .profileImageBackgroundColor
         view.viewRadius(cornerRadius: xValueRatio(62.5))
         view.layer.borderWidth = 0.2
-        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.layer.borderColor = UIColor.darkGray.cgColor
         return view
     }()
     
@@ -37,7 +37,7 @@ class ProfileImageButton: UIView {
     
     private lazy var profileSideBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .init(red: 19/255, green: 18/255, blue: 20/255, alpha: 1)
+        view.backgroundColor = .homeBoxColor
         view.viewRadius(cornerRadius: xValueRatio(17.5))
         return view
     }()
@@ -45,9 +45,9 @@ class ProfileImageButton: UIView {
     private lazy var profileSideImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "plus.circle.fill")
-        imageView.tintColor = .white
+        imageView.tintColor = .customLabelColorBlack
         imageView.layer.borderWidth = 3
-        imageView.layer.borderColor = .init(red: 19/255, green: 18/255, blue: 20/255, alpha: 1)
+        imageView.layer.borderColor = UIColor.homeBoxColor.cgColor
         imageView.viewRadius(cornerRadius: xValueRatio(17.5))
         return imageView
     }()
