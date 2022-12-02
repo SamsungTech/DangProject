@@ -42,12 +42,12 @@ protocol InputProfileViewModelProtocol: InputProfileViewModelInput, InputProfile
 
 class InputProfileViewModel: InputProfileViewModelProtocol {
     // MARK: - Init
-    private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
+    private let profileManageUseCase: ProfileManagerUseCase
     private let manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase
     
-    init(manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase,
+    init(profileManageUseCase: ProfileManagerUseCase,
          manageFirebaseStorageUseCase: ManageFirebaseStorageUseCase) {
-        self.manageFirebaseFireStoreUseCase = manageFirebaseFireStoreUseCase
+        self.profileManageUseCase = profileManageUseCase
         self.manageFirebaseStorageUseCase = manageFirebaseStorageUseCase
         checkReadyButtonIsValid()
     }
@@ -118,7 +118,12 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          sugarLevel: sugarValue,
                                          profileImage: imageValue)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseFireStoreUseCase.uploadProfile(profile: profile, completion: completion)
-        manageFirebaseStorageUseCase.uploadProfileImage(jpegData)
+        manageFirebaseStorageUseCase.updateProfileImage(jpegData)
+            .subscribe(onNext: { data in
+                if data {
+                    self.profileManageUseCase.saveProfileOnRemoteData(profile, completion: completion)
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }

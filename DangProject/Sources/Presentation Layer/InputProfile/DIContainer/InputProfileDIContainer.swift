@@ -7,16 +7,22 @@ class InputProfileDIContainer {
     }
     
     func makeInputProfileViewModel() -> InputProfileViewModel {
-        return InputProfileViewModel(manageFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase(),
+        return InputProfileViewModel(profileManageUseCase: makeProfileManagerUseCase(),
                                      manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
-    func makeManageFirebaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
-        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
+    func makeProfileManagerUseCase() -> ProfileManagerUseCase {
+        return DefaultProfileManagerUseCase(coreDataManagerRepository: makeCoreDataManagerRepository(),
+                                            manageFirebaseFireStoreUseCase: makeFireBaseFireStoreUseCase(),
+                                            manageFirebaseStorageUseCase: makeFirebaseStorageUseCase())
     }
     
     func makeFirebaseStorageUseCase() -> ManageFirebaseStorageUseCase {
         return DefaultManageFireBaseStorageUseCase(firebaseStorageManagerRepository: makeFirebaseStorageManagerRepository())
+    }
+    
+    func makeFireBaseFireStoreUseCase() -> ManageFirebaseFireStoreUseCase {
+        return DefaultManageFirebaseFireStoreUseCase(fireStoreManagerRepository: makeFireStoreManagerRepository())
     }
     
     func makeFireStoreManagerRepository() -> FireStoreManagerRepository {
@@ -25,5 +31,9 @@ class InputProfileDIContainer {
     
     func makeFirebaseStorageManagerRepository() -> FireBaseStorageManagerRepository {
         return DefaultFirebaseStorageManagerRepository()
+    }
+    
+    func makeCoreDataManagerRepository() -> CoreDataManagerRepository {
+        return DefaultCoreDataManagerRepository()
     }
 }
