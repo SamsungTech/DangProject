@@ -27,19 +27,6 @@ class ProfileViewController: CustomViewController {
         return button
     }()
     
-    private lazy var profileScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(scrollViewDidTap(_:)))
-        tapGesture.numberOfTapsRequired = 1
-        tapGesture.isEnabled = true
-        tapGesture.cancelsTouchesInView = false
-        scrollView.addGestureRecognizer(tapGesture)
-        scrollView.delegate = self
-        scrollView.contentInsetAdjustmentBehavior = .never
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.maxX,
-                                        height: overSizeYValueRatio(1200))
-        return scrollView
-    }()
     
     private lazy var profileStackView: ProfileInformationStackView = {
         let stackView = ProfileInformationStackView(frame: .zero, viewModel: viewModel)
@@ -87,7 +74,6 @@ class ProfileViewController: CustomViewController {
     private func configureUI() {
         setupViewController()
         setupProfileNavigationBar()
-        setupScrollView()
         setupProfileImageButton()
         setupProfileStackView()
         setupSaveButton()
@@ -111,22 +97,11 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
-    private func setupScrollView() {
-        view.addSubview(profileScrollView)
-        profileScrollView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileScrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            profileScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            profileScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            profileScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-    
     private func setupProfileImageButton() {
-        profileScrollView.addSubview(profileImageButton)
+        view.addSubview(profileImageButton)
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileImageButton.topAnchor.constraint(equalTo: profileScrollView.topAnchor, constant: yValueRatio(150)),
+            profileImageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: yValueRatio(150)),
             profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(125)),
             profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
@@ -134,17 +109,17 @@ class ProfileViewController: CustomViewController {
     }
     
     private func setupProfileStackView() {
-        profileScrollView.addSubview(profileStackView)
+        view.addSubview(profileStackView)
         profileStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             profileStackView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: yValueRatio(70)),
             profileStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
-            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(600))
+            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(400))
         ])
     }
     
     private func setupSaveButton() {
-        profileScrollView.addSubview(saveButton)
+        view.addSubview(saveButton)
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),

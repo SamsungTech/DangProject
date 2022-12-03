@@ -21,16 +21,15 @@ class GraphView: UIView {
     private var graphHeightConstants: [NSLayoutConstraint] = []
     private var averageGramBottomAnchorConstants: [NSLayoutConstraint] = []
     private var graphBackgroundViews: [UIView] = []
-    private var graphViews: [UIView] = []
     private var graphLabels: [UILabel] = []
     private var averageGramLabels: [UILabel] = []
     
     init(viewModel: GraphViewModelProtocol) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)
+        createDefaultGraph()
         layout()
         configure()
-        createDefaultGraph()
         bindingGraphDatas()
     }
     
@@ -58,7 +57,7 @@ class GraphView: UIView {
         graphStackView.backgroundColor = .clear
         graphStackView.spacing = xValueRatio(20)
         graphStackView.axis = .horizontal
-        graphStackView.distribution = .fillProportionally
+        graphStackView.distribution = .fillEqually
         graphStackView.alignment = .bottom
         
         graphNameStackView.backgroundColor = .clear
@@ -134,7 +133,6 @@ class GraphView: UIView {
             graphView.backgroundColor = .customLabelColorBlack
             graphView.viewRadius(cornerRadius: xValueRatio(13))
             graphView.translatesAutoresizingMaskIntoConstraints = false
-            graphViews.append(graphView)
             graphHeightConstants.append(graphView.heightAnchor.constraint(equalToConstant: 0))
             graphHeightConstants[i].isActive = true
             graphStackView.addArrangedSubview(graphView)

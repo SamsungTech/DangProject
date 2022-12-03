@@ -45,7 +45,6 @@ class AppCoordinator: Coordinator {
         fireStoreManager.readUIDInFirestore(uid: userDefaultsUID) { [weak self] uid in
             if uid == userDefaultsUID {
                 self?.startTabbar()
-                self?.startInputProfile()
             }
             else {
                 self?.startLogin()

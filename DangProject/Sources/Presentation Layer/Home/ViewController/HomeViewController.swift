@@ -94,11 +94,12 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     }
     
     private func layout() {
-        [ homeScrollView ].forEach() { view.addSubview($0) }
-        [ customNavigationBar, calendarView, homeStackView ].forEach() { homeScrollView.addSubview($0) }
         [ batteryView, eatenFoodsTitleView, eatenFoodsView,
           graphTitleView, graphView ].forEach() { viewsInStackView.append($0) }
         viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
+        [ homeScrollView ].forEach() { view.addSubview($0) }
+        [ customNavigationBar, calendarView, homeStackView ].forEach() { homeScrollView.addSubview($0) }
+        
         
         homeScrollView.translatesAutoresizingMaskIntoConstraints = false
         homeScrollView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -116,7 +117,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         calendarView.translatesAutoresizingMaskIntoConstraints = false
         calendarViewTopAnchor.isActive = true
         calendarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        calendarView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        calendarView.trailingAnchor.constraint(equalTo: homeScrollView.trailingAnchor).isActive = true
         calendarView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
         homeScrollView.sendSubviewToBack(calendarView)
         
