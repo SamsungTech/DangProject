@@ -13,6 +13,7 @@ import RxRelay
 class BatteryViewModel {
     private let disposeBag = DisposeBag()
     let batteryEntityObservable: BehaviorRelay<(Double, Int)> = BehaviorRelay(value: (0.0, 0))
+    var checkDataDelegate: CheckDataProtocol?
     
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
@@ -48,6 +49,7 @@ class BatteryViewModel {
         Observable.zip(totalSugarSumObservable, targetSugarObservable)
             .subscribe(onNext: { [weak self] totalSugarSum, targetSugar in
                 self?.batteryEntityObservable.accept((totalSugarSum, targetSugar))
+                self?.checkDataDelegate?.checkData()
             })
             .disposed(by: disposeBag)
     }

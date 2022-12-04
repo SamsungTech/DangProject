@@ -14,6 +14,11 @@ enum CalendarScaleState {
     case expand
     case revert
 }
+
+protocol CheckDataProtocol {
+    func checkData()
+}
+
 protocol HomeViewModelInputProtocol {
     func fetchProfileData()
     func fetchCurrentMonthData(dateComponents: DateComponents)
@@ -22,11 +27,13 @@ protocol HomeViewModelInputProtocol {
     func fetchSelectedEatenFoods(_ dateComponents: DateComponents)
     func fetchGraphData(from dateComponents: DateComponents)
     func changeCellIndexColumn(cellIndexColumn: Int)
+    func plusViewsDataCount()
 }
 
 protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
     var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
+    var loading: PublishRelay<LoadingState> { get}
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
     func getEatenFoodsTitleText(dateComponents: DateComponents) -> String
 }
@@ -40,7 +47,9 @@ class HomeViewModel: HomeViewModelProtocol {
     // MARK: - Init
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     private let profileManagerUseCase: ProfileManagerUseCase
+    private var isViewsInHome = 0
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
+    let loading = PublishRelay<LoadingState>()
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
          profileManagerUseCase: ProfileManagerUseCase) {
@@ -80,6 +89,14 @@ class HomeViewModel: HomeViewModelProtocol {
     
     func changeCellIndexColumn(cellIndexColumn: Int) {
         self.calendarViewColumn = cellIndexColumn
+    }
+    
+    func plusViewsDataCount() {
+        isViewsInHome += 1
+        if isViewsInHome == 3 {
+            loading.accept(.finishLoading)
+            isViewsInHome = 0
+        }
     }
     
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String {

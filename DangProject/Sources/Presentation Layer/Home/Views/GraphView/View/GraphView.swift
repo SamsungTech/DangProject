@@ -24,6 +24,8 @@ class GraphView: UIView {
     private var graphLabels: [UILabel] = []
     private var averageGramLabels: [UILabel] = []
     
+    var dataCheckDelegate: CheckDataProtocol?
+    
     init(viewModel: GraphViewModelProtocol) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)
@@ -166,6 +168,7 @@ class GraphView: UIView {
     private func bindingGraphDatas() {
         viewModel.graphDataRelay
             .subscribe(onNext: { [weak self] dailyData in
+                self?.dataCheckDelegate?.checkData()
                 self?.animateGraphView(dailyData)
             })
             .disposed(by: disposeBag)

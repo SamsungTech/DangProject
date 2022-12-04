@@ -19,6 +19,7 @@ class BatteryView: UIView {
     private var animationLineLayer = CAShapeLayer()
     private var percentLineLayer = CAShapeLayer()
     private var percentLineBackgroundLayer = CAShapeLayer()
+    var dataCheckDelegate: CheckDataProtocol?
     
     init(viewModel: BatteryViewModel) {
         self.viewModel = viewModel
@@ -110,6 +111,7 @@ class BatteryView: UIView {
         viewModel.batteryEntityObservable
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] totalSugarSum, targetSugar in
+                self?.dataCheckDelegate?.checkData()
                 let percentValue = Int.calculatePercentValue(dang: totalSugarSum, maxDang: Double(targetSugar))
                 self?.targetSugarLabel.text = "목표: \(totalSugarSum)/\(targetSugar)"
                 self?.configureLineLayerColor(totalSugar: totalSugarSum, targetSugar: targetSugar)

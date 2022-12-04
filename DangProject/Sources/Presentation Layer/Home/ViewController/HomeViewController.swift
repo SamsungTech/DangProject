@@ -30,7 +30,8 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         homeStackView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: yValueRatio(60))
     }()
     private lazy var calendarViewTopAnchor = NSLayoutConstraint()
-    
+    private lazy var loadingView = LoadingView(frame: .zero)
+
     init(viewModel: HomeViewModelProtocol,
          calendarView: CalendarView,
          eatenFoodsView: EatenFoodsView,
@@ -42,6 +43,10 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         self.graphView = graphView
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        calendarView.dataCheckDelegate = self
+        eatenFoodsView.dataCheckDelegate = self
+        batteryView.dataCheckDelegate = self
+        graphView.dataCheckDelegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -54,6 +59,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         calendarView.showCurrentCalendarView()
         viewModel.fetchCurrentMonthData(dateComponents: .currentDateTimeComponents())
         changeNavigationBarTitleText(dateComponents: .currentDateTimeComponents())
+        viewModel.loading.accept(.startLoading)
     }
     
     override func viewDidLoad() {
@@ -64,6 +70,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         configureTodayCalendarColumn()
         layout()
         bindProfileImageData()
+        bindLoading()
     }
     
     private func configure() {
@@ -93,7 +100,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     }
     
     private func layout() {
-        [ homeScrollView ].forEach() { view.addSubview($0) }
+        [ homeScrollView, loadingView ].forEach() { view.addSubview($0) }
         [ customNavigationBar, calendarView, homeStackView ].forEach() { homeScrollView.addSubview($0) }
         createHomeStackView()
 
@@ -117,6 +124,13 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         calendarView.trailingAnchor.constraint(equalTo: homeScrollView.trailingAnchor).isActive = true
         calendarView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
         homeScrollView.sendSubviewToBack(calendarView)
+        
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        loadingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        loadingView.center = view.center
     }
     
     private func createHomeStackView() {
@@ -157,6 +171,20 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         viewModel.profileDataRelay
             .subscribe(onNext: { [weak self] profileData in
                 self?.customNavigationBar.profileImageButton.setupProfileImageViewImage(profileData.profileImage)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindLoading() {
+        viewModel.loading
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] state in
+                switch state {
+                case .startLoading:
+                    self?.loadingView.showLoading()
+                case .finishLoading:
+                    self?.loadingView.hideLoading()
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -235,5 +263,9 @@ extension HomeViewController: NavigationBarDelegate {
     }
 }
 
-
+extension HomeViewController: CheckDataProtocol {
+    func checkData() {
+        viewModel.plusViewsDataCount()
+    }
+}
 

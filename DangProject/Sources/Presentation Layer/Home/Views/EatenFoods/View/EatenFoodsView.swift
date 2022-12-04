@@ -22,6 +22,8 @@ class EatenFoodsView: UIView {
         return collectionView
     }()
     
+    var dataCheckDelegate: CheckDataProtocol?
+    
     // MARK: - Init
     init(viewModel: EatenFoodsViewModel) {
         self.viewModel = viewModel
@@ -59,6 +61,7 @@ class EatenFoodsView: UIView {
     private func bindEatenFoods() {
         viewModel.eatenFoodsViewModelObservable
             .subscribe(onNext: { [weak self] eatenFoods in
+                self?.dataCheckDelegate?.checkData()
                 self?.foodCollectionView.reloadData()
             })
             .disposed(by: disposeBag)

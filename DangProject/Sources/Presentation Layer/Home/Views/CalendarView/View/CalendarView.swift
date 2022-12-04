@@ -23,6 +23,7 @@ class CalendarView: UIView {
     private let viewModel: CalendarViewModelProtocol
     private let screenWidthSize = UIScreen.main.bounds.maxX
     var parentableViewController: CalendarViewDelegate?
+    var dataCheckDelegate: CheckDataProtocol?
     
     let calendarScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -72,10 +73,10 @@ class CalendarView: UIView {
     }
     
     private func binding() {
-        
         viewModel.currentDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier,
+                                                             cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
                 
                 if self.viewModel.animationIsNeeded {

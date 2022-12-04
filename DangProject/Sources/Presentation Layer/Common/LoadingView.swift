@@ -15,6 +15,7 @@ final class LoadingView: UIActivityIndicatorView {
         self.style = .large
         self.color = .darkGray
         self.stopAnimating()
+        self.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.3)
     }
     
     func showLoading() {
