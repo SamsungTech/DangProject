@@ -26,7 +26,6 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     
     private var homeScrollView = UIScrollView()
     private var homeStackView = UIStackView()
-    private var viewsInStackView: [UIView] = []
     private lazy var homeStackViewTopAnchor: NSLayoutConstraint = {
         homeStackView.topAnchor.constraint(equalTo: customNavigationBar.bottomAnchor, constant: yValueRatio(60))
     }()
@@ -81,9 +80,9 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         homeScrollView.showsVerticalScrollIndicator = false
         
         homeStackView.axis = .vertical
-        homeStackView.spacing = 10
+        homeStackView.spacing = yValueRatio(10)
         homeStackView.backgroundColor = .homeBackgroundColor
-        homeStackView.distribution = .fill
+        homeStackView.distribution = .equalSpacing
         homeStackView.alignment = .center
     }
     
@@ -94,12 +93,10 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     }
     
     private func layout() {
-        [ batteryView, eatenFoodsTitleView, eatenFoodsView,
-          graphTitleView, graphView ].forEach() { viewsInStackView.append($0) }
-        viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
         [ homeScrollView ].forEach() { view.addSubview($0) }
         [ customNavigationBar, calendarView, homeStackView ].forEach() { homeScrollView.addSubview($0) }
-        
+        createHomeStackView()
+
         
         homeScrollView.translatesAutoresizingMaskIntoConstraints = false
         homeScrollView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -120,6 +117,10 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         calendarView.trailingAnchor.constraint(equalTo: homeScrollView.trailingAnchor).isActive = true
         calendarView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
         homeScrollView.sendSubviewToBack(calendarView)
+    }
+    
+    private func createHomeStackView() {
+        var viewsInStackView: [UIView] = []
         
         homeStackView.translatesAutoresizingMaskIntoConstraints = false
         homeStackViewTopAnchor.isActive = true
@@ -142,10 +143,15 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         graphTitleView.translatesAutoresizingMaskIntoConstraints = false
         graphTitleView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX).isActive = true
         graphTitleView.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
-        
+
         graphView.translatesAutoresizingMaskIntoConstraints = false
-        graphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-yValueRatio(40)).isActive = true
+        graphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-xValueRatio(40)).isActive = true
         graphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
+        graphView.backgroundColor = .blue
+        
+        [ batteryView, eatenFoodsTitleView, eatenFoodsView,
+          graphTitleView, graphView ].forEach() { viewsInStackView.append($0) }
+        viewsInStackView.forEach() { homeStackView.addArrangedSubview($0) }
     }
     
     private func bindProfileImageData() {
