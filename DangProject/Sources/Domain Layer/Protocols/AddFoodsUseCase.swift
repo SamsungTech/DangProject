@@ -8,5 +8,5 @@
 import Foundation
 
 protocol AddFoodsUseCase {
-    func addEatenFoods(food: FoodDomainModel)
+    func addEatenFoods(food: FoodDomainModel, completion: @escaping (Bool) -> Void)
 }

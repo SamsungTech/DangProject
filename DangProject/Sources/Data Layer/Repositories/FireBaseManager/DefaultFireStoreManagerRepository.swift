@@ -103,7 +103,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         }
     }
     
-    func saveEatenFood(eatenFood: FoodDomainModel) {
+    func saveEatenFood(eatenFood: FoodDomainModel,
+                       completion: @escaping (Bool) -> Void) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
         let today = DateComponents.currentDateTimeComponents()
         guard let year = today.year,
@@ -129,8 +130,10 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .setData(eatenFoodData) { error in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
                     return
                 }
+                completion(true)
             }
     }
     

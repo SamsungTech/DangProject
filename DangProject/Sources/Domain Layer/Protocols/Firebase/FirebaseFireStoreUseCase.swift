@@ -15,7 +15,7 @@ protocol ManageFirebaseFireStoreUseCase {
     func uploadFirebaseUID(uid: String)
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void)
     func getProfileExistence(uid: String) -> Observable<Bool>
-    func uploadEatenFood(eatenFood: FoodDomainModel)
+    func uploadEatenFood(eatenFood: FoodDomainModel, completion: @escaping (Bool) -> Void)
     func getEatenFoods(dateComponents : DateComponents) -> Observable<[FoodDomainModel]>
     func getProfileData() -> Observable<ProfileDomainModel>
     func updateProfileData(_ data: ProfileDomainModel, completion: @escaping (Bool) -> Void)

@@ -15,7 +15,8 @@ protocol FireStoreManagerRepository {
     func deleteFirebaseUserDocument()
     func saveProfileDocument(profile: ProfileDomainModel,
                              completion: @escaping (Bool) -> Void)
-    func saveEatenFood(eatenFood: FoodDomainModel)
+    func saveEatenFood(eatenFood: FoodDomainModel,
+                       completion: @escaping (Bool) -> Void)
     func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
     func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]>

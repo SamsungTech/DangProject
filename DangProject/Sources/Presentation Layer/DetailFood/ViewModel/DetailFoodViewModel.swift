@@ -16,7 +16,7 @@ protocol DetailFoodViewModelInput {
     var pickerViewIsActivatedObservable: BehaviorRelay<Bool> { get }
     var pickerViewIsActivated: Bool { get }
     func changeDetailFoodFavorite()
-    func addFoods(foods: AddFoodsViewModel)
+    func addFoods(foods: AddFoodsViewModel, completion: @escaping (Bool) -> Void)
     func changePickerViewWillActivated()
     func amountChanged(amount: Int)
 }
@@ -51,9 +51,8 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
         detailFood.image = willChangeImage
     }
     
-    func addFoods(foods: AddFoodsViewModel) {
-        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods))
-        
+    func addFoods(foods: AddFoodsViewModel, completion: @escaping (Bool) -> Void) {
+        addFoodsUseCase.addEatenFoods(food: FoodDomainModel.init(foods), completion: completion)
     }
     
     func changePickerViewWillActivated() {

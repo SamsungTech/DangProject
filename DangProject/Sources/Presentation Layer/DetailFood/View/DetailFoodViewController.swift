@@ -227,12 +227,17 @@ class DetailFoodViewController: UIViewController {
     }
     
     @objc private func addButtonTapped() {
-        guard let amount = Int(amountTextField.text!) else { return }
+        guard let amount = Int(amountTextField.text ?? "1") else { return }
         
-        viewModel.addFoods(foods: .init(amount: amount,
-                                        foodModel: viewModel.detailFood))
-        parentableViewController?.addFoodsAfter(food: AddFoodsViewModel.init(amount: amount, foodModel: viewModel.detailFood))
-        coordinator?.popViewController()
+        viewModel.addFoods(foods: .init(amount: amount, foodModel: viewModel.detailFood)) { data in
+            if data {
+                self.parentableViewController?.addFoodsAfter(
+                    food: AddFoodsViewModel.init(amount: amount,
+                                                 foodModel: self.viewModel.detailFood)
+                )
+                self.coordinator?.popViewController()
+            }
+        }
     }
     
     private func startIndicatorAnimation(amount: Double) {

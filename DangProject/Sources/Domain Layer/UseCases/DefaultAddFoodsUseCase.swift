@@ -21,16 +21,18 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
     }
     
     // MARK: - Internal
-    func addEatenFoods(food: FoodDomainModel) {
-        uploadInFirebase(eatenFood: food)
+    func addEatenFoods(food: FoodDomainModel, completion: @escaping (Bool) -> Void) {
+        uploadInFirebase(eatenFood: food, completion: completion)
     }
     
     // MARK: - Private
     private let disposeBag = DisposeBag()
     
-    private func uploadInFirebase(eatenFood: FoodDomainModel) {
+    private func uploadInFirebase(eatenFood: FoodDomainModel,
+                                  completion: @escaping (Bool) -> Void) {
         firebaseFireStoreUseCase.getEatenFoods(dateComponents: .currentDateTimeComponents())
             .subscribe(onNext: { [weak self] addedFoodArr in
+                
                 var tempEatenFood = eatenFood 
                 addedFoodArr.forEach { addedFood in
                     if tempEatenFood.foodCode == addedFood.foodCode {
@@ -38,7 +40,8 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
                         tempEatenFood.eatenTime = addedFood.eatenTime
                     }
                 }
-                self?.firebaseFireStoreUseCase.uploadEatenFood(eatenFood: tempEatenFood)
+                self?.firebaseFireStoreUseCase.uploadEatenFood(eatenFood: tempEatenFood,
+                                                               completion: completion)
             })
             .disposed(by: disposeBag)
     }

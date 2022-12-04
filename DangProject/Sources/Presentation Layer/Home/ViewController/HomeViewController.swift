@@ -147,7 +147,6 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         graphView.translatesAutoresizingMaskIntoConstraints = false
         graphView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.maxX-xValueRatio(40)).isActive = true
         graphView.heightAnchor.constraint(equalToConstant: yValueRatio(300)).isActive = true
-        graphView.backgroundColor = .blue
         
         [ batteryView, eatenFoodsTitleView, eatenFoodsView,
           graphTitleView, graphView ].forEach() { viewsInStackView.append($0) }
