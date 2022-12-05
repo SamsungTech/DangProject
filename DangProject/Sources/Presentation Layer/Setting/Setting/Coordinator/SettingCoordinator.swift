@@ -10,7 +10,6 @@ import UIKit
 enum SettingRouterPath {
     case account
     case myTarget
-    case theme
     case alarm
     case appIntroduce
     case termsOfService
@@ -48,8 +47,6 @@ class SettingCoordinator: NSObject, Coordinator {
             self.pushAccountViewController()
         case .myTarget:
             self.pushMyTargetViewController()
-        case .theme:
-            self.pushThemeViewController()
         case .alarm:
             self.pushAlarmViewController()
         case .appIntroduce:
@@ -72,12 +69,6 @@ extension SettingCoordinator {
     
     private func pushMyTargetViewController() {
         let coordinator = MyTargetCoordinator(navigationController: self.navigationController)
-        childCoordinators.append(coordinator)
-        coordinator.start()
-    }
-    
-    private func pushThemeViewController() {
-        let coordinator = ThemeCoordinator(navigationController: self.navigationController)
         childCoordinators.append(coordinator)
         coordinator.start()
     }
@@ -116,14 +107,6 @@ extension SettingCoordinator: UINavigationControllerDelegate {
         if navigationController.viewControllers.contains(fromViewController) {
             return
         }
-        
-//        switch fromViewController {
-//        case is AccountViewController:
-//            guard let profileViewController = fromViewController as? AccountViewController else { return }
-//            childDidFinish(profileViewController.coordinator)
-//        default:
-//            break
-//        }
         
         if let accountViewController = fromViewController as? AccountViewController {
             childDidFinish(accountViewController.coordinator)

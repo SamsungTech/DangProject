@@ -16,14 +16,6 @@ class SettingFirstStackView: UIStackView {
         return button
     }()
     
-    private(set) lazy var themeView: SettingStackViewItemsButton = {
-        let button = SettingStackViewItemsButton()
-        button.itemLabel.text = "화면 테마"
-        button.frame = CGRect(x: .zero, y: .zero, width: calculateXMax(), height: yValueRatio(60))
-        button.backgroundColor = .homeBoxColor
-        return button
-    }()
-    
     private(set) lazy var alarmView: SettingStackViewItemsButton = {
         let button = SettingStackViewItemsButton()
         button.itemLabel.text = "알림"
@@ -50,7 +42,7 @@ extension SettingFirstStackView {
     private func setupSettingStackView() {
         self.backgroundColor = .homeBackgroundColor
         let views = [
-             myTargetView, themeView, alarmView
+             myTargetView, alarmView
         ]
         self.axis = .vertical
         self.distribution = .fillEqually

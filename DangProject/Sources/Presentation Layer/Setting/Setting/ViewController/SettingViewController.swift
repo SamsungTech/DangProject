@@ -116,7 +116,7 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
         NSLayoutConstraint.activate([
             settingFirstStackView.topAnchor.constraint(equalTo: accountView.bottomAnchor, constant: yValueRatio(10)),
             settingFirstStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
-            settingFirstStackView.heightAnchor.constraint(equalToConstant: xValueRatio(180))
+            settingFirstStackView.heightAnchor.constraint(equalToConstant: xValueRatio(120))
         ])
     }
     
@@ -182,7 +182,6 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
         Observable.merge(
             accountView.rx.tap.map { SettingRouterPath.account },
             settingFirstStackView.myTargetView.rx.tap.map { SettingRouterPath.myTarget },
-            settingFirstStackView.themeView.rx.tap.map { SettingRouterPath.theme },
             settingFirstStackView.alarmView.rx.tap.map { SettingRouterPath.alarm },
             settingSecondStackView.introductionView.rx.tap.map { SettingRouterPath.appIntroduce },
             settingTermsOfServiceView.rx.tap.map { SettingRouterPath.termsOfService },
@@ -194,8 +193,6 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
                     self?.coordinator?.decideViewController(.account)
                 case .myTarget:
                     self?.coordinator?.decideViewController(.myTarget)
-                case .theme:
-                    self?.coordinator?.decideViewController(.theme)
                 case .alarm:
                     self?.coordinator?.decideViewController(.alarm)
                 case .appIntroduce:
