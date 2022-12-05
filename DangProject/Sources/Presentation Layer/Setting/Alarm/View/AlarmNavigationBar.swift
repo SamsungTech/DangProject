@@ -8,7 +8,6 @@
 import UIKit
 
 class AlarmNavigationBar: UIView {
-    
     private(set) lazy var backButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
@@ -59,7 +58,7 @@ extension AlarmNavigationBar {
         addSubview(backButton)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: yValueRatio(10)),
+            backButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(10)),
             backButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(10)),
             backButton.widthAnchor.constraint(equalToConstant: xValueRatio(30)),
             backButton.heightAnchor.constraint(equalToConstant: yValueRatio(30))
@@ -70,7 +69,7 @@ extension AlarmNavigationBar {
         addSubview(alarmLabel)
         alarmLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            alarmLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: yValueRatio(10)),
+            alarmLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
             alarmLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         ])
     }
@@ -79,7 +78,7 @@ extension AlarmNavigationBar {
         addSubview(addButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            addButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: yValueRatio(10)),
+            addButton.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
             addButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -xValueRatio(10)),
             addButton.widthAnchor.constraint(equalToConstant: xValueRatio(30)),
             addButton.heightAnchor.constraint(equalToConstant: yValueRatio(30))

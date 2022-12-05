@@ -49,7 +49,7 @@ extension CommonNavigationBar {
         addSubview(backButton)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: yValueRatio(10)),
+            backButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(10)),
             backButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(10)),
             backButton.widthAnchor.constraint(equalToConstant: xValueRatio(30)),
             backButton.heightAnchor.constraint(equalToConstant: yValueRatio(30))
