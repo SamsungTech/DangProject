@@ -17,6 +17,21 @@ class LoginViewController: UIViewController {
     weak var coordinator: LoginCoordinator?
     private let viewModel: LoginViewModel
     
+    private lazy var loginImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "AppImage2")
+        return imageView
+    }()
+    
+    private lazy var loginLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Dang Project"
+        label.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .heavy)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
     // MARK: - Init
     init(viewModel: LoginViewModel) {
@@ -32,8 +47,30 @@ class LoginViewController: UIViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupLoginImageView()
+        setupLoginLabel()
         setupAppleLoginButton()
         bindSignInObservable()
+    }
+    
+    private func setupLoginImageView() {
+        view.addSubview(loginImageView)
+        loginImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loginImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loginImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -yValueRatio(50)),
+            loginImageView.widthAnchor.constraint(equalToConstant: xValueRatio(150)),
+            loginImageView.heightAnchor.constraint(equalToConstant: yValueRatio(150))
+        ])
+    }
+    
+    private func setupLoginLabel() {
+        view.addSubview(loginLabel)
+        loginLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loginLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loginLabel.topAnchor.constraint(equalTo: loginImageView.bottomAnchor)
+        ])
     }
     
     private func setupAppleLoginButton() {
@@ -45,8 +82,9 @@ class LoginViewController: UIViewController {
                 appleLoginButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
                 appleLoginButton.topAnchor.constraint(equalTo: view.topAnchor,
                                                       constant: self.view.yValueRatio(650)),
-                appleLoginButton.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(300)),
-                appleLoginButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(70))
+                appleLoginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: xValueRatio(20)),
+                appleLoginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -xValueRatio(20)),
+                appleLoginButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(50))
             ])
             appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
         }
