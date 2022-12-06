@@ -34,4 +34,14 @@ class DefaultManageFirebaseAuthUseCase: ManageFirebaseAuthUseCase {
         }
     }
     
+    func requireFirebaseEmail(email: String, password: String) -> Observable<Bool> {
+        return Observable.create { [weak self] emitter in
+            self?.firebaseAuthRepository.signInFirebaseEmailAuth(email: email, password: password)
+                .subscribe(onNext: { bool in
+                    emitter.onNext(bool)
+                })
+                .disposed(by: self!.disposeBag)
+            return Disposables.create()
+        }
+    }
 }

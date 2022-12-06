@@ -130,8 +130,8 @@ class LoginViewModel: LoginViewModelProtocol {
             }
             
             manageFirebaseAuthUseCase.requireFirebaseUID(providerID: "apple.com",
-                                                   idToken: idTokenString,
-                                                   rawNonce: nonce)
+                                                         idToken: idTokenString,
+                                                         rawNonce: nonce)
             .subscribe(onNext: { [weak self] isValid, id in
                 if isValid {
                     self?.updateUserDefaultsUid(uid: id)

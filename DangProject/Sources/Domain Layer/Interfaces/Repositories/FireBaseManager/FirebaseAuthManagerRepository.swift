@@ -14,4 +14,7 @@ protocol FirebaseAuthManagerRepository {
     func signInFirebaseAuth(providerID: String,
                             idToken: String,
                             rawNonce: String?) -> Observable<(Bool, String)>
+    
+    func signInFirebaseEmailAuth(email: String,
+                                 password: String) -> Observable<Bool>
 }

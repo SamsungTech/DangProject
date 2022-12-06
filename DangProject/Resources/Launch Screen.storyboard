@@ -16,15 +16,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DangProjectLaunchScreenImage" translatesAutoresizingMaskIntoConstraints="NO" id="TzP-dS-jWh">
-                                <rect key="frame" x="47.666666666666657" y="70" width="295" height="704"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="AppImage2" translatesAutoresizingMaskIntoConstraints="NO" id="Mo9-LD-dsK">
+                                <rect key="frame" x="91" y="313" width="208" height="208"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="TzP-dS-jWh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="WeU-Ol-c8n"/>
-                            <constraint firstItem="TzP-dS-jWh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="nXa-fm-HRI"/>
+                            <constraint firstItem="Mo9-LD-dsK" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="i3T-mO-XRh"/>
+                            <constraint firstItem="Mo9-LD-dsK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="y8E-V9-vTK"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -34,6 +34,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="DangProjectLaunchScreenImage" width="295" height="704"/>
+        <image name="AppImage2" width="208" height="208"/>
     </resources>
 </document>

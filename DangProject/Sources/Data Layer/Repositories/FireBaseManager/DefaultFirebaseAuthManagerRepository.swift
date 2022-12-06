@@ -30,5 +30,20 @@ final class DefaultFirebaseAuthManagerRepository: FirebaseAuthManagerRepository 
             return Disposables.create()
         }
     }
+    
+    func signInFirebaseEmailAuth(email: String, password: String) -> Observable<Bool> {
+        return Observable.create() { emitter in
+            Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    emitter.onNext(false)
+                } else {
+                    emitter.onNext(true)
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
 
 }

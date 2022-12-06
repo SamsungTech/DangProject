@@ -28,23 +28,26 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-            /// check app is first time
-            if UserDefaults.standard.bool(forKey: UserInfoKey.tutorialFinished) == false {
-                startOnboarding()
-            }
-            /// check userUID
-            guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
-                return startLogin()
-            }
-            compareFireStoreUID(with: userDefaultsUID)
+        /// check app is first time
+        if UserDefaults.standard.bool(forKey: UserInfoKey.tutorialFinished) == false {
+            startOnboarding()
+        }
+        
+        /// check userUID
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+            return startLogin()
+        }
+        
+        compareFireStoreUID(with: userDefaultsUID)
+
     }
     
     // MARK: - Private
-    
     private func compareFireStoreUID(with userDefaultsUID: String) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultsUID) { [weak self] uid in
             if uid == userDefaultsUID {
                 self?.startTabbar()
+                UserDefaults.standard.set("apple", forKey: "LoginType")
             }
             else {
                 self?.startLogin()
@@ -59,13 +62,15 @@ class AppCoordinator: Coordinator {
     }
 
     private func startLogin() {
-        let loginCoordinator = LoginCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
+        let loginCoordinator = LoginCoordinator(navigationController: navigationController,
+                                                coordinatorFinishDelegate: self)
         childCoordinators.append(loginCoordinator)
         loginCoordinator.start()
     }
 
     private func startInputProfile() {
-        let inputProfileCoordinator = InputProfileCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
+        let inputProfileCoordinator = InputProfileCoordinator(navigationController: navigationController,
+                                                              coordinatorFinishDelegate: self)
         childCoordinators.append(inputProfileCoordinator)
         inputProfileCoordinator.start()
 
