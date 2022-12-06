@@ -28,18 +28,48 @@ class AppCoordinator: Coordinator {
     
     // MARK: - First Start
     func start() {
-            /// check app is first time
-            if UserDefaults.standard.bool(forKey: UserInfoKey.tutorialFinished) == false {
-                startOnboarding()
-            }
-            /// check userUID
-            guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
-                return startLogin()
-            }
-            compareFireStoreUID(with: userDefaultsUID)
+        checkDemoVersion()
     }
     
     // MARK: - Private
+    
+    private func checkDemoVersion() {
+        /// check demo app version
+        fireStoreManager.getDemoDataInFireStore { [weak self] demo in
+            if demo {
+                self?.setFirebaseUIDInUserDefaults()
+                self?.checkAppIsFirstTime()
+                self?.checkUserUID()
+            } else {
+                self?.deleteFirebaseUIDInUserDefaults()
+                self?.checkAppIsFirstTime()
+                self?.checkUserUID()
+            }
+        }
+    }
+    
+    private func deleteFirebaseUIDInUserDefaults() {
+        UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
+    }
+    
+    private func setFirebaseUIDInUserDefaults() {
+        UserDefaults.standard.set("KbjMogo76DRjnhmfr7sgLsM9O4Y2", forKey: UserInfoKey.firebaseUID)
+    }
+    
+    private func checkAppIsFirstTime() {
+        /// check app is first time
+        if UserDefaults.standard.bool(forKey: UserInfoKey.tutorialFinished) == false {
+            startOnboarding()
+        }
+    }
+    
+    private func checkUserUID() {
+        /// check userUID
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+            return startLogin()
+        }
+        compareFireStoreUID(with: userDefaultsUID)
+    }
     
     private func compareFireStoreUID(with userDefaultsUID: String) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultsUID) { [weak self] uid in

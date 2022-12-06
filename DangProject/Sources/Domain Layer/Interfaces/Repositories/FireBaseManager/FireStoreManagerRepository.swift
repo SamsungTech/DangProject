@@ -10,7 +10,6 @@ import Foundation
 import RxSwift
 
 protocol FireStoreManagerRepository {
-    
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool)
     func deleteFirebaseUserDocument()
     func saveProfileDocument(profile: ProfileDomainModel,
@@ -21,4 +20,5 @@ protocol FireStoreManagerRepository {
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
     func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]>
     func getProfileDataInFireStore() -> Observable<[String: Any]>
+    func getDemoDataInFireStore(completion: @escaping (Bool) -> Void)
 }

@@ -15,12 +15,31 @@ import Firebase
 import RxSwift
 
 class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
-    
     private lazy var uid = UserInfoKey.getUserDefaultsUID
     private let database = Firestore.firestore()
     
+    func getDemoDataInFireStore(completion: @escaping (Bool) -> Void) {
+        database.collection("app")
+            .document("Demo")
+            .getDocument() { snapshot, error  in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+                if let result = snapshot?.data() {
+                    var demoData: Bool = false
+                    for (key, value) in result {
+                        switch key {
+                        case "isDemo": demoData = value as? Bool ?? true
+                        default: break
+                        }
+                    }
+                    completion(demoData)
+                }
+            }
+    }
+    
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
-        
         let uidData = ["firebaseUID": uid,
                        "profileExistence": ProfileExistence
         ] as [String : Any]
