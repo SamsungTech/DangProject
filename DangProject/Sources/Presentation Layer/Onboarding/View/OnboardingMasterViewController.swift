@@ -11,8 +11,6 @@ import RxSwift
 import RxCocoa
 
 class OnboardingMasterViewController: UIViewController {
-    
-    
     var coordinator: OnboardingCoordinator?
     let viewModel: OnboardingViewModel
     

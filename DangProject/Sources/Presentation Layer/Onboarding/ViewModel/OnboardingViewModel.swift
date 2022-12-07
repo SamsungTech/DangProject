@@ -53,7 +53,7 @@ class OnboardingViewModel {
     }
     // MARK: - Output
     var viewControllers = [OnboardingContentViewController]()
-    var contentImages = ["sugar.png", "hands.png", "bee.png", "arm.png"]
+    var contentImages = ["PreviewMain.jpeg", "TargetView.jpeg", "AddFood.jpeg", "Calendar.jpeg", "Graph.jpeg", "Alarm.jpeg"]
     
     func nextIndex() {
         currentPage = currentPage + 1

@@ -11,7 +11,6 @@ enum SettingRouterPath {
     case account
     case myTarget
     case alarm
-    case appIntroduce
     case termsOfService
     case secession
 }
@@ -49,8 +48,6 @@ class SettingCoordinator: NSObject, Coordinator {
             self.pushMyTargetViewController()
         case .alarm:
             self.pushAlarmViewController()
-        case .appIntroduce:
-            self.pushAppIntroduceViewController()
         case .termsOfService:
             self.pushTermsOfServiceViewController()
         case .secession:
@@ -75,12 +72,6 @@ extension SettingCoordinator {
     
     private func pushAlarmViewController() {
         let coordinator = AlarmCoordinator(navigationController: self.navigationController)
-        childCoordinators.append(coordinator)
-        coordinator.start()
-    }
-    
-    private func pushAppIntroduceViewController() {
-        let coordinator = AppIntroduceCoordinator(navigationController: self.navigationController)
         childCoordinators.append(coordinator)
         coordinator.start()
     }

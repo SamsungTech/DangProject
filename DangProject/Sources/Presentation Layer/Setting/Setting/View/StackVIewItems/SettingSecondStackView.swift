@@ -8,14 +8,6 @@
 import UIKit
 
 class SettingSecondStackView: UIStackView {
-    private(set) lazy var introductionView: SettingStackViewItemsButton = {
-        let button = SettingStackViewItemsButton()
-        button.itemLabel.text = "앱 소개"
-        button.frame = CGRect(x: .zero, y: .zero, width: calculateXMax(), height: yValueRatio(60))
-        button.backgroundColor = .homeBoxColor
-        return button
-    }()
-    
     private(set) lazy var versionView: SettingAppVersionView = {
         let button = SettingAppVersionView()
         button.itemLabel.text = "앱 버전"
@@ -39,7 +31,7 @@ extension SettingSecondStackView {
     private func setupStackView() {
         self.backgroundColor = .homeBackgroundColor
         let views = [
-            introductionView, versionView
+            versionView
         ]
         self.axis = .vertical
         self.distribution = .fillEqually

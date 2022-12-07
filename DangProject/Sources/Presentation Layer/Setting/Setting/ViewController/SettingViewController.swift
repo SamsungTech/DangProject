@@ -126,7 +126,7 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
         NSLayoutConstraint.activate([
             settingSecondStackView.topAnchor.constraint(equalTo: settingFirstStackView.bottomAnchor, constant: yValueRatio(10)),
             settingSecondStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
-            settingSecondStackView.heightAnchor.constraint(equalToConstant: yValueRatio(120))
+            settingSecondStackView.heightAnchor.constraint(equalToConstant: yValueRatio(60))
         ])
     }
     
@@ -183,7 +183,6 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
             accountView.rx.tap.map { SettingRouterPath.account },
             settingFirstStackView.myTargetView.rx.tap.map { SettingRouterPath.myTarget },
             settingFirstStackView.alarmView.rx.tap.map { SettingRouterPath.alarm },
-            settingSecondStackView.introductionView.rx.tap.map { SettingRouterPath.appIntroduce },
             settingTermsOfServiceView.rx.tap.map { SettingRouterPath.termsOfService },
             settingSecessionView.rx.tap.map { SettingRouterPath.secession }
         )
@@ -195,8 +194,6 @@ class SettingViewController: CustomViewController, CustomTabBarIsNeeded {
                     self?.coordinator?.decideViewController(.myTarget)
                 case .alarm:
                     self?.coordinator?.decideViewController(.alarm)
-                case .appIntroduce:
-                    self?.coordinator?.decideViewController(.appIntroduce)
                 case .termsOfService:
                     self?.coordinator?.decideViewController(.termsOfService)
                 case .secession:
