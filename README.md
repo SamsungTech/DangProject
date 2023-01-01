@@ -122,7 +122,7 @@
 
 >### Firebase를 활용한 데이터 스트리밍
 
-- firestore를 이용하여 저장할 데이터를 저장하였습니다.
+- firestore를 이용하여  저장하였습니다.
 - 뿐만아니라 Authentication, storage를 이용하여 회원정보 관리도 구현하였습니다.
 
 <br/>
