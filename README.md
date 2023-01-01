@@ -20,7 +20,7 @@
 <br/>
 
 ## 🍎 Tech Stack
-<img src="https://img.shields.io/badge/Xcode 14.0-147EFB?style=flat&logo=Xcode&logoColor=white"/> <img src="https://img.shields.io/badge/Swift 5.0-F05138?style=flat&logo=Swift&logoColor=white"/> <img src="https://img.shields.io/badge/RxSwift 6.5.0-B7178C?style=flat&logo=ReactiveX&logoColor=white"/> <img src="https://img.shields.io/badge/Firebase 9.1.0-FFCA28?style=flat&logo=Firebase&logoColor=white"/>
+<img src="https://img.shields.io/badge/Xcode 14.0-147EFB?style=flat&logo=Xcode&logoColor=white"/> <img src="https://img.shields.io/badge/Swift 5.0-F05138?style=flat&logo=Swift&logoColor=white"/> <img src="https://img.shields.io/badge/RxSwift 6.5.0-B7178C?style=flat&logo=ReactiveX&logoColor=white"/> <img src="https://img.shields.io/badge/Firebase 9.1.0-FFCA28?style=flat&logo=Firebase&logoColor=white"/> <img src="https://img.shields.io/badge/Tuist 3.5.0-9146FF?style=flat&logo=Tuist&logoColor=white"/> 
 
 <br/>
 <br/>
@@ -132,6 +132,9 @@
 
 - 데이터가 발생하는 시점에서부터 뷰에 그려지기까지 하나의 큰 스트림으로 데이터를 바인딩해주었습니다.
 
+>### Tuist
+
+- Tuist를 사용하여 프로젝트 및 라이브러리들 관리해주었습니다.
 
 <br/>
 <br/>
