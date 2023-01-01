@@ -74,10 +74,9 @@
 
 <img src = "https://user-images.githubusercontent.com/73861795/210162595-53cf53cf-5f1f-4890-b4ea-740d053b39c1.png" width="817" height="458"/>
 
->### MVVM & RxSwift
+>### MVVM
 
 - MVVM은 뷰컨트롤러는 뷰를 그리는 것에만 집중하고, 그 외의 Object 관리나, UI 로직 처리는 뷰 모델에서 진행하도록 했습니다.
-- RxSwift를 활용하여 비동기 처리를 하였습니다.
 
 <br/>
 
@@ -112,8 +111,29 @@
 
 ## 👨🏻‍💻 Technical Challenge
 
-파이어베이스를 
-## 👨🏻‍💻 Technical Challenge
+>### DeskCache 작업
 
+- 서버로 부터 받은 데이터들은 CoreData에 저장하고 불러오게 끔 캐시 작업 하였습니다. 
+
+
+
+<br/>
+
+
+>### Firebase를 활용한 데이터 스트리밍
+
+- firestore를 이용하여 저장할 데이터를 저장하였습니다.
+- 뿐만아니라 Authentication, storage를 이용하여 회원정보 관리도 구현하였습니다.
+
+<br/>
+
+
+>### RxSwift 
+
+- 데이터가 발생하는 시점에서부터 뷰에 그려지기까지 하나의 큰 스트림으로 데이터를 바인딩해주었습니다.
+
+
+<br/>
+<br/>
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ornwoo96)
