@@ -77,7 +77,6 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         let navigationTitle = viewModel.checkNavigationBarTitleText(dateComponents: .currentDateComponents())
         customNavigationBar.changeNavigationBarTitleLabel(text: navigationTitle)
         customNavigationBar.parentableViewController = self
-        
         calendarView.parentableViewController = self
         
         homeScrollView.backgroundColor = .clear
@@ -199,7 +198,8 @@ extension HomeViewController: CalendarViewDelegate {
         viewModel.fetchGraphData(from: dateComponents)
     }
     
-    func changeCalendarView(_ dateComponents: DateComponents, fetchIsNeeded: Bool) {
+    func changeCalendarView(_ dateComponents: DateComponents,
+                            fetchIsNeeded: Bool) {
         changeNavigationBarTitleText(dateComponents: dateComponents)
         if fetchIsNeeded {
             viewModel.fetchEatenFoodsInTotalMonths(dateComponents)

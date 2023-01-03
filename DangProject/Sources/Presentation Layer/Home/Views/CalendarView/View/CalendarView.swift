@@ -43,6 +43,7 @@ class CalendarView: UIView {
     lazy var todayCellColumn: Int = {
         viewModel.checkTodayCellColumn()
     }()
+    
     init(viewModel: CalendarViewModelProtocol) {
         self.viewModel = viewModel
         super.init(frame: CGRect.zero)
@@ -75,8 +76,9 @@ class CalendarView: UIView {
     private func binding() {
         viewModel.currentDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: currentCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier,
-                                                             cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: currentCalendarCollectionView.rx.items(
+                cellIdentifier: CalendarCollectionViewCell.identifier,
+                cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
                 
                 if self.viewModel.animationIsNeeded {
@@ -89,28 +91,38 @@ class CalendarView: UIView {
         
         viewModel.previousDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: previousCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: previousCalendarCollectionView.rx.items(
+                cellIdentifier: CalendarCollectionViewCell.identifier,
+                cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.nextDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: nextCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: nextCalendarCollectionView.rx.items(
+                cellIdentifier: CalendarCollectionViewCell.identifier,
+                cellType: CalendarCollectionViewCell.self)) { index, data, cell in
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: selectedLeadingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: selectedLeadingCalendarCollectionView.rx.items(
+                cellIdentifier: CalendarCollectionViewCell.identifier,
+                cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+                        
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
         
         viewModel.selectedDataObservable
             .observe(on: MainScheduler.instance)
-            .bind(to: selectedTrailingCalendarCollectionView.rx.items(cellIdentifier: CalendarCollectionViewCell.identifier, cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+            .bind(to: selectedTrailingCalendarCollectionView.rx.items(
+                cellIdentifier: CalendarCollectionViewCell.identifier,
+                cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+                    
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
@@ -145,13 +157,16 @@ class CalendarView: UIView {
         return collectionView
     }
     
-    private func configureCollectionView(collectionView: UICollectionView, section: CGFloat) {
+    private func configureCollectionView(collectionView: UICollectionView,
+                                         section: CGFloat) {
         calendarScrollView.addSubview(collectionView)
         collectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        collectionView.leadingAnchor.constraint(equalTo: calendarScrollView.leadingAnchor, constant: screenWidthSize*section).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: calendarScrollView.leadingAnchor,
+                                                constant: screenWidthSize*section).isActive = true
         collectionView.widthAnchor.constraint(equalToConstant: screenWidthSize).isActive = true
         collectionView.heightAnchor.constraint(equalToConstant: yValueRatio(360)).isActive = true
-        collectionView.register(CalendarCollectionViewCell.self, forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
+        collectionView.register(CalendarCollectionViewCell.self,
+                                forCellWithReuseIdentifier: CalendarCollectionViewCell.identifier)
         collectionView.delegate = self
     }
     
@@ -192,13 +207,17 @@ extension CalendarView: UICollectionViewDelegateFlowLayout {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
 
 extension CalendarView: UIScrollViewDelegate {
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let page = targetContentOffset.pointee.x / screenWidthSize
         switch page {
         case 1:

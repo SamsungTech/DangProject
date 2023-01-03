@@ -43,12 +43,20 @@ protocol CalendarViewModelProtocol: CalendarViewModelInputProtocol, CalendarView
 
 class CalendarViewModel: CalendarViewModelProtocol {
     private let disposeBag = DisposeBag()
+    
     var nextDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: [])
+    
     var previousDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: [])
+    
     var currentDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: [])
+    
+    
     lazy var selectedDataObservable = BehaviorRelay<[CalendarCellViewModelEntity]>(value: currentDataObservable.value)
+    
     private var initailizeSelectedDataObservable: Bool = true
+    
     var scrollDirection: ScrollDirection = .center
+    
     lazy var currentDateComponents = calendarService.dateComponents
     var selectedDateComponents: DateComponents = .currentDateTimeComponents()
     var animationIsNeeded: Bool = true
@@ -103,32 +111,26 @@ class CalendarViewModel: CalendarViewModelProtocol {
         self.checkSelectedCalendarWillShow()
         self.checkCurrentCalendarWillShow()
         
-        let previousCalendar = self.calendarService.previousMonthData()
-        let currentCalendar = self.calendarService.currentMonthData()
-        let nextCalendar = self.calendarService.nextMonthData()
+        let currentMonth = branchOutTotalMonthsDataIsEmpty(
+            totalMonths: totalMonths[1],
+            calendar: self.calendarService.currentMonthData()
+        )
         
-        var oneMonthBefore: [CalendarCellViewModelEntity] = []
-        var currentMonth: [CalendarCellViewModelEntity] = []
-        var nextMonth: [CalendarCellViewModelEntity] = []
+        self.previousDataObservable.accept(
+            branchOutTotalMonthsDataIsEmpty(
+                totalMonths: totalMonths[0],
+                calendar: self.calendarService.previousMonthData()
+            )
+        )
         
-        if totalMonths[0].isEmpty {
-            oneMonthBefore = self.returnCalendarEntity(calendar: previousCalendar)
-        } else {
-            oneMonthBefore = self.mergeCalendarAndEatenFoods(calendar: previousCalendar, with: totalMonths[0])
-        }
-        if totalMonths[1].isEmpty {
-            currentMonth = self.returnCalendarEntity(calendar: currentCalendar)
-        } else {
-            currentMonth = self.mergeCalendarAndEatenFoods(calendar: currentCalendar, with: totalMonths[1])
-        }
-        if totalMonths[2].isEmpty {
-            nextMonth = self.returnCalendarEntity(calendar: nextCalendar)
-        } else {
-            nextMonth = self.mergeCalendarAndEatenFoods(calendar: nextCalendar, with: totalMonths[2])
-        }
-        self.previousDataObservable.accept(oneMonthBefore)
         self.currentDataObservable.accept(currentMonth)
-        self.nextDataObservable.accept(nextMonth)
+        
+        self.nextDataObservable.accept(
+            branchOutTotalMonthsDataIsEmpty(
+                totalMonths: totalMonths[2],
+                calendar: self.calendarService.nextMonthData()
+            )
+        )
         
         if initailizeSelectedDataObservable {
             self.selectedDataObservable.accept(currentMonth)
@@ -138,6 +140,15 @@ class CalendarViewModel: CalendarViewModelProtocol {
         if selectedCellChanged {
             self.selectedDataObservable.accept(currentMonth)
             self.selectedCellChanged = false
+        }
+    }
+    
+    private func branchOutTotalMonthsDataIsEmpty(totalMonths: [EatenFoodsPerDayDomainModel],
+                                                 calendar: CalendarMonthEntity) -> [CalendarCellViewModelEntity] {
+        if totalMonths.isEmpty {
+            return self.returnCalendarEntity(calendar: calendar)
+        } else {
+            return self.mergeCalendarAndEatenFoods(calendar: calendar, with: totalMonths)
         }
     }
     

@@ -7,7 +7,6 @@
 import Foundation
 
 extension Date {
-    
     static let calendar: Calendar = {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "UTC")!

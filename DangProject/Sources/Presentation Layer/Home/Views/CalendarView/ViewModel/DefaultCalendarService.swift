@@ -19,6 +19,7 @@ protocol CalendarService {
     func changeDateComponentsToSelected()
     func changeDateComponentsToCurrent()
 }
+
 class DefaultCalendarService: CalendarService {
     var dateComponents = DateComponents()
     private lazy var selectedDateComponents: DateComponents = .currentDateComponents()
@@ -85,39 +86,91 @@ class DefaultCalendarService: CalendarService {
     
     private func calculation(dateComponents: DateComponents) -> CalendarMonthEntity {
         guard let firstDayOfMonth = calendar.date(from: dateComponents) else { return CalendarMonthEntity.empty }
+        
         /// 1: Sunday ~ 7: Saturday
         let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
+        
         /// For indexing
         let weekdayAdding: Int = 2 - firstWeekday
-        let daysCountInMonth: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!)
-        var days: [CalendarDayEntity] = []
         let beforeMonthsDay: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!-1)
-        var nextMonthsDay = 1
+        let days = createDaysArray(weekdayAdding: weekdayAdding,
+                                   dateComponents: dateComponents,
+                                   beforeMonthsDay: beforeMonthsDay)
         
+        let calendarViewModelEntity = CalendarMonthEntity.init(dateComponents: dateComponents, days: days)
+        
+        return calendarViewModelEntity
+    }
+    
+    private func createDaysArray(weekdayAdding: Int,
+                                 dateComponents: DateComponents,
+                                 beforeMonthsDay: Int) -> [CalendarDayEntity] {
+        var days: [CalendarDayEntity] = []
+        let daysCountInMonth: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!)
+        var nextMonthsDay = 1
+
         for day in weekdayAdding..<42+weekdayAdding {
             var dayEntity: CalendarDayEntity
+            
             if day < 1 { // 이전달
-                dayEntity = CalendarDayEntity.init(year: dateComponents.year!, month: dateComponents.month!-1, day: beforeMonthsDay + day)
-                dayEntity.isHidden = true
+                dayEntity = createPreviousCalendarDayEntity(dateComponents: dateComponents,
+                                                            day: beforeMonthsDay+day)
+                
             } else if day <= daysCountInMonth { // 현재달
-                dayEntity = CalendarDayEntity.init(year: dateComponents.year!, month: dateComponents.month!, day: day)
-                if isToday(yearMonth: dateComponents, day: day) {
-                    dayEntity.isToday = true
-                }
-                if isSelectedDay(yearMonth: dateComponents, day: day) {
-                    dayEntity.isSelected = true
-                }
+                dayEntity = createCurrentCalendarDayEntity(dateComponents: dateComponents,
+                                                           day: day)
             } else { // 이후달
-                dayEntity = CalendarDayEntity.init(year: dateComponents.year!, month: dateComponents.month! + 1, day: nextMonthsDay)
-                dayEntity.isHidden = true
+                dayEntity = createNextCalendarDayEntity(dateComponents: dateComponents,
+                                                        day: nextMonthsDay)
                 nextMonthsDay += 1
             }
             days.append(dayEntity)
         }
         
-        let calendarViewModelEntity = CalendarMonthEntity.init(dateComponents: dateComponents, days: days)
+        return days
+    }
+    
+    private func createPreviousCalendarDayEntity(dateComponents: DateComponents,
+                                                 day: Int) -> CalendarDayEntity {
+        var dayEntity = CalendarDayEntity.empty
         
-        return calendarViewModelEntity
+        dayEntity = CalendarDayEntity.init(year: dateComponents.year!,
+                                           month: dateComponents.month!-1,
+                                           day: day)
+        dayEntity.isHidden = true
+        
+        return dayEntity
+    }
+    
+    private func createCurrentCalendarDayEntity(dateComponents: DateComponents,
+                                                day: Int) -> CalendarDayEntity {
+        var dayEntity = CalendarDayEntity.empty
+
+        dayEntity = CalendarDayEntity.init(year: dateComponents.year!,
+                                           month: dateComponents.month!,
+                                           day: day)
+        
+        if isToday(yearMonth: dateComponents, day: day) {
+            dayEntity.isToday = true
+        }
+        
+        if isSelectedDay(yearMonth: dateComponents, day: day) {
+            dayEntity.isSelected = true
+        }
+        
+        return dayEntity
+    }
+    
+    private func createNextCalendarDayEntity(dateComponents: DateComponents,
+                                             day: Int) -> CalendarDayEntity {
+        var dayEntity = CalendarDayEntity.empty
+
+        dayEntity = CalendarDayEntity.init(year: dateComponents.year!,
+                                           month: dateComponents.month! + 1,
+                                           day: day)
+        dayEntity.isHidden = true
+        
+        return dayEntity
     }
     
     private func isToday(yearMonth: DateComponents, day: Int) -> Bool {
