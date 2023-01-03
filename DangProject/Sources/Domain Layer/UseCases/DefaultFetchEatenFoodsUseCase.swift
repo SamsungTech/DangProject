@@ -83,7 +83,14 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 })
                 .disposed(by: disposeBag)
             cachedMonth.append(currentMonth)
-            currentMonth.month = currentMonth.month! - 1
+            if currentMonth.month!-1 == 0 {
+                currentMonth.year = currentMonth.year! - 1
+                currentMonth.month = 12
+            } else {
+                currentMonth.month = currentMonth.month! - 1
+            }
+            
+
         }
         
         totalMonthsZipObservable
@@ -193,6 +200,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             var tempData: EatenFoodsPerDayDomainModel = .empty
             self?.manageFirebaseFireStoreUseCase.getEatenFoods(dateComponents: dateComponents)
                 .subscribe(onNext: { eatenFoods in
+                    
                     let date: Date = .makeDate(year: dateComponents.year!,
                                                month: dateComponents.month!,
                                                day: dateComponents.day!)

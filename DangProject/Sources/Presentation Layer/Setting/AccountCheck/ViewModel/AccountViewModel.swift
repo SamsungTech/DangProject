@@ -25,7 +25,6 @@ class AccountViewModel: AccountViewModelProtocol {
     private let disposeBag = DisposeBag()
     
     func logOutUser() {
-        // 유저 로그아웃시 해야할 행동들 (코어데이터 삭제)
         removeUserDefaultsUID()
     }
     

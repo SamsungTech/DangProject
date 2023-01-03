@@ -48,6 +48,8 @@ class ProfileImageSmallButton: UIButton {
     }
     
     func setupProfileImageViewImage(_ image: UIImage) {
-        self.profileImageView.image = image
+        DispatchQueue.main.async {
+            self.profileImageView.image = image
+        }
     }
 }

@@ -103,6 +103,7 @@ class CalendarView: UIView {
             .bind(to: nextCalendarCollectionView.rx.items(
                 cellIdentifier: CalendarCollectionViewCell.identifier,
                 cellType: CalendarCollectionViewCell.self)) { index, data, cell in
+                    
                 cell.configureCell(data: data)
             }
             .disposed(by: disposeBag)
@@ -237,8 +238,10 @@ extension CalendarView: UIScrollViewDelegate {
     private func checkCalendarViewScrollDirection() {
         if viewModel.scrollViewDirectionIsVaild() {
             if viewModel.nextMonthIsBiggerThanNow() {
+                
                 parentableViewController?.changeCalendarView(viewModel.currentDateComponents, fetchIsNeeded: false)
             } else {
+                
                 parentableViewController?.changeCalendarView(viewModel.currentDateComponents, fetchIsNeeded: true)
             }
         }

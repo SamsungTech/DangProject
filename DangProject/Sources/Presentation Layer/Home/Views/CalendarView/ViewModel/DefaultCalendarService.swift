@@ -40,11 +40,21 @@ class DefaultCalendarService: CalendarService {
     }
     
     func minusMonth() {
-        self.dateComponents.month! = self.dateComponents.month! - 1
+        if self.dateComponents.month! - 1 == 0 {
+            self.dateComponents.year! = self.dateComponents.year! - 1
+            self.dateComponents.month! = 12
+        } else {
+            self.dateComponents.month! = self.dateComponents.month! - 1
+        }
     }
     
     func plusMonth() {
-        self.dateComponents.month! = self.dateComponents.month! + 1
+        if self.dateComponents.month! + 1 == 13 {
+            self.dateComponents.year! = self.dateComponents.year! + 1
+            self.dateComponents.month! = 1
+        } else {
+            self.dateComponents.month! = self.dateComponents.month! + 1
+        }
     }
     
     func previousMonthData() -> CalendarMonthEntity {
