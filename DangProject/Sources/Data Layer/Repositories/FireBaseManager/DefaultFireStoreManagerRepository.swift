@@ -39,6 +39,18 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
+    func changeDemoValue(completion: @escaping ((Bool)->Void)) {
+        database.collection("app")
+            .document("Demo")
+            .setData(["isDemo": false]) { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                completion(true)
+            }
+    }
+    
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
         let uidData = ["firebaseUID": uid,
                        "profileExistence": ProfileExistence

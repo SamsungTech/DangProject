@@ -35,20 +35,21 @@ class AppCoordinator: Coordinator {
     
     private func checkDemoVersion() {
         /// check demo app version
-        fireStoreManager.getDemoDataInFireStore { [weak self] demo in
+        fireStoreManager.getDemoDataInFireStore { demo in
             if demo {
-                self?.setFirebaseUIDInUserDefaults()
-                self?.checkAppIsFirstTime()
-                self?.checkUserUID()
+                self.setFirebaseUIDInUserDefaults()
+                self.checkAppIsFirstTime()
+                self.checkUserUID()
             } else {
-                self?.deleteFirebaseUIDInUserDefaults()
-                self?.checkAppIsFirstTime()
-                self?.checkUserUID()
+                self.deleteFirebaseUIDInUserDefaults()
+                self.checkAppIsFirstTime()
+                self.checkUserUID()
             }
         }
     }
     
     private func deleteFirebaseUIDInUserDefaults() {
+        
         UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
     }
     
@@ -66,6 +67,7 @@ class AppCoordinator: Coordinator {
     private func checkUserUID() {
         /// check userUID
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
+            
             return startLogin()
         }
         compareFireStoreUID(with: userDefaultsUID)

@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 
 protocol AccountViewModelInputProtocol: AnyObject {
-    func logOutUser()
+    func logOutUser(completion: @escaping ((Bool)->Void))
 }
 
 protocol AccountViewModelOutputProtocol: AnyObject {
@@ -23,13 +23,19 @@ protocol AccountViewModelProtocol: AccountViewModelInputProtocol, AccountViewMod
 
 class AccountViewModel: AccountViewModelProtocol {
     private let disposeBag = DisposeBag()
+    private let managerFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     
-    func logOutUser() {
+    init(managerFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
+        self.managerFirebaseFireStoreUseCase = managerFirebaseFireStoreUseCase
+    }
+    
+    func logOutUser(completion: @escaping ((Bool)->Void)) {
+        managerFirebaseFireStoreUseCase.changeDemoValue(completion: completion)
         removeUserDefaultsUID()
     }
     
-    
     private func removeUserDefaultsUID() {
+        
         UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
     }
 }

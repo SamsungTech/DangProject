@@ -47,6 +47,7 @@ class AccountCoordinator: Coordinator {
               let rootNavigationViewController = rootViewController.navigationController else { return }
         rootNavigationViewController.viewControllers.removeAll()
         let coordinator = AppCoordinator(navigationController: rootNavigationViewController)
+        
         coordinator.start()
     }
 }

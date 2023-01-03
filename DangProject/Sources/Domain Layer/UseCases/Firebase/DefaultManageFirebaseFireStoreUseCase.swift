@@ -108,4 +108,8 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
     func uploadEatenFood(eatenFood: FoodDomainModel, completion: @escaping (Bool) -> Void) {
         fireStoreManagerRepository.saveEatenFood(eatenFood: eatenFood, completion: completion)
     }
+    
+    func changeDemoValue(completion: @escaping ((Bool)->Void)) {
+        fireStoreManagerRepository.changeDemoValue(completion: completion)
+    }
 }

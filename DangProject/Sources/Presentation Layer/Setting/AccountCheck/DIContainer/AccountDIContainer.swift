@@ -13,7 +13,7 @@ class AccountDIContainer {
     }
     
     func makeAccountViewModel() -> AccountViewModel {
-        return AccountViewModel()
+        return AccountViewModel(managerFirebaseFireStoreUseCase: makeManageFirebaseFireStoreUseCase())
     }
     
     func makeFetchProfileUseCase() -> ProfileManagerUseCase {

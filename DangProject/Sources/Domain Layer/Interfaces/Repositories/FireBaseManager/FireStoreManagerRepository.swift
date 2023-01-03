@@ -21,4 +21,5 @@ protocol FireStoreManagerRepository {
     func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]>
     func getProfileDataInFireStore() -> Observable<[String: Any]>
     func getDemoDataInFireStore(completion: @escaping (Bool) -> Void)
+    func changeDemoValue(completion: @escaping ((Bool)->Void))
 }

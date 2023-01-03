@@ -118,8 +118,11 @@ class AccountViewController: CustomViewController {
     private func setupLogOutAlertController() {
         let no = UIAlertAction(title: "아니오", style: .default, handler: nil)
         let yes = UIAlertAction(title: "네", style: .default) { [weak self] _ in
-            self?.viewModel.logOutUser()
-            self?.coordinator?.returnToFirstStart()
+            self?.viewModel.logOutUser { isFalse in
+                if isFalse == true {
+                    self?.coordinator?.returnToFirstStart()
+                }
+            }
         }
         logOutAlertController.addAction(yes)
         logOutAlertController.addAction(no)
