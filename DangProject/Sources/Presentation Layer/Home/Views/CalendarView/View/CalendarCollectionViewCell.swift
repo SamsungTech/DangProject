@@ -15,11 +15,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
     private let animatingPercentLineLayer = CAShapeLayer()
     private let nonAnimatingPercentLineLayer = CAShapeLayer()
     private let smallPercentLineBackgroundLayer = CAShapeLayer()
-    private let circularPath = UIBezierPath(arcCenter: .zero,
-                                            radius: 15,
-                                            startAngle: -CGFloat.pi / 2,
-                                            endAngle: 2 * CGFloat.pi,
-                                            clockwise: true)
+    private var circularPath = UIBezierPath()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,22 +43,28 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         self.backgroundColor = .homeBackgroundColor
         
         dayLabel.textAlignment = .center
-        dayLabel.font = UIFont.boldSystemFont(ofSize: xValueRatio(15))
+        dayLabel.font = UIFont.boldSystemFont(ofSize: yValueRatio(15))
         dayLabel.textColor = .customLabelColorBlack
         
         animatingPercentLineLayer.fillColor = UIColor.clear.cgColor
         animatingPercentLineLayer.lineCap = .round
-        animatingPercentLineLayer.position = CGPoint(x: 28, y: 40)
+        animatingPercentLineLayer.position = percentLayerPosition()
         
         nonAnimatingPercentLineLayer.fillColor = UIColor.clear.cgColor
         nonAnimatingPercentLineLayer.lineCap = .round
-        nonAnimatingPercentLineLayer.position = CGPoint(x: 28, y: 40)
+        nonAnimatingPercentLineLayer.position = percentLayerPosition()
         
+        circularPath = UIBezierPath(arcCenter: .zero,
+                                    radius: layerRadius(),
+                                    startAngle: -CGFloat.pi / 2,
+                                    endAngle: 2 * CGFloat.pi,
+                                    clockwise: true)
+         
         smallPercentLineBackgroundLayer.path = circularPath.cgPath
         smallPercentLineBackgroundLayer.fillColor = UIColor.clear.cgColor
         smallPercentLineBackgroundLayer.strokeColor = UIColor.smallCircleBackgroundColorGray.cgColor
         smallPercentLineBackgroundLayer.lineCap = .round
-        smallPercentLineBackgroundLayer.position = CGPoint(x: 28, y: 40)
+        smallPercentLineBackgroundLayer.position = percentLayerPosition()
         smallPercentLineBackgroundLayer.lineWidth = 4
         
         selectedView.viewRadius(cornerRadius: 11)
@@ -141,7 +143,7 @@ class CalendarCollectionViewCell: UICollectionViewCell {
         let circleAngleValue = Double.calculateCircleLineAngle(percent: data.percentValue)
         let endAngle = (-CGFloat.pi / 2) + ((450 * circleAngleValue * .pi)/180)
         lazy var newCircleAngle = UIBezierPath(arcCenter: .zero,
-                                               radius: 15,
+                                               radius: layerRadius(),
                                                startAngle: -CGFloat.pi / 2,
                                                endAngle: endAngle,
                                                clockwise: true)
@@ -152,6 +154,24 @@ class CalendarCollectionViewCell: UICollectionViewCell {
             nonAnimatingPercentLineLayer.lineWidth = 4
             nonAnimatingPercentLineLayer.strokeColor = color
             nonAnimatingPercentLineLayer.strokeEnd = 1
+        }
+    }
+    
+    private func percentLayerPosition() -> CGPoint {
+        switch UIScreen.main.bounds.maxY {
+        case 667.0:
+            return CGPoint(x: 27, y: 30)
+        default:
+            return CGPoint(x: 28, y: 40)
+        }
+    }
+    
+    private func layerRadius() -> CGFloat {
+        switch UIScreen.main.bounds.maxY {
+        case 667.0:
+            return 12
+        default:
+            return 15
         }
     }
 }

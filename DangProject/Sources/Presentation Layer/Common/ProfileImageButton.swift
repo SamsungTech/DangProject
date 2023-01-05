@@ -16,7 +16,7 @@ class ProfileImageButton: UIView {
     private lazy var profileImageBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .profileImageBackgroundColor
-        view.viewRadius(cornerRadius: xValueRatio(62.5))
+        view.viewRadius(cornerRadius: yValueRatio(62.5))
         view.layer.borderWidth = 0.2
         view.layer.borderColor = UIColor.darkGray.cgColor
         return view
@@ -31,14 +31,14 @@ class ProfileImageButton: UIView {
     
     private(set) lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.viewRadius(cornerRadius: xValueRatio(62.5))
+        imageView.viewRadius(cornerRadius: yValueRatio(62.5))
         return imageView
     }()
     
     private lazy var profileSideBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .homeBoxColor
-        view.viewRadius(cornerRadius: xValueRatio(17.5))
+        view.viewRadius(cornerRadius: yValueRatio(17.5))
         return view
     }()
     
@@ -48,7 +48,7 @@ class ProfileImageButton: UIView {
         imageView.tintColor = .customLabelColorBlack
         imageView.layer.borderWidth = 3
         imageView.layer.borderColor = UIColor.homeBoxColor.cgColor
-        imageView.viewRadius(cornerRadius: xValueRatio(17.5))
+        imageView.viewRadius(cornerRadius: yValueRatio(17.5))
         return imageView
     }()
     
@@ -82,7 +82,7 @@ extension ProfileImageButton {
         profileImageBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         profileImageBackgroundView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         profileImageBackgroundView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        profileImageBackgroundView.widthAnchor.constraint(equalToConstant: xValueRatio(125)).isActive = true
+        profileImageBackgroundView.widthAnchor.constraint(equalToConstant: yValueRatio(125)).isActive = true
         profileImageBackgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(125)).isActive = true
     }
     
@@ -91,7 +91,7 @@ extension ProfileImageButton {
         ImageView.translatesAutoresizingMaskIntoConstraints = false
         ImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         ImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        ImageView.widthAnchor.constraint(equalToConstant: xValueRatio(50)).isActive = true
+        ImageView.widthAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
         ImageView.heightAnchor.constraint(equalToConstant: yValueRatio(50)).isActive = true
     }
     
@@ -100,7 +100,7 @@ extension ProfileImageButton {
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: xValueRatio(125)).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: yValueRatio(125)).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: yValueRatio(125)).isActive = true
     }
     
@@ -109,7 +109,7 @@ extension ProfileImageButton {
         profileSideBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         profileSideBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         profileSideBackgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        profileSideBackgroundView.widthAnchor.constraint(equalToConstant: xValueRatio(35)).isActive = true
+        profileSideBackgroundView.widthAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
         profileSideBackgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
     }
     
@@ -119,7 +119,7 @@ extension ProfileImageButton {
         profileSideImageView.translatesAutoresizingMaskIntoConstraints = false
         profileSideImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         profileSideImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        profileSideImageView.widthAnchor.constraint(equalToConstant: xValueRatio(35)).isActive = true
+        profileSideImageView.widthAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
         profileSideImageView.heightAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
     }
     

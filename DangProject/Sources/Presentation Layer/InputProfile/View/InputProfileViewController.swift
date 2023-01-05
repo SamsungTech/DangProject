@@ -149,7 +149,7 @@ class InputProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             profileImageButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: yValueRatio(30)),
             profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(125)),
+            profileImageButton.widthAnchor.constraint(equalToConstant: yValueRatio(125)),
             profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
         ])
     }
@@ -283,7 +283,7 @@ class InputProfileViewController: UIViewController {
         if let name = nameTextField.text {
             viewModel.submitButtonTapped(name: name) { [weak self] data in
                 if data {
-                    self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
+                    self?.coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation)
                 }
             }
         }

@@ -46,8 +46,8 @@ class TabBarController: UITabBarController {
         button.tag = 1
         button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         button.setImage(UIImage(named: "dangLogoBlackColor"), for: .normal)
-        button.viewRadius(cornerRadius: xValueRatio(40))
-        button.layer.borderWidth = xValueRatio(6)
+        button.viewRadius(cornerRadius: yValueRatio(40))
+        button.layer.borderWidth = yValueRatio(6)
         button.layer.borderColor = UIColor.white.cgColor
         return button
     }()
@@ -86,9 +86,9 @@ class TabBarController: UITabBarController {
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             backgroundView.heightAnchor.constraint(equalToConstant: yValueRatio(90)),
             backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
-            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5))
+            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: yValueRatio(5))
         ])
-        backgroundView.roundCorners(cornerRadius: xValueRatio(30), maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
+        backgroundView.roundCorners(cornerRadius: yValueRatio(30), maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
     }
     
     private func setupHomeItemButton() {
@@ -97,7 +97,7 @@ class TabBarController: UITabBarController {
         NSLayoutConstraint.activate([
             homeItemButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -xValueRatio(20)),
             homeItemButton.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: xValueRatio(UIScreen.main.bounds.maxX/6)),
-            homeItemButton.widthAnchor.constraint(equalToConstant: xValueRatio(35)),
+            homeItemButton.widthAnchor.constraint(equalToConstant: yValueRatio(35)),
             homeItemButton.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
     }
@@ -108,7 +108,7 @@ class TabBarController: UITabBarController {
         NSLayoutConstraint.activate([
             settingItemButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -xValueRatio(20)),
             settingItemButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -xValueRatio(UIScreen.main.bounds.maxX/6)),
-            settingItemButton.widthAnchor.constraint(equalToConstant: xValueRatio(35)),
+            settingItemButton.widthAnchor.constraint(equalToConstant: yValueRatio(35)),
             settingItemButton.heightAnchor.constraint(equalToConstant: yValueRatio(52.5))
         ])
     }
@@ -120,7 +120,7 @@ class TabBarController: UITabBarController {
         NSLayoutConstraint.activate([
             addButton.heightAnchor.constraint(equalToConstant: yValueRatio(80)),
             addButton.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -yValueRatio(25)),
-            addButton.widthAnchor.constraint(equalToConstant: xValueRatio(80)),
+            addButton.widthAnchor.constraint(equalToConstant: yValueRatio(80)),
             addButton.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor)
         ])
     }

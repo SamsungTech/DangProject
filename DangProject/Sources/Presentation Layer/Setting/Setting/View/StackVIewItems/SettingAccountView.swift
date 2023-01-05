@@ -13,7 +13,7 @@ class SettingAccountView: UIButton {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.fill")
         imageView.tintColor = .customFontColorBlack
-        imageView.viewRadius(cornerRadius: xValueRatio(25))
+        imageView.viewRadius(cornerRadius: yValueRatio(25))
         return imageView
     }()
     
@@ -75,7 +75,7 @@ class SettingAccountView: UIButton {
         NSLayoutConstraint.activate([
             profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(10)),
             profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            profileImageView.widthAnchor.constraint(equalToConstant: xValueRatio(50)),
+            profileImageView.widthAnchor.constraint(equalToConstant: yValueRatio(50)),
             profileImageView.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
     }

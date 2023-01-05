@@ -103,7 +103,7 @@ class ProfileViewController: CustomViewController {
         NSLayoutConstraint.activate([
             profileImageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: yValueRatio(150)),
             profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            profileImageButton.widthAnchor.constraint(equalToConstant: xValueRatio(125)),
+            profileImageButton.widthAnchor.constraint(equalToConstant: yValueRatio(125)),
             profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
         ])
     }

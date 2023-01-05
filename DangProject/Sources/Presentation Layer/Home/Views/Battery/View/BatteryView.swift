@@ -82,7 +82,7 @@ class BatteryView: UIView {
         [ animationLineLayer, percentLineBackgroundLayer, percentLineLayer ].forEach() { circleProgressBarView.layer.addSublayer($0) }
         
         let circularPath = UIBezierPath(arcCenter: .zero,
-                                        radius: xValueRatio(110),
+                                        radius: layerRadius(),
                                         startAngle: -CGFloat.pi / 2,
                                         endAngle: 2 * CGFloat.pi,
                                         clockwise: true)
@@ -91,20 +91,20 @@ class BatteryView: UIView {
         percentLineBackgroundLayer.fillColor = UIColor.clear.cgColor
         percentLineBackgroundLayer.lineWidth = 14
         percentLineBackgroundLayer.lineCap = .round
-        percentLineBackgroundLayer.position = CGPoint(x: xValueRatio(196.5), y: yValueRatio(150))
+        percentLineBackgroundLayer.position = percentLayerPosition()
         
         animationLineLayer.path = circularPath.cgPath
         animationLineLayer.fillColor = UIColor.clear.cgColor
         animationLineLayer.lineWidth = 14
         animationLineLayer.lineCap = .round
-        animationLineLayer.position = CGPoint(x: xValueRatio(196.5), y: yValueRatio(150))
+        animationLineLayer.position = percentLayerPosition()
         
         percentLineLayer.path = circularPath.cgPath
         percentLineLayer.fillColor = UIColor.clear.cgColor
         percentLineLayer.lineWidth = 14
         percentLineLayer.lineCap = .round
         percentLineLayer.strokeEnd = 0
-        percentLineLayer.position = CGPoint(x: xValueRatio(196.5), y: yValueRatio(150))
+        percentLineLayer.position = percentLayerPosition()
     }
     
     private func bindTotalSugarSum() {
@@ -184,6 +184,24 @@ extension BatteryView {
         if currentCount > endCount {
             self.timer.invalidate()
             return
+        }
+    }
+    
+    private func percentLayerPosition() -> CGPoint {
+        switch UIScreen.main.bounds.maxY {
+        case 667.0:
+            return CGPoint(x: xValueRatio(196.5), y: yValueRatio(150))
+        default:
+            return CGPoint(x: xValueRatio(196.5), y: yValueRatio(150))
+        }
+    }
+    
+    private func layerRadius() -> CGFloat {
+        switch UIScreen.main.bounds.maxY {
+        case 667.0:
+            return xValueRatio(90)
+        default:
+            return xValueRatio(110)
         }
     }
 }

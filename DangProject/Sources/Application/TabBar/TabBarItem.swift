@@ -15,7 +15,7 @@ class TabBarItem: UIButton {
     
     private(set) lazy var itemTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: xValueRatio(10), weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(10), weight: .semibold)
         label.textColor = UIColor.black
         label.textAlignment = .center
         return label
