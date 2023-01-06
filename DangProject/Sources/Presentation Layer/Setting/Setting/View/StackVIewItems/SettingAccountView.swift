@@ -110,10 +110,14 @@ class SettingAccountView: UIButton {
     }
     
     func configureUserName(_ name: String) {
-        profileAccountLabel.text = name
+        DispatchQueue.main.async { [weak self] in
+            self?.profileAccountLabel.text = name
+        }
     }
     
     func configureUserImage(_ image: UIImage) {
-        profileImageView.image = image
+        DispatchQueue.main.async { [weak self] in
+            self?.profileImageView.image = image
+        }
     }
 }

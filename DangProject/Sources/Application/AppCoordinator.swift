@@ -49,7 +49,6 @@ class AppCoordinator: Coordinator {
     }
     
     private func deleteFirebaseUIDInUserDefaults() {
-        
         UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
     }
     
@@ -122,7 +121,6 @@ protocol CoordinatorFinishDelegate {
 }
 
 extension AppCoordinator: CoordinatorFinishDelegate {
-    
     func switchViewController(to viewController: viewControllerType) {
         navigationController.viewControllers.removeAll()
         switch viewController {

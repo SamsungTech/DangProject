@@ -242,14 +242,19 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
     
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
-        
-        self.profileImageButton.profileImageView.image = image
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
+        setupProfileImage(image)
         profileImagePicker.dismiss(animated: true)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         profileImagePicker.dismiss(animated: true)
+    }
+    
+    private func setupProfileImage(_ image: UIImage) {
+        DispatchQueue.main.async { [weak self] in
+            self?.profileImageButton.profileImageView.image = image
+        }
     }
 }
 

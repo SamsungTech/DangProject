@@ -68,6 +68,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func deleteFirebaseUserDocument() {
+        self.deleteUserInformationInApp()
         database.collection("users")
             .document(uid)
             .delete { error in
@@ -76,9 +77,13 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                     return
                 }
             }
-        
+    }
+    
+    private func deleteUserInformationInApp() {
         database.collection("app")
             .document(uid)
+            .collection("eatenFoods")
+            .document("2023")
             .delete { error in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
