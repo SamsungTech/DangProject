@@ -8,7 +8,6 @@
 import UIKit
 
 class EatenFoodsCollectionViewCell: UICollectionViewCell {
-
     private var backView = UIView()
     private var foodNameLabel = UILabel()
     private var amountLabel = UILabel()
@@ -44,24 +43,21 @@ class EatenFoodsCollectionViewCell: UICollectionViewCell {
     }
     
     private func layout() {
-        [ foodNameLabel, dangLabel, amountLabel ].forEach() { contentView.addSubview($0) }
+        [ amountLabel, foodNameLabel, dangLabel ].forEach() { contentView.addSubview($0) }
+        
+        amountLabel.translatesAutoresizingMaskIntoConstraints = false
+        amountLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        amountLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         foodNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        foodNameLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        foodNameLabel.bottomAnchor.constraint(equalTo: amountLabel.topAnchor, constant: -yValueRatio(10)).isActive = true
         foodNameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         foodNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         foodNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        foodNameLabel.heightAnchor.constraint(equalToConstant: self.frame.height/2).isActive = true
-        
-        amountLabel.translatesAutoresizingMaskIntoConstraints = false
-        amountLabel.topAnchor.constraint(equalTo: foodNameLabel.bottomAnchor).isActive = true
-        amountLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        amountLabel.heightAnchor.constraint(equalToConstant: self.frame.height/4).isActive = true
         
         dangLabel.translatesAutoresizingMaskIntoConstraints = false
-        dangLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor).isActive = true
+        dangLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: yValueRatio(10)).isActive = true
         dangLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        dangLabel.heightAnchor.constraint(equalToConstant: self.frame.height/4).isActive = true
     }
     
     func setupCell(data: EatenFoodsViewModelEntity) {

@@ -7,12 +7,15 @@
 
 import Foundation
 
+import RxSwift
+import RxRelay
+
 protocol SecessionViewModelInputProtocol {
     func resignUser(completion: @escaping (Bool) -> Void)
 }
 
 protocol SecessionViewModelOutputProtocol {
-    
+    var loading: PublishRelay<LoadingState> { get }
 }
 
 protocol SecessionViewModelProtocol: SecessionViewModelInputProtocol, SecessionViewModelOutputProtocol {
@@ -20,7 +23,8 @@ protocol SecessionViewModelProtocol: SecessionViewModelInputProtocol, SecessionV
 }
 
 class SecessionViewModel: SecessionViewModelProtocol {
-    let resignUseCase: ResignUseCase
+    private let resignUseCase: ResignUseCase
+    let loading = PublishRelay<LoadingState>()
     
     init(resignUseCase: ResignUseCase) {
         self.resignUseCase = resignUseCase
@@ -28,5 +32,9 @@ class SecessionViewModel: SecessionViewModelProtocol {
     
     func resignUser(completion: @escaping (Bool) -> Void) {
         resignUseCase.deleteAllUserData(completion: completion)
+    }
+    
+    func removeFirebaseUID() {
+        UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
     }
 }

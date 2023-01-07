@@ -59,21 +59,21 @@ class AlarmTableViewCell: UITableViewCell {
     
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: xValueRatio(24), weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(24), weight: .semibold)
         label.textColor = .customFontColorGray
         return label
     }()
     
     private(set) lazy var amPmLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: xValueRatio(23), weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(23), weight: .semibold)
         label.textColor = .customFontColorGray
         return label
     }()
     
     private(set) lazy var timeTextField: UITextField = {
         let textField = UITextField()
-        textField.font = UIFont.systemFont(ofSize: xValueRatio(45), weight: .medium)
+        textField.font = UIFont.systemFont(ofSize: yValueRatio(45), weight: .medium)
         textField.tintColor = .clear
         textField.addTarget(self, action: #selector(timeTextFieldDidTap), for: .editingDidBegin)
         textField.inputView = wheelsTimePicker
@@ -151,12 +151,12 @@ class AlarmTableViewCell: UITableViewCell {
     private(set) lazy var userMessageTextField: UITextField = {
         let textField = UITextField()
         textField.textColor = UIColor.lightGray
-        textField.font = UIFont.systemFont(ofSize: xValueRatio(15), weight: .semibold)
+        textField.font = UIFont.systemFont(ofSize: yValueRatio(15), weight: .semibold)
         textField.attributedPlaceholder = NSAttributedString(
             string: "사용자 지정 메시지",
             attributes: [
                 NSAttributedString.Key.foregroundColor: UIColor.lightGray,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: xValueRatio(15), weight: .semibold)
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: yValueRatio(15), weight: .semibold)
             ]
         )
         textField.addTarget(self, action: #selector(userMessageTextFieldDidTap), for: .editingDidBegin)
@@ -324,7 +324,7 @@ class AlarmTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             timeTextField.leadingAnchor.constraint(equalTo: amPmLabel.trailingAnchor, constant: xValueRatio(5)),
             timeTextField.bottomAnchor.constraint(equalTo: middleView.bottomAnchor, constant: -yValueRatio(10)),
-            timeTextField.widthAnchor.constraint(equalToConstant: xValueRatio(120)),
+            timeTextField.widthAnchor.constraint(equalToConstant: yValueRatio(120)),
             timeTextField.heightAnchor.constraint(equalToConstant: yValueRatio(40))
         ])
     }
@@ -337,7 +337,7 @@ class AlarmTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             everydaySelectButton.topAnchor.constraint(equalTo: middleView.bottomAnchor),
             everydaySelectButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: xValueRatio(10)),
-            everydaySelectButton.widthAnchor.constraint(equalToConstant: xValueRatio(90))
+            everydaySelectButton.widthAnchor.constraint(equalToConstant: yValueRatio(90))
         ])
     }
     
@@ -360,7 +360,7 @@ class AlarmTableViewCell: UITableViewCell {
             bottomView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            bottomView.heightAnchor.constraint(equalToConstant: xValueRatio(50))
+            bottomView.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
     }
     
@@ -368,7 +368,7 @@ class AlarmTableViewCell: UITableViewCell {
         bottomView.addSubview(selectedDayLabel)
         selectedDayLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            selectedDayLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: xValueRatio(20)),
+            selectedDayLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: yValueRatio(20)),
             selectedDayLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -yValueRatio(20))
         ])
     }
@@ -379,7 +379,7 @@ class AlarmTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             arrowButton.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -xValueRatio(20)),
             arrowButton.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -yValueRatio(10)),
-            arrowButton.widthAnchor.constraint(equalToConstant: xValueRatio(40)),
+            arrowButton.widthAnchor.constraint(equalToConstant: yValueRatio(40)),
             arrowButton.heightAnchor.constraint(equalToConstant: yValueRatio(40))
         ])
     }
@@ -390,7 +390,7 @@ class AlarmTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             deleteButton.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: xValueRatio(30)),
             deleteButton.centerYAnchor.constraint(equalTo: arrowButton.centerYAnchor),
-            deleteButton.widthAnchor.constraint(equalToConstant: xValueRatio(150)),
+            deleteButton.widthAnchor.constraint(equalToConstant: yValueRatio(150)),
             deleteButton.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
     }

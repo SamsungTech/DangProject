@@ -51,7 +51,9 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
-    func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool) {
+    func saveFirebaseUserDocument(uid: String,
+                                  ProfileExistence: Bool,
+                                  completion: @escaping ((Bool)->Void)) {
         let uidData = ["firebaseUID": uid,
                        "profileExistence": ProfileExistence
         ] as [String : Any]
@@ -61,9 +63,12 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .setData(uidData) { error in
                 
                 if let error = error {
+                    completion(false)
                     print("DEBUG: \(error.localizedDescription)")
                     return
                 }
+                
+                completion(true)
             }
     }
     
@@ -207,8 +212,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
             
             if let result = snapshot?.data() {
-                if let resultBool = result[fieldName] {
-                    completion(resultBool as! Bool)
+                if let resultBool = result[fieldName] as? Bool {
+                    completion(resultBool)
                 } else {
                     completion(false)
                 }
@@ -339,6 +344,35 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     private func removeAppUID(completion: @escaping (Bool) -> Void) {
         database.collection("app")
             .document(uid)
+            .delete { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                
+                self.removeUsesUID(completion: completion)
+            }
+    }
+    
+    private func removeUsesUID(completion: @escaping (Bool) -> Void) {
+        database.collection("users")
+            .document(uid)
+            .delete { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                self.removePersonalProfile(completion: completion)
+            }
+    }
+    
+    private func removePersonalProfile(completion: @escaping (Bool) -> Void) {
+        database.collection("app")
+            .document(uid)
+            .collection("personal")
+            .document("profile")
             .delete { error in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")

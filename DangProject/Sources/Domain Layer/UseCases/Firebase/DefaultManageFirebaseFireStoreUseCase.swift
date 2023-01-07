@@ -26,17 +26,23 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
     let profileExistenceObservable = PublishSubject<Bool>()
     
     func uploadFirebaseUID(uid: String) {
-        fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid, ProfileExistence: false)
+        fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid, ProfileExistence: false,
+                                                            completion: { _ in })
     }
     
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
-        fireStoreManagerRepository.saveFirebaseUserDocument(uid: profile.uid, ProfileExistence: true)
-        fireStoreManagerRepository.saveProfileDocument(profile: profile, completion: completion)
+        fireStoreManagerRepository.saveFirebaseUserDocument(uid: profile.uid,
+                                                            ProfileExistence: true,
+                                                            completion: { [weak self] saveResult in
+            if saveResult {
+                self?.fireStoreManagerRepository.saveProfileDocument(profile: profile, completion: completion)
+            }
+        })
     }
     
     func getProfileExistence(uid: String) -> Observable<Bool> {
         return Observable.create { [weak self] emitter in
-            self?.fireStoreManagerRepository.checkProfileField(with: "profileExistence", uid: uid) {  profileExist in
+            self?.fireStoreManagerRepository.checkProfileField(with: "profileExistence", uid: uid) { profileExist in
                 if profileExist {
                     emitter.onNext(true)
                 } else {
@@ -69,10 +75,6 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                 .disposed(by: strongSelf.disposeBag)
             return Disposables.create()
         }
-    }
-    
-    func updateProfileData(_ data: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
-        fireStoreManagerRepository.saveProfileDocument(profile: data, completion: completion)
     }
     
     func getEatenFoods(dateComponents: DateComponents) -> Observable<[FoodDomainModel]> {

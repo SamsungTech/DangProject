@@ -19,6 +19,7 @@ class DefaultResignUseCase: ResignUseCase {
     }
     
     func deleteAllUserData(completion: @escaping (Bool) -> Void) {
+        fireStoreManagerRepository.changeDemoValue(completion: { _ in })
         deleteAllUserCoreData()
         resetDefaultSetting()
         deleteAllUserDefaultsData()

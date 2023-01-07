@@ -35,6 +35,8 @@ class SecessionViewController: CustomViewController {
         return alert
     }()
     
+    private lazy var loadingView = LoadingView(frame: .zero)
+    
     init(viewModel: SecessionViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -58,6 +60,7 @@ extension SecessionViewController {
         setUpWaningView()
         setUpDeleteButton()
         setupResignAlertController()
+        setupLoadingView()
     }
     
     private func setUpView() {
@@ -97,11 +100,25 @@ extension SecessionViewController {
         ])
     }
     
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
     private func setupResignAlertController() {
         let no = UIAlertAction(title: "취소", style: .default, handler: nil)
         let yes = UIAlertAction(title: "탈퇴", style: .destructive) { [weak self] _ in
+            self?.viewModel.loading.accept(.startLoading)
             self?.viewModel.resignUser { bool in
                 if bool {
+                    self?.viewModel.loading.accept(.finishLoading)
+                    self?.viewModel.removeFirebaseUID()
                     self?.coordinator?.returnToFirstStart()
                 }
             }
@@ -121,6 +138,17 @@ extension SecessionViewController {
             .bind { [weak self] in
                 guard let strongSelf = self else { return }
                 self?.present(strongSelf.resignAlertController, animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
+        
+        viewModel.loading
+            .bind { [weak self] state in
+                switch state {
+                case .startLoading:
+                    self?.loadingView.showLoading()
+                case .finishLoading:
+                    self?.loadingView.hideLoading()
+                }
             }
             .disposed(by: disposeBag)
     }

@@ -11,6 +11,8 @@ class InputProfileViewController: UIViewController {
     private let viewModel: InputProfileViewModel
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
     
+    private lazy var loadingView = LoadingView(frame: .zero)
+
     private lazy var welcomeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -130,6 +132,7 @@ class InputProfileViewController: UIViewController {
         layoutWeightInputSection()
         layoutSugarLevelInputSection()
         layoutReadyButton()
+        setupLoadingView()
     }
     
     private func layoutWelcomeLabel() {
@@ -209,6 +212,18 @@ class InputProfileViewController: UIViewController {
         ])
         
     }
+    
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
     // MARK: - Others
     
     private func configureToolbars() {
@@ -231,6 +246,7 @@ class InputProfileViewController: UIViewController {
         bindPickerView()
         bindProfileImageView()
         bindReadyButton()
+        bindLoadingView()
     }
     
     private func bindPickerView() {
@@ -274,16 +290,30 @@ class InputProfileViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    private func bindLoadingView() {
+        viewModel.loading
+            .bind { [weak self] state in
+                switch state {
+                case .startLoading:
+                    self?.loadingView.showLoading()
+                case .finishLoading:
+                    self?.loadingView.hideLoading()
+                }
+            }
+            .disposed(by: disposeBag)
+    }
+    
     
     @objc private func changeProfileButtonTapped() {
         self.present(imagePicker, animated: true)
     }
     
     @objc private func submitInformation() {
+        viewModel.loading.accept(.startLoading)
         if let name = nameTextField.text {
             viewModel.submitButtonTapped(name: name) { [weak self] data in
                 if data {
-                    
+                    self?.viewModel.loading.accept(.finishLoading)
                     self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
                 }
             }

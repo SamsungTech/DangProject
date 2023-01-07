@@ -89,7 +89,7 @@ extension AlarmDaySelectionView {
                     string: "\(week[tagNumber - 1])",
                     attributes: [
                         NSAttributedString.Key.font: UIFont.systemFont(
-                            ofSize: xValueRatio(15),
+                            ofSize: yValueRatio(15),
                             weight: .heavy
                         )]
                 ), for: .normal)
@@ -101,7 +101,7 @@ extension AlarmDaySelectionView {
                 for: .touchUpInside
             )
             button.frame = CGRect(x: .zero, y: .zero, width: xValueRatio(33), height: yValueRatio(33))
-            button.viewRadius(cornerRadius: xValueRatio(16.5))
+            button.viewRadius(cornerRadius: yValueRatio(16.5))
             button.backgroundColor = .blue
             tagNumber += 1
             alarmStackView.addArrangedSubview(button)

@@ -22,6 +22,7 @@ protocol InputProfileViewModelInput {
 }
 
 protocol InputProfileViewModelOutput {
+    var loading: PublishRelay<LoadingState> { get }
     var heights: [String] { get }
     var weights: [String] { get }
     var sugars: [String] { get }
@@ -77,6 +78,7 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
     let numberOfComponents: [Int] = [2,2,1]
     lazy var numberOfRowsInComponents: [[Int]] = [[heights.count, 1],[weights.count, 1],[sugars.count]]
     lazy var pickerViewValues: [[[String]]] = [[heights,["cm"]],[weights,["kg"]], [sugars]]
+    let loading = PublishRelay<LoadingState>()
    
     func changeProfileImage(image: UIImage?) {
         guard let image = image else { return }
@@ -90,6 +92,7 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
     var sugarObservable = PublishRelay<Int>()
     var profileImageObservable = PublishRelay<UIImage>()
     var readyButtonIsValid = BehaviorRelay(value: false)
+    
     
     func pickerValueChanged(textFieldTag: Int, row: Int) {
         

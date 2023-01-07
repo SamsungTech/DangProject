@@ -96,7 +96,7 @@ class ProfileViewModel: ProfileViewModelProtocol {
                      completion: @escaping (Bool) -> Void) {
         loadingRelay.accept(.startLoading)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseStoreUseCase.updateProfileData(profile, completion: completion)
+        manageFirebaseStoreUseCase.uploadProfile(profile: profile, completion: completion)
         manageFirebaseStorageUseCase.updateProfileImage(jpegData)
             .subscribe(onNext: { [weak self] updateIsDone in
                 if updateIsDone {

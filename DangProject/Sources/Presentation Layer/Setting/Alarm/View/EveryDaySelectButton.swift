@@ -12,13 +12,13 @@ class EveryDaySelectButton: UIButton {
         let view = UIImageView()
         view.backgroundColor = .clear
         view.layer.borderColor = UIColor.lightGray.cgColor
-        view.viewRadius(cornerRadius: xValueRatio(10))
+        view.viewRadius(cornerRadius: yValueRatio(10))
         return view
     }()
     
     private(set) lazy var daysLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: xValueRatio(13), weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(13), weight: .semibold)
         label.text = "매일"
         label.textColor = .lightGray
         return label
@@ -57,7 +57,7 @@ extension EveryDaySelectButton {
         NSLayoutConstraint.activate([
             circleView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: xValueRatio(10)),
             circleView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            circleView.widthAnchor.constraint(equalToConstant: xValueRatio(20)),
+            circleView.widthAnchor.constraint(equalToConstant: yValueRatio(20)),
             circleView.heightAnchor.constraint(equalToConstant: yValueRatio(20))
         ])
     }

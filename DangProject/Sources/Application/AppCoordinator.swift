@@ -37,23 +37,23 @@ class AppCoordinator: Coordinator {
         /// check demo app version
         fireStoreManager.getDemoDataInFireStore { demo in
             if demo {
-                self.setFirebaseUIDInUserDefaults()
+                self.setDemoUIDInUserDefaults()
                 self.checkAppIsFirstTime()
                 self.checkUserUID()
             } else {
-                self.deleteFirebaseUIDInUserDefaults()
+                self.deleteDemoUIDInUserDefaults()
                 self.checkAppIsFirstTime()
                 self.checkUserUID()
             }
         }
     }
     
-    private func deleteFirebaseUIDInUserDefaults() {
-        UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
+    private func deleteDemoUIDInUserDefaults() {
+        UserDefaults.standard.removeObject(forKey: UserInfoKey.demoUID)
     }
     
-    private func setFirebaseUIDInUserDefaults() {
-        UserDefaults.standard.set("KbjMogo76DRjnhmfr7sgLsM9O4Y2", forKey: UserInfoKey.firebaseUID)
+    private func setDemoUIDInUserDefaults() {
+        UserDefaults.standard.set("KbjMogo76DRjnhmfr7sgLsM9O4Y2", forKey: UserInfoKey.demoUID)
     }
     
     private func checkAppIsFirstTime() {

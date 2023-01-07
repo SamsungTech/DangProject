@@ -35,7 +35,6 @@ class AccountViewModel: AccountViewModelProtocol {
     }
     
     private func removeUserDefaultsUID() {
-        
         UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
     }
 }
