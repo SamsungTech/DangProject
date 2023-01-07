@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ResignUseCase {
-    func deleteAllUserData()
+    func deleteAllUserData(completion: @escaping (Bool) -> Void)
 }

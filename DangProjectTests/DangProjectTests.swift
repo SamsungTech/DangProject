@@ -2,12 +2,12 @@
 //  DangProjectTests.swift
 //  DangProjectTests
 //
-//  Created by 김성원 on 2022/04/23.
+//  Created by 김동우 on 2023/01/06.
 //
 
 import XCTest
 
-class DangProjectTests: XCTestCase {
+final class DangProjectTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

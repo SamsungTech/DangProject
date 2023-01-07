@@ -100,8 +100,11 @@ extension SecessionViewController {
     private func setupResignAlertController() {
         let no = UIAlertAction(title: "취소", style: .default, handler: nil)
         let yes = UIAlertAction(title: "탈퇴", style: .destructive) { [weak self] _ in
-            self?.viewModel.resignUser()
-            self?.coordinator?.returnToFirstStart()
+            self?.viewModel.resignUser { bool in
+                if bool {
+                    self?.coordinator?.returnToFirstStart()
+                }
+            }
         }
         resignAlertController.addAction(yes)
         resignAlertController.addAction(no)

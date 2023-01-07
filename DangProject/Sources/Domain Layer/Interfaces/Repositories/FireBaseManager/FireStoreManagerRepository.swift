@@ -11,7 +11,7 @@ import RxSwift
 
 protocol FireStoreManagerRepository {
     func saveFirebaseUserDocument(uid: String, ProfileExistence: Bool)
-    func deleteFirebaseUserDocument()
+    func deleteFirebaseUserDocument(completion: @escaping (Bool) -> Void)
     func saveProfileDocument(profile: ProfileDomainModel,
                              completion: @escaping (Bool) -> Void)
     func saveEatenFood(eatenFood: FoodDomainModel,

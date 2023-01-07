@@ -8,7 +8,7 @@
 import Foundation
 
 protocol SecessionViewModelInputProtocol {
-    func resignUser()
+    func resignUser(completion: @escaping (Bool) -> Void)
 }
 
 protocol SecessionViewModelOutputProtocol {
@@ -26,7 +26,7 @@ class SecessionViewModel: SecessionViewModelProtocol {
         self.resignUseCase = resignUseCase
     }
     
-    func resignUser() {
-        resignUseCase.deleteAllUserData()
+    func resignUser(completion: @escaping (Bool) -> Void) {
+        resignUseCase.deleteAllUserData(completion: completion)
     }
 }

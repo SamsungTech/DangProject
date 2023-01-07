@@ -67,16 +67,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
-    func deleteFirebaseUserDocument() {
-        self.deleteUserInformationInApp()
-        database.collection("users")
-            .document(uid)
-            .delete { error in
-                if let error = error {
-                    print("DEBUG: \(error.localizedDescription)")
-                    return
-                }
-            }
+    func deleteFirebaseUserDocument(completion: @escaping (Bool) -> Void) {
+        self.getEatenFoodsStrings(completion: completion)
     }
     
     private func deleteUserInformationInApp() {
@@ -155,6 +147,9 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             "eatenTime": eatenFood.eatenTime
         ] as [String : Any]
         
+        self.saveEatenFoodDataForDelete(foodName: eatenFood.name,
+                                        foodCode: eatenFood.foodCode)
+        
         database.collection("app")
             .document(userDefaultsUID)
             .collection("foods")
@@ -170,6 +165,36 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                     return
                 }
                 completion(true)
+            }
+    }
+    
+    private func saveEatenFoodDataForDelete(foodName: String,
+                                            foodCode: String) {
+        guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
+        let today = DateComponents.currentDateTimeComponents()
+        guard let year = today.year,
+              let month = today.month,
+              let day = today.day else { return }
+        
+        let eatenFoodData = [
+            "year": "\(year)",
+            "month": "\(month)",
+            "day": "\(day)",
+            "foodName": foodName
+        ] as [String : Any]
+        
+        database.collection("app")
+            .document(userDefaultsUID)
+            .collection("foods")
+            .document("eatenFoodsForDelete")
+            .collection("forDelete")
+            .document(foodCode)
+            .setData(eatenFoodData) { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    
+                    return
+                }
             }
     }
     
@@ -235,5 +260,92 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 }
             return Disposables.create()
         }
+    }
+    
+    func getEatenFoodsStrings(completion: @escaping (Bool) -> Void) {
+        self.database.collection("app")
+            .document(uid)
+            .collection("foods")
+            .document("eatenFoodsForDelete")
+            .collection("forDelete")
+            .getDocuments() { snapshot, error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+                
+                if let result = snapshot?.documents {
+                    let result = self.convertEatenFoodsToString(data:result.map{ $0.data() })
+                    self.removeAllEatenFoodsData(eatenFoods: result, completion: completion)
+                }
+            }
+    }
+    
+    private func convertEatenFoodsToString(data: [[String:Any]]) -> [EatenFoodForDelete] {
+        var foodsStringArray: [EatenFoodForDelete] = []
+        data.forEach { foods in
+            var eatenFoodForDelete: EatenFoodForDelete = .empty
+            for (key, value) in foods {
+                switch key {
+                case "year": eatenFoodForDelete.year = value as? String ?? ""
+                case "month": eatenFoodForDelete.month = value as? String ?? ""
+                case "day": eatenFoodForDelete.day = value as? String ?? ""
+                case "foodName": eatenFoodForDelete.foodName = value as? String ?? ""
+                default: break
+                }
+            }
+            foodsStringArray.append(eatenFoodForDelete)
+        }
+        return foodsStringArray
+    }
+    
+    private func removeAllEatenFoodsData(eatenFoods: [EatenFoodForDelete],
+                                         completion: @escaping (Bool) -> Void) {
+        eatenFoods.forEach {
+            database.collection("app")
+                .document(uid)
+                .collection("foods")
+                .document("eatenFoods")
+                .collection("\($0.year)년")
+                .document("\($0.month)월")
+                .collection("\($0.day)일")
+                .document($0.foodName)
+                .delete { error in
+                    if let error = error {
+                        print("DEBUG: \(error.localizedDescription)")
+                        completion(false)
+                        return
+                    }
+                    self.removeAllEatenFoodForDeleteData(completion: completion)
+                }
+        }
+    }
+    
+    private func removeAllEatenFoodForDeleteData(completion: @escaping (Bool) -> Void) {
+        database.collection("app")
+            .document(uid)
+            .collection("foods")
+            .document("eatenFoodsForDelete")
+            .delete { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                self.removeAppUID(completion: completion)
+            }
+    }
+    
+    private func removeAppUID(completion: @escaping (Bool) -> Void) {
+        database.collection("app")
+            .document(uid)
+            .delete { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                completion(true)
+            }
     }
 }

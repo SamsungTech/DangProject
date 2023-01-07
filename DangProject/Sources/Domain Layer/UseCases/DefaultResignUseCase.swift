@@ -18,11 +18,11 @@ class DefaultResignUseCase: ResignUseCase {
         self.fireStoreManagerRepository = fireStoreManagerRepository
     }
     
-    func deleteAllUserData() {
+    func deleteAllUserData(completion: @escaping (Bool) -> Void) {
         deleteAllUserCoreData()
-        deleteAllUserRemoteData()
         resetDefaultSetting()
         deleteAllUserDefaultsData()
+        deleteAllUserRemoteData(completion: completion)
     }
     
     private func deleteAllUserDefaultsData() {
@@ -37,8 +37,8 @@ class DefaultResignUseCase: ResignUseCase {
         }
     }
     
-    private func deleteAllUserRemoteData() {
-        fireStoreManagerRepository.deleteFirebaseUserDocument()
+    private func deleteAllUserRemoteData(completion: @escaping (Bool) -> Void) {
+        fireStoreManagerRepository.deleteFirebaseUserDocument(completion: completion)
     }
     
     private func resetDefaultSetting() {
