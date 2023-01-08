@@ -274,6 +274,10 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .document("eatenFoodsForDelete")
             .collection("forDelete")
             .getDocuments() { snapshot, error in
+                if ((snapshot?.isEmpty) != nil) {
+                    self.removeUsesUID(completion: completion)
+                }
+                
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
                     return
@@ -350,7 +354,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                     completion(false)
                     return
                 }
-                
                 self.removeUsesUID(completion: completion)
             }
     }

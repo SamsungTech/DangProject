@@ -30,7 +30,7 @@ class SecessionViewModel: SecessionViewModelProtocol {
         self.resignUseCase = resignUseCase
     }
     
-    func resignUser(completion: @escaping (Bool) -> Void) {
+    func resignUser(completion: @escaping (Bool) -> Void) {        
         resignUseCase.deleteAllUserData(completion: completion)
     }
     
