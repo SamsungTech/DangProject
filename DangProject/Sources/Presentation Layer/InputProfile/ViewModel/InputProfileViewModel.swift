@@ -58,8 +58,9 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
     private func checkReadyButtonIsValid() {
         PublishRelay.combineLatest(heightObservable.asObservable(),
                                    weightObservable.asObservable(),
-                                   sugarObservable.asObservable())
-        .bind(onNext: { [weak self] (height, weight, sugar) in
+                                   sugarObservable.asObservable(),
+                                   profileImageObservable.asObservable())
+        .bind(onNext: { [weak self] (height, weight, sugar, image) in
             self?.readyButtonIsValid.accept(true)
         })
         .disposed(by: disposeBag)
