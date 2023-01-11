@@ -95,7 +95,7 @@
 >### Coordinator
 
 - View가 어디에서 사용하더라도 화면 전환을 유연하게 할 수 있게 코디네이터 패턴을 사용하였습니다.
-- Parent Coordinator와 Child Coordinator 가지기 때문에 딜리게이트로 상위 코디네이터에 접근이 용이합니다.
+- Parent Coordinator와 Child Coordinator 가지기 때문에 상위 코디네이터에 접근이 용이합니다.
 - 관리하기 쉽게 Coordinator와 ViewController 1:1 관계를 갖습니다.
 - View사이에 Object 데이터 전달도 담당합니다.
 
