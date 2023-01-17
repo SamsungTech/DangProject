@@ -54,12 +54,13 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     func saveFirebaseUserDocument(uid: String,
                                   ProfileExistence: Bool,
                                   completion: @escaping ((Bool)->Void)) {
-        let uidData = ["firebaseUID": uid,
+        
+        let uidData = ["firebaseUID": self.uid,
                        "profileExistence": ProfileExistence
         ] as [String : Any]
         
         database.collection("users")
-            .document(uid)
+            .document(self.uid)
             .setData(uidData) { error in
                 
                 if let error = error {

@@ -134,6 +134,6 @@ extension MyTargetView {
     }
     
     func setUpTargetSugarNumber(_ targetSugar: Double) {
-        self.targetNumberTextField.text = String(targetSugar)
+        self.targetNumberTextField.text = String(Int(targetSugar))
     }
 }

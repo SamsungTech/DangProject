@@ -29,7 +29,7 @@ class DefaultManageFirebaseAuthUseCase: ManageFirebaseAuthUseCase {
                 .subscribe(onNext: {  isValid, message in
                     emitter.onNext((isValid, message))
                 })
-                .disposed(by: self!.disposeBag)
+                .disposed(by: self?.disposeBag)
             return Disposables.create()
         }
     }
