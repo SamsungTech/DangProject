@@ -27,7 +27,6 @@ class ProfileViewController: CustomViewController {
         return button
     }()
     
-    
     private lazy var profileStackView: ProfileInformationStackView = {
         let stackView = ProfileInformationStackView(frame: .zero, viewModel: viewModel)
         return stackView
@@ -54,6 +53,7 @@ class ProfileViewController: CustomViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        clearImageData()
         coordinator?.childDidFinish(coordinator)
     }
     
@@ -69,6 +69,10 @@ class ProfileViewController: CustomViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func clearImageData() {
+        self.profileImageButton.profileImageView.image = nil
     }
     
     private func configureUI() {

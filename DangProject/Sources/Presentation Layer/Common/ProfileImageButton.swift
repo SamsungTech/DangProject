@@ -46,7 +46,6 @@ class ProfileImageButton: UIView {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "plus.circle.fill")
         imageView.tintColor = .customLabelColorBlack
-        imageView.layer.borderWidth = 3
         imageView.layer.borderColor = UIColor.homeBoxColor.cgColor
         imageView.viewRadius(cornerRadius: yValueRatio(17.5))
         return imageView
@@ -117,8 +116,8 @@ extension ProfileImageButton {
         addSubview(profileSideImageView)
         bringSubviewToFront(profileSideImageView)
         profileSideImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileSideImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        profileSideImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        profileSideImageView.centerXAnchor.constraint(equalTo: profileSideBackgroundView.centerXAnchor).isActive = true
+        profileSideImageView.centerYAnchor.constraint(equalTo: profileSideBackgroundView.centerYAnchor).isActive = true
         profileSideImageView.widthAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
         profileSideImageView.heightAnchor.constraint(equalToConstant: yValueRatio(35)).isActive = true
     }
