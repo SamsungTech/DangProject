@@ -25,11 +25,12 @@ class DefaultManageFirebaseAuthUseCase: ManageFirebaseAuthUseCase {
     
     func requireFirebaseUID(providerID: String, idToken: String, rawNonce: String) -> Observable<(Bool, String)> {
         return Observable.create { [weak self] emitter in
+            guard let strongSelf = self else { return Disposables.create() }
             self?.firebaseAuthRepository.signInFirebaseAuth(providerID: providerID, idToken: idToken, rawNonce: rawNonce)
                 .subscribe(onNext: {  isValid, message in
                     emitter.onNext((isValid, message))
                 })
-                .disposed(by: self?.disposeBag)
+                .disposed(by: strongSelf.disposeBag)
             return Disposables.create()
         }
     }

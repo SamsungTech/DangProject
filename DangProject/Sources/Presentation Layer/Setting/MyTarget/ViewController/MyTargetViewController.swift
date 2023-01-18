@@ -24,6 +24,13 @@ class MyTargetViewController: CustomViewController {
         return navigationBar
     }()
     
+    private lazy var loadingView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isHidden = true
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -55,9 +62,11 @@ extension MyTargetViewController {
         setUpView()
         setUpNavigationBar()
         setUpMyTargetView()
+        setupLoadingView()
     }
     
     private func setUpView() {
+        targetView.delegate = self
         view.backgroundColor = .homeBoxColor
     }
     
@@ -83,6 +92,17 @@ extension MyTargetViewController {
         ])
     }
     
+    private func setupLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
     private func bind() {
         bindUI()
         bindTargetSugar()
@@ -99,10 +119,21 @@ extension MyTargetViewController {
             .bind { [weak self] in
                 guard let strongSelf = self,
                       let targetSugar = Double(self?.targetView.targetNumberTextField.text ?? "") else { return }
+                self?.loadingView.isHidden = false
                 self?.targetView.animateLabel()
                 strongSelf.passTargetSugarData(targetSugar: targetSugar)
                 self?.targetView.targetNumberTextField.resignFirstResponder()
             }
+            .disposed(by: disposeBag)
+        
+        viewModel.isTargetViewTextFieldRelay
+            .subscribe(onNext: { [weak self] bool in
+                if bool {
+                    self?.targetView.setupTextFieldDoneButtonColorToGreen()
+                } else {
+                    self?.targetView.setupTextFieldDoneButtonColorToGray()
+                }
+            })
             .disposed(by: disposeBag)
     }
     
@@ -118,6 +149,7 @@ extension MyTargetViewController {
         viewModel.passTargetSugarForUpdate(targetSugar) { [weak self] data in
             if data == true {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1) {
+                    self?.loadingView.isHidden = true
                     self?.coordinator?.popMyTargetViewController()
                 }
             }
@@ -134,6 +166,18 @@ extension MyTargetViewController: UITextFieldDelegate {
         let substring = textFieldText[replace]
         let count = textFieldText.count - substring.count + string.count
         
+        viewModel.checkCountZero(count)
+        
         return count <= 4
+    }
+}
+
+extension MyTargetViewController: TargetViewTextFieldFrontViewDelegate {
+    func frontViewDidTap(_ textField: UITextField) {
+        if textField.isEditing {
+            self.targetView.targetNumberTextField.endEditing(true)
+        } else {
+            self.targetView.targetNumberTextField.becomeFirstResponder()
+        }
     }
 }

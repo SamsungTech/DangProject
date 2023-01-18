@@ -16,6 +16,7 @@ protocol MyTargetViewModelInputProtocol: AnyObject {
 
 protocol MyTargetViewModelOutputProtocol: AnyObject {
     var targetSugarRelay: BehaviorRelay<Double> { get }
+    var isTargetViewTextFieldRelay: BehaviorRelay<Bool> { get }
 }
 
 protocol MyTargetViewModelProtocol: MyTargetViewModelInputProtocol, MyTargetViewModelOutputProtocol {}
@@ -25,6 +26,7 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
     private let profileManagerUseCase: ProfileManagerUseCase
     private var profileData: ProfileDomainModel = .empty
     var targetSugarRelay = BehaviorRelay<Double>(value: 0.0)
+    var isTargetViewTextFieldRelay = BehaviorRelay<Bool>(value: true)
     
     init(profileManagerUseCase: ProfileManagerUseCase) {
         self.profileManagerUseCase = profileManagerUseCase
@@ -33,6 +35,14 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
     
     func fetchProfileData() {
         profileManagerUseCase.fetchProfileData()
+    }
+    
+    func checkCountZero(_ count: Int) {
+        if count == 0 {
+            isTargetViewTextFieldRelay.accept(false)
+        } else {
+            isTargetViewTextFieldRelay.accept(true)
+        }
     }
     
     func passTargetSugarForUpdate(_ targetSugar: Double, completion: @escaping (Bool) -> Void) {

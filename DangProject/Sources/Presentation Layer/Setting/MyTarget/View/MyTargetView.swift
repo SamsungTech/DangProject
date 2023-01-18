@@ -7,7 +7,20 @@
 
 import UIKit
 
-class MyTargetView: UIButton {
+public protocol TargetViewTextFieldFrontViewDelegate: AnyObject {
+    func frontViewDidTap(_ textField: UITextField)
+}
+
+class MyTargetView: UIView {
+    public var delegate: TargetViewTextFieldFrontViewDelegate?
+    
+    private lazy var textFieldFrontView: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(frontViewDidTap(_:)), for: .touchUpInside)
+        button.backgroundColor = .clear
+        return button
+    }()
+    
     private lazy var targetLabel: UILabel = {
         let label = UILabel()
         label.textColor = .customFontColorGray
@@ -74,6 +87,7 @@ extension MyTargetView {
         setUpTextFieldUnderLine()
         setUpNumericalUnit()
         setUpCheeringLabel()
+        setupTextFieldFrontView()
     }
     
     private func setUpTargetLabel() {
@@ -123,6 +137,22 @@ extension MyTargetView {
             cheeringLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor)
         ])
     }
+    
+    private func setupTextFieldFrontView() {
+        addSubview(textFieldFrontView)
+        textFieldFrontView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            textFieldFrontView.topAnchor.constraint(equalTo: targetLabel.bottomAnchor, constant: yValueRatio(50)),
+            textFieldFrontView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            textFieldFrontView.leadingAnchor.constraint(equalTo: targetNumberTextField.leadingAnchor),
+            textFieldFrontView.trailingAnchor.constraint(equalTo: targetNumberTextField.trailingAnchor),
+            textFieldFrontView.heightAnchor.constraint(equalToConstant: yValueRatio(100))
+        ])
+    }
+    
+    @objc private func frontViewDidTap(_ sender: UIButton) {
+        delegate?.frontViewDidTap(self.targetNumberTextField)
+    }
 }
 
 extension MyTargetView {
@@ -135,5 +165,13 @@ extension MyTargetView {
     
     func setUpTargetSugarNumber(_ targetSugar: Double) {
         self.targetNumberTextField.text = String(Int(targetSugar))
+    }
+    
+    func setupTextFieldDoneButtonColorToGray() {
+        self.toolBar.backgroundColor = .gray
+    }
+    
+    func setupTextFieldDoneButtonColorToGreen() {
+        self.toolBar.backgroundColor = .circleColorGreen
     }
 }
