@@ -22,21 +22,6 @@ class DetailFoodViewController: UIViewController {
     
     var parentableViewController: DetailFoodParentable?
     
-    private let indicatorImageView: UIImageView = {
-        let imageView = UIImageView()
-        let image = UIImage(named: "indicator")
-        imageView.image = image
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
-    private let arrowImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
-        return imageView
-    }()
-    
-    private let image = UIImage(named: "hand.png")
     private var favoriteButton = UIButton()
     private let totalSugarLabel = UILabel()
     private let sugarLabel = UILabel()
@@ -48,6 +33,8 @@ class DetailFoodViewController: UIViewController {
     private let addButton = UIButton()
     private var addButtonTopConstraint: NSLayoutConstraint?
     private var amountPickerHeightConstraint: NSLayoutConstraint?
+    
+    private var customProgressBar = CustomProgressBar()
     
     let disposeBag = DisposeBag()
     
@@ -72,9 +59,7 @@ class DetailFoodViewController: UIViewController {
     private func setUpViews() {
         setUpBackGround()
         setUpRightNavigationItem()
-        setUpIndicatorImageView()
-        setUpArrowImageView()
-        setUpArrowInclination()
+        setUpCustomProgressBar()
         setUpSugarAmountLabel()
         setUpSugarLabel()
         setUpAmountButton()
@@ -101,36 +86,21 @@ class DetailFoodViewController: UIViewController {
         favoriteButton.setImage(viewModel.detailFood.image, for: .normal)
     }
     
-    private func setUpIndicatorImageView() {
-        view.addSubview(indicatorImageView)
-        indicatorImageView.translatesAutoresizingMaskIntoConstraints = false
-        indicatorImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30).isActive = true
-        indicatorImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: xValueRatio(10)).isActive = true
-        indicatorImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: xValueRatio(10)).isActive = true
-        indicatorImageView.heightAnchor.constraint(equalToConstant: view.frame.height*0.3).isActive = true
-    }
-    
-    private func setUpArrowImageView() {
-        view.addSubview(arrowImageView)
-        arrowImageView.backgroundColor = .clear
-        arrowImageView.translatesAutoresizingMaskIntoConstraints = false
-        arrowImageView.centerXAnchor.constraint(equalTo: indicatorImageView.centerXAnchor).isActive = true
-        arrowImageView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: view.frame.height*0.3*0.75).isActive = true
-        arrowImageView.widthAnchor.constraint(equalToConstant: view.frame.width*0.85).isActive = true
-        arrowImageView.heightAnchor.constraint(equalToConstant: view.frame.width*0.85).isActive = true
-    }
-    
-    private func setUpArrowInclination() {
-        arrowImageView.image = image
-        UIView.animate(withDuration: 2.0, animations: { [self] in
-            self.arrowImageView.transform = CGAffineTransform(rotationAngle: viewModel.setSugarArrowAngle(amount: 1)*CGFloat.pi / 180)
-        })
+    private func setUpCustomProgressBar() {
+        view.addSubview(customProgressBar)
+        customProgressBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            customProgressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30),
+            customProgressBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: xValueRatio(10)),
+            customProgressBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: xValueRatio(10)),
+            customProgressBar.heightAnchor.constraint(equalToConstant: view.frame.height*0.3)
+        ])
     }
     
     private func setUpSugarAmountLabel() {
         view.addSubview(totalSugarLabel)
         totalSugarLabel.translatesAutoresizingMaskIntoConstraints = false
-        totalSugarLabel.topAnchor.constraint(equalTo: indicatorImageView.bottomAnchor, constant: 25).isActive = true
+        totalSugarLabel.topAnchor.constraint(equalTo: customProgressBar.bottomAnchor, constant: 25).isActive = true
         totalSugarLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         totalSugarLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
         totalSugarLabel.text = viewModel.detailFood.sugar == "" ? "0g" : "\(viewModel.detailFood.sugar!)g"
@@ -240,13 +210,6 @@ class DetailFoodViewController: UIViewController {
         }
     }
     
-    private func startIndicatorAnimation(amount: Double) {
-        UIView.animate(withDuration: 2.0, animations: { [weak self] in
-            guard let strongSelf = self else { return }
-            self?.arrowImageView.transform = CGAffineTransform(rotationAngle: strongSelf.viewModel.setSugarArrowAngle(amount: amount))
-        })
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
@@ -301,10 +264,13 @@ class DetailFoodViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] food in
                 guard let totalSugar = self?.viewModel.getTotalSugar(),
-                let amount = self?.viewModel.amount else { return }
+                      let amount = self?.viewModel.amount,
+                      let state = self?.viewModel.branchOutCircleState(amount: Double(amount)),
+                      let angle = self?.viewModel.setSugarArrowAngle(amount: Double(amount)) else { return }
                 self?.totalSugarLabel.text = "\(totalSugar.roundDecimal(to: 2))g"
                 self?.amountTextField.text = "\(amount)"
-                self?.startIndicatorAnimation(amount: Double(amount))
+                self?.customProgressBar.animateProgressBar(angle: angle,
+                                                           state: state)
                 
                 if self?.viewModel.amount == 0 {
                     self?.changeAddButtonDeactivated()
