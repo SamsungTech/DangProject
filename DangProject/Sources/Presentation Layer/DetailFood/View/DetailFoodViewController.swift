@@ -52,7 +52,6 @@ class DetailFoodViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpViews()
-        
         setupBindings()
     }
     // MARK: - Set Views
@@ -93,7 +92,7 @@ class DetailFoodViewController: UIViewController {
             customProgressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30),
             customProgressBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: xValueRatio(10)),
             customProgressBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: xValueRatio(10)),
-            customProgressBar.heightAnchor.constraint(equalToConstant: view.frame.height*0.3)
+            customProgressBar.heightAnchor.constraint(equalToConstant: yValueRatio(220))
         ])
     }
     

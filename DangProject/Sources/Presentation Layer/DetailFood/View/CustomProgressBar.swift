@@ -17,14 +17,14 @@ internal class CustomProgressBar: UIView {
     private lazy var circleView: UIView = {
         let view = UIView()
         view.backgroundColor = .blue
-        view.viewRadius(cornerRadius: 175)
+        view.viewRadius(cornerRadius: yValueRatio(175))
         return view
     }()
     
     private lazy var circleFrontView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
-        view.viewRadius(cornerRadius: 112.5)
+        view.viewRadius(cornerRadius: yValueRatio(112.5))
         return view
     }()
     
@@ -38,7 +38,7 @@ internal class CustomProgressBar: UIView {
         let label = UILabel()
         label.text = "LOW"
         label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 25, weight: .heavy)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(25), weight: .heavy)
         label.textAlignment = .center
         return label
     }()
@@ -47,7 +47,7 @@ internal class CustomProgressBar: UIView {
         let label = UILabel()
         label.text = "HIGH"
         label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 25, weight: .heavy)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(25), weight: .heavy)
         label.textAlignment = .center
         return label
     }()
@@ -76,7 +76,7 @@ internal class CustomProgressBar: UIView {
     private lazy var frontCircleView: UIView = {
         let button = UIView()
         button.backgroundColor = .systemGreen
-        button.viewRadius(cornerRadius: 72.5)
+        button.viewRadius(cornerRadius: yValueRatio(72.5))
         return button
     }()
     
@@ -84,7 +84,7 @@ internal class CustomProgressBar: UIView {
         let label = UILabel()
         label.text = "LOW"
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 23, weight: .heavy)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(23), weight: .heavy)
         label.textAlignment = .center
         return label
     }()
@@ -119,9 +119,9 @@ internal class CustomProgressBar: UIView {
         circleView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             circleView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            circleView.centerYAnchor.constraint(equalTo: self.bottomAnchor, constant: -30),
-            circleView.widthAnchor.constraint(equalToConstant: 350),
-            circleView.heightAnchor.constraint(equalToConstant: 350)
+            circleView.centerYAnchor.constraint(equalTo: self.bottomAnchor, constant: -yValueRatio(30)),
+            circleView.widthAnchor.constraint(equalToConstant: yValueRatio(350)),
+            circleView.heightAnchor.constraint(equalToConstant: yValueRatio(350))
         ])
     }
     
@@ -131,8 +131,8 @@ internal class CustomProgressBar: UIView {
         NSLayoutConstraint.activate([
             circleFrontView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             circleFrontView.centerYAnchor.constraint(equalTo: circleView.centerYAnchor),
-            circleFrontView.widthAnchor.constraint(equalToConstant: 225),
-            circleFrontView.heightAnchor.constraint(equalToConstant: 225)
+            circleFrontView.widthAnchor.constraint(equalToConstant: yValueRatio(225)),
+            circleFrontView.heightAnchor.constraint(equalToConstant: yValueRatio(225))
         ])
     }
     
@@ -142,8 +142,8 @@ internal class CustomProgressBar: UIView {
         NSLayoutConstraint.activate([
             frontView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             frontView.topAnchor.constraint(equalTo: circleView.centerYAnchor),
-            frontView.widthAnchor.constraint(equalToConstant: 390),
-            frontView.heightAnchor.constraint(equalToConstant: 200)
+            frontView.widthAnchor.constraint(equalToConstant: yValueRatio(390)),
+            frontView.heightAnchor.constraint(equalToConstant: yValueRatio(200))
         ])
     }
     
@@ -151,7 +151,7 @@ internal class CustomProgressBar: UIView {
         frontView.addSubview(highLabel)
         highLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            highLabel.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: 15),
+            highLabel.centerYAnchor.constraint(equalTo: circleView.centerYAnchor, constant: yValueRatio(15)),
             highLabel.trailingAnchor.constraint(equalTo: circleView.trailingAnchor, constant: 1)
         ])
     }
@@ -171,8 +171,8 @@ internal class CustomProgressBar: UIView {
         NSLayoutConstraint.activate([
             customArrowView.centerYAnchor.constraint(equalTo: circleView.centerYAnchor),
             customArrowView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            customArrowView.widthAnchor.constraint(equalToConstant: 245),
-            customArrowView.heightAnchor.constraint(equalToConstant: 70)
+            customArrowView.widthAnchor.constraint(equalToConstant: yValueRatio(245)),
+            customArrowView.heightAnchor.constraint(equalToConstant: yValueRatio(70))
         ])
     }
     
@@ -182,8 +182,8 @@ internal class CustomProgressBar: UIView {
         NSLayoutConstraint.activate([
             frontCircleView.centerXAnchor.constraint(equalTo: circleView.centerXAnchor),
             frontCircleView.centerYAnchor.constraint(equalTo: circleView.centerYAnchor),
-            frontCircleView.widthAnchor.constraint(equalToConstant: 145),
-            frontCircleView.heightAnchor.constraint(equalToConstant: 145)
+            frontCircleView.widthAnchor.constraint(equalToConstant: yValueRatio(145)),
+            frontCircleView.heightAnchor.constraint(equalToConstant: yValueRatio(145))
         ])
     }
     
@@ -193,8 +193,8 @@ internal class CustomProgressBar: UIView {
         NSLayoutConstraint.activate([
             frontCircleLabel.centerXAnchor.constraint(equalTo: frontCircleView.centerXAnchor),
             frontCircleLabel.bottomAnchor.constraint(equalTo: frontView.topAnchor),
-            frontCircleLabel.widthAnchor.constraint(equalToConstant: 100),
-            frontCircleLabel.heightAnchor.constraint(equalToConstant: 50)
+            frontCircleLabel.widthAnchor.constraint(equalToConstant: yValueRatio(100)),
+            frontCircleLabel.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
     }
 }
