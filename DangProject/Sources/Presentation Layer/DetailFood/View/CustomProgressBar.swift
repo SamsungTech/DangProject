@@ -94,6 +94,11 @@ internal class CustomProgressBar: UIView {
         setupUI()
     }
     
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        setupGradientLayer()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -207,6 +212,7 @@ extension CustomProgressBar {
     }
     
     private func startIndicatorAnimation(angle: CGFloat) {
+        
         UIView.animate(withDuration: 2.0, animations: { [self] in
             self.customArrowView.transform = CGAffineTransform(rotationAngle: angle)
         })

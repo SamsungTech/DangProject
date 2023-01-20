@@ -15,11 +15,8 @@ protocol DetailFoodParentable {
     func addFoodsAfter(food: AddFoodsViewModel)
 }
 class DetailFoodViewController: UIViewController {
-    
     weak var coordinator: DetailFoodCoordinator?
-    
     let viewModel: DetailFoodViewModel
-    
     var parentableViewController: DetailFoodParentable?
     
     private var favoriteButton = UIButton()
@@ -54,6 +51,7 @@ class DetailFoodViewController: UIViewController {
         setUpViews()
         setupBindings()
     }
+    
     // MARK: - Set Views
     private func setUpViews() {
         setUpBackGround()
@@ -89,9 +87,9 @@ class DetailFoodViewController: UIViewController {
         view.addSubview(customProgressBar)
         customProgressBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            customProgressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30),
+            customProgressBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             customProgressBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: xValueRatio(10)),
-            customProgressBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: xValueRatio(10)),
+            customProgressBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -xValueRatio(10)),
             customProgressBar.heightAnchor.constraint(equalToConstant: yValueRatio(220))
         ])
     }
@@ -223,15 +221,23 @@ class DetailFoodViewController: UIViewController {
         viewModel.pickerViewIsActivatedObservable
             .observe(on: MainScheduler.instance)
             .bind(onNext: { [weak self] pickerIsActivated in
-                self?.addButtonTopConstraint?.isActive = false
-                self?.amountPickerHeightConstraint?.isActive = false
-                if pickerIsActivated {
-                    self?.increasePickerView()
-                } else {
-                    self?.decreasePickerView()
+                guard let strongSelf = self,
+                      let isFirst = self?.viewModel.branchOutPickerViewInActivated() else { return }
+                if isFirst {
+                    strongSelf.setupAmountPickerViewAnimation(pickerIsActivated: pickerIsActivated)
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func setupAmountPickerViewAnimation(pickerIsActivated: Bool) {
+        addButtonTopConstraint?.isActive = false
+        amountPickerHeightConstraint?.isActive = false
+        if pickerIsActivated {
+            increasePickerView()
+        } else {
+            decreasePickerView()
+        }
     }
     
     private func increasePickerView() {
@@ -266,6 +272,7 @@ class DetailFoodViewController: UIViewController {
                       let amount = self?.viewModel.amount,
                       let state = self?.viewModel.branchOutCircleState(amount: Double(amount)),
                       let angle = self?.viewModel.setSugarArrowAngle(amount: Double(amount)) else { return }
+                
                 self?.totalSugarLabel.text = "\(totalSugar.roundDecimal(to: 2))g"
                 self?.amountTextField.text = "\(amount)"
                 self?.customProgressBar.animateProgressBar(angle: angle,
