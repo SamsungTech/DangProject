@@ -23,6 +23,16 @@ class SearchViewController: UIViewController {
     private let addCompleteToastLabel = UILabel()
     private var addCompleteLabelTopConstraint = NSLayoutConstraint()
     private lazy var loadingView = LoadingView(frame: .zero)
+    private lazy var searchErrorAlert: UIAlertController = {
+        let alert = UIAlertController(title: "오류",
+                                      message: "",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            self.coordinator?.dismissViewController()
+        }
+        alert.addAction(actionButton)
+        return alert
+    }()
     
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -195,6 +205,18 @@ class SearchViewController: UIViewController {
         bindSearchResultTableView()
         bindLoading()
         bindQueryTableView()
+        bindErrorAlertView()
+    }
+    
+    private func bindErrorAlertView() {
+        viewModel.searchErrorMessage
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] errorMessage in
+                guard let alert = self?.searchErrorAlert else { return }
+                alert.message = errorMessage
+                self?.present(alert, animated: false)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindSearchResultTableView() {

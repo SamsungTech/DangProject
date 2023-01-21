@@ -20,6 +20,8 @@ protocol SearchViewModelInput {
 protocol SearchViewModelOutput {
     var searchFoodViewModelObservable: PublishRelay<[FoodViewModel]> { get }
     var searchQueryObservable: PublishRelay<[String]> { get }
+    var searchErrorMessage: PublishRelay<String> { get }
+
     func updateRecentQuery()
 }
 
@@ -57,6 +59,13 @@ class SearchViewModel: SearchViewModelProtocol {
                 self?.loading.accept(.finishLoading)
             })
             .disposed(by: disposeBag)
+        
+        searchFoodUseCase.searchErrorObservable
+            .subscribe(onNext: { [weak self] error in
+                self?.loading.accept(.finishLoading)
+                self?.searchErrorMessage.accept(error)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindQueryUseCase() {
@@ -66,8 +75,8 @@ class SearchViewModel: SearchViewModelProtocol {
                 self?.searchQueryObservable.accept(query)
             })
             .disposed(by: disposeBag)
-        
     }
+    
     // MARK: - Input
     var currentKeyword: String = ""
     
@@ -134,6 +143,8 @@ class SearchViewModel: SearchViewModelProtocol {
     var searchFoodViewModelObservable = PublishRelay<[FoodViewModel]>()
     var searchQueryObservable = PublishRelay<[String]>()
     let loading = PublishRelay<LoadingState>()
+    let searchErrorMessage = PublishRelay<String>()
+    
     enum LoadingState {
         case startLoading
         case finishLoading

@@ -52,15 +52,19 @@ class ProfileViewController: CustomViewController {
         bind()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        clearImageData()
-        coordinator?.childDidFinish(coordinator)
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.fetchProfileData()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        clearImageData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        coordinator?.childDidFinish(coordinator)
+    }
+    
     
     init(viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel

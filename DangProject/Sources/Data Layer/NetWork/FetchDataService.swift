@@ -14,20 +14,31 @@ enum URLState {
     case searchFoodURL
 }
 
+enum FoodApiError: String, Error {
+    case serverConnectionError = "FoodAPI - serverConnectionError"
+    case temporaryServerInspection = "FoodAPI - temporaryServerInspection"
+}
+
 class FetchDataService {
     // MARK: - Internal
     var foodInfoObservable = PublishSubject<FoodEntity>()
+    var foodInfoErrorObservable = PublishSubject<String>()
     
     func fetchFoodEntity(text: String) {
         fetchFoodRx(text: text)
+            .timeout(RxTimeInterval.seconds(15),
+                     scheduler: MainScheduler.asyncInstance)
+            .do(onError: { error in
+                self.foodInfoErrorObservable.onNext(FoodApiError.temporaryServerInspection.rawValue)
+            })
             .map { data in
                 try JSONDecoder().decode(FoodFromAPI.self, from: data)
             }
             .subscribe(onNext: { [weak self] in
                 guard let result = $0.serviceType?.result else { return }
                 self?.foodInfoObservable.onNext(FoodEntity.init(code: result.code,
-                                                          foodEntity: $0.serviceType?.foodInfo ?? [],
-                                                          keyword: text))
+                                                                foodEntity: $0.serviceType?.foodInfo ?? [],
+                                                                keyword: text))
             })
             .disposed(by: disposeBag)
     }
@@ -84,6 +95,7 @@ class FetchDataService {
                     emitter.onNext(data)
                     emitter.onCompleted()
                 case let .failure(error):
+                    self.foodInfoErrorObservable.onNext(FoodApiError.serverConnectionError.rawValue)
                     emitter.onError(error)
                 }
             }

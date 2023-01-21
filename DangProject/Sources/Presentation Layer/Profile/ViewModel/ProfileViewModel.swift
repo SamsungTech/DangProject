@@ -102,6 +102,8 @@ class ProfileViewModel: ProfileViewModelProtocol {
                 if updateIsDone {
                     self?.profileManagerUseCase.saveProfileOnRemoteData(profile, completion: completion)
                     self?.loadingRelay.accept(.finishLoading)
+                } else {
+                    
                 }
             })
             .disposed(by: disposeBag)

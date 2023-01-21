@@ -35,10 +35,17 @@ class DefaultSearchUseCase: SearchUseCase {
                 self?.updateViewModel(keyword: foods.keyword)
             })
             .disposed(by: disposeBag)
+        
+        fetchFoodRepository.foodDomainModelErrorObservable
+            .subscribe(onNext: { [weak self] error in
+                self?.searchErrorObservable.onNext(error)
+            })
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Internal
     var foodResultModelObservable = PublishSubject<[FoodViewModel]>()
+    var searchErrorObservable = PublishSubject<String>()
     
     func fetchFood(text: String) {
         currentKeyword = text
