@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-enum CellAmountState{
+enum CellAmountState {
     case plus
     case minus
     case none
@@ -31,12 +31,16 @@ class AlarmViewController: CustomViewController {
     private var alarmTableView = UITableView()
     
     private lazy var addAlarmAlertController: UIAlertController = {
-        let alert = UIAlertController(title: "기록되지 않았을 때 미리 알림받기", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "기록되지 않았을 때 미리 알림받기",
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
         return alert
     }()
     
     private lazy var deleteAlertController: UIAlertController = {
-        let alert = UIAlertController(title: "이 미리 알림을 삭제하시겠습니까?", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "이 미리 알림을 삭제하시겠습니까?",
+                                      message: nil,
+                                      preferredStyle: .alert)
         return alert
     }()
     
@@ -97,7 +101,7 @@ class AlarmViewController: CustomViewController {
             alarmTableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             alarmTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             alarmTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            alarmTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            alarmTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         alarmTableView.backgroundColor = .homeBackgroundColor
         alarmTableView.separatorColor = UIColor.systemGray
@@ -195,22 +199,27 @@ class AlarmViewController: CustomViewController {
         viewModel.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
                 guard let strongSelf = self else { return }
+                var scrollDirection: CellAmountState = .none
+                let cellAmountState = self?.viewModel.branchOutCellAmountState(dataCount, data.count)
                 
-                if data.count > dataCount {
+                switch cellAmountState {
+                case .plus:
                     self?.updateCellUI(.plus)
+                    scrollDirection = .plus
                     dataCount += 1
-                } else if data.count < dataCount {
+                case .minus:
                     self?.updateCellUI(.minus)
+                    scrollDirection = .minus
                     dataCount -= 1
-                } else {
+                case .none?:
                     self?.updateCellUI(.none)
+                    scrollDirection = .none
+                case nil: break
                 }
-
-                for i in 0 ..< data.count {
-                    if let cell = strongSelf.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
-                        cell.setupCell(data: data[i])
-                    }
-                }
+                
+                strongSelf.performBatchTableViewCell(data)
+                strongSelf.scrollToRowAtPlusAlarm(scrollDirection)
+                
             })
             .disposed(by: disposeBag)
     }
@@ -219,13 +228,34 @@ class AlarmViewController: CustomViewController {
         alarmTableView.performBatchUpdates {
             switch cellAmountState {
             case .plus:
-                alarmTableView.insertRows(at: [IndexPath(row: viewModel.addedCellIndex, section: 0)], with: UITableView.RowAnimation.none)
-                alarmTableView.scrollToRow(at: IndexPath(row: viewModel.addedCellIndex, section: 0), at: .top, animated: true)
+                alarmTableView.insertRows(at: [IndexPath(row: viewModel.addedCellIndex, section: 0)],
+                                          with: UITableView.RowAnimation.fade)
             case .minus:
-                alarmTableView.deleteRows(at: [IndexPath(row: viewModel.willDeleteCellIndex, section: 0)], with: UITableView.RowAnimation.top)
+                alarmTableView.deleteRows(at: [IndexPath(row: viewModel.willDeleteCellIndex, section: 0)],
+                                          with: UITableView.RowAnimation.top)
             case .none:
                 break
             }
+        }
+    }
+    
+    private func performBatchTableViewCell(_ data: [AlarmTableViewCellViewModel]) {
+        alarmTableView.performBatchUpdates {
+            for i in 0 ..< data.count {
+                if let cell = self.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
+                    cell.setupCell(data: data[i], state: .none)
+                }
+            }
+        }
+    }
+    
+    private func scrollToRowAtPlusAlarm(_ direction: CellAmountState) {
+        let addIndex = self.viewModel.addedCellIndex
+
+        if direction == .plus {
+            self.alarmTableView.scrollToRow(at: IndexPath(row: addIndex, section: 0),
+                                             at: .top,
+                                             animated: true)
         }
     }
 }
@@ -237,8 +267,7 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AlarmTableViewCell.identifier, for: indexPath) as? AlarmTableViewCell else { return UITableViewCell() }
-        cell.parentableViewController = self
-        cell.selectionStyle = .none
+        setupCell(cell: cell, index: indexPath.item)
         return cell
     }
     
@@ -248,6 +277,14 @@ extension AlarmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+    
+    private func setupCell(cell: AlarmTableViewCell,
+                           index: Int) {
+        let data = viewModel.alarmDataArrayRelay.value
+        cell.parentableViewController = self
+        cell.selectionStyle = .none
+        cell.setupCell(data: data[index], state: .reuse)
     }
 }
 

@@ -37,6 +37,8 @@ protocol AlarmViewModelOutputProtocol: AnyObject {
     var changedCellIndex: Int { get }
     var willDeleteCellIndex: Int { get }
     func getHeightForRow(_ indexPath: IndexPath) -> CGFloat
+    func branchOutCellAmountState(_ previousCount: Int,
+                                  _ currentCount: Int) -> CellAmountState
 }
 
 protocol AlarmViewModelProtocol: AlarmViewModelInputProtocol, AlarmViewModelOutputProtocol {}
@@ -82,6 +84,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
             alarmData[index].scale = .expand
         case .moreExpand:
             alarmData[index].scale = .moreExpand
+        case .none:
+            alarmData[index].scale = .moreExpand
         }
         alarmDataArrayRelay.accept(alarmData)
     }
@@ -96,6 +100,9 @@ class AlarmViewModel: AlarmViewModelProtocol {
         case .expand, .moreExpand:
             alarmData[index].scale = .normal
             cellScaleWillExpand = false
+        case .none:
+            alarmData[index].scale = .moreExpand
+            cellScaleWillExpand = true
         }
         
         alarmDataArrayRelay.accept(alarmData)
@@ -172,6 +179,17 @@ class AlarmViewModel: AlarmViewModelProtocol {
         willDeleteCellIndex = indexPath
     }
     
+    func branchOutCellAmountState(_ previousCount: Int,
+                                  _ currentCount: Int) -> CellAmountState {
+        if currentCount > previousCount {
+            return .plus
+        } else if currentCount < previousCount {
+            return .minus
+        } else {
+            return .none
+        }
+    }
+    
     func deleteAlarmData() {
         alarmManagerUseCase.changeAlarmNotificationRequest(alarmDomainModel:
                                                             AlarmDomainModel.init(alarmTableViewCellViewModel: alarmData[willDeleteCellIndex]),
@@ -190,6 +208,8 @@ class AlarmViewModel: AlarmViewModelProtocol {
             return UIScreen.main.bounds.maxY/3.2
         case .moreExpand:
             return UIScreen.main.bounds.maxY/2.5
+        case .none:
+            return UIScreen.main.bounds.maxY/5
         }
     }
         

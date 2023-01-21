@@ -27,6 +27,7 @@ protocol AlarmTableViewCellDelegate: AnyObject {
 
 class AlarmTableViewCell: UITableViewCell {
     var parentableViewController: AlarmTableViewCellDelegate?
+    private var cellBackgroundView = UIView()
     private var messageViewHeightConstant: NSLayoutConstraint?
     private var everydaySelectButtonHeightConstant: NSLayoutConstraint?
     private var dayOfTheWeekSelectViewHeightConstant: NSLayoutConstraint?
@@ -224,9 +225,10 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     // MARK: - Internal
-    func setupCell(data: AlarmTableViewCellViewModel) {
+    func setupCell(data: AlarmTableViewCellViewModel,
+                   state: CellReuseState) {
         setupAlarmIsOn(data.isOn)
-        setupAlarmScale(data.scale)
+        setupAlarmScale(data.scale, state)
         setupEveryDay(data.isEveryDay)
         setupTimePickerFirstValue(amPm: data.amPm, time: data.timeText)
         titleLabel.text = data.title
@@ -235,12 +237,12 @@ class AlarmTableViewCell: UITableViewCell {
         amPmLabel.text = data.amPm
         timeTextField.text = data.timeText
         selectedDayLabel.text = data.selectedDays
-        
         dayOfTheWeekSelectView.configureButtonColor(data.selectedDaysOfWeek)
     }
     
     // MARK: - Private
     private func configureUI() {
+        setupCellBackgroundView()
         setupTopView()
         setupUserMessageTextField()
         setupTitleLabel()
@@ -256,8 +258,19 @@ class AlarmTableViewCell: UITableViewCell {
         setupDeleteButton()
     }
     
+    private func setupCellBackgroundView() {
+        contentView.addSubview(cellBackgroundView)
+        cellBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            cellBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            cellBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            cellBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
+    
     private func setupTopView() {
-        contentView.addSubview(topView)
+        cellBackgroundView.addSubview(topView)
         topView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -269,7 +282,7 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     private func setupUserMessageTextField() {
-        contentView.addSubview(userMessageTextField)
+        cellBackgroundView.addSubview(userMessageTextField)
         userMessageTextField.translatesAutoresizingMaskIntoConstraints = false
         messageViewHeightConstant = userMessageTextField.heightAnchor.constraint(equalToConstant: 0)
         messageViewHeightConstant?.isActive = true
@@ -299,7 +312,7 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     private func setupMiddleView() {
-        contentView.addSubview(middleView)
+        cellBackgroundView.addSubview(middleView)
         middleView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             middleView.topAnchor.constraint(equalTo: userMessageTextField.bottomAnchor),
@@ -330,7 +343,7 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     private func setupEverydaySelectButton() {
-        contentView.addSubview(everydaySelectButton)
+        cellBackgroundView.addSubview(everydaySelectButton)
         everydaySelectButton.translatesAutoresizingMaskIntoConstraints = false
         everydaySelectButtonHeightConstant = everydaySelectButton.heightAnchor.constraint(equalToConstant: 0)
         everydaySelectButtonHeightConstant?.isActive = true
@@ -342,7 +355,7 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     private func setupDayOfTheWeekSelectView() {
-        contentView.addSubview(dayOfTheWeekSelectView)
+        cellBackgroundView.addSubview(dayOfTheWeekSelectView)
         dayOfTheWeekSelectView.translatesAutoresizingMaskIntoConstraints = false
         dayOfTheWeekSelectViewHeightConstant = dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
         dayOfTheWeekSelectViewHeightConstant?.isActive = true
@@ -354,7 +367,7 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     private func setupBottomView() {
-        contentView.addSubview(bottomView)
+        cellBackgroundView.addSubview(bottomView)
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             bottomView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
@@ -453,46 +466,92 @@ class AlarmTableViewCell: UITableViewCell {
     }
     
     // MARK: - CellAnimating
-    private func setupAlarmScale(_ scale: CellScaleState) {
+    private func setupAlarmScale(_ scale: CellScaleState,
+                                 _ state: CellReuseState) {
         switch scale {
         case .expand:
-            self.setupDaysButtonExpand()
+            self.setupDaysButtonExpand(state)
         case .normal:
-            self.setupCellNormal()
+            self.setupCellNormal(state)
         case .moreExpand:
-            self.setupDaysButtonMoreExpand()
+            self.setupDaysButtonMoreExpand(state)
+        case .none:
+            self.setupNone()
         }
     }
     
-    private func setupCellNormal() {
+    private func setupNone() {
         userMessageTextField.isHidden = true
         selectedDayLabel.isHidden = false
         deleteButton.isHidden = true
         arrowButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
         everydaySelectButton.isHidden = true
         dayOfTheWeekSelectView.isHidden = true
-        
-        animateNormal()
     }
     
-    private func setupDaysButtonExpand() {
+    private func setupCellNormal(_ reuse: CellReuseState) {
+        userMessageTextField.isHidden = true
+        selectedDayLabel.isHidden = false
+        deleteButton.isHidden = true
+        arrowButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        everydaySelectButton.isHidden = true
         dayOfTheWeekSelectView.isHidden = true
-        
-        animateExpand()
+        animateNormal(reuse)
     }
     
-    private func setupDaysButtonMoreExpand() {
+    private func setupDaysButtonExpand(_ reuse: CellReuseState) {
+        dayOfTheWeekSelectView.isHidden = true
+        arrowButton.setImage(UIImage(systemName: "chevron.up"), for: .normal)
+        dayOfTheWeekSelectView.isHidden = true
+        selectedDayLabel.isHidden = true
+        deleteButton.isHidden = false
+        everydaySelectButton.isHidden = false
+        animateExpand(reuse)
+    }
+    
+    private func setupDaysButtonMoreExpand(_ reuse: CellReuseState) {
         userMessageTextField.isHidden = false
         arrowButton.setImage(UIImage(systemName: "chevron.up"), for: .normal)
         dayOfTheWeekSelectView.isHidden = false
         selectedDayLabel.isHidden = true
         deleteButton.isHidden = false
         everydaySelectButton.isHidden = false
-
-        animateMoreExpand()
+        animateMoreExpand(reuse)
     }
     
-    private func animateNormal() {
+    private func animateNormal(_ reuse: CellReuseState) {
+        setupNormalLayout()
+        switch reuse {
+        case .reuse:
+            cellBackgroundView.layoutIfNeeded()
+        case .none:
+            animateCellBackgroundViewBase()
+        }
+    }
+    
+    private func animateExpand(_ reuse: CellReuseState) {
+        setupExpandLayout()
+        
+        switch reuse {
+        case .reuse:
+            contentView.layoutIfNeeded()
+        case .none:
+            animateContentViewBase()
+        }
+    }
+    
+    private func animateMoreExpand(_ reuse: CellReuseState) {
+        setupMoreExpandLayout()
+
+        switch reuse {
+        case .reuse:
+            contentView.layoutIfNeeded()
+        case .none:
+            animateContentViewBase()
+        }
+    }
+    
+    private func setupNormalLayout() {
         messageViewHeightConstant?.isActive = false
         everydaySelectButtonHeightConstant?.isActive = false
         dayOfTheWeekSelectViewHeightConstant?.isActive = false
@@ -504,13 +563,10 @@ class AlarmTableViewCell: UITableViewCell {
         messageViewHeightConstant?.isActive = true
         everydaySelectButtonHeightConstant?.isActive = true
         dayOfTheWeekSelectViewHeightConstant?.isActive = true
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.contentView.layoutIfNeeded()
-        })
     }
     
-    private func animateMoreExpand() {
+    
+    private func setupMoreExpandLayout() {
         messageViewHeightConstant?.isActive = false
         everydaySelectButtonHeightConstant?.isActive = false
         dayOfTheWeekSelectViewHeightConstant?.isActive = false
@@ -522,19 +578,24 @@ class AlarmTableViewCell: UITableViewCell {
         messageViewHeightConstant?.isActive = true
         everydaySelectButtonHeightConstant?.isActive = true
         dayOfTheWeekSelectViewHeightConstant?.isActive = true
-
+    }
+    
+    
+    private func setupExpandLayout() {
+        dayOfTheWeekSelectViewHeightConstant?.isActive = false
+        dayOfTheWeekSelectViewHeightConstant = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
+        dayOfTheWeekSelectViewHeightConstant?.isActive = true
+    }
+    
+    private func animateContentViewBase() {
         UIView.animate(withDuration: 0.3, animations: {
             self.contentView.layoutIfNeeded()
         })
     }
     
-    private func animateExpand() {
-        dayOfTheWeekSelectViewHeightConstant?.isActive = false
-        dayOfTheWeekSelectViewHeightConstant = self.dayOfTheWeekSelectView.heightAnchor.constraint(equalToConstant: 0)
-        dayOfTheWeekSelectViewHeightConstant?.isActive = true
-
+    private func animateCellBackgroundViewBase() {
         UIView.animate(withDuration: 0.3, animations: {
-            self.contentView.layoutIfNeeded()
+            self.cellBackgroundView.layoutIfNeeded()
         })
     }
 }

@@ -11,6 +11,12 @@ enum CellScaleState {
     case expand
     case normal
     case moreExpand
+    case none
+}
+
+enum CellReuseState {
+    case reuse
+    case none
 }
 
 struct AlarmTableViewCellViewModel: Equatable {
