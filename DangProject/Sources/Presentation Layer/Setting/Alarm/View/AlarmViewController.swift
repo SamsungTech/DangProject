@@ -216,7 +216,6 @@ class AlarmViewController: CustomViewController {
                 
                 strongSelf.performBatchTableViewCell(data)
                 strongSelf.scrollToRowAtPlusAlarm(cellAmountState)
-                strongSelf.scrollToRowAtNone(cellAmountState)
             })
             .disposed(by: disposeBag)
     }
@@ -254,18 +253,6 @@ class AlarmViewController: CustomViewController {
             self.alarmTableView.scrollToRow(at: IndexPath(row: addIndex, section: 0),
                                             at: .top,
                                             animated: true)
-        }
-    }
-    
-    private func scrollToRowAtNone(_ direction: CellAmountState) {
-        let row = viewModel.selectedMiddleButtonIndex
-        
-        if direction == .none {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
-                self.alarmTableView.scrollToRow(at: IndexPath(row: row, section: 0),
-                                                at: .top,
-                                                animated: true)
-            }
         }
     }
 }
