@@ -36,6 +36,7 @@ protocol AlarmViewModelOutputProtocol: AnyObject {
     var addedCellIndex: Int { get }
     var changedCellIndex: Int { get }
     var willDeleteCellIndex: Int { get }
+    var selectedMiddleButtonIndex: Int { get }
     func getHeightForRow(_ indexPath: IndexPath) -> CGFloat
     func branchOutCellAmountState(_ previousCount: Int,
                                   _ currentCount: Int) -> CellAmountState
@@ -50,6 +51,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
     lazy var cellScaleWillExpand: Bool = false
     lazy var addedCellIndex: Int = 0
     lazy var changedCellIndex: Int = 0
+    lazy var selectedMiddleButtonIndex: Int = 0
     lazy var willDeleteCellIndex: Int = 0
     // MARK: - Init
     private var alarmManagerUseCase: AlarmManagerUseCase
@@ -92,7 +94,7 @@ class AlarmViewModel: AlarmViewModelProtocol {
     
     func changeCellActivated(index: Int) {
         resetTotalCellScaleNormal(index: index)
-        
+        selectedMiddleButtonIndex = index
         switch alarmData[index].scale {
         case .normal:
             alarmData[index].scale = .moreExpand

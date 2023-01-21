@@ -196,30 +196,27 @@ class AlarmViewController: CustomViewController {
     
     private func bindAlarmTableViewCellData() {
         var dataCount = viewModel.alarmDataArrayRelay.value.count
+        
+
         viewModel.alarmDataArrayRelay
             .subscribe(onNext: { [weak self] data in
-                guard let strongSelf = self else { return }
-                var scrollDirection: CellAmountState = .none
-                let cellAmountState = self?.viewModel.branchOutCellAmountState(dataCount, data.count)
+                guard let strongSelf = self,
+                      let cellAmountState = self?.viewModel.branchOutCellAmountState(dataCount, data.count) else { return }
                 
                 switch cellAmountState {
                 case .plus:
                     self?.updateCellUI(.plus)
-                    scrollDirection = .plus
                     dataCount += 1
                 case .minus:
                     self?.updateCellUI(.minus)
-                    scrollDirection = .minus
                     dataCount -= 1
-                case .none?:
+                case .none:
                     self?.updateCellUI(.none)
-                    scrollDirection = .none
-                case nil: break
                 }
                 
                 strongSelf.performBatchTableViewCell(data)
-                strongSelf.scrollToRowAtPlusAlarm(scrollDirection)
-                
+                strongSelf.scrollToRowAtPlusAlarm(cellAmountState)
+                strongSelf.scrollToRowAtNone(cellAmountState)
             })
             .disposed(by: disposeBag)
     }
@@ -240,13 +237,14 @@ class AlarmViewController: CustomViewController {
     }
     
     private func performBatchTableViewCell(_ data: [AlarmTableViewCellViewModel]) {
-        alarmTableView.performBatchUpdates {
-            for i in 0 ..< data.count {
-                if let cell = self.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
-                    cell.setupCell(data: data[i], state: .none)
-                }
+        alarmTableView.beginUpdates()
+        for i in 0 ..< data.count {
+            if let cell = self.alarmTableView.cellForRow(at: IndexPath(row: i, section: 0)) as? AlarmTableViewCell {
+                cell.setupCell(data: data[i], state: .none)
             }
         }
+            
+        alarmTableView.endUpdates()
     }
     
     private func scrollToRowAtPlusAlarm(_ direction: CellAmountState) {
@@ -254,8 +252,20 @@ class AlarmViewController: CustomViewController {
 
         if direction == .plus {
             self.alarmTableView.scrollToRow(at: IndexPath(row: addIndex, section: 0),
-                                             at: .top,
-                                             animated: true)
+                                            at: .top,
+                                            animated: true)
+        }
+    }
+    
+    private func scrollToRowAtNone(_ direction: CellAmountState) {
+        let row = viewModel.selectedMiddleButtonIndex
+        
+        if direction == .none {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.3) {
+                self.alarmTableView.scrollToRow(at: IndexPath(row: row, section: 0),
+                                                at: .top,
+                                                animated: true)
+            }
         }
     }
 }
@@ -303,9 +313,6 @@ extension AlarmViewController: AlarmTableViewCellDelegate {
     func middleAndBottomButtonDidTap(cell: UITableViewCell) {
         guard let cellIndexPath = alarmTableView.indexPath(for: cell) else { return }
         viewModel.changeCellActivated(index: cellIndexPath.row)
-        if viewModel.cellScaleWillExpand {
-            alarmTableView.scrollToRow(at: cellIndexPath, at: .top, animated: true)
-        }
     }
     
     func deleteButtonDidTap(cell: UITableViewCell) {
