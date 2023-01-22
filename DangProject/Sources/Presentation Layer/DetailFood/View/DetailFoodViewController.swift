@@ -196,13 +196,17 @@ class DetailFoodViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let amount = Int(amountTextField.text ?? "1") else { return }
         
-        viewModel.addFoods(foods: .init(amount: amount, foodModel: viewModel.detailFood)) { data in
+        viewModel.addFoods(foods: .init(amount: amount, foodModel: viewModel.detailFood)) { [weak self] data in
             if data {
-                self.parentableViewController?.addFoodsAfter(
+                guard let detailFood = self?.viewModel.detailFood else { return }
+                self?.parentableViewController?.addFoodsAfter(
                     food: AddFoodsViewModel.init(amount: amount,
-                                                 foodModel: self.viewModel.detailFood)
+                                                 foodModel: detailFood)
                 )
-                self.coordinator?.popViewController()
+                self?.coordinator?.popViewController()
+            } else {
+                guard let alert = self?.createAlert() else { return }
+                self?.present(alert, animated: false)
             }
         }
     }
@@ -296,6 +300,17 @@ class DetailFoodViewController: UIViewController {
     private func changeAddButtonDeactivated() {
         addButton.backgroundColor = .systemGray4
         addButton.isEnabled = false
+    }
+    
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "firebaseServer 연결 오류",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
     }
 }
 // MARK: - Extension

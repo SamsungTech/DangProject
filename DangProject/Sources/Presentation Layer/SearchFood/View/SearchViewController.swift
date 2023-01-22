@@ -23,16 +23,6 @@ class SearchViewController: UIViewController {
     private let addCompleteToastLabel = UILabel()
     private var addCompleteLabelTopConstraint = NSLayoutConstraint()
     private lazy var loadingView = LoadingView(frame: .zero)
-    private lazy var searchErrorAlert: UIAlertController = {
-        let alert = UIAlertController(title: "오류",
-                                      message: "search - 실패",
-                                      preferredStyle: UIAlertController.Style.alert)
-        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
-            self.coordinator?.dismissViewController()
-        }
-        alert.addAction(actionButton)
-        return alert
-    }()
     
     // MARK: - Init
     init(viewModel: SearchViewModel) {
@@ -213,7 +203,7 @@ class SearchViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] in
                 if $0 {
-                    guard let alert = self?.searchErrorAlert else { return }
+                    guard let alert = self?.createAlert() else { return }
                     self?.present(alert, animated: false)
                 }
             })
@@ -318,6 +308,16 @@ class SearchViewController: UIViewController {
         eraseAllQueryButton.isHidden = false
     }
     
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "OpenAPI search - 실패",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            self.coordinator?.dismissViewController()
+        }
+        alert.addAction(actionButton)
+        return alert
+    }
 }
 // MARK: - Extension
 

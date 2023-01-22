@@ -33,7 +33,8 @@ protocol HomeViewModelInputProtocol {
 protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
     var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
-    var loading: PublishRelay<LoadingState> { get}
+    var loading: PublishRelay<LoadingState> { get }
+    var alertStateRelay: PublishRelay<Bool> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
     func getEatenFoodsTitleText(dateComponents: DateComponents) -> String
 }
@@ -50,6 +51,7 @@ class HomeViewModel: HomeViewModelProtocol {
     private var isViewsInHome = 0
     var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
     let loading = PublishRelay<LoadingState>()
+    var alertStateRelay = PublishRelay<Bool>()
     
     init(fetchEatenFoodsUseCase: FetchEatenFoodsUseCase,
          profileManagerUseCase: ProfileManagerUseCase) {
@@ -63,9 +65,10 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {
-        fetchEatenFoodsUseCase.fetchCurrentMonthsData { isDone in
+        fetchEatenFoodsUseCase.fetchCurrentMonthsData { [weak self] isDone in
             if isDone == false {
-                
+                print("fetchCurrentMonthData - 실패")
+                self?.alertStateRelay.accept(true)
             }
         }
     }
@@ -75,9 +78,10 @@ class HomeViewModel: HomeViewModelProtocol {
                                    month: dateComponents.month!,
                                    day: dateComponents.day)
         
-        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { isDone in
+        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { [weak self] isDone in
             if isDone == false {
-                
+                print("fetchMonthsData - 실패")
+                self?.alertStateRelay.accept(true)
             }
         }
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
@@ -88,9 +92,10 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents) {
-        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { isDone in
+        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { [weak self] isDone in
             if isDone == false {
-                
+                print("fetchMonthsData - 실패")
+                self?.alertStateRelay.accept(true)
             }
         }
     }

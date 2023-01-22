@@ -47,9 +47,13 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             var sixMonthBefore = dateComponents
             sixMonthBefore.month = sixMonthBefore.month! - 6
             fetchMonthData(dateComponents: sixMonthBefore)
-                .subscribe(onNext: { [weak self] monthData in
-                    self?.cachedMonth.append(sixMonthBefore)
-
+                .subscribe(onNext: { [weak self] monthData, bool in
+                    if bool {
+                        self?.cachedMonth.append(sixMonthBefore)
+                        completion(true)
+                    } else {
+                        completion(false)
+                    }
                 })
                 .disposed(by: disposeBag)
         }
