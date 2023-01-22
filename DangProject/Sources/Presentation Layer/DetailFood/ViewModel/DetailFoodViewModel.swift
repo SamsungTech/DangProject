@@ -26,6 +26,8 @@ protocol DetailFoodViewModelOutput {
     func setSugarArrowAngle(amount: Double) -> CGFloat
     func numberOfComponents() -> Int
     func getTotalSugar() -> Double
+    func branchOutCircleState(amount: Double) -> CustomProgressBarStateColor
+    func branchOutPickerViewInActivated() -> Bool
 }
 
 protocol DetailFoodViewModelProtocol: DetailFoodViewModelInput, DetailFoodViewModelOutput {}
@@ -34,6 +36,7 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
     // MARK: - Init
     var detailFood: FoodViewModel
     private let addFoodsUseCase: AddFoodsUseCase
+    private var isFirstActivated = true
     init(detailFood: FoodViewModel,
          addFoodsUseCase: AddFoodsUseCase) {
         self.detailFood = detailFood
@@ -90,5 +93,26 @@ class DetailFoodViewModel: DetailFoodViewModelProtocol {
         guard let sugar = detailFood.sugar else { return 0 }
         let totalSugar = (Double(sugar) ?? 0) * Double(amount)
         return totalSugar
+    }
+    
+    func branchOutPickerViewInActivated() -> Bool {
+        if isFirstActivated {
+            isFirstActivated = false
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    func branchOutCircleState(amount: Double = 1.0) -> CustomProgressBarStateColor {
+        guard let sugar = Double(detailFood.sugar ?? "0") else { return .low }
+        
+        if sugar*amount > 20 {
+            return .high
+        } else if sugar*amount > 10 {
+            return .middle
+        } else {
+            return .low
+        }
     }
 }

@@ -14,8 +14,8 @@ protocol FetchEatenFoodsUseCase {
     var totalMonthsDataObservable: PublishSubject<[[EatenFoodsPerDayDomainModel]]> { get }
     var sevenMonthsTotalSugarObservable: PublishSubject<(DateComponents, [TotalSugarPerMonthDomainModel])> { get }
     func fetchEatenFoods(date: Date)
-    func fetchCurrentMonthsData()
-    func fetchMonthsData(month: DateComponents)
+    func fetchCurrentMonthsData(completion: @escaping(Bool)->Void)
+    func fetchMonthsData(month: DateComponents, completion: @escaping(Bool)->Void)
     func fetchNextMonthData(month: DateComponents)
     func fetchSevenMonthsTotalSugar(from dateComponents: DateComponents)
 }

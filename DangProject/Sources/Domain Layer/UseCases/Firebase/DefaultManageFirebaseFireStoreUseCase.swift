@@ -12,7 +12,6 @@ import RxRelay
 import RxSwift
 
 class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
-    
     private let disposeBag = DisposeBag()
     
     // MARK: - Init
@@ -24,10 +23,13 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
         
     // MARK: - Internal
     let profileExistenceObservable = PublishSubject<Bool>()
+    public var firebaseStoreUseCaseErrorObservable = PublishSubject<String>()
     
-    func uploadFirebaseUID(uid: String) {
-        fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid, ProfileExistence: false,
-                                                            completion: { _ in })
+    func uploadFirebaseUID(uid: String,
+                           completion: @escaping (Bool)->Void) {
+        fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid,
+                                                            ProfileExistence: false,
+                                                            completion: completion)
     }
     
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
@@ -36,6 +38,8 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                                                             completion: { [weak self] saveResult in
             if saveResult {
                 self?.fireStoreManagerRepository.saveProfileDocument(profile: profile, completion: completion)
+            } else {
+                completion(false)
             }
         })
     }
@@ -54,52 +58,61 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
         }
     }
     
-    func getProfileData() -> Observable<ProfileDomainModel> {
+    func getProfileData() -> Observable<(ProfileDomainModel, Bool)> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
             self?.fireStoreManagerRepository.getProfileDataInFireStore()
-                .subscribe(onNext: { profileData in
+                .subscribe(onNext: { profileData, bool in
                     var domainProfileData = ProfileDomainModel.empty
-                    for (key, value) in profileData {
-                        switch key {
-                        case "name": domainProfileData.name = value as? String ?? ""
-                        case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
-                        case "uid": domainProfileData.uid = value as? String ?? ""
-                        case "weight": domainProfileData.weight = value as? Int ?? 0
-                        case "height": domainProfileData.height = value as? Int ?? 0
-                        default: break
+                    if bool {
+                        for (key, value) in profileData {
+                            switch key {
+                            case "name": domainProfileData.name = value as? String ?? ""
+                            case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
+                            case "uid": domainProfileData.uid = value as? String ?? ""
+                            case "weight": domainProfileData.weight = value as? Int ?? 0
+                            case "height": domainProfileData.height = value as? Int ?? 0
+                            default: break
+                            }
                         }
+                        emitter.onNext((domainProfileData, true))
+                    } else {
+                        emitter.onNext((ProfileDomainModel.empty, false))
                     }
-                    emitter.onNext(domainProfileData)
                 })
                 .disposed(by: strongSelf.disposeBag)
             return Disposables.create()
         }
     }
     
-    func getEatenFoods(dateComponents: DateComponents) -> Observable<[FoodDomainModel]> {
+    func getEatenFoods(dateComponents: DateComponents) -> Observable<([FoodDomainModel], Bool)> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
             self?.fireStoreManagerRepository.getEatenFoodsInFirestore(dateComponents: dateComponents)
-                .subscribe(onNext: { foodData in
+                .subscribe(onNext: { foodData, bool in
                     var addedFoodDomainModel = [FoodDomainModel]()
-                    foodData.forEach { foods in
-                        var foodModel = FoodDomainModel.empty
-                        for (key, value) in foods {
-                            switch key {
-                            case "name": foodModel.name = value as? String ?? ""
-                            case "sugar": foodModel.sugar = value as? Double ?? 0
-                            case "foodCode": foodModel.foodCode = value as? String ?? ""
-                            case "amount": foodModel.amount = value as? Int ?? 0
-                            case "favorite": foodModel.favorite = value as? Bool ?? false
-                            case "eatenTime": foodModel.eatenTime = value as? Timestamp ?? Timestamp.init()
-                            default:
-                                break
+                    if bool {
+                        foodData.forEach { foods in
+                            var foodModel = FoodDomainModel.empty
+                            for (key, value) in foods {
+                                switch key {
+                                case "name": foodModel.name = value as? String ?? ""
+                                case "sugar": foodModel.sugar = value as? Double ?? 0
+                                case "foodCode": foodModel.foodCode = value as? String ?? ""
+                                case "amount": foodModel.amount = value as? Int ?? 0
+                                case "favorite": foodModel.favorite = value as? Bool ?? false
+                                case "eatenTime": foodModel.eatenTime = value as? Timestamp ?? Timestamp.init()
+                                default:
+                                    break
+                                }
                             }
+                            addedFoodDomainModel.append(foodModel)
                         }
-                        addedFoodDomainModel.append(foodModel)
+                        emitter.onNext((addedFoodDomainModel, true))
+                    } else {
+                        emitter.onNext(([],false))
                     }
-                    emitter.onNext(addedFoodDomainModel)
+                    
                 })
                 .disposed(by: strongSelf.disposeBag)
             return Disposables.create()

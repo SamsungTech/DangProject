@@ -29,9 +29,9 @@ class DefaultFetchRepository: FetchRepository {
     }
     // MARK: - Internal
     var foodDomainModelObservable = PublishSubject<SearchResultDomainModel>()
+    var foodDomainModelErrorObservable = PublishSubject<String>()
     
-    func fetchToDomainModel(text: String) {
-        fetchDataService.fetchFoodEntity(text: text)
+    func fetchToDomainModel(text: String, completion: @escaping(Bool)->Void) {
+        fetchDataService.fetchFoodEntity(text: text, completion: completion)
     }
-    
 }

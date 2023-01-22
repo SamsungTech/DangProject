@@ -201,7 +201,6 @@ class DefaultCoreDataManagerRepository: CoreDataManagerRepository {
         
         do {
             try context.save()
-            print("profile 저장완료")
         } catch {
             print(error.localizedDescription)
         }

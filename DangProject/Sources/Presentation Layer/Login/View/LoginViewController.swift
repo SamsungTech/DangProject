@@ -102,6 +102,17 @@ class LoginViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "login - 실패, 인터넷 연결 확인을 확인해주세요",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
+    }
+    
     @objc func handleAuthorizationAppleIDButtonPress() {
         viewModel.loginButtonDidTap(with: self)
     }
@@ -113,8 +124,15 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         return self.view.window!
     }
     
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        viewModel.signIn(authorization: authorization)
+    func authorizationController(controller: ASAuthorizationController,
+                                 didCompleteWithAuthorization authorization: ASAuthorization) {
+        viewModel.signIn(authorization: authorization) { [weak self] bool in
+            guard let strongSelf = self else { return }
+            let alert = strongSelf.createAlert()
+            if bool == false {
+                strongSelf.present(alert, animated: false)
+            }
+        }
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {

@@ -40,9 +40,9 @@ class DefaultSearchUseCase: SearchUseCase {
     // MARK: - Internal
     var foodResultModelObservable = PublishSubject<[FoodViewModel]>()
     
-    func fetchFood(text: String) {
+    func fetchFood(text: String, completion: @escaping (Bool)->Void) {
         currentKeyword = text
-        fetchFoodRepository.fetchToDomainModel(text: text)
+        fetchFoodRepository.fetchToDomainModel(text: text, completion: completion)
     }
     
     func updateViewModel(keyword: String?) {

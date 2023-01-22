@@ -315,6 +315,10 @@ class InputProfileViewController: UIViewController {
                 if data {
                     self?.viewModel.loading.accept(.finishLoading)
                     self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
+                } else {
+                    guard let alert = self?.createAlert() else { return }
+                    self?.viewModel.loading.accept(.finishLoading)
+                    self?.present(alert, animated: false)
                 }
             }
         }
@@ -360,6 +364,17 @@ class InputProfileViewController: UIViewController {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(textField)
         return stackView
+    }
+    
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "Firebase ProfileUpdate - 실패",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
     }
 }
 

@@ -28,7 +28,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     
     // MARK: - Internal
     
-    func fetchMonthsData(month dateComponents: DateComponents) {
+    func fetchMonthsData(month dateComponents: DateComponents,
+                         completion: @escaping(Bool)->Void) {
         let tempMonth = DateComponents.init(year: dateComponents.year!,
                                             month: dateComponents.month!,
                                             day: 1)
@@ -46,9 +47,13 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             var sixMonthBefore = dateComponents
             sixMonthBefore.month = sixMonthBefore.month! - 6
             fetchMonthData(dateComponents: sixMonthBefore)
-                .subscribe(onNext: { [weak self] monthData in
-                    self?.cachedMonth.append(sixMonthBefore)
-
+                .subscribe(onNext: { [weak self] monthData, bool in
+                    if bool {
+                        self?.cachedMonth.append(sixMonthBefore)
+                        completion(true)
+                    } else {
+                        completion(false)
+                    }
                 })
                 .disposed(by: disposeBag)
         }
@@ -60,7 +65,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         ])
     }
     
-    func fetchCurrentMonthsData() {
+    func fetchCurrentMonthsData(completion: @escaping(Bool)->Void) {
         var currentMonth: DateComponents = .currentYearMonth()
         currentMonth.day = 1
                 
@@ -72,13 +77,18 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         
         for i in 0 ..< 7 {
             fetchMonthData(dateComponents: currentMonth)
-                .subscribe(onNext: { monthData in
-                    if i == 0 {
-                        currentMonthEatenFoodsObservable.onNext(monthData)
-                    } else if i == 1 {
-                        oneMonthBeforeEatenFoodsObservable.onNext(monthData)
-                    } else if i == 2 {
-                        twoMonthBeforeEatenFoodsObservable.onNext(monthData)
+                .subscribe(onNext: { monthData, bool in
+                    if bool {
+                        if i == 0 {
+                            currentMonthEatenFoodsObservable.onNext(monthData)
+                        } else if i == 1 {
+                            oneMonthBeforeEatenFoodsObservable.onNext(monthData)
+                        } else if i == 2 {
+                            twoMonthBeforeEatenFoodsObservable.onNext(monthData)
+                        }
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
                 })
                 .disposed(by: disposeBag)
@@ -134,7 +144,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         return eatenFoodsData
     }
     
-    private func fetchMonthData(dateComponents: DateComponents) -> Observable<[EatenFoodsPerDayDomainModel]> {
+    private func fetchMonthData(dateComponents: DateComponents) -> Observable<([EatenFoodsPerDayDomainModel], Bool)> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self,
                   let year = dateComponents.year,
@@ -150,14 +160,18 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                                                                day: i)
                 // 1. Remote 호출
                 self?.fetchEatenFoodsPerDayFromFireBase(dateComponents: tempDateComponents)
-                    .subscribe(onNext: { eatenFoods in
+                    .subscribe(onNext: { eatenFoods, bool in
                         // 2. Remote Data 와 Local Data 대조 이후 Remote로 맞춤
-                        self?.coreDataManagerRepository.updateLocal(data: eatenFoods, date: .makeDate(year: year, month: month, day: i))
-                        
-                        // 3. Remote viewModel로 전달
-                        eatenFoodsData.append(eatenFoods)
-                        if eatenFoodsData.count == dayCounts {
-                            emitter.onNext(eatenFoodsData.sorted { $0.date! < $1.date! })
+                        if bool {
+                            self?.coreDataManagerRepository.updateLocal(data: eatenFoods, date: .makeDate(year: year, month: month, day: i))
+                            
+                            // 3. Remote viewModel로 전달
+                            eatenFoodsData.append(eatenFoods)
+                            if eatenFoodsData.count == dayCounts {
+                                emitter.onNext((eatenFoodsData.sorted { $0.date! < $1.date! }, true))
+                            }
+                        } else {
+                            emitter.onNext(([], false))
                         }
                     })
                     .disposed(by: strongSelf.disposeBag)
@@ -194,19 +208,22 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     }
     
     // MARK: - Private
-    private func fetchEatenFoodsPerDayFromFireBase(dateComponents: DateComponents) -> Observable<EatenFoodsPerDayDomainModel> {
+    private func fetchEatenFoodsPerDayFromFireBase(dateComponents: DateComponents) -> Observable<(EatenFoodsPerDayDomainModel, Bool)> {
         return Observable.create() { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create()}
             var tempData: EatenFoodsPerDayDomainModel = .empty
             self?.manageFirebaseFireStoreUseCase.getEatenFoods(dateComponents: dateComponents)
-                .subscribe(onNext: { eatenFoods in
-                    
-                    let date: Date = .makeDate(year: dateComponents.year!,
-                                               month: dateComponents.month!,
-                                               day: dateComponents.day!)
-                    let sortedData = eatenFoods.sorted(by: { $0.eatenTime.seconds < $1.eatenTime.seconds })
-                    tempData = .init(date: date, eatenFoods: sortedData)
-                    emitter.onNext(tempData)
+                .subscribe(onNext: { eatenFoods, bool in
+                    if bool {
+                        let date: Date = .makeDate(year: dateComponents.year!,
+                                                   month: dateComponents.month!,
+                                                   day: dateComponents.day!)
+                        let sortedData = eatenFoods.sorted(by: { $0.eatenTime.seconds < $1.eatenTime.seconds })
+                        tempData = .init(date: date, eatenFoods: sortedData)
+                        emitter.onNext((tempData, true))
+                    } else {
+                        emitter.onNext((EatenFoodsPerDayDomainModel.empty, false))
+                    }
                 })
                 .disposed(by: strongSelf.disposeBag)
             return Disposables.create()

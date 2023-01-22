@@ -52,15 +52,19 @@ class ProfileViewController: CustomViewController {
         bind()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        clearImageData()
-        coordinator?.childDidFinish(coordinator)
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.fetchProfileData()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        clearImageData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        coordinator?.childDidFinish(coordinator)
+    }
+    
     
     init(viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel
@@ -176,7 +180,11 @@ class ProfileViewController: CustomViewController {
                                                                height: Int(heightData) ?? 0,
                                                                weight: Int(weightData) ?? 0,
                                                                sugarLevel: self?.viewModel.profileDataRelay.value.sugarLevel ?? 0,
-                                                               profileImage: profileImage)) { _ in
+                                                               profileImage: profileImage)) { isDone in
+                    if isDone == false {
+                        guard let alert = self?.createAlert() else { return }
+                        self?.present(alert, animated: false)
+                    }
                 }
             }
             .disposed(by: disposeBag)
@@ -224,6 +232,17 @@ class ProfileViewController: CustomViewController {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "Firebase ProfileUpdate - 실패",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
     }
     
     @objc private func scrollViewDidTap(_ sender: UIScrollView) {

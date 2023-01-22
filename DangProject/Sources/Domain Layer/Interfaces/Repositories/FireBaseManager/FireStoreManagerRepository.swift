@@ -17,10 +17,10 @@ protocol FireStoreManagerRepository {
                              completion: @escaping (Bool) -> Void)
     func saveEatenFood(eatenFood: FoodDomainModel,
                        completion: @escaping (Bool) -> Void)
-    func readUIDInFirestore(uid: String, completion: @escaping(String)->Void)
+    func readUIDInFirestore(uid: String, completion: @escaping((String, Bool))->Void)
     func checkProfileField(with fieldName: String, uid: String, completion: @escaping(Bool)->Void)
-    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]>
-    func getProfileDataInFireStore() -> Observable<[String: Any]>
+    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<([[String: Any]], Bool)>
+    func getProfileDataInFireStore() -> Observable<([String: Any], Bool)>
     func getDemoDataInFireStore(completion: @escaping (Bool) -> Void)
     func changeDemoValue(completion: @escaping ((Bool)->Void))
 }

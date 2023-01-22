@@ -122,12 +122,12 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
                                          sugarLevel: sugarValue,
                                          profileImage: imageValue)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
-        manageFirebaseStorageUseCase.updateProfileImage(jpegData)
-            .subscribe(onNext: { data in
-                if data {
-                    self.profileManageUseCase.saveProfileOnRemoteData(profile, completion: completion)
-                }
-            })
-            .disposed(by: disposeBag)
+        manageFirebaseStorageUseCase.uploadProfileImage(data: jpegData) { bool in
+            if bool {
+                self.profileManageUseCase.saveProfileOnRemoteData(profile, completion: completion)
+            } else {
+                completion(false)
+            }
+        }
     }
 }

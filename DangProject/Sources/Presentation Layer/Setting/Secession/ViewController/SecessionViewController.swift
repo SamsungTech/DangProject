@@ -120,6 +120,9 @@ extension SecessionViewController {
                     self?.viewModel.loading.accept(.finishLoading)
                     self?.viewModel.removeFirebaseUID()
                     self?.coordinator?.returnToFirstStart()
+                } else {
+                    guard let alert = self?.createAlert() else { return }
+                    self?.present(alert, animated: false)
                 }
             }
         }
@@ -151,5 +154,16 @@ extension SecessionViewController {
                 }
             }
             .disposed(by: disposeBag)
+    }
+    
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "firebaseServer 연결 오류 - 탈퇴 실패",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
     }
 }

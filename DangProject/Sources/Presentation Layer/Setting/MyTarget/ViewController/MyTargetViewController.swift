@@ -147,13 +147,28 @@ extension MyTargetViewController {
     
     private func passTargetSugarData(targetSugar: Double) {
         viewModel.passTargetSugarForUpdate(targetSugar) { [weak self] data in
-            if data == true {
+            if data {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+1) {
                     self?.loadingView.isHidden = true
                     self?.coordinator?.popMyTargetViewController()
                 }
+            } else {
+                guard let alert = self?.createAlert() else { return }
+                self?.loadingView.isHidden = true
+                self?.present(alert, animated: false)
             }
         }
+    }
+    
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "firebaseServer 연결 오류 - 업로드 실패",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
     }
 }
 

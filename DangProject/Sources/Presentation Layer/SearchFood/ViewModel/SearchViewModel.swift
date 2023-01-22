@@ -20,6 +20,8 @@ protocol SearchViewModelInput {
 protocol SearchViewModelOutput {
     var searchFoodViewModelObservable: PublishRelay<[FoodViewModel]> { get }
     var searchQueryObservable: PublishRelay<[String]> { get }
+    var searchWarningState: PublishRelay<Bool> { get }
+
     func updateRecentQuery()
 }
 
@@ -66,8 +68,8 @@ class SearchViewModel: SearchViewModelProtocol {
                 self?.searchQueryObservable.accept(query)
             })
             .disposed(by: disposeBag)
-        
     }
+    
     // MARK: - Input
     var currentKeyword: String = ""
     
@@ -134,6 +136,8 @@ class SearchViewModel: SearchViewModelProtocol {
     var searchFoodViewModelObservable = PublishRelay<[FoodViewModel]>()
     var searchQueryObservable = PublishRelay<[String]>()
     let loading = PublishRelay<LoadingState>()
+    var searchWarningState = PublishRelay<Bool>()
+    
     enum LoadingState {
         case startLoading
         case finishLoading
@@ -156,8 +160,14 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     private func startSearching(searchBarText: String) {
         manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText)
-        searchFoodUseCase.fetchFood(text: searchBarText)
         loading.accept(.startLoading)
+        searchFoodUseCase.fetchFood(text: searchBarText) { isDone in
+            
+            if isDone == false {
+                self.loading.accept(.finishLoading)
+                self.searchWarningState.accept(true)
+            }
+        }
     }
     
     private func changeToFavoriteFoods() {

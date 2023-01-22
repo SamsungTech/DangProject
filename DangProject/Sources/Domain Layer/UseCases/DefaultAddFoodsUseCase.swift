@@ -31,17 +31,20 @@ class DefaultAddFoodsUseCase: AddFoodsUseCase {
     private func uploadInFirebase(eatenFood: FoodDomainModel,
                                   completion: @escaping (Bool) -> Void) {
         firebaseFireStoreUseCase.getEatenFoods(dateComponents: .currentDateTimeComponents())
-            .subscribe(onNext: { [weak self] addedFoodArr in
-                
-                var tempEatenFood = eatenFood 
-                addedFoodArr.forEach { addedFood in
-                    if tempEatenFood.foodCode == addedFood.foodCode {
-                        tempEatenFood.amount = tempEatenFood.amount + addedFood.amount
-                        tempEatenFood.eatenTime = addedFood.eatenTime
+            .subscribe(onNext: { [weak self] addedFoodArr, bool in
+                if bool {
+                    var tempEatenFood = eatenFood
+                    addedFoodArr.forEach { addedFood in
+                        if tempEatenFood.foodCode == addedFood.foodCode {
+                            tempEatenFood.amount = tempEatenFood.amount + addedFood.amount
+                            tempEatenFood.eatenTime = addedFood.eatenTime
+                        }
                     }
+                    self?.firebaseFireStoreUseCase.uploadEatenFood(eatenFood: tempEatenFood,
+                                                                   completion: completion)
+                } else {
+                    completion(false)
                 }
-                self?.firebaseFireStoreUseCase.uploadEatenFood(eatenFood: tempEatenFood,
-                                                               completion: completion)
             })
             .disposed(by: disposeBag)
     }

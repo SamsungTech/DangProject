@@ -71,6 +71,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         layout()
         bindProfileImageData()
         bindLoading()
+        bindAlertState()
     }
     
     private func configure() {
@@ -186,6 +187,29 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func bindAlertState() {
+        viewModel.alertStateRelay
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] state in
+                if state {
+                    guard let alert = self?.createAlert() else { return }
+                    self?.present(alert, animated: false)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "firebaseServer 연결 오류",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            alert.dismiss(animated: false)
+        }
+        alert.addAction(actionButton)
+        return alert
     }
 }
 extension HomeViewController: CalendarViewDelegate {

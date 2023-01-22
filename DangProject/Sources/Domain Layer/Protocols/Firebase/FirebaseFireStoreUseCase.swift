@@ -10,13 +10,12 @@ import Foundation
 import RxSwift
 
 protocol ManageFirebaseFireStoreUseCase {
-    
     var profileExistenceObservable: PublishSubject<Bool> { get }
-    func uploadFirebaseUID(uid: String)
+    func uploadFirebaseUID(uid: String, completion: @escaping (Bool) -> Void)
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void)
     func getProfileExistence(uid: String) -> Observable<Bool>
     func uploadEatenFood(eatenFood: FoodDomainModel, completion: @escaping (Bool) -> Void)
-    func getEatenFoods(dateComponents : DateComponents) -> Observable<[FoodDomainModel]>
-    func getProfileData() -> Observable<ProfileDomainModel>
+    func getEatenFoods(dateComponents : DateComponents) -> Observable<([FoodDomainModel], Bool)>
+    func getProfileData() -> Observable<(ProfileDomainModel, Bool)>
     func changeDemoValue(completion: @escaping ((Bool)->Void))
 }

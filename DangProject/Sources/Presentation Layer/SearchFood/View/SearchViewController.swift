@@ -195,6 +195,19 @@ class SearchViewController: UIViewController {
         bindSearchResultTableView()
         bindLoading()
         bindQueryTableView()
+        bindErrorAlertView()
+    }
+    
+    private func bindErrorAlertView() {
+        viewModel.searchWarningState
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] in
+                if $0 {
+                    guard let alert = self?.createAlert() else { return }
+                    self?.present(alert, animated: false)
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindSearchResultTableView() {
@@ -295,6 +308,16 @@ class SearchViewController: UIViewController {
         eraseAllQueryButton.isHidden = false
     }
     
+    private func createAlert() -> UIAlertController {
+        let alert = UIAlertController(title: "오류",
+                                      message: "OpenAPI search - 실패",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
+            self.coordinator?.dismissViewController()
+        }
+        alert.addAction(actionButton)
+        return alert
+    }
 }
 // MARK: - Extension
 
