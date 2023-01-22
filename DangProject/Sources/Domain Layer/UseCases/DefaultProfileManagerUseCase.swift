@@ -42,7 +42,8 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
         }
     }
     
-    func saveProfileOnRemoteData(_ profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
+    func saveProfileOnRemoteData(_ profile: ProfileDomainModel,
+                                 completion: @escaping (Bool) -> Void) {
         manageFirebaseFireStoreUseCase.uploadProfile(profile: profile, completion: completion)
         ProfileDomainModel.setIsLatestProfileData(false)
     }
@@ -55,9 +56,13 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
                   let profileData = self?.manageFirebaseFireStoreUseCase.getProfileData() else { return Disposables.create() }
             
             Observable.combineLatest(profileImage, profileData)
+                .filter {
+                    $0.0.1 && $0.1.1
+                }
                 .subscribe(onNext: { profileImageData, profileData in
-                    guard let image = UIImage(data: profileImageData as Data) else { return }
-                    var profileData: ProfileDomainModel = profileData
+                    
+                    guard let image = UIImage(data: profileImageData.0 as Data) else { return }
+                    var profileData: ProfileDomainModel = profileData.0
                     profileData.profileImage = image
                     self?.coreDataManagerRepository.updateProfileData(profileData)
                     emitter.onNext(profileData)

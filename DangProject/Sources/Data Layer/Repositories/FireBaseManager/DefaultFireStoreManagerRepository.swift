@@ -24,6 +24,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .getDocument() { snapshot, error  in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
                     return
                 }
                 if let result = snapshot?.data() {
@@ -54,7 +55,6 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     func saveFirebaseUserDocument(uid: String,
                                   ProfileExistence: Bool,
                                   completion: @escaping ((Bool)->Void)) {
-        
         let uidData = ["firebaseUID": self.uid,
                        "profileExistence": ProfileExistence
         ] as [String : Any]
@@ -62,13 +62,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         database.collection("users")
             .document(self.uid)
             .setData(uidData) { error in
-                
                 if let error = error {
                     completion(false)
                     print("DEBUG: \(error.localizedDescription)")
                     return
                 }
-                
                 completion(true)
             }
     }
@@ -114,7 +112,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
-    func getProfileDataInFireStore() -> Observable<[String: Any]> {
+    func getProfileDataInFireStore() -> Observable<([String: Any], Bool)> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else {
                 return Disposables.create()
@@ -127,10 +125,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 .getDocument() { snapshot, error  in
                     if let error = error {
                         print("DEBUG: \(error.localizedDescription)")
+                        emitter.onNext(([:], false))
                         return
                     }
                     if let result = snapshot?.data() {
-                        emitter.onNext(result)
+                        emitter.onNext((result, true))
                     }
                 }
             return Disposables.create()
@@ -143,7 +142,10 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         let today = DateComponents.currentDateTimeComponents()
         guard let year = today.year,
               let month = today.month,
-              let day = today.day else { return }
+              let day = today.day else {
+            
+            return
+        }
         let eatenFoodData = [
             "name": eatenFood.name,
             "sugar": eatenFood.sugar,
@@ -154,7 +156,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         ] as [String : Any]
         
         self.saveEatenFoodDataForDelete(foodName: eatenFood.name,
-                                        foodCode: eatenFood.foodCode)
+                                        foodCode: eatenFood.foodCode,
+                                        completion: completion)
         
         database.collection("app")
             .document(userDefaultsUID)
@@ -175,7 +178,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     private func saveEatenFoodDataForDelete(foodName: String,
-                                            foodCode: String) {
+                                            foodCode: String,
+                                            completion: @escaping(Bool)->Void) {
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else { return }
         let today = DateComponents.currentDateTimeComponents()
         guard let year = today.year,
@@ -198,9 +202,10 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .setData(eatenFoodData) { error in
                 if let error = error {
                     print("DEBUG: \(error.localizedDescription)")
-                    
+                    completion(false)
                     return
                 }
+                completion(true)
             }
     }
     
@@ -226,21 +231,22 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     }
     
     func readUIDInFirestore(uid: String,
-                            completion: @escaping(String)->Void) {
+                            completion: @escaping((String, Bool))->Void) {
         database.collection("users").document(uid).getDocument { snapshot, error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
+                completion(("", false))
                 return
             }
             if let result = snapshot?.data() {
                 if let resultUID = result["firebaseUID"] {
-                    completion(resultUID as! String)
+                    completion((resultUID as! String, true))
                 }
             }
         }
     }
     
-    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<[[String: Any]]> {
+    func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<([[String: Any]], Bool)> {
         return Observable.create { [weak self] emitter in
             guard let year = dateComponents.year,
                   let month = dateComponents.month,
@@ -258,10 +264,11 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                 .getDocuments() { snapshot, error in
                     if let error = error {
                         print("DEBUG: \(error.localizedDescription)")
+                        emitter.onNext(([], false))
                         return
                     }
                     if let result = snapshot?.documents {
-                        emitter.onNext(result.map{ $0.data() })
+                        emitter.onNext((result.map{ $0.data() }, true))
                     }
                 }
             return Disposables.create()

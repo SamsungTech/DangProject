@@ -26,19 +26,12 @@ class DefaultFetchRepository: FetchRepository {
                 foodDomainModelObservable.onNext(SearchResultDomainModel.init(foodEntity))
             })
             .disposed(by: disposeBag)
-        
-        fetchDataService.foodInfoErrorObservable
-            .subscribe(onNext: { [weak self] error in
-                self?.foodDomainModelErrorObservable.onNext(error)
-            })
-            .disposed(by: disposeBag)
     }
     // MARK: - Internal
     var foodDomainModelObservable = PublishSubject<SearchResultDomainModel>()
     var foodDomainModelErrorObservable = PublishSubject<String>()
     
-    func fetchToDomainModel(text: String) {
-        fetchDataService.fetchFoodEntity(text: text)
+    func fetchToDomainModel(text: String, completion: @escaping(Bool)->Void) {
+        fetchDataService.fetchFoodEntity(text: text, completion: completion)
     }
-    
 }

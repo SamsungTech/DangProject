@@ -32,6 +32,15 @@ class LoginViewController: UIViewController {
         return label
     }()
     
+    private lazy var loginErrorAlert: UIAlertController = {
+        let alert = UIAlertController(title: "오류",
+                                      message: "login - 실패, 인터넷 연결 확인을 확인해주세요",
+                                      preferredStyle: UIAlertController.Style.alert)
+        let actionButton = UIAlertAction(title: "확인", style: .default) { _ in }
+        alert.addAction(actionButton)
+        return alert
+    }()
+    
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
     // MARK: - Init
     init(viewModel: LoginViewModel) {
@@ -113,8 +122,13 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         return self.view.window!
     }
     
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        viewModel.signIn(authorization: authorization)
+    func authorizationController(controller: ASAuthorizationController,
+                                 didCompleteWithAuthorization authorization: ASAuthorization) {
+        viewModel.signIn(authorization: authorization) { bool in
+            if bool == false {
+                self.present(self.loginErrorAlert, animated: false)
+            }
+        }
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {

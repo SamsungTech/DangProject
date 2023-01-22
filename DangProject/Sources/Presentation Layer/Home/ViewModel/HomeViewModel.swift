@@ -63,7 +63,11 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func fetchCurrentMonthData(dateComponents: DateComponents) {
-        fetchEatenFoodsUseCase.fetchCurrentMonthsData()
+        fetchEatenFoodsUseCase.fetchCurrentMonthsData { isDone in
+            if isDone == false {
+                
+            }
+        }
     }
     
     func fetchSelectedEatenFoods(_ dateComponents: DateComponents) {
@@ -71,7 +75,11 @@ class HomeViewModel: HomeViewModelProtocol {
                                    month: dateComponents.month!,
                                    day: dateComponents.day)
         
-        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
+        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { isDone in
+            if isDone == false {
+                
+            }
+        }
         fetchEatenFoodsUseCase.fetchEatenFoods(date: date)
     }
     
@@ -80,7 +88,11 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func fetchEatenFoodsInTotalMonths(_ dateComponents: DateComponents) {
-        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents)
+        fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { isDone in
+            if isDone == false {
+                
+            }
+        }
     }
     
     func fetchOnlyCalendar(_ dateComponents: DateComponents) {

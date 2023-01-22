@@ -20,7 +20,7 @@ protocol SearchViewModelInput {
 protocol SearchViewModelOutput {
     var searchFoodViewModelObservable: PublishRelay<[FoodViewModel]> { get }
     var searchQueryObservable: PublishRelay<[String]> { get }
-    var searchErrorMessage: PublishRelay<String> { get }
+    var searchWarningState: PublishRelay<Bool> { get }
 
     func updateRecentQuery()
 }
@@ -57,13 +57,6 @@ class SearchViewModel: SearchViewModelProtocol {
                     self?.updateFavoriteResult()
                 }
                 self?.loading.accept(.finishLoading)
-            })
-            .disposed(by: disposeBag)
-        
-        searchFoodUseCase.searchErrorObservable
-            .subscribe(onNext: { [weak self] error in
-                self?.loading.accept(.finishLoading)
-                self?.searchErrorMessage.accept(error)
             })
             .disposed(by: disposeBag)
     }
@@ -143,7 +136,7 @@ class SearchViewModel: SearchViewModelProtocol {
     var searchFoodViewModelObservable = PublishRelay<[FoodViewModel]>()
     var searchQueryObservable = PublishRelay<[String]>()
     let loading = PublishRelay<LoadingState>()
-    let searchErrorMessage = PublishRelay<String>()
+    var searchWarningState = PublishRelay<Bool>()
     
     enum LoadingState {
         case startLoading
@@ -167,8 +160,14 @@ class SearchViewModel: SearchViewModelProtocol {
     }
     private func startSearching(searchBarText: String) {
         manageQueryUseCase.addQueryOnCoreData(keyword: searchBarText)
-        searchFoodUseCase.fetchFood(text: searchBarText)
         loading.accept(.startLoading)
+        searchFoodUseCase.fetchFood(text: searchBarText) { isDone in
+            
+            if isDone == false {
+                self.loading.accept(.finishLoading)
+                self.searchWarningState.accept(true)
+            }
+        }
     }
     
     private func changeToFavoriteFoods() {

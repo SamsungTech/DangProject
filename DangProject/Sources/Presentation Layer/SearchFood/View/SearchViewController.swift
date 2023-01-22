@@ -25,7 +25,7 @@ class SearchViewController: UIViewController {
     private lazy var loadingView = LoadingView(frame: .zero)
     private lazy var searchErrorAlert: UIAlertController = {
         let alert = UIAlertController(title: "오류",
-                                      message: "",
+                                      message: "search - 실패",
                                       preferredStyle: UIAlertController.Style.alert)
         let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
             self.coordinator?.dismissViewController()
@@ -209,12 +209,13 @@ class SearchViewController: UIViewController {
     }
     
     private func bindErrorAlertView() {
-        viewModel.searchErrorMessage
+        viewModel.searchWarningState
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] errorMessage in
-                guard let alert = self?.searchErrorAlert else { return }
-                alert.message = errorMessage
-                self?.present(alert, animated: false)
+            .subscribe(onNext: { [weak self] in
+                if $0 {
+                    guard let alert = self?.searchErrorAlert else { return }
+                    self?.present(alert, animated: false)
+                }
             })
             .disposed(by: disposeBag)
     }

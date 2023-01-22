@@ -10,11 +10,10 @@ import Foundation
 import RxSwift
 
 class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository {
-    
     private let uid = UserInfoKey.getUserDefaultsUID
     private let storage = Storage.storage()
     
-    func getImageData() -> Observable<NSData> {
+    func getImageData() -> Observable<(NSData, Bool)> {
         return Observable.create { [weak self] emitter in
             guard let strongSelf = self else { return Disposables.create() }
             self?.storage
@@ -22,13 +21,14 @@ class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository 
                 .downloadURL { (url, error) in
                     if let error = error {
                         print(error.localizedDescription)
+                        emitter.onNext((NSData(), false))
                         return
                     } else {
                         guard let url = url else { return }
                         
                         DispatchQueue.global().async {
                             guard let data = NSData(contentsOf: url) else { return }
-                            emitter.onNext(data)
+                            emitter.onNext((data, true))
                         }
                     }
             }
@@ -36,25 +36,22 @@ class DefaultFirebaseStorageManagerRepository: FireBaseStorageManagerRepository 
         }
     }
     
-    func uploadImage(_ image: Data) -> Observable<Bool> {
-        return Observable.create { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create() }
-            let metaData = StorageMetadata()
-            metaData.contentType = "image/png"
-            self?.storage
-                .reference()
-                .child("\(String(describing: strongSelf.uid))"+"/profileImage.jpg")
-                .putData(image, metadata: metaData) { (metaData, error) in
-                    if let error = error {
-                        print(error.localizedDescription)
-                        emitter.onNext(false)
-                        return
-                    } else {
-                        print("프로필이미지 업로드 성공")
-                        emitter.onNext(true)
-                    }
+    func uploadImage(_ image: Data,
+                     completion: @escaping (Bool)->Void) {
+        let metaData = StorageMetadata()
+        metaData.contentType = "image/png"
+        self.storage
+            .reference()
+            .child("\(String(describing: self.uid))"+"/profileImage.jpg")
+            .putData(image, metadata: metaData) { (metaData, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    print("프로필이미지 업로드 실패")
+                    completion(false)
+                    return
+                } else {
+                    completion(true)
+                }
             }
-            return Disposables.create()
-        }
     }
 }

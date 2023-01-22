@@ -97,16 +97,14 @@ class ProfileViewModel: ProfileViewModelProtocol {
         loadingRelay.accept(.startLoading)
         guard let jpegData = profile.profileImage.jpegData(compressionQuality: 0.8) else { return }
         manageFirebaseStoreUseCase.uploadProfile(profile: profile, completion: completion)
-        manageFirebaseStorageUseCase.updateProfileImage(jpegData)
-            .subscribe(onNext: { [weak self] updateIsDone in
-                if updateIsDone {
-                    self?.profileManagerUseCase.saveProfileOnRemoteData(profile, completion: completion)
-                    self?.loadingRelay.accept(.finishLoading)
-                } else {
-                    
-                }
-            })
-            .disposed(by: disposeBag)
+        manageFirebaseStorageUseCase.uploadProfileImage(data: jpegData) { isDone in 
+            if isDone {
+                self.profileManagerUseCase.saveProfileOnRemoteData(profile, completion: completion)
+                self.loadingRelay.accept(.finishLoading)
+            } else {
+                completion(false)
+            }
+        }
     }
     
     func calculateScrollViewState(yPosition: CGFloat) {
