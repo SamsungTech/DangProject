@@ -171,8 +171,9 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         viewModel.profileDataRelay
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] profileData in
+                guard let strongSelf = self else { return }
                 self?.customNavigationBar.profileImageButton.setupProfileImageViewImage(profileData.profileImage)
-                self?.coordinator?.presentUpdateAlertView()
+                strongSelf.checkIsFirstVersionCheck()
             })
             .disposed(by: disposeBag)
     }
@@ -201,6 +202,13 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func checkIsFirstVersionCheck() {
+        if viewModel.getIsFirstVersionCheck() {
+            self.coordinator?.presentUpdateAlertView()
+            viewModel.setupIsFirstVersionCheck()
+        }
     }
     
     private func createAlert() -> UIAlertController {

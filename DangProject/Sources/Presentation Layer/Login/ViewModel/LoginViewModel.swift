@@ -19,6 +19,7 @@ protocol LoginViewModelInput {
 
 protocol LoginViewModelOutput {
     var profileExistenceObservable: PublishRelay<Bool> { get }
+    var checkAppVersionObservable: BehaviorRelay<Bool> { get }
 }
 
 protocol LoginViewModelProtocol: LoginViewModelInput, LoginViewModelOutput { }
@@ -151,4 +152,5 @@ class LoginViewModel: LoginViewModelProtocol {
    
     //MARK: - Output
     let profileExistenceObservable = PublishRelay<Bool>()
+    let checkAppVersionObservable = BehaviorRelay<Bool>(value: true)
 }

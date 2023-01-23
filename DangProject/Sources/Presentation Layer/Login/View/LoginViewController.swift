@@ -32,6 +32,14 @@ class LoginViewController: UIViewController {
         return label
     }()
     
+    private lazy var appleLoginButton: ASAuthorizationAppleIDButton = {
+        let button = ASAuthorizationAppleIDButton(type: .continue, style: .black)
+        button.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
+        button.isEnabled = false
+        
+        return button
+    }()
+    
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
     // MARK: - Init
     init(viewModel: LoginViewModel) {
@@ -51,6 +59,7 @@ class LoginViewController: UIViewController {
         setupLoginLabel()
         setupAppleLoginButton()
         bindSignInObservable()
+        bindCheckAppVersionObservable()
     }
     
     private func setupLoginImageView() {
@@ -74,20 +83,17 @@ class LoginViewController: UIViewController {
     }
     
     private func setupAppleLoginButton() {
-        if #available(iOS 13.0, *) {
-            let appleLoginButton = ASAuthorizationAppleIDButton(type: .continue, style: .black)
-            self.view.addSubview(appleLoginButton)
-            appleLoginButton.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                appleLoginButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                appleLoginButton.topAnchor.constraint(equalTo: view.topAnchor,
-                                                      constant: self.view.yValueRatio(650)),
-                appleLoginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: xValueRatio(20)),
-                appleLoginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -xValueRatio(20)),
-                appleLoginButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(50))
-            ])
-            appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
-        }
+        self.view.addSubview(appleLoginButton)
+        appleLoginButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            appleLoginButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            appleLoginButton.topAnchor.constraint(equalTo: view.topAnchor,
+                                                  constant: self.view.yValueRatio(650)),
+            appleLoginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: xValueRatio(20)),
+            appleLoginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -xValueRatio(20)),
+            appleLoginButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(50))
+        ])
+        
     }
     
     private func bindSignInObservable() {
@@ -100,6 +106,23 @@ class LoginViewController: UIViewController {
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func bindCheckAppVersionObservable() {
+        viewModel.checkAppVersionObservable
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                
+                self?.presentDelay()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func presentDelay() {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+            self.coordinator?.presentUpdateAlertViewFromLoginView()
+            self.appleLoginButton.isEnabled = true
+        }
     }
     
     private func createAlert() -> UIAlertController {

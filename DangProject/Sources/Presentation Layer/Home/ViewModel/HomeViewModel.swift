@@ -28,6 +28,7 @@ protocol HomeViewModelInputProtocol {
     func fetchGraphData(from dateComponents: DateComponents)
     func changeCellIndexColumn(cellIndexColumn: Int)
     func plusViewsDataCount()
+    func setupIsFirstVersionCheck()
 }
 
 protocol HomeViewModelOutputProtocol {
@@ -37,6 +38,7 @@ protocol HomeViewModelOutputProtocol {
     var alertStateRelay: PublishRelay<Bool> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
     func getEatenFoodsTitleText(dateComponents: DateComponents) -> String
+    func getIsFirstVersionCheck() -> Bool
 }
 
 protocol HomeViewModelProtocol: HomeViewModelInputProtocol, HomeViewModelOutputProtocol {}
@@ -49,6 +51,7 @@ class HomeViewModel: HomeViewModelProtocol {
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     private let profileManagerUseCase: ProfileManagerUseCase
     private var isViewsInHome = 0
+    private var isFirstVersionCheck = true
     var profileDataRelay = PublishRelay<ProfileDomainModel>()
     let loading = PublishRelay<LoadingState>()
     var alertStateRelay = PublishRelay<Bool>()
@@ -58,6 +61,14 @@ class HomeViewModel: HomeViewModelProtocol {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.profileManagerUseCase = profileManagerUseCase
         self.bindProfileData()
+    }
+    
+    func setupIsFirstVersionCheck() {
+        isFirstVersionCheck = false
+    }
+    
+    func getIsFirstVersionCheck() -> Bool {
+        return isFirstVersionCheck
     }
     
     func fetchProfileData() {

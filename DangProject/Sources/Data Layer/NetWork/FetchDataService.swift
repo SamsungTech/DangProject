@@ -26,7 +26,7 @@ class FetchDataService {
     func fetchFoodEntity(text: String,
                          completion: @escaping(Bool)->Void) {
         fetchFoodRx(text: text)
-            .timeout(RxTimeInterval.seconds(15),
+            .timeout(RxTimeInterval.seconds(20),
                      scheduler: MainScheduler.asyncInstance)
             .do(onError: { error in
                 completion(false)

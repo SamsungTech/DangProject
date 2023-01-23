@@ -59,9 +59,7 @@ class HomeCoordinator: NSObject, Coordinator {
         let storeButton = UIAlertAction(title: "업데이트", style: .default) { _ in
             UserDefaults.standard.set(self.versionData.version, forKey: UserInfoKey.previousYellowVersion)
             UserDefaults.standard.set(self.versionData.version, forKey: UserInfoKey.latestYellowVersion)
-            // MARK: 앱스토어 이동 로직
-
-            
+            self.openAppStore()
             alert.dismiss(animated: false)
         }
         
@@ -75,14 +73,22 @@ class HomeCoordinator: NSObject, Coordinator {
                                       message: "안정적인 서비스 사용을 위해 최신 버전 업데이트를 해주세요.",
                                       preferredStyle: UIAlertController.Style.alert)
         let storeButton = UIAlertAction(title: "업데이트", style: .default) { _ in
-            // MARK: 앱스토어 이동 로직
-            
-            
-            
+            self.openAppStore()
             alert.dismiss(animated: false)
         }
         
         alert.addAction(storeButton)
         return alert
+    }
+    
+    func openAppStore() {
+        let url = "itms-apps://itunes.apple.com/app/1625074042"
+        if let url = URL(string: url), UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            } else {
+                UIApplication.shared.openURL(url)
+            }
+        }
     }
 }
