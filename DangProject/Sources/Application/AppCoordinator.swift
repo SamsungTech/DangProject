@@ -15,35 +15,46 @@ protocol Coordinator: AnyObject {
 }
 
 class AppCoordinator: Coordinator {
-    
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     let fireStoreManager: FireStoreManagerRepository
+    let versionCheckManager: VersionCheckRepository
+    private var versionData: VersionData = .empty
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.fireStoreManager = DefaultFireStoreManagerRepository()
+        self.versionCheckManager = DefaultVersionCheckRepository()
         navigationController.setNavigationBarHidden(true, animated: true)
     }
     
     // MARK: - First Start
     func start() {
-        checkDemoVersion()
+        checkVersion()
+    }
+    
+    private func checkVersion() {
+        versionCheckManager.isUpdateAvailable { versionData, error in
+            if error != nil {
+                print("versionCheck Error")
+            }
+            self.versionData = versionData
+            self.checkDemoVersion(versionState: versionData)
+        }
     }
     
     // MARK: - Private
-    
-    private func checkDemoVersion() {
+    private func checkDemoVersion(versionState: VersionData) {
         /// check demo app version
         fireStoreManager.getDemoDataInFireStore { demo in
             if demo {
                 self.setDemoUIDInUserDefaults()
                 self.checkAppIsFirstTime()
-                self.checkUserUID()
+                self.checkUserUID(versionState: versionState)
             } else {
                 self.deleteDemoUIDInUserDefaults()
                 self.checkAppIsFirstTime()
-                self.checkUserUID()
+                self.checkUserUID(versionState: versionState)
             }
         }
     }
@@ -63,38 +74,42 @@ class AppCoordinator: Coordinator {
         }
     }
     
-    private func checkUserUID() {
+    private func checkUserUID(versionState: VersionData) {
         /// check userUID
         guard let userDefaultsUID = UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID) else {
-            
-            return startLogin()
+            return startLogin(versionState: versionState)
         }
-        compareFireStoreUID(with: userDefaultsUID)
+        compareFireStoreUID(with: userDefaultsUID, versionState: versionState)
     }
     
-    private func compareFireStoreUID(with userDefaultsUID: String) {
+    private func compareFireStoreUID(with userDefaultsUID: String,
+                                     versionState: VersionData) {
         fireStoreManager.readUIDInFirestore(uid: userDefaultsUID) { [weak self] (uid, bool) in
             if bool {
                 if uid == userDefaultsUID {
-                    self?.startTabbar()
-                }
-                else {
-                    self?.startLogin()
+                    self?.startTabbar(versionState: versionState)
+                } else {
+                    self?.startLogin(versionState: versionState)
                 }
             } else {
-                fatalError("fireStoreUidReading - failure")
+                print("fireStoreUidReading - failure")
             }
         }
     }
 
-    private func startTabbar() {
-        let tabbarCoordinator = TabBarCoordinator(navigationController: navigationController)
+    private func startTabbar(versionState: VersionData) {
+        let tabbarCoordinator = TabBarCoordinator(navigationController: navigationController,
+                                                  versionData: versionData)
         childCoordinators.append(tabbarCoordinator)
         tabbarCoordinator.start()
     }
 
-    private func startLogin() {
-        let loginCoordinator = LoginCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
+    private func startLogin(versionState: VersionData) {
+        let loginCoordinator = LoginCoordinator(navigationController: navigationController,
+                                                coordinatorFinishDelegate: self,
+                                                versionData: PresentationVersionModel.init(
+                                                  version: versionData.version,
+                                                  state: versionData.state))
         childCoordinators.append(loginCoordinator)
         loginCoordinator.start()
     }
@@ -120,6 +135,7 @@ enum viewControllerType {
     case tabBar
 }
 
+
 protocol CoordinatorFinishDelegate {
     func switchViewController(to viewController: viewControllerType)
 }
@@ -131,7 +147,7 @@ extension AppCoordinator: CoordinatorFinishDelegate {
         case .inputPersonalInformation:
             startInputProfile()
         case .tabBar:
-            startTabbar()
+            startTabbar(versionState: self.versionData)
         }
     }
 }

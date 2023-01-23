@@ -9,15 +9,20 @@ import UIKit
 class TabBarCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
-    
+    var versionData: VersionData
     lazy var searchViewController = UINavigationController()
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController,
+         versionData: VersionData) {
         self.navigationController = navigationController
+        self.versionData = versionData
     }
     
     func start() {
-        let homeCoordinator = HomeCoordinator(navigationController: UINavigationController())
+        let homeCoordinator = HomeCoordinator(navigationController: UINavigationController(),
+                                              versionData: PresentationVersionModel.init(
+                                                version: versionData.version,
+                                                state: versionData.state))
         childCoordinators.append(homeCoordinator)
         let homeViewController = homeCoordinator.navigationController
         homeCoordinator.start()

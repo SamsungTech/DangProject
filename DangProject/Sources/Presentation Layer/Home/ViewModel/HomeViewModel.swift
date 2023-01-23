@@ -32,7 +32,7 @@ protocol HomeViewModelInputProtocol {
 
 protocol HomeViewModelOutputProtocol {
     var calendarViewColumn: Int { get set }
-    var profileDataRelay: BehaviorRelay<ProfileDomainModel> { get }
+    var profileDataRelay: PublishRelay<ProfileDomainModel> { get }
     var loading: PublishRelay<LoadingState> { get }
     var alertStateRelay: PublishRelay<Bool> { get }
     func checkNavigationBarTitleText(dateComponents: DateComponents) -> String
@@ -49,7 +49,7 @@ class HomeViewModel: HomeViewModelProtocol {
     private let fetchEatenFoodsUseCase: FetchEatenFoodsUseCase
     private let profileManagerUseCase: ProfileManagerUseCase
     private var isViewsInHome = 0
-    var profileDataRelay = BehaviorRelay<ProfileDomainModel>(value: .empty)
+    var profileDataRelay = PublishRelay<ProfileDomainModel>()
     let loading = PublishRelay<LoadingState>()
     var alertStateRelay = PublishRelay<Bool>()
     

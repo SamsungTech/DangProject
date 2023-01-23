@@ -169,8 +169,10 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
     
     private func bindProfileImageData() {
         viewModel.profileDataRelay
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] profileData in
                 self?.customNavigationBar.profileImageButton.setupProfileImageViewImage(profileData.profileImage)
+                self?.coordinator?.presentUpdateAlertView()
             })
             .disposed(by: disposeBag)
     }

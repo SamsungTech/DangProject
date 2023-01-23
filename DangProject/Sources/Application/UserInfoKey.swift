@@ -6,6 +6,10 @@ struct UserInfoKey {
     static let userNotificationsPermission = "UserNotificationsPermission"
     static let initialAlarmDataIsNeeded = "InitialAlarmDataIsNeeded"
     static let demoUID = "DemoVersionUID"
+    static let isYellowState = "isYellowState"
+    static let previousYellowVersion = "previousYellowVersion"
+    static let latestYellowVersion = "latestYellowVersion"
+    static let latestVersion = "LatestVersion"
     
     static let getUserDefaultsUID: String = {
         UserDefaults.standard.string(forKey: UserInfoKey.firebaseUID)

@@ -5,11 +5,14 @@ class LoginCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
     let coordinatorFinishDelegate: CoordinatorFinishDelegate
+    let versionData: PresentationVersionModel
     
     init(navigationController: UINavigationController,
-         coordinatorFinishDelegate: CoordinatorFinishDelegate) {
+         coordinatorFinishDelegate: CoordinatorFinishDelegate,
+         versionData: PresentationVersionModel) {
         self.navigationController = navigationController
         self.coordinatorFinishDelegate = coordinatorFinishDelegate
+        self.versionData = versionData
     }
     
     func start() {
