@@ -17,7 +17,6 @@ class HomeCoordinator: NSObject, Coordinator {
          versionData: PresentationVersionModel) {
         self.navigationController = navigationController
         self.versionData = versionData
-        self.versionData.state = .red
     }
     
     func start() {
