@@ -11,7 +11,7 @@ class SettingSecondStackView: UIStackView {
     private(set) lazy var versionView: SettingAppVersionView = {
         let button = SettingAppVersionView()
         button.itemLabel.text = "앱 버전"
-        button.versionLabel.text = "1.0.0"
+        button.versionLabel.text = "1.0.1"
         button.frame = CGRect(x: .zero, y: .zero, width: calculateXMax(), height: yValueRatio(60))
         button.backgroundColor = .homeBoxColor
         return button
