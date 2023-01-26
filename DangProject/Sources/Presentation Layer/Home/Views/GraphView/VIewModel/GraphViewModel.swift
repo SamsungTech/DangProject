@@ -147,6 +147,7 @@ class GraphViewModel: GraphViewModelProtocol {
         
         var weeklySugarAverage = [Double]()
         var dateComponents = selectedDateComponents
+        
         for _ in 0 ... 6 {
             let currentMonth: DateComponents = {
                 var dc: DateComponents = .configureDateComponents(dateComponents)
@@ -156,13 +157,15 @@ class GraphViewModel: GraphViewModelProtocol {
             
             let previousMonth: DateComponents = {
                 var dc = currentMonth
-                dc.month = dc.month! - 1
+                guard let minusMonth = dc.month else { return }
+                dc.month = minusMonth - 1
                 return .configureDateComponents(dc)
             }()
             
             let nextMonth: DateComponents = {
                 var dc = currentMonth
-                dc.month = dc.month! + 1
+                guard let plusMonth = dc.month else { return }
+                dc.month = plusMonth + 1
                 return .configureDateComponents(dc)
             }()
             
@@ -178,8 +181,11 @@ class GraphViewModel: GraphViewModelProtocol {
                                                  selectedDateComponents: .configureDateComponents(dateComponents))
             let weeklySugarAverageData = calculateWeeklyAverage(weeklyData: weeklyData)
             weeklySugarAverage.append(weeklySugarAverageData)
-            dateComponents.day! = dateComponents.day! - 7
+            
+            guard let minusDay = dateComponents.day else { return []}
+            dateComponents.day = minusDay - 7
         }
+        
         return weeklySugarAverage.reversed()
     }
     
@@ -212,7 +218,8 @@ class GraphViewModel: GraphViewModelProtocol {
             var dayCount: Int = 0
             
             if monthlyTotalSugar[i].month == currentDateComponents {
-                dayCount = DateComponents.currentDateComponents().day!
+                guard let currentDay = DateComponents.currentDateComponents().day else { return []}
+                dayCount = currentDay
                 for day in 0 ..< dayCount {
                     totalSugar = totalSugar + monthlyTotalSugar[i].totalSugarPerMonth[day].totalSugar
                 }
@@ -269,9 +276,11 @@ class GraphViewModel: GraphViewModelProtocol {
         let weekday = getSelectedDateComponentsWeekday(selectedDateComponents)
         let saturdayIndex = 7 - weekday
         var saturdayDateComponents: DateComponents = selectedDateComponents
-        saturdayDateComponents.day = saturdayDateComponents.day! + saturdayIndex
+        guard let plusDay = saturdayDateComponents.day else { return false }
+        saturdayDateComponents.day = plusDay + saturdayIndex
         var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "UTC")!
+        guard let timeZone = TimeZone(identifier: "UTC") else { return false }
+        calendar.timeZone = timeZone
         guard let saturdayDate = calendar.date(from: saturdayDateComponents) else { return false }
         let currentDate = Date.currentDate()
         if currentDate < saturdayDate {
@@ -286,7 +295,8 @@ class GraphViewModel: GraphViewModelProtocol {
               let month = dateComponenets.month,
               let day = dateComponenets.day else { return 0}
         var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "UTC")!
+        guard let timeZone = TimeZone(identifier: "UTC") else { return 0 }
+        calendar.timeZone = timeZone
         return calendar.component(.weekday, from: .makeDate(year: year, month: month, day: day))
     }
     
@@ -311,9 +321,11 @@ class GraphViewModel: GraphViewModelProtocol {
             let weekday = getSelectedDateComponentsWeekday(dateComponents)
             let thursdayIndex = 5 - weekday
             var thursDateComponents: DateComponents = dateComponents
-            thursDateComponents.day = thursDateComponents.day! + thursdayIndex
+            guard let plusDay = thursDateComponents.day else { return [] }
+            thursDateComponents.day = plusDay + thursdayIndex
             let configuredDateComponents = DateComponents.configureDateComponents(thursDateComponents)
-            dateComponents.day = dateComponents.day! - 7
+            guard let minusDay = dateComponents.day else { return [] }
+            dateComponents.day = minusDay - 7
             guard let month = configuredDateComponents.month,
                   let day = configuredDateComponents.day else { return [] }
             let weekNumber = (day / 7) + 1

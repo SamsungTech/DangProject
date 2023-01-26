@@ -38,9 +38,11 @@ class EatenFoodsViewModel {
         // 로딩시작
         fetchEatenFoodsUseCase.eatenFoodsObservable
             .subscribe(onNext: { [weak self] eatenFoodsPerDay in
+                guard let date = eatenFoodsPerDay.date else { return }
                 let data = eatenFoodsPerDay.eatenFoods.map{ EatenFoodsViewModelEntity.init($0) }
                 
-                self?.eatenFoodsViewModelObservable.accept(EatenFoodsPerDayViewModelEntity.init(date: eatenFoodsPerDay.date!, eatenFoods: data))
+                self?.eatenFoodsViewModelObservable.accept(EatenFoodsPerDayViewModelEntity.init(date: date,
+                                                                                                eatenFoods: data))
                 // 로딩끝
             })
             .disposed(by: disposeBag)

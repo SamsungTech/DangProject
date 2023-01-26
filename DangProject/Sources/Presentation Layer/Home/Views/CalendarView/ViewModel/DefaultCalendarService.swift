@@ -25,7 +25,8 @@ class DefaultCalendarService: CalendarService {
     private lazy var selectedDateComponents: DateComponents = .currentDateComponents()
     private lazy var calendar: Calendar = {
         var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "UTC")!
+        guard let timeZone = TimeZone(identifier: "UTC") else { return }
+        calendar.timeZone = timeZone
         return calendar
     }()
     private var selectedDate = Date.currentDate()
@@ -40,32 +41,44 @@ class DefaultCalendarService: CalendarService {
     }
     
     func minusMonth() {
-        if self.dateComponents.month! - 1 == 0 {
-            self.dateComponents.year! = self.dateComponents.year! - 1
-            self.dateComponents.month! = 12
+        guard let dateMonth = dateComponents.month,
+              let dateYear = dateComponents.year else { return }
+        
+        if dateMonth - 1 == 0 {
+            self.dateComponents.year = dateYear - 1
+            self.dateComponents.month = 12
         } else {
-            self.dateComponents.month! = self.dateComponents.month! - 1
+            self.dateComponents.month = dateMonth - 1
         }
     }
     
     func plusMonth() {
-        if self.dateComponents.month! + 1 == 13 {
-            self.dateComponents.year! = self.dateComponents.year! + 1
-            self.dateComponents.month! = 1
+        guard let dateMonth = dateComponents.month,
+              let dateYear = dateComponents.year else { return }
+        
+        if dateMonth + 1 == 13 {
+            self.dateComponents.year = dateYear + 1
+            self.dateComponents.month = 1
         } else {
-            self.dateComponents.month! = self.dateComponents.month! + 1
+            self.dateComponents.month = dateMonth + 1
         }
     }
     
     func previousMonthData() -> CalendarMonthEntity {
         var previousDateComponents = dateComponents
-        previousDateComponents.month! = previousDateComponents.month! - 1
+        guard let previousMonth = previousDateComponents.month else {
+            return CalendarMonthEntity.empty
+        }
+        previousDateComponents.month = previousMonth - 1
         return calculation(dateComponents: previousDateComponents)
     }
     
     func twoMonthBeforeData() -> CalendarMonthEntity {
         var twoMonthBeforeDateComponents = dateComponents
-        twoMonthBeforeDateComponents.month! = twoMonthBeforeDateComponents.month! - 2
+        guard let twoMonthBeforeMonth = dateComponents.month else {
+            return CalendarMonthEntity.empty
+        }
+        twoMonthBeforeDateComponents.month = twoMonthBeforeMonth - 2
         return calculation(dateComponents: twoMonthBeforeDateComponents)
     }
     
@@ -75,7 +88,10 @@ class DefaultCalendarService: CalendarService {
     
     func nextMonthData() -> CalendarMonthEntity {
         var nextDateComponents = dateComponents
-        nextDateComponents.month! = nextDateComponents.month! + 1
+        guard let nextDateMonth = dateComponents.month else {
+            return CalendarMonthEntity.empty
+        }
+        nextDateComponents.month = nextDateMonth + 1
         return calculation(dateComponents: nextDateComponents)
     }
     
@@ -95,14 +111,16 @@ class DefaultCalendarService: CalendarService {
     }
     
     private func calculation(dateComponents: DateComponents) -> CalendarMonthEntity {
-        guard let firstDayOfMonth = calendar.date(from: dateComponents) else { return CalendarMonthEntity.empty }
+        guard let firstDayOfMonth = calendar.date(from: dateComponents),
+              let beforeYear = dateComponents.year,
+              let beforeMonth = dateComponents.month else { return CalendarMonthEntity.empty }
         
         /// 1: Sunday ~ 7: Saturday
         let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
         
         /// For indexing
         let weekdayAdding: Int = 2 - firstWeekday
-        let beforeMonthsDay: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!-1)
+        let beforeMonthsDay: Int = .calculateDaysCount(year: beforeYear, month: beforeMonth-1)
         let days = createDaysArray(weekdayAdding: weekdayAdding,
                                    dateComponents: dateComponents,
                                    beforeMonthsDay: beforeMonthsDay)
@@ -116,7 +134,9 @@ class DefaultCalendarService: CalendarService {
                                  dateComponents: DateComponents,
                                  beforeMonthsDay: Int) -> [CalendarDayEntity] {
         var days: [CalendarDayEntity] = []
-        let daysCountInMonth: Int = .calculateDaysCount(year: dateComponents.year!, month: dateComponents.month!)
+        guard let yearForCount = dateComponents.year,
+              let monthForCount = dateComponents.month else { return [] }
+        let daysCountInMonth: Int = .calculateDaysCount(year: yearForCount, month: monthForCount)
         var nextMonthsDay = 1
 
         for day in weekdayAdding..<42+weekdayAdding {
@@ -144,8 +164,11 @@ class DefaultCalendarService: CalendarService {
                                                  day: Int) -> CalendarDayEntity {
         var dayEntity = CalendarDayEntity.empty
         
-        dayEntity = CalendarDayEntity.init(year: dateComponents.year!,
-                                           month: dateComponents.month!-1,
+        guard let year = dateComponents.year,
+              let month = dateComponents.month else { return CalendarDayEntity.empty }
+        
+        dayEntity = CalendarDayEntity.init(year: year,
+                                           month: month-1,
                                            day: day)
         dayEntity.isHidden = true
         
@@ -155,9 +178,12 @@ class DefaultCalendarService: CalendarService {
     private func createCurrentCalendarDayEntity(dateComponents: DateComponents,
                                                 day: Int) -> CalendarDayEntity {
         var dayEntity = CalendarDayEntity.empty
+        
+        guard let year = dateComponents.year,
+              let month = dateComponents.month else { return CalendarDayEntity.empty }
 
-        dayEntity = CalendarDayEntity.init(year: dateComponents.year!,
-                                           month: dateComponents.month!,
+        dayEntity = CalendarDayEntity.init(year: year,
+                                           month: month,
                                            day: day)
         
         if isToday(yearMonth: dateComponents, day: day) {
@@ -174,9 +200,12 @@ class DefaultCalendarService: CalendarService {
     private func createNextCalendarDayEntity(dateComponents: DateComponents,
                                              day: Int) -> CalendarDayEntity {
         var dayEntity = CalendarDayEntity.empty
+        
+        guard let year = dateComponents.year,
+              let month = dateComponents.month else { return CalendarDayEntity.empty }
 
-        dayEntity = CalendarDayEntity.init(year: dateComponents.year!,
-                                           month: dateComponents.month! + 1,
+        dayEntity = CalendarDayEntity.init(year: year,
+                                           month: month + 1,
                                            day: day)
         dayEntity.isHidden = true
         

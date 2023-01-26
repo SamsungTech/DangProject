@@ -271,13 +271,16 @@ class CalendarViewModel: CalendarViewModelProtocol {
     func nextMonthIsBiggerThanNow() -> Bool {
         let now: DateComponents = .currentYearMonth()
         let nextCalendar: DateComponents = calendarService.dateComponents
-        
-        if nextCalendar.year! > now.year! {
+        guard let nowYear = now.year,
+              let nowMonth = now.month,
+              let nextYear = nextCalendar.year,
+              let nextMonth = nextCalendar.month else { return false }
+        if nextYear > nowYear {
             return true
-        } else if nextCalendar.year! < now.year! {
+        } else if nextYear < nowYear {
             return false
         } else {
-            if nextCalendar.month! > now.month! {
+            if nextMonth > nowMonth {
                 return true
             } else {
                 return false
@@ -305,15 +308,22 @@ class CalendarViewModel: CalendarViewModelProtocol {
     
     func checkSelectedCellNeedFetch(date: DateComponents) -> Bool {
         let now: DateComponents = .currentDateComponents()
-
-        if date.year! > now.year! {
+        
+        guard let nowYear = now.year,
+              let nowMonth = now.month,
+              let nowDay = now.day,
+              let dateYear = date.year,
+              let dateMonth = date.month,
+              let dateDay = date.day else { return false }
+        
+        if dateYear > nowYear {
             return false
         }
-        if date.year! == now.year! {
-            if date.month! > now.month! {
+        if dateYear == nowYear {
+            if dateMonth > nowMonth {
                 return false
-            } else if date.month! == now.month {
-                if date.day! > now.day! {
+            } else if dateMonth == nowMonth {
+                if dateDay > nowDay {
                     return false
                 }
             }
