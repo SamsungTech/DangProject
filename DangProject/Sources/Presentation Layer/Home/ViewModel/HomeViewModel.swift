@@ -86,7 +86,7 @@ class HomeViewModel: HomeViewModelProtocol {
     
     func fetchSelectedEatenFoods(_ dateComponents: DateComponents) {
         let date: Date = .makeDate(year: dateComponents.year,
-                                   month: dateComponents.month!,
+                                   month: dateComponents.month,
                                    day: dateComponents.day)
         
         fetchEatenFoodsUseCase.fetchMonthsData(month: dateComponents) { [weak self] isDone in
@@ -139,7 +139,8 @@ class HomeViewModel: HomeViewModelProtocol {
         let todayDateComponents = DateComponents.currentDateComponents()
         let yesterdayDateComponents: DateComponents = {
             var today = DateComponents.currentDateComponents()
-            today.day! = today.day! - 1
+            guard let day = today.day else { return DateComponents() }
+            today.day = day - 1
             return today
         }()
         if dateComponents == todayDateComponents {

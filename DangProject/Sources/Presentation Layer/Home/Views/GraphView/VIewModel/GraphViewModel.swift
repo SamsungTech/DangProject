@@ -157,14 +157,14 @@ class GraphViewModel: GraphViewModelProtocol {
             
             let previousMonth: DateComponents = {
                 var dc = currentMonth
-                guard let minusMonth = dc.month else { return }
+                guard let minusMonth = dc.month else { return DateComponents() }
                 dc.month = minusMonth - 1
                 return .configureDateComponents(dc)
             }()
             
             let nextMonth: DateComponents = {
                 var dc = currentMonth
-                guard let plusMonth = dc.month else { return }
+                guard let plusMonth = dc.month else { return DateComponents() }
                 dc.month = plusMonth + 1
                 return .configureDateComponents(dc)
             }()
@@ -218,7 +218,7 @@ class GraphViewModel: GraphViewModelProtocol {
             var dayCount: Int = 0
             
             if monthlyTotalSugar[i].month == currentDateComponents {
-                guard let currentDay = DateComponents.currentDateComponents().day else { return []}
+                guard let currentDay = DateComponents.currentDateComponents().day else { return [] }
                 dayCount = currentDay
                 for day in 0 ..< dayCount {
                     totalSugar = totalSugar + monthlyTotalSugar[i].totalSugarPerMonth[day].totalSugar

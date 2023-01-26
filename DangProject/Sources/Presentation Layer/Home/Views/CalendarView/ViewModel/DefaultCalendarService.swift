@@ -25,7 +25,7 @@ class DefaultCalendarService: CalendarService {
     private lazy var selectedDateComponents: DateComponents = .currentDateComponents()
     private lazy var calendar: Calendar = {
         var calendar = Calendar.current
-        guard let timeZone = TimeZone(identifier: "UTC") else { return }
+        guard let timeZone = TimeZone(identifier: "UTC") else { return Calendar.current }
         calendar.timeZone = timeZone
         return calendar
     }()
