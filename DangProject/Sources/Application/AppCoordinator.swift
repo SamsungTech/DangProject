@@ -84,15 +84,11 @@ class AppCoordinator: Coordinator {
     
     private func compareFireStoreUID(with userDefaultsUID: String,
                                      versionState: VersionData) {
-        fireStoreManager.readUIDInFirestore(uid: userDefaultsUID) { [weak self] (uid, bool) in
+        fireStoreManager.checkUIDInFireStore(uid: userDefaultsUID) { [weak self] bool in
             if bool {
-                if uid == userDefaultsUID {
-                    self?.startTabbar(versionState: versionState)
-                } else {
-                    self?.startLogin(versionState: versionState)
-                }
+                self?.startTabbar(versionState: versionState)
             } else {
-                print("fireStoreUidReading - failure")
+                self?.startLogin(versionState: versionState)
             }
         }
     }

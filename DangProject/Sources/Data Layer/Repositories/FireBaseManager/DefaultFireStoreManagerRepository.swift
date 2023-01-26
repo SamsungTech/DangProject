@@ -214,6 +214,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         database.collection("users").document(uid).getDocument { snapshot, error in
             if let error = error {
                 print("DEBUG: \(error.localizedDescription)")
+                completion(false)
                 return
             }
             
@@ -230,20 +231,23 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
         
     }
     
-    func readUIDInFirestore(uid: String,
-                            completion: @escaping((String, Bool))->Void) {
-        database.collection("users").document(uid).getDocument { snapshot, error in
-            if let error = error {
-                print("DEBUG: \(error.localizedDescription)")
-                completion(("", false))
-                return
-            }
-            if let result = snapshot?.data() {
-                if let resultUID = result["firebaseUID"] {
-                    completion((resultUID as! String, true))
+    func checkUIDInFireStore(uid: String,
+                             completion: @escaping(Bool)->Void) {
+        database.collection("users")
+            .document(uid)
+            .getDocument { snapshot, error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                
+                if snapshot?.data() == nil {
+                    completion(false)
+                } else {
+                    completion(true)
                 }
             }
-        }
     }
     
     func getEatenFoodsInFirestore(dateComponents: DateComponents) -> Observable<([[String: Any]], Bool)> {

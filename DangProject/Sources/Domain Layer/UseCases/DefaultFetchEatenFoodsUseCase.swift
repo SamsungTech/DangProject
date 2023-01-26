@@ -86,7 +86,6 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                         } else if i == 2 {
                             twoMonthBeforeEatenFoodsObservable.onNext(monthData)
                         }
-                        completion(true)
                     } else {
                         completion(false)
                     }
@@ -99,8 +98,6 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
             } else {
                 currentMonth.month = currentMonth.month! - 1
             }
-            
-
         }
         
         totalMonthsZipObservable
@@ -108,6 +105,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 self?.totalMonthsDataObservable.onNext([monthData.0, monthData.1, []])
                 self?.emitEatenFoodsObservable(eatenFoods: monthData.1)
                 self?.fetchSevenMonthsTotalSugar(from: .currentDateComponents())
+                completion(true)
             })
             .disposed(by: disposeBag)
     }
