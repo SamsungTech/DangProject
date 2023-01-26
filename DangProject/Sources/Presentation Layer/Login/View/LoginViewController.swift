@@ -41,6 +41,7 @@ class LoginViewController: UIViewController {
     }()
     
     var coordinatorFinishDelegate: CoordinatorFinishDelegate?
+    
     // MARK: - Init
     init(viewModel: LoginViewModel) {
         self.viewModel = viewModel

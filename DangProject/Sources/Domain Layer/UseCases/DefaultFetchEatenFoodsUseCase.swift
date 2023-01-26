@@ -10,7 +10,6 @@ import Foundation
 import RxSwift
 
 class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
-    
     private let disposeBag = DisposeBag()
     let totalMonthsDataObservable = PublishSubject<[[EatenFoodsPerDayDomainModel]]>()
     let eatenFoodsObservable = PublishSubject<EatenFoodsPerDayDomainModel>()
@@ -30,8 +29,10 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     
     func fetchMonthsData(month dateComponents: DateComponents,
                          completion: @escaping(Bool)->Void) {
-        let tempMonth = DateComponents.init(year: dateComponents.year!,
-                                            month: dateComponents.month!,
+        guard let year = dateComponents.year,
+              let month = dateComponents.month else { return }
+        let tempMonth = DateComponents.init(year: year,
+                                            month: month,
                                             day: 1)
         guard let monthIndex = cachedMonth.firstIndex(of: tempMonth) else {
             return
@@ -45,7 +46,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         }
         if cachedMonth.count == monthIndex + 6 {
             var sixMonthBefore = dateComponents
-            sixMonthBefore.month = sixMonthBefore.month! - 6
+            guard let sixMonth = sixMonthBefore.month else { return }
+            sixMonthBefore.month = sixMonth - 6
             fetchMonthData(dateComponents: sixMonthBefore)
                 .subscribe(onNext: { [weak self] monthData, bool in
                     if bool {
@@ -92,11 +94,15 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 })
                 .disposed(by: disposeBag)
             cachedMonth.append(currentMonth)
-            if currentMonth.month!-1 == 0 {
-                currentMonth.year = currentMonth.year! - 1
+            
+            guard let month = currentMonth.month,
+                  let year = currentMonth.year else { return }
+            
+            if month-1 == 0 {
+                currentMonth.year = year - 1
                 currentMonth.month = 12
             } else {
-                currentMonth.month = currentMonth.month! - 1
+                currentMonth.month = month - 1
             }
         }
         
@@ -112,7 +118,9 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     
     func fetchNextMonthData(month: DateComponents) {
         var nextMonth: DateComponents = .currentYearMonth()
-        nextMonth.month! = nextMonth.month! + 1
+        guard var nextMonthResult = nextMonth.month else { return }
+        
+        nextMonth.month = nextMonthResult + 1
         nextMonth.day = 1
         if month == nextMonth {
             totalMonthsDataObservable.onNext([
@@ -156,6 +164,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                 let tempDateComponents: DateComponents = .init(year: year,
                                                                month: month,
                                                                day: i)
+                let tempDate = Date.dateComponentsToDate(tempDateComponents)
                 // 1. Remote 호출
                 self?.fetchEatenFoodsPerDayFromFireBase(dateComponents: tempDateComponents)
                     .subscribe(onNext: { eatenFoods, bool in
@@ -166,7 +175,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
                             // 3. Remote viewModel로 전달
                             eatenFoodsData.append(eatenFoods)
                             if eatenFoodsData.count == dayCounts {
-                                emitter.onNext((eatenFoodsData.sorted { $0.date! < $1.date! }, true))
+                                emitter.onNext((eatenFoodsData.sorted { $0.date ?? tempDate < $1.date ?? tempDate }, true))
                             }
                         } else {
                             emitter.onNext(([], false))
@@ -196,11 +205,15 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         var sixMonthBeforeDateComponents: DateComponents = .init(year: year, month: month - 6, day: 1)
         var totalSugarPerSixMonths = [TotalSugarPerMonthDomainModel]()
         
+        
         for _ in 0 ..< 8 {
+            guard var sixMonth = sixMonthBeforeDateComponents.month else { return }
+            
             let monthData = fetchMonthDataFromCoreData(yearMonth: sixMonthBeforeDateComponents)
             let result = getMonthlyTotalSugar(monthData)
             totalSugarPerSixMonths.append(TotalSugarPerMonthDomainModel.init(month: .configureDateComponents(sixMonthBeforeDateComponents), totalSugarPerMonth: result))
-            sixMonthBeforeDateComponents.month = sixMonthBeforeDateComponents.month! + 1
+            
+            sixMonthBeforeDateComponents.month = sixMonth + 1
         }
         sevenMonthsTotalSugarObservable.onNext((.configureDateComponents(dateComponents), totalSugarPerSixMonths))
     }
@@ -208,14 +221,17 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     // MARK: - Private
     private func fetchEatenFoodsPerDayFromFireBase(dateComponents: DateComponents) -> Observable<(EatenFoodsPerDayDomainModel, Bool)> {
         return Observable.create() { [weak self] emitter in
-            guard let strongSelf = self else { return Disposables.create()}
+            guard let strongSelf = self,
+                  let year = dateComponents.year,
+                  let month = dateComponents.month,
+                  let day = dateComponents.day else { return Disposables.create()}
             var tempData: EatenFoodsPerDayDomainModel = .empty
             self?.manageFirebaseFireStoreUseCase.getEatenFoods(dateComponents: dateComponents)
                 .subscribe(onNext: { eatenFoods, bool in
                     if bool {
-                        let date: Date = .makeDate(year: dateComponents.year!,
-                                                   month: dateComponents.month!,
-                                                   day: dateComponents.day!)
+                        let date: Date = .makeDate(year: year,
+                                                   month: month,
+                                                   day: day)
                         let sortedData = eatenFoods.sorted(by: { $0.eatenTime.seconds < $1.eatenTime.seconds })
                         tempData = .init(date: date, eatenFoods: sortedData)
                         emitter.onNext((tempData, true))
@@ -229,7 +245,8 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     }
     
     private func emitEatenFoodsObservable(eatenFoods: [EatenFoodsPerDayDomainModel]) {
-        let currentIndex = DateComponents.currentDateComponents().day! - 1
+        guard let currentDay = DateComponents.currentDateComponents().day else { return }
+        let currentIndex = currentDay - 1
         eatenFoodsObservable.onNext(eatenFoods[currentIndex])
     }
     

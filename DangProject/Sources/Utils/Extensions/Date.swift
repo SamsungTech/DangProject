@@ -13,6 +13,11 @@ extension Date {
         return calendar
     }()
     
+    static func dateComponentsToDate(_ dateComponents: DateComponents) -> Date {
+        guard let result = calendar.date(from: dateComponents) else { return Date() }
+        return result
+    }
+    
     static func currentDate() -> Date {
         let currentDateComponents = DateComponents.currentDateTimeComponents()
         guard let year = currentDateComponents.year,
