@@ -25,11 +25,9 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
     let profileExistenceObservable = PublishSubject<Bool>()
     public var firebaseStoreUseCaseErrorObservable = PublishSubject<String>()
     
-    func uploadFirebaseUID(uid: String,
-                           completion: @escaping (Bool)->Void) {
-        fireStoreManagerRepository.saveFirebaseUserDocument(uid: uid,
-                                                            ProfileExistence: false,
-                                                            completion: completion)
+    func uploadFirebaseUID(uid: String) {
+        fireStoreManagerRepository.uploadFirebaseUserUID(uid: uid,
+                                                         ProfileExistence: false)
     }
     
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {

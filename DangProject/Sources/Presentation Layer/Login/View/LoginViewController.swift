@@ -113,14 +113,13 @@ class LoginViewController: UIViewController {
         viewModel.checkAppVersionObservable
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
-                
                 self?.presentDelay()
             })
             .disposed(by: disposeBag)
     }
     
     private func presentDelay() {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2) {
             self.coordinator?.presentUpdateAlertViewFromLoginView()
             self.appleLoginButton.isEnabled = true
         }
@@ -128,7 +127,7 @@ class LoginViewController: UIViewController {
     
     private func createAlert() -> UIAlertController {
         let alert = UIAlertController(title: "오류",
-                                      message: "login - 실패, 인터넷 연결 확인을 확인해주세요",
+                                      message: "Apple login - 실패, 인터넷 연결 확인을 확인해주세요",
                                       preferredStyle: UIAlertController.Style.alert)
         let actionButton = UIAlertAction(title: "확인", style: .default) { _ in
             alert.dismiss(animated: false)
@@ -145,21 +144,18 @@ class LoginViewController: UIViewController {
 extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return self.view.window!
+        guard let window = self.view.window else { return ASPresentationAnchor() }
+        return window
     }
     
     func authorizationController(controller: ASAuthorizationController,
                                  didCompleteWithAuthorization authorization: ASAuthorization) {
-        viewModel.signIn(authorization: authorization) { [weak self] bool in
-            guard let strongSelf = self else { return }
-            let alert = strongSelf.createAlert()
-            if bool == false {
-                strongSelf.present(alert, animated: false)
-            }
-        }
+        viewModel.signIn(authorization: authorization)
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         print("Sign in with Apple errored: \(error)")
+        let alert = createAlert()
+        present(alert, animated: false)
     }
 }

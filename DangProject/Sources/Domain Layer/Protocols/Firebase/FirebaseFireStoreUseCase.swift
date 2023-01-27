@@ -11,7 +11,7 @@ import RxSwift
 
 protocol ManageFirebaseFireStoreUseCase {
     var profileExistenceObservable: PublishSubject<Bool> { get }
-    func uploadFirebaseUID(uid: String, completion: @escaping (Bool) -> Void)
+    func uploadFirebaseUID(uid: String)
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void)
     func getProfileExistence(uid: String) -> Observable<Bool>
     func uploadEatenFood(eatenFood: FoodDomainModel, completion: @escaping (Bool) -> Void)

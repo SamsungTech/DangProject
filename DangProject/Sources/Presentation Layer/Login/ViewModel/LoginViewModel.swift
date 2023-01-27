@@ -4,6 +4,7 @@
 //
 //  Created by 김성원 on 2022/04/27.
 //
+
 import AuthenticationServices
 import CryptoKit
 import Foundation
@@ -14,7 +15,7 @@ import RxRelay
 
 protocol LoginViewModelInput {
     func loginButtonDidTap(with viewController: UIViewController)
-    func signIn(authorization: ASAuthorization, completion: @escaping(Bool)->Void)
+    func signIn(authorization: ASAuthorization)
 }
 
 protocol LoginViewModelOutput {
@@ -25,7 +26,6 @@ protocol LoginViewModelOutput {
 protocol LoginViewModelProtocol: LoginViewModelInput, LoginViewModelOutput { }
 
 class LoginViewModel: LoginViewModelProtocol {
-    
     // MARK: - init
     private let manageFirebaseAuthUseCase: ManageFirebaseAuthUseCase
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
@@ -40,14 +40,13 @@ class LoginViewModel: LoginViewModelProtocol {
     //MARK: - Private Method
     fileprivate var currentNonce: String?
     
-    private func checkProfileExistence(uid: String, completion: @escaping(Bool)->Void) {
+    private func checkProfileExistence(uid: String) {
         manageFirebaseFireStoreUseCase.getProfileExistence(uid: uid)
             .subscribe(onNext: { [weak self] isExist in
                 if isExist {
                     self?.profileExistenceObservable.accept(true)
                 } else {
-                    self?.manageFirebaseFireStoreUseCase.uploadFirebaseUID(uid: uid,
-                                                                           completion: completion)
+                    self?.manageFirebaseFireStoreUseCase.uploadFirebaseUID(uid: uid)
                     self?.profileExistenceObservable.accept(false)
                 }
             })
@@ -117,39 +116,33 @@ class LoginViewModel: LoginViewModelProtocol {
         authorizationController.performRequests()
     }
     
-    func signIn(authorization: ASAuthorization,
-                completion: @escaping(Bool)->Void) {
+    func signIn(authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             guard let nonce = currentNonce else {
-                completion(false)
                 fatalError("Invalid state: A login callback was received, but no login request was sent.")
             }
             guard let appleIDToken = appleIDCredential.identityToken else {
                 print("Unable to fetch identity token")
-                completion(false)
                 return
             }
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
-                completion(false)
                 return
             }
             
             manageFirebaseAuthUseCase.requireFirebaseUID(providerID: "apple.com",
-                                                   idToken: idTokenString,
-                                                   rawNonce: nonce)
+                                                         idToken: idTokenString,
+                                                         rawNonce: nonce)
             .subscribe(onNext: { [weak self] isValid, id in
                 if isValid {
                     self?.updateUserDefaultsUid(uid: id)
-                    self?.checkProfileExistence(uid: id, completion: completion)
-                } else {
-                    completion(false)
+                    self?.checkProfileExistence(uid: id)
                 }
             })
             .disposed(by: disposeBag)
         }
     }
-   
+    
     //MARK: - Output
     let profileExistenceObservable = PublishRelay<Bool>()
     let checkAppVersionObservable = BehaviorRelay<Bool>(value: true)

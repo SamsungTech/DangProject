@@ -52,9 +52,25 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
+    func uploadFirebaseUserUID(uid: String, ProfileExistence: Bool) {
+        let uidData = ["firebaseUID": uid,
+                       "profileExistence": ProfileExistence
+        ] as [String : Any]
+        
+        database.collection("users")
+            .document(self.uid)
+            .setData(uidData) { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+            }
+    }
+
+    
     func saveFirebaseUserDocument(uid: String,
                                   ProfileExistence: Bool,
-                                  completion: @escaping ((Bool)->Void)) {
+                                  completion: @escaping (Bool)->Void) {
         let uidData = ["firebaseUID": self.uid,
                        "profileExistence": ProfileExistence
         ] as [String : Any]
@@ -63,8 +79,8 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             .document(self.uid)
             .setData(uidData) { error in
                 if let error = error {
-                    completion(false)
                     print("DEBUG: \(error.localizedDescription)")
+                    completion(false)
                     return
                 }
                 completion(true)
@@ -91,7 +107,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
     func saveProfileDocument(profile: ProfileDomainModel,
                              completion: @escaping (Bool) -> Void) {
         let profileData = [
-            "uid": self.uid,
+            "uid": profile.uid,
             "name": profile.name,
             "height": profile.height,
             "weight": profile.weight,
