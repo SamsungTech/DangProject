@@ -74,6 +74,7 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         bindAlertState()
     }
     
+    
     private func configure() {
         let navigationTitle = viewModel.checkNavigationBarTitleText(dateComponents: .currentDateComponents())
         customNavigationBar.changeNavigationBarTitleLabel(text: navigationTitle)

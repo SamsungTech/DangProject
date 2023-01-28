@@ -88,8 +88,7 @@ class LoginViewController: UIViewController {
         appleLoginButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             appleLoginButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            appleLoginButton.topAnchor.constraint(equalTo: view.topAnchor,
-                                                  constant: self.view.yValueRatio(650)),
+            appleLoginButton.topAnchor.constraint(equalTo: view.topAnchor, constant: self.view.yValueRatio(650)),
             appleLoginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: xValueRatio(20)),
             appleLoginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -xValueRatio(20)),
             appleLoginButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(50))
