@@ -21,6 +21,8 @@ protocol LoginViewModelInput {
 protocol LoginViewModelOutput {
     var profileExistenceObservable: PublishRelay<Bool> { get }
     var checkAppVersionObservable: BehaviorRelay<Bool> { get }
+    
+    func retrieveEmail() -> String
 }
 
 protocol LoginViewModelProtocol: LoginViewModelInput, LoginViewModelOutput { }
@@ -30,6 +32,7 @@ class LoginViewModel: LoginViewModelProtocol {
     private let manageFirebaseAuthUseCase: ManageFirebaseAuthUseCase
     private let manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase
     private let disposeBag = DisposeBag()
+    private var userEmail = ""
     
     init(manageFirebaseAuthUseCase: ManageFirebaseAuthUseCase,
          manageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase) {
@@ -39,6 +42,10 @@ class LoginViewModel: LoginViewModelProtocol {
     
     //MARK: - Private Method
     fileprivate var currentNonce: String?
+    
+    func retrieveEmail() -> String {
+        return userEmail
+    }
     
     private func checkProfileExistence(uid: String) {
         manageFirebaseFireStoreUseCase.getProfileExistence(uid: uid)
@@ -129,9 +136,13 @@ class LoginViewModel: LoginViewModelProtocol {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
                 return
             }
-            guard let tokenString = String(data: appleIDToken ?? Data(), encoding: .utf8) else { return }
-            let result = tokenDecode(jwtToken: tokenString)
+            guard let tokenString = String(data: appleIDToken, encoding: .utf8) else {
+                return
+            }
             
+            let result = getEmailString(token: tokenString)
+            
+            userEmail = result
             
             manageFirebaseAuthUseCase.requireFirebaseUID(providerID: "apple.com",
                                                          idToken: idTokenString,
@@ -153,10 +164,19 @@ class LoginViewModel: LoginViewModelProtocol {
 
 extension LoginViewModel {
     private func getEmailString(token: String) -> String {
+        let decodeToken = tokenDecode(token: token)
+        var result = ""
+        decodeToken.forEach { key, value in
+            switch key {
+            case "email": result = value as? String ?? ""
+            default: break
+            }
+        }
         
+        return result
     }
     
-    private func tokenDecode(token jwt: String) -> [String: Any] {
+    private func tokenDecode(token: String) -> [String: Any] {
         
         func base64UrlDecode(_ value: String) -> Data? {
             var base64 = value
@@ -173,7 +193,7 @@ extension LoginViewModel {
             return Data(base64Encoded: base64, options: .ignoreUnknownCharacters)
         }
 
-        func decodeJWTPart(_ value: String) -> [String: Any]? {
+        func decodePart(_ value: String) -> [String: Any]? {
             guard let bodyData = base64UrlDecode(value),
                   let json = try? JSONSerialization.jsonObject(with: bodyData, options: []), let payload = json as? [String: Any] else {
                 return nil
@@ -182,8 +202,8 @@ extension LoginViewModel {
             return payload
         }
         
-        let segments = jwt.components(separatedBy: ".")
+        let segments = token.components(separatedBy: ".")
         
-        return decodeJWTPart(segments[1]) ?? [:]
+        return decodePart(segments[1]) ?? [:]
     }
 }

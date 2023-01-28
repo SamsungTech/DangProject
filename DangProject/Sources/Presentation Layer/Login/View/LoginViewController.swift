@@ -99,10 +99,11 @@ class LoginViewController: UIViewController {
     private func bindSignInObservable() {
         viewModel.profileExistenceObservable
             .bind(onNext: { [weak self] profileIsValid in
+                guard let email = self?.viewModel.retrieveEmail() else { return }
                 if profileIsValid {
                     self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
                 } else {
-                    self?.coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation)
+                    self?.coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation(email: email))
                 }
             })
             .disposed(by: disposeBag)

@@ -110,11 +110,12 @@ class AppCoordinator: Coordinator {
         loginCoordinator.start()
     }
 
-    private func startInputProfile() {
-        let inputProfileCoordinator = InputProfileCoordinator(navigationController: navigationController, coordinatorFinishDelegate: self)
+    private func startInputProfile(email: String) {
+        let inputProfileCoordinator = InputProfileCoordinator(navigationController: navigationController,
+                                                              coordinatorFinishDelegate: self,
+                                                              email: email)
         childCoordinators.append(inputProfileCoordinator)
         inputProfileCoordinator.start()
-
     }
 
     private func startOnboarding() {
@@ -127,7 +128,7 @@ class AppCoordinator: Coordinator {
 }
 
 enum viewControllerType {
-    case inputPersonalInformation
+    case inputPersonalInformation(email: String)
     case tabBar
 }
 
@@ -140,8 +141,8 @@ extension AppCoordinator: CoordinatorFinishDelegate {
     func switchViewController(to viewController: viewControllerType) {
         navigationController.viewControllers.removeAll()
         switch viewController {
-        case .inputPersonalInformation:
-            startInputProfile()
+        case .inputPersonalInformation(let email):
+            startInputProfile(email: email)
         case .tabBar:
             startTabbar(versionState: self.versionData)
         }
