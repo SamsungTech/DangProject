@@ -15,6 +15,15 @@ class AnimationTextFieldView: UIView {
         return label
     }()
     
+    private lazy var textFieldFrontView: UIButton = {
+        let button = UIButton()
+        button.addTarget(self,
+                         action: #selector(frontViewDidTap(_:)),
+                         for: .touchUpInside)
+        button.backgroundColor = .clear
+        return button
+    }()
+    
     private lazy var textFieldBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .homeBackgroundColor
@@ -64,6 +73,7 @@ class AnimationTextFieldView: UIView {
         setUpProfileLabel()
         setUpTextFieldBackgroundView()
         setUpProfileTextField()
+        setupFrontView()
     }
     
     private func setUpProfileLabel() {
@@ -96,6 +106,27 @@ class AnimationTextFieldView: UIView {
             profileTextField.bottomAnchor.constraint(equalTo: textFieldBackgroundView.bottomAnchor)
         ])
     }
+    
+    private func setupFrontView() {
+        textFieldBackgroundView.addSubview(textFieldFrontView)
+        textFieldFrontView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            textFieldFrontView.topAnchor.constraint(equalTo: textFieldBackgroundView.topAnchor),
+            textFieldFrontView.leadingAnchor.constraint(equalTo: textFieldBackgroundView.leadingAnchor),
+            textFieldFrontView.trailingAnchor.constraint(equalTo: textFieldBackgroundView.trailingAnchor),
+            textFieldFrontView.bottomAnchor.constraint(equalTo: textFieldBackgroundView.bottomAnchor)
+        ])
+    }
+}
+
+extension AnimationTextFieldView {
+    @objc private func frontViewDidTap(_ sender: UIButton) {
+        if profileTextField.isEditing {
+            self.profileTextField.endEditing(true)
+        } else {
+            self.profileTextField.becomeFirstResponder()
+        }
+    }
 }
 
 extension AnimationTextFieldView: UITextFieldDelegate {
@@ -121,7 +152,7 @@ extension AnimationTextFieldView: UITextFieldDelegate {
     private func animateEditMode() {
         let borderWidth:CABasicAnimation = CABasicAnimation(keyPath: "borderWidth")
         borderWidth.fromValue = 0.2
-        borderWidth.toValue = 1.5
+        borderWidth.toValue = 2.0
         borderWidth.duration = 0.3
         borderWidth.isRemovedOnCompletion = false
         borderWidth.fillMode = CAMediaTimingFillMode.forwards
@@ -131,7 +162,7 @@ extension AnimationTextFieldView: UITextFieldDelegate {
     
     private func animateNormalMode() {
         let borderWidth:CABasicAnimation = CABasicAnimation(keyPath: "borderWidth")
-        borderWidth.fromValue = 1.5
+        borderWidth.fromValue = 2.0
         borderWidth.toValue = 0.2
         borderWidth.duration = 0.3
         borderWidth.isRemovedOnCompletion = false

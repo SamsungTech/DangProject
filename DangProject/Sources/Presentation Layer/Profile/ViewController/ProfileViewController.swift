@@ -46,12 +46,15 @@ class ProfileViewController: CustomViewController {
         return view
     }()
     
+    private var stackViewTopConstraint: NSLayoutConstraint?
+    
     private lazy var loadingAlertController = UIAlertController(title: nil,
                                                                 message: "프로필 업데이트 중입니다..",
                                                                 preferredStyle: .alert)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTextFieldDelegate()
         configureUI()
         bind()
     }
@@ -79,18 +82,23 @@ class ProfileViewController: CustomViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupTextFieldDelegate() {
+        profileStackView.nameView.profileTextField.delegate = self
+        profileStackView.heightView.profileTextField.delegate = self
+        profileStackView.weightView.profileTextField.delegate = self
+    }
+    
     private func clearImageData() {
         self.profileImageButton.profileImageView.image = nil
     }
     
     private func configureUI() {
         setupViewController()
-        setupProfileNavigationBar()
-        setupProfileImageButton()
         setupProfileStackView()
+        setupProfileImageButton()
         setupSaveButton()
         setupLoadingAlertController()
-        view.bringSubviewToFront(navigationBar)
+        setupProfileNavigationBar()
     }
     
     private func setupViewController() {
@@ -109,24 +117,25 @@ class ProfileViewController: CustomViewController {
         ])
     }
     
+    private func setupProfileStackView() {
+        view.addSubview(profileStackView)
+        profileStackView.translatesAutoresizingMaskIntoConstraints = false
+        stackViewTopConstraint = profileStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: yValueRatio(345))
+        NSLayoutConstraint.activate([
+            profileStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
+            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(350))
+        ])
+        stackViewTopConstraint?.isActive = true
+    }
+    
     private func setupProfileImageButton() {
         view.addSubview(profileImageButton)
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileImageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: yValueRatio(150)),
+            profileImageButton.bottomAnchor.constraint(equalTo: profileStackView.topAnchor, constant: -yValueRatio(70)),
             profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             profileImageButton.widthAnchor.constraint(equalToConstant: yValueRatio(125)),
             profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
-        ])
-    }
-    
-    private func setupProfileStackView() {
-        view.addSubview(profileStackView)
-        profileStackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileStackView.topAnchor.constraint(equalTo: profileImageButton.bottomAnchor, constant: yValueRatio(70)),
-            profileStackView.widthAnchor.constraint(equalToConstant: calculateXMax()),
-            profileStackView.heightAnchor.constraint(equalToConstant: yValueRatio(400))
         ])
     }
     
@@ -254,6 +263,32 @@ class ProfileViewController: CustomViewController {
     }
 }
 
+extension ProfileViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField.tag {
+        case 0:
+            animateStackViewBottomSpace(325)
+        case 1:
+            animateStackViewBottomSpace(310)
+        case 2:
+            animateStackViewBottomSpace(220)
+        default: break
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        animateStackViewBottomSpace(345)
+    }
+    
+    private func animateStackViewBottomSpace(_ constant: CGFloat) {
+        stackViewTopConstraint?.constant = yValueRatio(constant)
+
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+}
+
 extension ProfileViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -286,7 +321,6 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
 }
 
 extension ProfileViewController: ProfileImageButtonProtocol {
-    
     func profileImageButtonTapped() {
         present(profileImagePicker, animated: true)
     }

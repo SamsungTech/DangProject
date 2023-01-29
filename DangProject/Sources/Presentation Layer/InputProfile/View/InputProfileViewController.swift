@@ -40,7 +40,7 @@ class InputProfileViewController: UIViewController {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .fillEqually
-        view.spacing = 10
+        view.spacing = yValueRatio(10)
         return view
     }()
     
@@ -85,6 +85,7 @@ class InputProfileViewController: UIViewController {
     private lazy var heightTextFieldView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "키"
+        view.profileTextField.tintColor = .clear
         view.profileTextField.placeholder = "사용자의 키"
         heightPickerView.delegate = self
         heightPickerView.dataSource = self
@@ -97,6 +98,7 @@ class InputProfileViewController: UIViewController {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "몸무게"
         view.profileTextField.tag = 0
+        view.profileTextField.tintColor = .clear
         view.profileTextField.placeholder = "사용자의 몸무게"
         view.profileTextField.delegate = self
         weightPickerView.delegate = self
@@ -110,6 +112,7 @@ class InputProfileViewController: UIViewController {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "목표 당 수치"
         view.profileTextField.tag = 1
+        view.profileTextField.tintColor = .clear
         view.profileTextField.placeholder = "사용자의 목표한 당 수치"
         view.profileTextField.delegate = self
         sugarLevelPickerView.delegate = self

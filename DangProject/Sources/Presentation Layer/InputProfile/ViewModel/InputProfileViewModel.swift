@@ -69,7 +69,7 @@ class InputProfileViewModel: InputProfileViewModelProtocol {
     // MARK: - Output
     let heights: [String] = [Int](120...200).map{("\($0)")}
     let weights: [String] = [Int](30...150).map{("\($0)")}
-    let sugars: [String] = ["10", "20", "30", "40", "50"]
+    let sugars: [String] = ["10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
     
     lazy var imageValue = UIImage()
     lazy var heightValue = Int()

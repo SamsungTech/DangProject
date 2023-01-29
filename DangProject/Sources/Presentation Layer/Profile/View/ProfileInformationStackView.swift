@@ -23,26 +23,40 @@ class ProfileInformationStackView: UIStackView {
         return pickerView
     }()
     
+    lazy var emailTextFieldView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
+        view.profileLabel.text = "이메일"
+        view.profileTextField.textColor = .gray
+        view.profileTextField.isEnabled = false
+        view.frame = .profileViewDefaultCGRect(55)
+        return view
+    }()
+    
     lazy var nameView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "이름"
-        view.frame = .profileViewDefaultCGRect(100)
+        view.profileTextField.tag = 0
+        view.frame = .profileViewDefaultCGRect(55)
         return view
     }()
     
     lazy var heightView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "키"
+        view.profileTextField.tintColor = .clear
+        view.profileTextField.tag = 1
         view.profileTextField.inputView = heightPickerView
-        view.frame = .profileViewDefaultCGRect(100)
+        view.frame = .profileViewDefaultCGRect(55)
         return view
     }()
     
     lazy var weightView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "몸무게"
+        view.profileTextField.tintColor = .clear
+        view.profileTextField.tag = 2
         view.profileTextField.inputView = weightPickerView
-        view.frame = .profileViewDefaultCGRect(100)
+        view.frame = .profileViewDefaultCGRect(55)
         return view
     }()
     
@@ -64,10 +78,10 @@ extension ProfileInformationStackView {
     }
     
     private func setUpStackView() {
-        views = [ nameView, heightView, weightView ]
+        views = [ emailTextFieldView, nameView, heightView, weightView ]
         self.axis = .vertical
         self.distribution = .fillEqually
-        self.spacing = 10
+        self.spacing = yValueRatio(10)
         views.forEach() { self.addArrangedSubview($0) }
     }
 }
