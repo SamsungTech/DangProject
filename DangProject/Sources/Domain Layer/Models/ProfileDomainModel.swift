@@ -9,6 +9,7 @@ import UIKit
 
 struct ProfileDomainModel {
     static let empty: Self = .init(uid: "",
+                                   email: "",
                                    name: "",
                                    height: 0,
                                    weight: 0,
@@ -16,6 +17,7 @@ struct ProfileDomainModel {
                                    profileImage: UIImage())
     
     var uid: String
+    var email: String
     var name: String
     var height: Int
     var weight: Int
@@ -23,12 +25,14 @@ struct ProfileDomainModel {
     var profileImage: UIImage
     
     init(uid: String,
+         email: String,
          name: String,
          height: Int,
          weight: Int,
          sugarLevel: Int,
          profileImage: UIImage) {
         self.uid = uid
+        self.email = email
         self.name = name
         self.height = height
         self.weight = weight
@@ -38,6 +42,7 @@ struct ProfileDomainModel {
     
     init(_ profileEntity: ProfileEntity) {
         self.uid = ""
+        self.email = profileEntity.email ?? ""
         self.profileImage = UIImage(data: profileEntity.profileImage ?? Data()) ?? UIImage()
         self.name = profileEntity.name ?? ""
         self.height = Int(profileEntity.height)

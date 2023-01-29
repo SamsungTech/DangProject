@@ -17,6 +17,7 @@ extension ProfileEntity {
     }
 
     @NSManaged public var birthday: String?
+    @NSManaged public var email: String?
     @NSManaged public var gender: String?
     @NSManaged public var height: Int32
     @NSManaged public var name: String?

@@ -186,9 +186,11 @@ class ProfileViewController: CustomViewController {
                 guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
                       let heightData = self?.profileStackView.heightView.profileTextField.text,
-                      let weightData = self?.profileStackView.weightView.profileTextField.text else { return }
+                      let weightData = self?.profileStackView.weightView.profileTextField.text,
+                      let email = self?.profileStackView.emailTextFieldView.profileTextField.text else { return }
                 
                 self?.viewModel.saveProfile(ProfileDomainModel(uid: "",
+                                                               email: email,
                                                                name: nameData,
                                                                height: Int(heightData) ?? 0,
                                                                weight: Int(weightData) ?? 0,
@@ -209,6 +211,7 @@ class ProfileViewController: CustomViewController {
                 guard let heightIndex = self?.viewModel.getHeightSelectRowIndex($0.height),
                       let weightIndex = self?.viewModel.getWeightSelectRowIndex($0.weight) else { return }
                 self?.profileStackView.nameView.profileTextField.text = $0.name
+                self?.profileStackView.emailTextFieldView.profileTextField.text = $0.email
                 self?.profileStackView.heightView.profileTextField.text = String($0.height)
                 self?.profileStackView.heightPickerView.selectRow(heightIndex, inComponent: 0, animated: false)
                 self?.profileStackView.weightView.profileTextField.text = String($0.weight)
@@ -268,21 +271,35 @@ extension ProfileViewController: UITextFieldDelegate {
         switch textField.tag {
         case 0:
             animateStackViewBottomSpace(325)
+            profileStackView.nameView.setupNameTextFieldState(isEditing: true)
         case 1:
             animateStackViewBottomSpace(310)
+            profileStackView.heightView.setupNameTextFieldState(isEditing: true)
         case 2:
             animateStackViewBottomSpace(220)
+            profileStackView.weightView.setupNameTextFieldState(isEditing: true)
         default: break
         }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        animateStackViewBottomSpace(345)
+        switch textField.tag {
+        case 0:
+            animateStackViewBottomSpace(345)
+            profileStackView.nameView.setupNameTextFieldState(isEditing: false)
+        case 1:
+            animateStackViewBottomSpace(345)
+            profileStackView.heightView.setupNameTextFieldState(isEditing: false)
+        case 2:
+            animateStackViewBottomSpace(345)
+            profileStackView.weightView.setupNameTextFieldState(isEditing: false)
+        default: break
+        }
     }
     
     private func animateStackViewBottomSpace(_ constant: CGFloat) {
         stackViewTopConstraint?.constant = yValueRatio(constant)
-
+        
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }

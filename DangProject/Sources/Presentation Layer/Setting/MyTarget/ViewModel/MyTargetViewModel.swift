@@ -47,6 +47,7 @@ class MyTargetViewModel: MyTargetViewModelProtocol {
     
     func passTargetSugarForUpdate(_ targetSugar: Double, completion: @escaping (Bool) -> Void) {
         let profileData: ProfileDomainModel = .init(uid: self.profileData.uid,
+                                                    email: self.profileData.email,
                                                     name: self.profileData.name,
                                                     height: self.profileData.height,
                                                     weight: self.profileData.weight,

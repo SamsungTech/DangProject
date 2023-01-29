@@ -65,6 +65,7 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                     if bool {
                         for (key, value) in profileData {
                             switch key {
+                            case "email": domainProfileData.email = value as? String ?? ""
                             case "name": domainProfileData.name = value as? String ?? ""
                             case "sugarLevel": domainProfileData.sugarLevel = value as? Int ?? 0
                             case "uid": domainProfileData.uid = value as? String ?? ""

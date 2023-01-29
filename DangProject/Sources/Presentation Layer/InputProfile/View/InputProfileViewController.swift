@@ -77,6 +77,8 @@ class InputProfileViewController: UIViewController {
     private lazy var nameTextFieldView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "이름"
+        view.profileTextField.tag = 0
+        view.profileTextField.delegate = self
         view.profileTextField.placeholder = "사용자의 이름"
         view.frame = .profileViewDefaultCGRect(55)
         return view
@@ -85,8 +87,10 @@ class InputProfileViewController: UIViewController {
     private lazy var heightTextFieldView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "키"
+        view.profileTextField.tag = 1
         view.profileTextField.tintColor = .clear
         view.profileTextField.placeholder = "사용자의 키"
+        view.profileTextField.delegate = self
         heightPickerView.delegate = self
         heightPickerView.dataSource = self
         view.profileTextField.inputView = heightPickerView
@@ -97,7 +101,7 @@ class InputProfileViewController: UIViewController {
     private lazy var weightTextFieldView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "몸무게"
-        view.profileTextField.tag = 0
+        view.profileTextField.tag = 2
         view.profileTextField.tintColor = .clear
         view.profileTextField.placeholder = "사용자의 몸무게"
         view.profileTextField.delegate = self
@@ -111,7 +115,7 @@ class InputProfileViewController: UIViewController {
     private lazy var sugarTextFieldView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "목표 당 수치"
-        view.profileTextField.tag = 1
+        view.profileTextField.tag = 3
         view.profileTextField.tintColor = .clear
         view.profileTextField.placeholder = "사용자의 목표한 당 수치"
         view.profileTextField.delegate = self
@@ -290,8 +294,9 @@ class InputProfileViewController: UIViewController {
     
     @objc private func submitInformation() {
         viewModel.loading.accept(.startLoading)
-        if let name = nameTextFieldView.profileTextField.text {
-            viewModel.submitButtonTapped(name: name) { [weak self] data in
+        if let name = nameTextFieldView.profileTextField.text,
+           let email = emailTextFieldView.profileTextField.text {
+            viewModel.submitButtonTapped(name: name, email: email) { [weak self] data in
                 if data {
                     self?.viewModel.loading.accept(.finishLoading)
                     self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
@@ -322,15 +327,33 @@ extension InputProfileViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         switch textField.tag {
         case 0:
-            animateStackViewBottomSpace(180)
+            nameTextFieldView.setupNameTextFieldState(isEditing: true)
         case 1:
-            animateStackViewBottomSpace(280)
+            heightTextFieldView.setupNameTextFieldState(isEditing: true)
+        case 2:
+            animateStackViewBottomSpace(180)
+            weightTextFieldView.setupNameTextFieldState(isEditing: true)
+        case 3:
+            animateStackViewBottomSpace(270)
+            sugarTextFieldView.setupNameTextFieldState(isEditing: true)
         default: break
         }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        animateStackViewBottomSpace(105)
+        switch textField.tag {
+        case 0:
+            nameTextFieldView.setupNameTextFieldState(isEditing: false)
+        case 1:
+            heightTextFieldView.setupNameTextFieldState(isEditing: false)
+        case 2:
+            animateStackViewBottomSpace(105)
+            weightTextFieldView.setupNameTextFieldState(isEditing: false)
+        case 3:
+            animateStackViewBottomSpace(105)
+            sugarTextFieldView.setupNameTextFieldState(isEditing: false)
+        default: break
+        }
     }
     
     private func animateStackViewBottomSpace(_ constant: CGFloat) {

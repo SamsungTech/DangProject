@@ -108,6 +108,7 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
                              completion: @escaping (Bool) -> Void) {
         let profileData = [
             "uid": profile.uid,
+            "email": profile.email,
             "name": profile.name,
             "height": profile.height,
             "weight": profile.weight,

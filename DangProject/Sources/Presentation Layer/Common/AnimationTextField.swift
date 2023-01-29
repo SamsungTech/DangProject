@@ -38,7 +38,6 @@ class AnimationTextFieldView: UIView {
         textField.font = UIFont.systemFont(ofSize: xValueRatio(15), weight: .semibold)
         textField.inputAccessoryView = toolBarButton
         textField.textColor = .customLabelColorBlack3
-        textField.delegate = self
         return textField
     }()
     
@@ -129,16 +128,8 @@ extension AnimationTextFieldView {
     }
 }
 
-extension AnimationTextFieldView: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        setupNameTextFieldState(isEditing: true)
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        setupNameTextFieldState(isEditing: false)
-    }
-    
-    private func setupNameTextFieldState(isEditing: Bool) {
+extension AnimationTextFieldView {
+    public func setupNameTextFieldState(isEditing: Bool) {
         switch isEditing {
         case true:
             animateEditMode()
