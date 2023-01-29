@@ -23,38 +23,29 @@ class ProfileInformationStackView: UIStackView {
         return pickerView
     }()
     
-    lazy var nameView: NameTextField = {
-        let view = NameTextField()
+    lazy var nameView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
         view.profileLabel.text = "이름"
-        view.frame = CGRect(x: .zero,
-                            y: .zero,
-                            width: calculateXMax(),
-                            height: yValueRatio(100))
+        view.frame = .profileViewDefaultCGRect(100)
         return view
     }()
     
-    lazy var heightView: ProfileTextFieldView = {
-        let view = ProfileTextFieldView()
+    lazy var heightView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
         view.profileLabel.text = "키"
         view.profileTextField.inputView = heightPickerView
-        view.frame = CGRect(x: .zero,
-                            y: .zero,
-                            width: calculateXMax(),
-                            height: yValueRatio(100))
+        view.frame = .profileViewDefaultCGRect(100)
         return view
     }()
     
-    lazy var weightView: ProfileTextFieldView = {
-        let view = ProfileTextFieldView()
+    lazy var weightView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
         view.profileLabel.text = "몸무게"
         view.profileTextField.inputView = weightPickerView
-        view.frame = CGRect(x: .zero,
-                            y: .zero,
-                            width: calculateXMax(),
-                            height: yValueRatio(100))
+        view.frame = .profileViewDefaultCGRect(100)
         return view
     }()
-
+    
     init(frame: CGRect,
          viewModel: ProfileViewModelProtocol) {
         self.viewModel = viewModel

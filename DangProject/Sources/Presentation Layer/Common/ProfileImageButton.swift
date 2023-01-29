@@ -15,7 +15,7 @@ class ProfileImageButton: UIView {
     var delegate: ProfileImageButtonProtocol?
     private lazy var profileImageBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .profileImageBackgroundColor
+        view.backgroundColor = .homeBackgroundColor
         view.viewRadius(cornerRadius: yValueRatio(62.5))
         view.layer.borderWidth = 0.2
         view.layer.borderColor = UIColor.darkGray.cgColor

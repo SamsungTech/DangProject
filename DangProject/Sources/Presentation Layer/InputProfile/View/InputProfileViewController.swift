@@ -18,7 +18,7 @@ class InputProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.numberOfLines = 2
-        label.font = UIFont.systemFont(ofSize: 20)
+        label.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         label.text = "환영해요 🥳\n 마지막으로 개인정보를 입력해주세요!"
         return label
     }()
@@ -36,71 +36,95 @@ class InputProfileViewController: UIViewController {
         return picker
     }()
     
-    private lazy var birthdayPickerView: UIDatePicker = {
-       let pickerView = UIDatePicker()
-        pickerView.datePickerMode = .date
-        pickerView.locale = Locale(identifier: "ko-KR")
-        pickerView.preferredDatePickerStyle = .wheels
-        return pickerView
+    private lazy var stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.distribution = .fillEqually
+        view.spacing = 10
+        return view
     }()
+    
+    private var stackViewBottomConstraint: NSLayoutConstraint?
     
     private lazy var heightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.tag = 0
         return pickerView
     }()
+    
     private lazy var weightPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.tag = 1
         return pickerView
     }()
+    
     private lazy var sugarLevelPickerView: UIPickerView = {
         let pickerView = UIPickerView()
         pickerView.tag = 2
         return pickerView
     }()
     
-    private lazy var nameTextField = self.createTextField()
-    private lazy var heightTextField = self.createTextField()
-    private lazy var weightTextField = self.createTextField()
-    private lazy var sugarTextField = self.createTextField()
-    
-    private lazy var nameInputSection = self.createInputSection(text: "이름",
-                                                                withTextField: nameTextField,
-                                                                withPickerView: nil)
-    
-    private lazy var heightInputSection = self.createInputSection(text: "키",
-                                                                  withTextField: heightTextField,
-                                                                  withPickerView: heightPickerView)
-    private lazy var weightInputSection = self.createInputSection(text: "몸무게",
-                                                                  withTextField: weightTextField,
-                                                                  withPickerView: weightPickerView)
-    
-    
-    private lazy var sugarInputSection = self.createInputSection(text: "목표 당 수치",
-                                                                 withTextField: sugarTextField,
-                                                                 withPickerView: sugarLevelPickerView)
-    
-    private lazy var toolBar: UIToolbar = {
-        let toolbar = UIToolbar()
-        toolbar.tintColor = .systemBlue
-        toolbar.frame = CGRect(x: 0, y: 0, width: 0, height: 35)
-        heightTextField.inputAccessoryView = toolbar
-        weightTextField.inputAccessoryView = toolbar
-        sugarTextField.inputAccessoryView = toolbar
-        return toolbar
+    private lazy var emailTextFieldView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
+        view.profileLabel.text = "이메일"
+        view.profileTextField.textColor = .gray
+        view.profileTextField.isEnabled = false
+        view.profileTextField.text = coordinator?.retrieveInputEmail()
+        view.frame = .profileViewDefaultCGRect(55)
+        return view
     }()
     
-    private lazy var readyButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .systemGray4
-        button.isEnabled = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(submitInformation), for: .touchUpInside)
-        button.roundCorners(cornerRadius: self.view.frame.width*0.6/12)
-        button.setTitle("준비완료!", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-        return button
+    private lazy var nameTextFieldView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
+        view.profileLabel.text = "이름"
+        view.profileTextField.placeholder = "사용자의 이름"
+        view.frame = .profileViewDefaultCGRect(55)
+        return view
+    }()
+    
+    private lazy var heightTextFieldView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
+        view.profileLabel.text = "키"
+        view.profileTextField.placeholder = "사용자의 키"
+        heightPickerView.delegate = self
+        heightPickerView.dataSource = self
+        view.profileTextField.inputView = heightPickerView
+        view.frame = .profileViewDefaultCGRect(55)
+        return view
+    }()
+    
+    private lazy var weightTextFieldView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
+        view.profileLabel.text = "몸무게"
+        view.profileTextField.tag = 0
+        view.profileTextField.placeholder = "사용자의 몸무게"
+        view.profileTextField.delegate = self
+        weightPickerView.delegate = self
+        weightPickerView.dataSource = self
+        view.profileTextField.inputView = weightPickerView
+        view.frame = .profileViewDefaultCGRect(55)
+        return view
+    }()
+    
+    private lazy var sugarTextFieldView: AnimationTextFieldView = {
+        let view = AnimationTextFieldView()
+        view.profileLabel.text = "목표 당 수치"
+        view.profileTextField.tag = 1
+        view.profileTextField.placeholder = "사용자의 목표한 당 수치"
+        view.profileTextField.delegate = self
+        sugarLevelPickerView.delegate = self
+        sugarLevelPickerView.dataSource = self
+        view.profileTextField.inputView = sugarLevelPickerView
+        view.frame = .profileViewDefaultCGRect(55)
+        return view
+    }()
+    
+    private lazy var readyButton: SaveView = {
+        let view = SaveView()
+        view.setupSaveViewState(state: .untouchable)
+        view.saveButton.addTarget(self, action: #selector(submitInformation), for: .touchUpInside)
+        view.saveButton.setTitle("준비완료", for: .normal)
+        return view
     }()
     
     // MARK: - Init
@@ -118,99 +142,65 @@ class InputProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         layoutViews()
-        configureToolbars()
         configureImagePicker()
         setupBindings()
     }
     
     // MARK: - layoutViews
     private func layoutViews() {
-        layoutWelcomeLabel()
+        layoutStackView()
         layoutProfileImageButton()
-        layoutNameInputSection()
-        layoutHeightInputSection()
-        layoutWeightInputSection()
-        layoutSugarLevelInputSection()
+        layoutWelcomeLabel()
         layoutReadyButton()
         setupLoadingView()
     }
     
-    private func layoutWelcomeLabel() {
-        view.addSubview(welcomeLabel)
+    private func layoutStackView() {
+        let views: [UIView] = [emailTextFieldView, nameTextFieldView, heightTextFieldView,
+                               weightTextFieldView, sugarTextFieldView]
+        views.forEach { stackView.addArrangedSubview($0) }
+        
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackViewBottomConstraint = stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -yValueRatio(105))
         NSLayoutConstraint.activate([
-            welcomeLabel.topAnchor.constraint(equalTo: self.view.topAnchor,
-                                              constant: self.view.yValueRatio(60)),
-            welcomeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            welcomeLabel.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(60)),
-            welcomeLabel.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(320))
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            stackView.heightAnchor.constraint(equalToConstant: yValueRatio(450))
         ])
+        stackViewBottomConstraint?.isActive = true
     }
     
     private func layoutProfileImageButton() {
         view.addSubview(profileImageButton)
         profileImageButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileImageButton.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: yValueRatio(30)),
+            profileImageButton.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -yValueRatio(20)),
             profileImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             profileImageButton.widthAnchor.constraint(equalToConstant: yValueRatio(125)),
             profileImageButton.heightAnchor.constraint(equalToConstant: yValueRatio(125))
         ])
     }
     
-    private func layoutNameInputSection() {
-        view.addSubview(nameInputSection)
-        nameInputSection.translatesAutoresizingMaskIntoConstraints = false
+    private func layoutWelcomeLabel() {
+        view.addSubview(welcomeLabel)
         NSLayoutConstraint.activate([
-            nameInputSection.topAnchor.constraint(equalTo:profileImageButton.bottomAnchor),
-            nameInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            nameInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
-            nameInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
-        ])
-    }
-    
-    private func layoutHeightInputSection() {
-        view.addSubview(heightInputSection)
-        heightInputSection.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            heightInputSection.topAnchor.constraint(equalTo: nameInputSection.bottomAnchor),
-            heightInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            heightInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
-            heightInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
-        ])
-    }
-    
-    private func layoutWeightInputSection() {
-        view.addSubview(weightInputSection)
-        weightInputSection.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            weightInputSection.topAnchor.constraint(equalTo: heightInputSection.bottomAnchor),
-            weightInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            weightInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
-            weightInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
-        ])
-    }
-    
-    private func layoutSugarLevelInputSection() {
-        view.addSubview(sugarInputSection)
-        sugarInputSection.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            sugarInputSection.topAnchor.constraint(equalTo: weightInputSection.bottomAnchor),
-            sugarInputSection.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            sugarInputSection.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(90)),
-            sugarInputSection.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(280))
+            welcomeLabel.bottomAnchor.constraint(equalTo: profileImageButton.topAnchor, constant: -yValueRatio(20)),
+            welcomeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            welcomeLabel.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(60)),
+            welcomeLabel.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(320))
         ])
     }
     
     private func layoutReadyButton() {
         view.addSubview(readyButton)
+        readyButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            readyButton.topAnchor.constraint(equalTo: sugarInputSection.bottomAnchor,
-                                             constant: self.view.yValueRatio(30)),
-            readyButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            readyButton.heightAnchor.constraint(equalToConstant: self.view.yValueRatio(70)),
-            readyButton.widthAnchor.constraint(equalToConstant: self.view.xValueRatio(240))
+            readyButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            readyButton.heightAnchor.constraint(equalToConstant: yValueRatio(105)),
+            readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        
     }
     
     private func setupLoadingView() {
@@ -226,17 +216,6 @@ class InputProfileViewController: UIViewController {
     
     // MARK: - Others
     
-    private func configureToolbars() {
-        toolBar.sizeToFit()
-        let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonTapped))
-        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolBar.setItems([space, doneButton], animated: true)
-    }
-    
-    @objc private func doneButtonTapped() {
-        self.view.endEditing(true)
-    }
-    
     private func configureImagePicker() {
         imagePicker.delegate = self
     }
@@ -250,22 +229,21 @@ class InputProfileViewController: UIViewController {
     }
     
     private func bindPickerView() {
-        
         viewModel.heightObservable
             .bind(onNext: { [weak self] height in
-                self?.heightTextField.text = "\(height)cm"
+                self?.heightTextFieldView.profileTextField.text = "\(height)cm"
             })
             .disposed(by: disposeBag)
         
         viewModel.weightObservable
             .bind(onNext: { [weak self] weight in
-                self?.weightTextField.text = "\(weight)kg"
+                self?.weightTextFieldView.profileTextField.text = "\(weight)kg"
             })
             .disposed(by: disposeBag)
         
         viewModel.sugarObservable
             .bind(onNext: { [weak self] sugar in
-                self?.sugarTextField.text = "\(sugar)g"
+                self?.sugarTextFieldView.profileTextField.text = "\(sugar)g"
             })
             .disposed(by: disposeBag)
     }
@@ -282,9 +260,8 @@ class InputProfileViewController: UIViewController {
     private func bindReadyButton() {
         viewModel.readyButtonIsValid
             .bind(onNext: { [unowned self] isReady in
-                if isReady && !nameTextField.text!.isEmpty {
-                    readyButton.backgroundColor = .circleColorGreen
-                    readyButton.isEnabled = true
+                if isReady && !nameTextFieldView.profileTextField.text!.isEmpty {
+                    readyButton.setupSaveViewState(state: .touchable)
                 }
             })
             .disposed(by: disposeBag)
@@ -310,7 +287,7 @@ class InputProfileViewController: UIViewController {
     
     @objc private func submitInformation() {
         viewModel.loading.accept(.startLoading)
-        if let name = nameTextField.text {
+        if let name = nameTextFieldView.profileTextField.text {
             viewModel.submitButtonTapped(name: name) { [weak self] data in
                 if data {
                     self?.viewModel.loading.accept(.finishLoading)
@@ -325,46 +302,6 @@ class InputProfileViewController: UIViewController {
     }
     
     // MARK: - Create Method
-    private func createToolBar(with textField: UITextField) -> UIToolbar {
-        let toolbar = UIToolbar()
-        toolbar.tag = textField.tag
-        toolbar.tintColor = .systemBlue
-        toolbar.frame = CGRect(x: 0, y: 0, width: 0, height: 35)
-        textField.inputAccessoryView = toolbar
-        return toolbar
-    }
-    
-    private func createTextField() -> UITextField {
-        let textField = UITextField()
-        textField.borderStyle = .roundedRect
-        textField.tintColor = .darkGray
-        textField.backgroundColor = .profileImageBackgroundColor
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        textField.addPadding(left: 5)
-        return textField
-    }
-    
-    private func createInputSection(text: String,
-                                    withTextField textField: UITextField,
-                                    withPickerView pickerView: UIPickerView?) -> UIStackView {
-        let titleLabel = UILabel()
-        titleLabel.font = UIFont.systemFont(ofSize: 15)
-        titleLabel.text = text
-        
-        if let pickerView = pickerView {
-            textField.inputView = pickerView
-            pickerView.delegate = self
-            pickerView.dataSource = self
-        }
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(textField)
-        return stackView
-    }
     
     private func createAlert() -> UIAlertController {
         let alert = UIAlertController(title: "오류",
@@ -375,6 +312,30 @@ class InputProfileViewController: UIViewController {
         }
         alert.addAction(actionButton)
         return alert
+    }
+}
+
+extension InputProfileViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField.tag {
+        case 0:
+            animateStackViewBottomSpace(180)
+        case 1:
+            animateStackViewBottomSpace(280)
+        default: break
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        animateStackViewBottomSpace(105)
+    }
+    
+    private func animateStackViewBottomSpace(_ constant: CGFloat) {
+        stackViewBottomConstraint?.constant = -yValueRatio(constant)
+
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
@@ -390,7 +351,6 @@ extension InputProfileViewController: UIPickerViewDelegate, UIPickerViewDataSour
         default:
             return 0
         }
-        
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {

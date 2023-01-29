@@ -7,7 +7,12 @@
 
 import UIKit
 
-class SaveButton: UIView {
+enum SaveViewState {
+    case touchable
+    case untouchable
+}
+
+class SaveView: UIView {
     private lazy var gradientBackgroundView: UIView = {
         let view = UIView()
         let gradient = CAGradientLayer()
@@ -29,7 +34,6 @@ class SaveButton: UIView {
     
     private(set) lazy var saveButton: UIButton = {
         let button = UIButton()
-        button.setTitle("저장", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .heavy)
         button.backgroundColor = .circleColorGreen
@@ -45,9 +49,7 @@ class SaveButton: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-extension SaveButton {
+    
     private func configureUI() {
         setUpGradientBackgroundView()
         setUpBackgroundView()
@@ -85,5 +87,16 @@ extension SaveButton {
             saveButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -xValueRatio(30)),
             saveButton.heightAnchor.constraint(equalToConstant: yValueRatio(50))
         ])
+    }
+    
+    public func setupSaveViewState(state: SaveViewState) {
+        switch state {
+        case .touchable:
+            self.saveButton.backgroundColor = .circleColorGreen
+            self.saveButton.isEnabled = true
+        case .untouchable:
+            self.saveButton.backgroundColor = .systemGray4
+            self.saveButton.isEnabled = false
+        }
     }
 }

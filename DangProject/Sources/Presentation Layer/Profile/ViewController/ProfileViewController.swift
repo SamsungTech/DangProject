@@ -40,7 +40,11 @@ class ProfileViewController: CustomViewController {
         return imagePicker
     }()
     
-    private lazy var saveButton = SaveButton()
+    private lazy var saveView: SaveView = {
+        let view = SaveView()
+        view.saveButton.setTitle("저장", for: .normal)
+        return view
+    }()
     
     private lazy var loadingAlertController = UIAlertController(title: nil,
                                                                 message: "프로필 업데이트 중입니다..",
@@ -127,13 +131,13 @@ class ProfileViewController: CustomViewController {
     }
     
     private func setupSaveButton() {
-        view.addSubview(saveButton)
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(saveView)
+        saveView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            saveButton.heightAnchor.constraint(equalToConstant: yValueRatio(105)),
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            saveView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            saveView.heightAnchor.constraint(equalToConstant: yValueRatio(105)),
+            saveView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            saveView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
@@ -168,7 +172,7 @@ class ProfileViewController: CustomViewController {
     }
     
     private func bindSaveButton() {
-        saveButton.saveButton.rx.tap
+        saveView.saveButton.rx.tap
             .bind { [weak self] in
                 guard let nameData = self?.profileStackView.nameView.profileTextField.text,
                       let profileImage = self?.profileImageButton.profileImageView.image,
