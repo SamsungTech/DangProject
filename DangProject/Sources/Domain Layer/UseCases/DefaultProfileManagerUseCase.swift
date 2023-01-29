@@ -48,6 +48,10 @@ class DefaultProfileManagerUseCase: ProfileManagerUseCase {
         ProfileDomainModel.setIsLatestProfileData(false)
     }
     
+    func updateProfileExistence() {
+        manageFirebaseFireStoreUseCase.uploadProfileExistence()
+    }
+    
     // MARK: - Private
     private func fetchRemoteProfileData() -> Observable<ProfileDomainModel> {
         return Observable.create { [weak self] emitter in

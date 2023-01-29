@@ -222,6 +222,10 @@ class HomeViewController: CustomViewController, CustomTabBarIsNeeded {
         alert.addAction(actionButton)
         return alert
     }
+    
+    func updateRedButtonDidTap() {
+        viewModel.updateRedButtonTapped()
+    }
 }
 extension HomeViewController: CalendarViewDelegate {
     func cellDidSelected(dateComponents: DateComponents,

@@ -18,4 +18,5 @@ protocol ManageFirebaseFireStoreUseCase {
     func getEatenFoods(dateComponents : DateComponents) -> Observable<([FoodDomainModel], Bool)>
     func getProfileData() -> Observable<(ProfileDomainModel, Bool)>
     func changeDemoValue(completion: @escaping ((Bool)->Void))
+    func uploadProfileExistence()
 }

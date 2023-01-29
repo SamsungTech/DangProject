@@ -12,6 +12,7 @@ class HomeCoordinator: NSObject, Coordinator {
     var navigationController: UINavigationController
     var diContainer = HomeDIContainer()
     var versionData: PresentationVersionModel
+    var viewController: HomeViewController?
     
     init(navigationController: UINavigationController,
          versionData: PresentationVersionModel) {
@@ -21,6 +22,7 @@ class HomeCoordinator: NSObject, Coordinator {
     
     func start() {
         let viewController = diContainer.makeHomeViewController()
+        self.viewController = viewController
         viewController.coordinator = self
         self.navigationController.pushViewController(viewController, animated: false)
     }
@@ -68,10 +70,12 @@ class HomeCoordinator: NSObject, Coordinator {
     }
     
     private func createRedAlert() -> UIAlertController {
-        let alert = UIAlertController(title: "업데이트 안내",
+        let alert = UIAlertController(title: "긴급 업데이트 안내",
                                       message: "안정적인 서비스 사용을 위해 최신 버전 업데이트를 해주세요.",
                                       preferredStyle: UIAlertController.Style.alert)
         let storeButton = UIAlertAction(title: "업데이트", style: .default) { _ in
+            self.removeUserLocalInfo()
+            self.returnToFirstStartFromHome()
             self.openAppStore()
             alert.dismiss(animated: false)
         }
@@ -89,5 +93,20 @@ class HomeCoordinator: NSObject, Coordinator {
                 UIApplication.shared.openURL(url)
             }
         }
+    }
+    
+    private func returnToFirstStartFromHome() {
+        guard let rootViewController = navigationController.parent,
+              let rootNavigationViewController = rootViewController.navigationController else { return }
+        rootNavigationViewController.viewControllers.removeAll()
+        let coordinator = AppCoordinator(navigationController: rootNavigationViewController)
+        
+        coordinator.start()
+    }
+    
+    private func removeUserLocalInfo() {
+        viewController?.updateRedButtonDidTap()
+        UserDefaults.standard.removeObject(forKey: UserInfoKey.firebaseUID)
+        UserDefaults.standard.setValue(false, forKey: UserInfoKey.tutorialFinished)
     }
 }

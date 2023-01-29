@@ -30,6 +30,10 @@ class DefaultManageFirebaseFireStoreUseCase: ManageFirebaseFireStoreUseCase {
                                                          ProfileExistence: false)
     }
     
+    func uploadProfileExistence() {
+        fireStoreManagerRepository.uploadProfileExistence()
+    }
+    
     func uploadProfile(profile: ProfileDomainModel, completion: @escaping (Bool) -> Void) {
         fireStoreManagerRepository.saveFirebaseUserDocument(uid: profile.uid,
                                                             ProfileExistence: true,

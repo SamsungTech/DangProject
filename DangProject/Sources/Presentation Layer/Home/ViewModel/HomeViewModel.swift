@@ -29,6 +29,7 @@ protocol HomeViewModelInputProtocol {
     func changeCellIndexColumn(cellIndexColumn: Int)
     func plusViewsDataCount()
     func setupIsFirstVersionCheck()
+    func updateRedButtonTapped()
 }
 
 protocol HomeViewModelOutputProtocol {
@@ -61,6 +62,10 @@ class HomeViewModel: HomeViewModelProtocol {
         self.fetchEatenFoodsUseCase = fetchEatenFoodsUseCase
         self.profileManagerUseCase = profileManagerUseCase
         self.bindProfileData()
+    }
+    
+    func updateRedButtonTapped() {
+        profileManagerUseCase.updateProfileExistence()
     }
     
     func setupIsFirstVersionCheck() {

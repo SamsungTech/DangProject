@@ -226,6 +226,21 @@ class DefaultFireStoreManagerRepository: FireStoreManagerRepository {
             }
     }
     
+    func uploadProfileExistence() {
+        let uidData = ["firebaseUID": self.uid,
+                       "profileExistence": false
+        ] as [String : Any]
+        
+        database.collection("users")
+            .document(self.uid)
+            .setData(uidData) { error in
+                if let error = error {
+                    print("DEBUG: \(error.localizedDescription)")
+                    return
+                }
+            }
+    }
+    
     func checkProfileField(with fieldName: String, uid: String,
                            completion: @escaping(Bool)->Void) {
         database.collection("users").document(uid).getDocument { snapshot, error in

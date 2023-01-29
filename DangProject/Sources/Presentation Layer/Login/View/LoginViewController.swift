@@ -101,8 +101,7 @@ class LoginViewController: UIViewController {
             .bind(onNext: { [weak self] profileIsValid in
                 guard let email = self?.viewModel.retrieveEmail() else { return }
                 if profileIsValid {
-//                    self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
-                    self?.coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation(email: email))
+                    self?.coordinatorFinishDelegate?.switchViewController(to: .tabBar)
                 } else {
                     self?.coordinatorFinishDelegate?.switchViewController(to: .inputPersonalInformation(email: email))
                 }

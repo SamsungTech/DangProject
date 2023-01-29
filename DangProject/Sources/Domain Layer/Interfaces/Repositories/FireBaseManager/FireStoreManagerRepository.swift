@@ -24,4 +24,5 @@ protocol FireStoreManagerRepository {
     func getProfileDataInFireStore() -> Observable<([String: Any], Bool)>
     func getDemoDataInFireStore(completion: @escaping (Bool) -> Void)
     func changeDemoValue(completion: @escaping ((Bool)->Void))
+    func uploadProfileExistence()
 }
