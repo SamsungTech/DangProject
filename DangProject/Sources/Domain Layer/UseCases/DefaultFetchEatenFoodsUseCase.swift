@@ -118,7 +118,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
     
     func fetchNextMonthData(month: DateComponents) {
         var nextMonth: DateComponents = .currentYearMonth()
-        guard var nextMonthResult = nextMonth.month else { return }
+        guard let nextMonthResult = nextMonth.month else { return }
         
         nextMonth.month = nextMonthResult + 1
         nextMonth.day = 1
@@ -207,7 +207,7 @@ class DefaultFetchEatenFoodsUseCase: FetchEatenFoodsUseCase {
         
         
         for _ in 0 ..< 8 {
-            guard var sixMonth = sixMonthBeforeDateComponents.month else { return }
+            guard let sixMonth = sixMonthBeforeDateComponents.month else { return }
             
             let monthData = fetchMonthDataFromCoreData(yearMonth: sixMonthBeforeDateComponents)
             let result = getMonthlyTotalSugar(monthData)
