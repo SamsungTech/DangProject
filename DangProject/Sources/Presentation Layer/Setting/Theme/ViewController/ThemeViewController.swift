@@ -16,6 +16,7 @@ class ThemeViewController: CustomViewController {
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
         navigationBar.accountTitleLabel.text = "화면모드 설정"
+        navigationBar.accountTitleLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         return navigationBar
     }()
     

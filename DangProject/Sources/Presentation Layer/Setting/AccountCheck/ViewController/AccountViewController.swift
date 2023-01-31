@@ -16,6 +16,7 @@ class AccountViewController: CustomViewController {
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
         navigationBar.accountTitleLabel.text = "내 계정"
+        navigationBar.accountTitleLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         return navigationBar
     }()
     private lazy var accountScrollView: UIScrollView = {

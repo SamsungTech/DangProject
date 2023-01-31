@@ -34,7 +34,8 @@ class ProfileInformationStackView: UIStackView {
     
     lazy var nameView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
-        view.profileLabel.text = "이름"
+        view.profileLabel.text = "닉네임"
+        view.profileTextField.placeholder = "닉네임을 입력해주세요."
         view.profileTextField.tag = 0
         view.frame = .profileViewDefaultCGRect(55)
         return view
@@ -44,6 +45,7 @@ class ProfileInformationStackView: UIStackView {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "키"
         view.profileTextField.tintColor = .clear
+        view.profileTextField.placeholder = "키를 입력해주세요."
         view.profileTextField.tag = 1
         view.profileTextField.inputView = heightPickerView
         view.frame = .profileViewDefaultCGRect(55)
@@ -54,6 +56,7 @@ class ProfileInformationStackView: UIStackView {
         let view = AnimationTextFieldView()
         view.profileLabel.text = "몸무게"
         view.profileTextField.tintColor = .clear
+        view.profileTextField.placeholder = "몸무게를 입력해주세요."
         view.profileTextField.tag = 2
         view.profileTextField.inputView = weightPickerView
         view.frame = .profileViewDefaultCGRect(55)

@@ -27,7 +27,11 @@ class AlarmViewController: CustomViewController {
     weak var coordinator: AlarmCoordinator?
     private let disposeBag = DisposeBag()
     private var viewModel: AlarmViewModelProtocol
-    private var navigationBar = AlarmNavigationBar()
+    private lazy var navigationBar: AlarmNavigationBar = {
+        let navigationBar = AlarmNavigationBar()
+        navigationBar.alarmLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
+        return navigationBar
+    }()
     private var alarmTableView = UITableView()
     
     private lazy var addAlarmAlertController: UIAlertController = {

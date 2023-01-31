@@ -76,10 +76,10 @@ class InputProfileViewController: UIViewController {
     
     private lazy var nameTextFieldView: AnimationTextFieldView = {
         let view = AnimationTextFieldView()
-        view.profileLabel.text = "이름"
+        view.profileLabel.text = "닉네임"
         view.profileTextField.tag = 0
         view.profileTextField.delegate = self
-        view.profileTextField.placeholder = "사용자의 이름"
+        view.profileTextField.placeholder = "닉네임을 입력해주세요."
         view.frame = .profileViewDefaultCGRect(55)
         return view
     }()
@@ -89,7 +89,7 @@ class InputProfileViewController: UIViewController {
         view.profileLabel.text = "키"
         view.profileTextField.tag = 1
         view.profileTextField.tintColor = .clear
-        view.profileTextField.placeholder = "사용자의 키"
+        view.profileTextField.placeholder = "키를 입력해주세요."
         view.profileTextField.delegate = self
         heightPickerView.delegate = self
         heightPickerView.dataSource = self
@@ -103,7 +103,7 @@ class InputProfileViewController: UIViewController {
         view.profileLabel.text = "몸무게"
         view.profileTextField.tag = 2
         view.profileTextField.tintColor = .clear
-        view.profileTextField.placeholder = "사용자의 몸무게"
+        view.profileTextField.placeholder = "몸무게를 입력해주세요."
         view.profileTextField.delegate = self
         weightPickerView.delegate = self
         weightPickerView.dataSource = self
@@ -117,7 +117,7 @@ class InputProfileViewController: UIViewController {
         view.profileLabel.text = "목표 당 수치"
         view.profileTextField.tag = 3
         view.profileTextField.tintColor = .clear
-        view.profileTextField.placeholder = "사용자의 목표한 당 수치"
+        view.profileTextField.placeholder = "목표한 당 수치 설정해주세요."
         view.profileTextField.delegate = self
         sugarLevelPickerView.delegate = self
         sugarLevelPickerView.dataSource = self

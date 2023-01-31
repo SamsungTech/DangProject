@@ -16,6 +16,7 @@ class SecessionViewController: CustomViewController {
     
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
+        navigationBar.accountTitleLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         navigationBar.accountTitleLabel.text = "탈퇴"
         return navigationBar
     }()

@@ -112,6 +112,9 @@ class SearchViewController: UIViewController {
     
     private func setUpSearchController() {
         navigationItem.searchController = searchController
+        navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: yValueRatio(20), weight: .heavy)
+        ]
         navigationItem.title = "음식 추가"
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.placeholder = "음식을 검색하세요."

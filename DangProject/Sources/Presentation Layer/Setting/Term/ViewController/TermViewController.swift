@@ -14,6 +14,7 @@ class TermViewController: CustomViewController {
     private let disposeBag = DisposeBag()
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
+        navigationBar.accountTitleLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         navigationBar.accountTitleLabel.text = "이용약관"
         return navigationBar
     }()

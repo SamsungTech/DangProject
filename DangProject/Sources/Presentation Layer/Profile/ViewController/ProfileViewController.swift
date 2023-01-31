@@ -17,6 +17,7 @@ class ProfileViewController: CustomViewController {
     private let disposeBag = DisposeBag()
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
+        navigationBar.accountTitleLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         navigationBar.accountTitleLabel.text = "프로필"
         return navigationBar
     }()
@@ -110,10 +111,10 @@ class ProfileViewController: CustomViewController {
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: -yValueRatio(5)),
-            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -xValueRatio(5)),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: xValueRatio(5)),
-            navigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(100))
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationBar.heightAnchor.constraint(equalToConstant: yValueRatio(90))
         ])
     }
     

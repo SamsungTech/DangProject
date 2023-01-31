@@ -67,7 +67,8 @@ class DetailFoodViewController: UIViewController {
     
     private func setUpBackGround() {
         view.backgroundColor = .white
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black,
+                                                                   NSAttributedString.Key.font: UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)]
         self.navigationItem.title = viewModel.detailFood.name
     }
     

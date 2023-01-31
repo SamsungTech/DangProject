@@ -8,11 +8,10 @@
 import UIKit
 
 class ProfileNavigationBar: UIView {
-    private lazy var profileTitleLabel: UILabel = {
+    private(set) lazy var profileTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "프로필"
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: xValueRatio(25), weight: .heavy)
         return label
     }()
     

@@ -20,6 +20,7 @@ class MyTargetViewController: CustomViewController {
     }()
     private lazy var navigationBar: CommonNavigationBar = {
         let navigationBar = CommonNavigationBar()
+        navigationBar.accountTitleLabel.font = UIFont.systemFont(ofSize: yValueRatio(20), weight: .bold)
         navigationBar.accountTitleLabel.text = "나의 목표 설정"
         return navigationBar
     }()

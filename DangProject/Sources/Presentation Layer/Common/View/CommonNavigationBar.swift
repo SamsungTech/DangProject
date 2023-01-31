@@ -19,7 +19,7 @@ class CommonNavigationBar: UIView {
     private(set) lazy var accountTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .customFontColorBlack
-        label.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .bold)
+        label.textAlignment = .center
         return label
     }()
     

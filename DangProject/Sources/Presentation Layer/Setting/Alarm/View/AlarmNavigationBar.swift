@@ -16,11 +16,10 @@ class AlarmNavigationBar: UIView {
         return button
     }()
     
-    private lazy var alarmLabel: UILabel = {
+    private(set) lazy var alarmLabel: UILabel = {
         let label = UILabel()
         label.text = "알림"
         label.textColor = .customFontColorBlack
-        label.font = UIFont.systemFont(ofSize: xValueRatio(20), weight: .bold)
         return label
     }()
     
