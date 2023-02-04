@@ -74,7 +74,7 @@
 
 ## ⚒️ Architecture
 
-<img src = "https://user-images.githubusercontent.com/73861795/210162595-53cf53cf-5f1f-4890-b4ea-740d053b39c1.png" width="817" height="458"/>
+<img src = "https://user-images.githubusercontent.com/73861795/210162595-53cf53cf-5f1f-4890-b4ea-740d053b39c1.png"/>
 
 >### MVVM
 
@@ -82,7 +82,7 @@
 
 <br/>
 
-<img src = "https://user-images.githubusercontent.com/73861795/210164511-7b747ae0-de84-4f3f-b752-82d9b875182f.png" width="817" height="458"/>
+<img src = "https://user-images.githubusercontent.com/73861795/210164511-7b747ae0-de84-4f3f-b752-82d9b875182f.png"/>
 
 >### 헥사고날 아키텍처(클린 아키텍처)
 
