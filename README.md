@@ -84,9 +84,8 @@
 
 <img src = "https://user-images.githubusercontent.com/73861795/210164511-7b747ae0-de84-4f3f-b752-82d9b875182f.png"/>
 
->### 헥사고날 아키텍처(클린 아키텍처)
+>### 헥사고날 아키텍처
 
-- 헥사고날 아키텍처는 클린 아키텍처를 좀 더 일반적인 용어로 설명한 것입니다.
 - UI로직은 viewModel, 비즈니스 로직은 UseCase로, 네트워크나 외부 프레임워크 요청은 repository로 하여 각각 계층 별로 presentation Layer, domain Layer, Data layer 로 분리하였습니다.
 - 핵사고날 아키텍처의 구조는 비즈니스 로직을 다른 로직으로부터 보호하기위해 각 입출력 포트와 어댑터로 안쪽에 있는 유스케이스(비즈니스로직)가 속한 계층만 아예 분리하여 지키는 구조 입니다.
 
